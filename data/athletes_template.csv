@@ -1,0 +1,11 @@
+Country,LastName,FirstName,Port,Starboard,Sculling,IsCoxswain
+USA,Smith,John,1,1,0,0
+USA,Johnson,Sarah,1,1,0,0
+CAN,Williams,Michael,1,0,0,0
+GBR,Brown,Emma,0,1,0,0
+AUS,Jones,Oliver,1,1,1,0
+USA,Davis,Emily,1,1,0,0
+USA,Miller,James,1,1,0,0
+USA,Wilson,Sophie,1,1,0,0
+USA,Moore,Benjamin,1,1,0,1
+USA,Taylor,Charlotte,1,1,0,0

@@ -1,0 +1,23 @@
+[Unit]
+Description=RowLab - Rowing Lineup Manager
+After=network.target
+
+[Service]
+Type=simple
+User=swd
+WorkingDirectory=/home/swd/RowLab
+Environment="NODE_ENV=production"
+Environment="PORT=3002"
+ExecStart=/usr/bin/node server/index.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rowlab
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
