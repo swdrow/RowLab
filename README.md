@@ -18,14 +18,19 @@ npm install
 
 ### Development
 
-**Single command (recommended):**
+**Option 1: Single command (recommended):**
 ```bash
 npm run dev:full
 ```
 Runs both frontend (port 3001) and backend (port 3002) simultaneously.
-Open browser to `http://localhost:3001`
 
-**Or run separately (two terminal windows):**
+**Option 2: tmux session (persistent):**
+```bash
+npm run dev:tmux
+```
+Creates a persistent tmux session with 3 windows (backend, frontend, shell).
+
+**Option 3: Run separately (two terminal windows):**
 
 Terminal 1 - Frontend:
 ```bash
@@ -36,6 +41,14 @@ Terminal 2 - Backend:
 ```bash
 npm run server
 ```
+
+**Stop all development servers:**
+```bash
+npm stop
+```
+Kills all RowLab dev servers (works for both concurrently and tmux modes).
+
+Open browser to `http://localhost:3001`
 
 ### Production
 
@@ -127,11 +140,16 @@ Server runs on port 3002
 
 ## Scripts
 
-- `npm run dev:full` - **Start both frontend and backend** (recommended for development)
+### Development
+- `npm run dev:full` - **Start both servers** (recommended, uses concurrently)
+- `npm run dev:tmux` - **Start in tmux session** (persistent, detachable)
+- `npm stop` - **Stop all development servers** (both concurrently and tmux)
 - `npm run dev` - Start Vite dev server only (port 3001)
 - `npm run server` - Start Express API server only (port 3002)
+
+### Production
 - `npm run build` - Build for production
-- `npm start` - Run production build (builds + starts server)
+- `npm start` - Run production server (port 3002)
 
 ## Configuration
 

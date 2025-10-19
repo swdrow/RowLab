@@ -188,9 +188,9 @@ Or use the deploy script:
 npm run dev:full
 ```
 
-**Option 2: tmux helper script**
+**Option 2: tmux session (persistent)**
 ```bash
-./scripts/dev.sh
+npm run dev:tmux
 ```
 
 **Option 3: Separate terminals**
@@ -200,6 +200,11 @@ npm run dev
 
 # Terminal 2
 npm run server
+```
+
+**Stop all development servers:**
+```bash
+npm stop
 ```
 
 Access at `http://localhost:3001` (Vite dev server with HMR)

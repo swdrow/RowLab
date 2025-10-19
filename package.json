@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "server": "node server/index.js",
     "start": "NODE_ENV=production node server/index.js",
-    "dev:full": "concurrently \"npm run server\" \"npm run dev\" --names \"backend,frontend\" --prefix-colors \"blue,green\""
+    "dev:full": "concurrently \"npm run server\" \"npm run dev\" --names \"backend,frontend\" --prefix-colors \"blue,green\"",
+    "dev:tmux": "./scripts/dev.sh",
+    "stop": "./scripts/stop-dev.sh"
   },
   "dependencies": {
     "react": "^18.2.0",
