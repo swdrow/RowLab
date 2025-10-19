@@ -83,6 +83,27 @@ export const loadBoats = async (filePath = '/data/boats.csv') => {
 };
 
 /**
+ * Load shell names from CSV
+ * @param {string} filePath - Path to shells CSV
+ * @returns {Promise<Array>} Array of shell objects
+ */
+export const loadShells = async (filePath = '/data/shells.csv') => {
+  try {
+    const data = await parseCSV(filePath);
+
+    return data.map((row, index) => ({
+      id: `shell-${index}`,
+      name: row.ShellName || row.shellname || '',
+      boatClass: row.BoatClass || row.boatclass || '',
+      notes: row.Notes || row.notes || '',
+    }));
+  } catch (error) {
+    console.error('Error loading shells:', error);
+    return [];
+  }
+};
+
+/**
  * Load erg testing data from CSV (template - for future use)
  * @param {string} filePath - Path to erg data CSV
  * @returns {Promise<Array>} Array of erg test results

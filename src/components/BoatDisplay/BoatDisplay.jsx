@@ -48,9 +48,16 @@ const BoatDisplay = ({ boat }) => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-xl font-bold text-rowing-blue">{boat.name}</h3>
+          <h3 className="text-2xl font-bold text-rowing-blue">
+            {boat.shellName || boat.boatClass || boat.name}
+          </h3>
           <div className="flex items-center gap-3 mt-1">
-            <span className="text-sm text-gray-600">
+            {boat.shellName && boat.boatClass && (
+              <span className="text-sm text-gray-600 font-medium">
+                {boat.boatClass}
+              </span>
+            )}
+            <span className="text-sm text-gray-500">
               {boat.numSeats} seats {boat.hasCoxswain ? '+ cox' : ''}
             </span>
             {complete && (

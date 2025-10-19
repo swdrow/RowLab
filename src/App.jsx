@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import DragDropProvider from './components/Assignment/DragDropContext';
 import AthleteBank from './components/AthleteBank/AthleteBank';
 import BoatDisplay from './components/BoatDisplay/BoatDisplay';
+import CompactBoatView from './components/BoatDisplay/CompactBoatView';
 import AssignmentControls from './components/Assignment/AssignmentControls';
 import PerformanceModal from './components/PerformanceView/PerformanceModal';
 import useLineupStore from './store/lineupStore';
-import { loadAthletes, loadBoats, loadErgData } from './utils/csvParser';
+import { loadAthletes, loadBoats, loadShells, loadErgData } from './utils/csvParser';
 import { preloadHeadshots } from './utils/fileLoader';
 import './App.css';
 
@@ -17,10 +18,13 @@ function App() {
   const {
     setAthletes,
     setBoatConfigs,
+    setShells,
     setErgData,
     setHeadshotMap,
+    toggleBoatExpanded,
     activeBoats,
-    athletes
+    athletes,
+    lineupName
   } = useLineupStore();
 
   const [loading, setLoading] = useState(true);
@@ -42,6 +46,11 @@ function App() {
         const boatsData = await loadBoats('/data/boats.csv');
         console.log('Loaded boat configs:', boatsData.length);
         setBoatConfigs(boatsData);
+
+        // Load shell names
+        const shellsData = await loadShells('/data/shells.csv');
+        console.log('Loaded shells:', shellsData.length);
+        setShells(shellsData);
 
         // Load erg data (template - will be empty or example data)
         const ergData = await loadErgData('/data/erg_data_template.csv');
@@ -123,20 +132,36 @@ function App() {
 
             {/* Center - Boat Workspace */}
             <div className="lg:col-span-2">
-              <div className="space-y-6">
+              {/* Lineup Name Display */}
+              {lineupName && (
+                <div className="bg-white rounded-lg shadow-md p-4 mb-6 border-l-4 border-blue-600">
+                  <h2 className="text-xl font-bold text-rowing-blue">{lineupName}</h2>
+                  <p className="text-sm text-gray-600 mt-1">{activeBoats.length} boat{activeBoats.length !== 1 ? 's' : ''}</p>
+                </div>
+              )}
+
+              <div className="space-y-4">
                 {activeBoats.length === 0 ? (
                   <div className="bg-white rounded-lg shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
                     <div className="text-6xl mb-4">🚣</div>
                     <h2 className="text-2xl font-bold text-gray-700 mb-2">
-                      No Boats in Workspace
+                      No Boats in Lineup
                     </h2>
                     <p className="text-gray-600 mb-6">
-                      Add a boat from the controls panel to start creating your lineup
+                      Click "+ Add Boat to Lineup" to start building your lineup
                     </p>
                   </div>
                 ) : (
                   activeBoats.map(boat => (
-                    <BoatDisplay key={boat.id} boat={boat} />
+                    boat.isExpanded ? (
+                      <BoatDisplay key={boat.id} boat={boat} />
+                    ) : (
+                      <CompactBoatView
+                        key={boat.id}
+                        boat={boat}
+                        onExpand={() => toggleBoatExpanded(boat.id)}
+                      />
+                    )
                   ))
                 )}
               </div>

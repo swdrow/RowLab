@@ -21,16 +21,19 @@ export const generateBoatConfig = (numSeats) => {
  * Create a boat instance with unique ID
  * @param {object} boatConfig - Boat configuration (name, numSeats, hasCoxswain)
  * @param {string} instanceId - Unique identifier for this boat instance
+ * @param {string} shellName - Actual shell name (e.g., "Seaweed", "Titanic")
  * @returns {object} Complete boat object with seats
  */
-export const createBoatInstance = (boatConfig, instanceId) => {
+export const createBoatInstance = (boatConfig, instanceId, shellName = null) => {
   return {
     id: instanceId,
-    name: boatConfig.name,
+    boatClass: boatConfig.name, // e.g., "Varsity 8+"
+    shellName: shellName, // e.g., "Seaweed"
     numSeats: boatConfig.numSeats,
     hasCoxswain: boatConfig.hasCoxswain,
     seats: generateBoatConfig(boatConfig.numSeats),
     coxswain: null, // Initially unassigned
+    isExpanded: true, // Default to expanded view
   };
 };
 

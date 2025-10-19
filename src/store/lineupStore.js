@@ -9,8 +9,10 @@ const useLineupStore = create((set, get) => ({
   // Data
   athletes: [],
   boatConfigs: [],
+  shells: [],
   activeBoats: [],
   ergData: [],
+  lineupName: '',
 
   // Selection state
   selectedAthlete: null,
@@ -32,9 +34,19 @@ const useLineupStore = create((set, get) => ({
   setBoatConfigs: (configs) => set({ boatConfigs: configs }),
 
   /**
+   * Initialize shell names
+   */
+  setShells: (shells) => set({ shells }),
+
+  /**
    * Initialize erg data (for future use)
    */
   setErgData: (data) => set({ ergData: data }),
+
+  /**
+   * Set lineup name
+   */
+  setLineupName: (name) => set({ lineupName: name }),
 
   /**
    * Set preloaded headshot URLs
@@ -44,13 +56,26 @@ const useLineupStore = create((set, get) => ({
   /**
    * Add a new boat to the workspace
    */
-  addBoat: (boatConfig) => {
+  addBoat: (boatConfig, shellName = null) => {
     const timestamp = Date.now();
     const instanceId = `boat-${timestamp}`;
-    const newBoat = createBoatInstance(boatConfig, instanceId);
+    const newBoat = createBoatInstance(boatConfig, instanceId, shellName);
 
     set(state => ({
       activeBoats: [...state.activeBoats, newBoat]
+    }));
+  },
+
+  /**
+   * Toggle boat expanded state
+   */
+  toggleBoatExpanded: (boatId) => {
+    set(state => ({
+      activeBoats: state.activeBoats.map(boat =>
+        boat.id === boatId
+          ? { ...boat, isExpanded: !boat.isExpanded }
+          : boat
+      )
     }));
   },
 
