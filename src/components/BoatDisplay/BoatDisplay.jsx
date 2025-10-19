@@ -16,6 +16,7 @@ const BoatDisplay = ({ boat }) => {
     removeFromSeat,
     removeFromCoxswain,
     toggleSeatSelection,
+    toggleBoatExpanded,
     removeBoat,
     clearAthleteSelection
   } = useLineupStore();
@@ -67,15 +68,26 @@ const BoatDisplay = ({ boat }) => {
             )}
           </div>
         </div>
-        <button
-          onClick={handleRemoveBoat}
-          className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded p-2 transition"
-          title="Remove boat"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => toggleBoatExpanded(boat.id)}
+            className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded p-2 transition"
+            title="Collapse to compact view"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+          <button
+            onClick={handleRemoveBoat}
+            className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded p-2 transition"
+            title="Remove boat"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Boat visualization - Vertical layout */}
