@@ -24,19 +24,19 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+      <div className="glass-card rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
-          <h2 className="text-2xl font-bold text-rowing-blue">Add Boat to Lineup</h2>
-          <p className="text-sm text-gray-600 mt-1">Select boat class and shell name</p>
+        <div className="sticky top-0 glass-elevated rounded-t-2xl border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent">Add Boat to Lineup</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Select boat class and shell name</p>
         </div>
 
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Step 1: Select Boat Class */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
               1. Select Boat Class
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -48,10 +48,10 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
                     setSelectedShell(null); // Reset shell selection
                   }}
                   className={`
-                    px-4 py-3 rounded-lg border-2 font-medium transition
+                    px-4 py-3 rounded-xl border-2 font-medium transition-all
                     ${selectedClass?.id === config.id
-                      ? 'border-blue-600 bg-blue-50 text-blue-900'
-                      : 'border-gray-300 bg-white text-gray-700 hover:border-blue-400'
+                      ? 'border-blue-600 dark:border-accent-blue bg-blue-500/10 dark:bg-accent-blue/20 text-blue-900 dark:text-accent-blue shadow-lg scale-105'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card/50 text-gray-700 dark:text-gray-300 hover:border-blue-400 dark:hover:border-accent-blue hover:scale-105'
                     }
                   `}
                 >
@@ -64,7 +64,7 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
           {/* Step 2: Select Shell (if class selected) */}
           {selectedClass && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
                 2. Select Shell for {selectedClass.name}
               </h3>
 
@@ -78,29 +78,29 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
                         setCustomShellName('');
                       }}
                       className={`
-                        w-full px-4 py-3 rounded-lg border-2 text-left transition
+                        w-full px-4 py-3 rounded-xl border-2 text-left transition-all
                         ${selectedShell?.id === shell.id
-                          ? 'border-green-600 bg-green-50'
-                          : 'border-gray-300 bg-white hover:border-green-400'
+                          ? 'border-green-600 dark:border-green-500 bg-green-500/10 dark:bg-green-500/20 shadow-lg scale-[1.02]'
+                          : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card/50 hover:border-green-400 dark:hover:border-green-500 hover:scale-[1.01]'
                         }
                       `}
                     >
-                      <div className="font-semibold">{shell.name}</div>
+                      <div className="font-semibold text-gray-900 dark:text-gray-100">{shell.name}</div>
                       {shell.notes && (
-                        <div className="text-sm text-gray-600">{shell.notes}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">{shell.notes}</div>
                       )}
                     </button>
                   ))}
                 </div>
               ) : (
-                <div className="text-sm text-gray-600 mb-4">
+                <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                   No shells configured for {selectedClass.name}
                 </div>
               )}
 
               {/* Custom shell name option */}
-              <div className="border-t pt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Or enter custom shell name:
                 </label>
                 <input
@@ -111,7 +111,7 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
                     setSelectedShell(null);
                   }}
                   placeholder="e.g., Seaweed, Titanic, Phoenix..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent-blue focus:border-transparent bg-white dark:bg-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
                 />
               </div>
             </div>
@@ -119,10 +119,10 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end gap-3">
+        <div className="sticky bottom-0 glass-elevated rounded-b-2xl border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-dark-card border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:scale-105 active:scale-95"
           >
             Cancel
           </button>
@@ -130,10 +130,10 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
             onClick={handleAdd}
             disabled={!selectedClass}
             className={`
-              px-6 py-2 rounded-lg font-medium transition
+              px-6 py-2 rounded-lg font-medium transition-all
               ${selectedClass
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple text-white hover:shadow-lg hover:scale-105 active:scale-95'
+                : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed'
               }
             `}
           >

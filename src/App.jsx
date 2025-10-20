@@ -5,7 +5,9 @@ import BoatDisplay from './components/BoatDisplay/BoatDisplay';
 import CompactBoatView from './components/BoatDisplay/CompactBoatView';
 import AssignmentControls from './components/Assignment/AssignmentControls';
 import PerformanceModal from './components/PerformanceView/PerformanceModal';
+import DarkModeToggle from './components/DarkModeToggle';
 import useLineupStore from './store/lineupStore';
+import { useDarkMode } from './hooks/useDarkMode';
 import { loadAthletes, loadBoats, loadShells, loadErgData } from './utils/csvParser';
 import { preloadHeadshots } from './utils/fileLoader';
 import './App.css';
@@ -30,6 +32,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedAthleteForPerf, setSelectedAthleteForPerf] = useState(null);
+  const [isDark, toggleDarkMode] = useDarkMode();
 
   // Load data on mount
   useEffect(() => {
@@ -105,18 +108,29 @@ function App() {
 
   return (
     <DragDropProvider>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-bg bg-gradient-mesh transition-all duration-300">
         {/* Header */}
-        <header className="bg-rowing-blue text-white shadow-lg">
-          <div className="container mx-auto px-4 py-6">
+        <header className="glass-elevated sticky top-0 z-40 border-b dark:border-white/10">
+          <div className="container mx-auto px-6 py-5">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold">RowLab</h1>
-                <p className="text-blue-200 text-sm mt-1">Rowing Lineup Manager</p>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent">
+                  RowLab
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 font-medium">
+                  Rowing Lineup Manager
+                </p>
               </div>
-              <div className="text-right text-sm">
-                <div className="font-semibold">{athletes.length} Athletes</div>
-                <div className="text-blue-200">{activeBoats.length} Active Boats</div>
+              <div className="flex items-center gap-6">
+                <div className="text-right text-sm hidden sm:block">
+                  <div className="font-semibold text-gray-800 dark:text-gray-200">
+                    {athletes.length} Athletes
+                  </div>
+                  <div className="text-gray-500 dark:text-gray-400">
+                    {activeBoats.length} Active Boats
+                  </div>
+                </div>
+                <DarkModeToggle isDark={isDark} toggle={toggleDarkMode} />
               </div>
             </div>
           </div>
@@ -134,20 +148,20 @@ function App() {
             <div className="lg:col-span-2">
               {/* Lineup Name Display */}
               {lineupName && (
-                <div className="bg-white rounded-lg shadow-md p-4 mb-6 border-l-4 border-blue-600">
-                  <h2 className="text-xl font-bold text-rowing-blue">{lineupName}</h2>
-                  <p className="text-sm text-gray-600 mt-1">{activeBoats.length} boat{activeBoats.length !== 1 ? 's' : ''}</p>
+                <div className="glass-card rounded-2xl p-4 mb-6 border-l-4 border-blue-600 dark:border-accent-blue animate-slide-up">
+                  <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent">{lineupName}</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{activeBoats.length} boat{activeBoats.length !== 1 ? 's' : ''}</p>
                 </div>
               )}
 
               <div className="space-y-4">
                 {activeBoats.length === 0 ? (
-                  <div className="bg-white rounded-lg shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
+                  <div className="glass-card rounded-2xl p-12 text-center border-2 border-dashed border-gray-300 dark:border-gray-600 animate-fade-in">
                     <div className="text-6xl mb-4">🚣</div>
-                    <h2 className="text-2xl font-bold text-gray-700 mb-2">
+                    <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-2">
                       No Boats in Lineup
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">
                       Click "+ Add Boat to Lineup" to start building your lineup
                     </p>
                   </div>
@@ -175,8 +189,8 @@ function App() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-white border-t border-gray-200 mt-12">
-          <div className="container mx-auto px-4 py-6 text-center text-sm text-gray-600">
+        <footer className="glass-elevated border-t border-gray-200 dark:border-gray-700 mt-12">
+          <div className="container mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
             <p>RowLab v1.0 - Rowing Lineup Manager</p>
             <p className="mt-1 text-xs">
               Click athletes to select, drag to assign, click seats to swap

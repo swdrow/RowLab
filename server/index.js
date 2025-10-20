@@ -23,10 +23,10 @@ app.use((req, res, next) => {
 
 /**
  * CSV Data endpoint
- * Serves the athlete CSV file
+ * Serves the combined athlete CSV file (Last Name, First Name, Country, Side)
  */
 app.get('/api/data/athletes.csv', async (req, res) => {
-  const csvPath = '/home/swd/Rowing/LN_Country.csv';
+  const csvPath = path.join(__dirname, '../data/athletes.csv');
 
   try {
     await fs.access(csvPath);
@@ -39,34 +39,74 @@ app.get('/api/data/athletes.csv', async (req, res) => {
 });
 
 /**
+ * Flags API endpoint
+ * Serves country flag images - prioritizes SVG from /home/swd/Rowing/Flags_SVG/
+ * Falls back to PNG from /home/swd/Rowing/Flags/
+ */
+app.get('/api/flags/:countryCode', async (req, res) => {
+  const { countryCode } = req.params;
+  // Remove any extension if already provided in URL
+  const baseCode = countryCode.replace(/\.(png|svg)$/i, '');
+
+  // Try SVG first
+  const svgPath = path.join('/home/swd/Rowing/Flags_SVG', `${baseCode}.svg`);
+  try {
+    await fs.access(svgPath);
+    res.setHeader('Content-Type', 'image/svg+xml');
+    return res.sendFile(svgPath);
+  } catch (err) {
+    // SVG not found, try PNG
+  }
+
+  // Fall back to PNG
+  const pngPath = path.join('/home/swd/Rowing/Flags', `${baseCode}.png`);
+  try {
+    await fs.access(pngPath);
+    return res.sendFile(pngPath);
+  } catch (err) {
+    console.error(`Flag not found: ${baseCode} (tried SVG and PNG)`, err.message);
+    res.status(404).json({ error: 'Flag not found' });
+  }
+});
+
+/**
  * Headshots API endpoint
  * Serves athlete headshots from /home/swd/Rowing/Roster_Headshots_cropped/
- * Tries multiple file extensions (.jpg, .jpeg, .png)
+ * Tries multiple file extensions (.jpg, .jpeg, .png, .webp) and case variations
  */
 app.get('/api/headshots/:filename', async (req, res) => {
   const { filename } = req.params;
   const baseDir = '/home/swd/Rowing/Roster_Headshots_cropped';
 
   // Remove any extension from filename if provided
-  const baseName = filename.replace(/\.(jpg|jpeg|png)$/i, '');
+  const baseName = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
 
   // Try different extensions
-  const extensions = ['jpg', 'jpeg', 'png'];
+  const extensions = ['jpg', 'jpeg', 'png', 'webp'];
 
-  for (const ext of extensions) {
-    const filePath = path.join(baseDir, `${baseName}.${ext}`);
+  // Try different case variations
+  const nameVariations = [
+    baseName, // Original (usually capitalized)
+    baseName.toLowerCase(), // lowercase
+    baseName.charAt(0).toUpperCase() + baseName.slice(1).toLowerCase() // Capitalized
+  ];
 
-    try {
-      await fs.access(filePath);
-      // File exists, send it
-      return res.sendFile(filePath);
-    } catch (err) {
-      // File doesn't exist with this extension, try next
-      continue;
+  for (const name of nameVariations) {
+    for (const ext of extensions) {
+      const filePath = path.join(baseDir, `${name}.${ext}`);
+
+      try {
+        await fs.access(filePath);
+        // File exists, send it
+        return res.sendFile(filePath);
+      } catch (err) {
+        // File doesn't exist with this combination, try next
+        continue;
+      }
     }
   }
 
-  // No file found with any extension
+  // No file found with any extension or case variation
   // Return 404 so frontend can use placeholder
   res.status(404).json({ error: 'Headshot not found' });
 });

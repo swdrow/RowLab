@@ -29,8 +29,9 @@ export const parseCSV = (filePath) => {
 };
 
 /**
- * Load athlete data from LN_Country.csv
- * Gracefully handles missing columns with sensible defaults
+ * Load athlete data from combined athletes.csv
+ * Contains: Last Name, First Name, Country, Side
+ * Side codes: P=Port, S=Starboard, B=Both, Cox=Coxswain
  * @param {string} filePath - Path to CSV file
  * @returns {Promise<Array>} Array of athlete objects
  */
@@ -41,18 +42,42 @@ export const loadAthletes = async (filePath = '/api/data/athletes.csv') => {
     return data.map((row, index) => {
       // Handle various possible column name formats
       const lastName = row.LastName || row['Last Name'] || row.lastname || 'Unknown';
+      const firstName = row.FirstName || row['First Name'] || row.firstname || '';
       const country = row.Country || row.CountryCode || row['Country Code'] || 'USA';
+      const side = row.Side || row.side || '';
+
+      // Parse side capabilities
+      let port = 0;
+      let starboard = 0;
+      let isCoxswain = 0;
+
+      if (side === 'P') {
+        port = 1;
+        starboard = 0;
+      } else if (side === 'S') {
+        port = 0;
+        starboard = 1;
+      } else if (side === 'B') {
+        port = 1;
+        starboard = 1;
+      } else if (side === 'Cox') {
+        isCoxswain = 1;
+      } else {
+        // Default: can row both sides if no side specified
+        port = 1;
+        starboard = 1;
+      }
 
       return {
         id: `athlete-${index}`,
         lastName: lastName.trim(),
-        firstName: row.FirstName || row.firstname || '', // Unknown until we have full data
+        firstName: firstName.trim(),
         country: country.trim(),
-        // Default capabilities - assume all can row both sides
-        port: row.Port !== undefined ? parseInt(row.Port) : 1,
-        starboard: row.Starboard !== undefined ? parseInt(row.Starboard) : 1,
+        side: side, // Store original side code
+        port: port,
+        starboard: starboard,
         sculling: row.Sculling !== undefined ? parseInt(row.Sculling) : 0,
-        isCoxswain: row.IsCoxswain !== undefined ? parseInt(row.IsCoxswain) : 0,
+        isCoxswain: isCoxswain,
       };
     }).filter(athlete => athlete.lastName && athlete.lastName !== 'Unknown');
   } catch (error) {

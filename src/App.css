@@ -2,47 +2,309 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar styles */
+/**
+ * ========================================
+ * Liquid Glass Design System
+ * Inspired by Apple iOS 26
+ * ========================================
+ */
+
+@layer base {
+  /* Modern font smoothing for crisp text on glass surfaces */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Root level variables for dynamic theming */
+  :root {
+    --glass-light: rgba(255, 255, 255, 0.6);
+    --glass-dark: rgba(28, 28, 40, 0.6);
+    --blur-base: 16px;
+    --blur-strong: 24px;
+    --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    @apply transition-colors duration-300;
+    /* Subtle background gradient */
+    background: linear-gradient(to bottom right, #f9fafb, #f3f4f6);
+  }
+
+  /* Dark mode color scheme */
+  .dark {
+    color-scheme: dark;
+  }
+
+  .dark body {
+    @apply bg-dark-bg text-gray-100;
+    /* Enhanced dark mode gradient */
+    background: linear-gradient(to bottom right, #0a0a0a, #1a1a1a);
+  }
+
+  /* Enhanced focus visible for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-blue-500 ring-offset-transparent;
+  }
+}
+
+@layer components {
+  /* ===== Glass Card System ===== */
+
+  /* Subtle glass - minimal depth */
+  .glass-subtle {
+    @apply backdrop-blur-sm bg-white/40 border border-white/20 rounded-xl;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass-subtle {
+    @apply bg-white/5 border-white/5;
+    background-image: linear-gradient(135deg, rgba(35, 35, 50, 0.7) 0%, rgba(20, 20, 30, 0.4) 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Base glass - standard cards */
+  .glass-card {
+    @apply backdrop-blur-md bg-white/60 border border-white/30 rounded-xl;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass-card {
+    @apply bg-dark-card/60 border-white/10;
+    background-image: linear-gradient(135deg, rgba(40, 40, 60, 0.9) 0%, rgba(20, 20, 35, 0.6) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Elevated glass - hover states, interactive */
+  .glass-elevated {
+    @apply backdrop-blur-lg bg-white/80 border border-white/40 rounded-2xl;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.5) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .glass-elevated {
+    @apply bg-dark-elevated/80 border-white/15;
+    background-image: linear-gradient(135deg, rgba(45, 45, 65, 0.95) 0%, rgba(25, 25, 40, 0.7) 100%);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Strong glass - modals, dropdowns */
+  .glass-strong {
+    @apply backdrop-blur-xl bg-white/90 border border-white/50 rounded-2xl;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 100%);
+    /* Top edge highlight for realism */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 16px 48px rgba(0, 0, 0, 0.16), 0 8px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .dark .glass-strong {
+    @apply bg-white/10 border-white/20;
+    background-image: linear-gradient(135deg, rgba(50, 50, 70, 0.95) 0%, rgba(30, 30, 45, 0.8) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 16px 48px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Floating glass - top overlays */
+  .glass-floating {
+    @apply backdrop-blur-2xl bg-white/95 border border-white/60 rounded-3xl;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 100%);
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.6), 0 24px 64px rgba(0, 0, 0, 0.2), 0 16px 32px rgba(0, 0, 0, 0.14);
+  }
+
+  .dark .glass-floating {
+    @apply bg-white/15 border-white/25;
+    background-image: linear-gradient(135deg, rgba(55, 55, 75, 0.98) 0%, rgba(35, 35, 50, 0.85) 100%);
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.15), 0 24px 64px rgba(0, 0, 0, 0.8), 0 16px 32px rgba(0, 0, 0, 0.85);
+  }
+
+  /* ===== Ambient Mesh Backgrounds ===== */
+  .bg-gradient-mesh {
+    background:
+      radial-gradient(at 0% 0%, rgba(10, 132, 255, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(191, 90, 242, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(0, 199, 190, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(255, 45, 85, 0.08) 0px, transparent 50%),
+      linear-gradient(to bottom, #fafafa, #f0f0f0);
+    background-size: 100% 100%;
+    background-attachment: fixed;
+  }
+
+  .dark .bg-gradient-mesh {
+    background:
+      radial-gradient(at 0% 0%, rgba(10, 132, 255, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(191, 90, 242, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(0, 199, 190, 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(255, 45, 85, 0.12) 0px, transparent 50%),
+      linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+    background-size: 100% 100%;
+    background-attachment: fixed;
+  }
+
+  /* ===== Interactive Glass States ===== */
+  .glass-interactive {
+    @apply glass-card cursor-pointer;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-interactive:hover {
+    @apply scale-[1.02];
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.5) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .glass-interactive:active {
+    @apply scale-[0.98];
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass-interactive:hover {
+    background-image: linear-gradient(135deg, rgba(45, 45, 65, 0.95) 0%, rgba(25, 25, 40, 0.7) 100%);
+  }
+
+  /* ===== Custom Scrollbar (Glass Style) ===== */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300/50 dark:bg-gray-700/50 rounded-full backdrop-blur-sm;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400/70 dark:bg-gray-600/70;
+  }
+
+  /* ===== Shadow Variations for Glass Depth ===== */
+  .shadow-elevated {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .shadow-elevated {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  .shadow-floating {
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2), 0 16px 32px rgba(0, 0, 0, 0.14);
+  }
+
+  .dark .shadow-floating {
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 16px 32px rgba(0, 0, 0, 0.85);
+  }
+
+  /* ===== Inner Glass Shadow (for depth simulation) ===== */
+  .shadow-inner-glass {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .shadow-inner-glass {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ===== Glow Effects (for focus/active states) ===== */
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(10, 132, 255, 0.3), 0 0 40px rgba(10, 132, 255, 0.15);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(191, 90, 242, 0.3), 0 0 40px rgba(191, 90, 242, 0.15);
+  }
+
+  .glow-teal {
+    box-shadow: 0 0 20px rgba(0, 199, 190, 0.3), 0 0 40px rgba(0, 199, 190, 0.15);
+  }
+}
+
+@layer utilities {
+  /* Backdrop filter fallback detection */
+  @supports not (backdrop-filter: blur(1px)) {
+    .glass-card,
+    .glass-elevated,
+    .glass-strong,
+    .glass-subtle,
+    .glass-floating {
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .dark .glass-card,
+    .dark .glass-elevated,
+    .dark .glass-strong,
+    .dark .glass-subtle,
+    .dark .glass-floating {
+      background-color: rgba(28, 28, 40, 0.95);
+    }
+  }
+
+  /* Prevent text selection during drag operations */
+  .dragging,
+  .dragging * {
+    user-select: none !important;
+    cursor: grabbing !important;
+  }
+
+  /* Smooth transition utilities */
+  .transition-glass {
+    transition: background-color 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+                backdrop-filter 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+                box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ===== Global Scrollbar Styles ===== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+  @apply bg-gray-300/60 dark:bg-gray-700/60 rounded-full backdrop-blur-sm;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  @apply bg-gray-400/80 dark:bg-gray-600/80;
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+/* ===== Smooth Transitions (Scoped to prevent conflicts) ===== */
+.transition-colors {
+  transition-property: color, background-color, border-color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 200ms;
 }
 
-/* Prevent text selection during drag */
-.dragging {
-  user-select: none;
-}
-
-/* Print styles for lineup exports */
+/* ===== Print Styles ===== */
 @media print {
   header,
   footer,
   .no-print {
-    display: none;
+    display: none !important;
   }
 
   .boat-display {
     page-break-inside: avoid;
+  }
+
+  /* Remove glass effects for print */
+  .glass-card,
+  .glass-elevated,
+  .glass-strong,
+  .glass-subtle,
+  .glass-floating {
+    background: white !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb !important;
   }
 }

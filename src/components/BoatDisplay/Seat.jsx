@@ -32,38 +32,54 @@ const Seat = ({ boatId, seat, onSeatClick }) => {
       onClick={() => onSeatClick(seat.seatNumber, false)}
       className={`
         relative flex flex-col items-center justify-center
-        w-24 h-32 rounded-lg border-2 cursor-pointer
-        transition-all duration-200
-        ${seat.athlete ? 'border-blue-500 bg-white' : 'border-gray-300 bg-gray-50'}
-        ${isOver ? 'ring-4 ring-blue-400 scale-105' : ''}
-        ${isSelected ? 'ring-4 ring-yellow-400' : ''}
-        hover:shadow-lg
+        w-24 h-32 rounded-xl border-2 cursor-pointer
+        transition-all duration-200 backdrop-blur-sm
+        ${seat.athlete
+          ? 'border-blue-500 dark:border-accent-blue bg-white dark:bg-dark-card/90'
+          : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-elevated/50'
+        }
+        ${isOver ? 'ring-4 ring-blue-400 dark:ring-accent-blue scale-105 shadow-xl' : ''}
+        ${isSelected ? 'ring-4 ring-yellow-400 dark:ring-yellow-500 shadow-xl' : ''}
+        hover:shadow-lg hover:scale-105
       `}
     >
       {/* Seat number badge */}
-      <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full ${sideColor} text-white text-xs font-bold flex items-center justify-center`}>
+      <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full ${sideColor} text-white text-xs font-bold flex items-center justify-center shadow-md`}>
         {seat.seatNumber}
       </div>
 
       {/* Side indicator */}
-      <div className={`absolute -bottom-2 px-2 py-0.5 rounded text-xs font-semibold ${sideColorLight} ${seat.side === 'Port' ? 'text-red-700' : 'text-green-700'}`}>
+      <div className={`absolute -bottom-2 px-2 py-0.5 rounded-full text-xs font-semibold ${sideColorLight} ${seat.side === 'Port' ? 'text-red-700' : 'text-green-700'} shadow-sm`}>
         {seat.side === 'Port' ? 'P' : 'S'}
       </div>
 
       {/* Athlete or empty state */}
       {seat.athlete ? (
         <div className="flex flex-col items-center space-y-1">
-          <img
-            src={headshotMap.get(seat.athlete.id) || '/images/placeholder-avatar.svg'}
-            alt={seat.athlete.lastName}
-            className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-          />
-          <div className="text-xs font-semibold text-center leading-tight">
+          <div className="relative">
+            <img
+              src={headshotMap.get(seat.athlete.id) || '/images/placeholder-avatar.svg'}
+              alt={seat.athlete.lastName}
+              className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 shadow-md"
+            />
+            {/* Country flag in bottom right */}
+            {seat.athlete.country && (
+              <img
+                src={`/api/flags/${seat.athlete.country}.png`}
+                alt={seat.athlete.country}
+                className="absolute -bottom-1 -right-1 w-8 h-5 object-cover rounded-sm shadow-lg border border-white dark:border-gray-800"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            )}
+          </div>
+          <div className="text-xs font-semibold text-center leading-tight text-gray-900 dark:text-gray-100">
             {seat.athlete.lastName}
           </div>
         </div>
       ) : (
-        <div className="text-gray-400 text-2xl">+</div>
+        <div className="text-gray-400 dark:text-gray-500 text-2xl">+</div>
       )}
     </div>
   );
