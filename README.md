@@ -8,7 +8,7 @@
 
 <!-- LINKEDIN COPY-PASTE START -->
 
-A web-based lineup management tool designed for rowing coaches to optimize boat assignments and visualize team configurations. The application enables coaches to drag-and-drop athletes into various boat types, manage roster data from CSV imports, and experiment with different lineup combinations in real-time.
+A web-based lineup management tool designed for rowing coaches to optimize boat assignments and visualize team configurations. The application enables coaches to drag-and-drop athletes into various boat types, manage roster data from CSV imports, and experiment with different lineup combinations in real-time. Includes a machine learning roadmap for predictive analytics and performance optimization.
 
 **Key Technical Achievements:**
 - Designed an intuitive drag-and-drop interface for seat assignments across multiple boat configurations (1x through 8+)
@@ -17,7 +17,14 @@ A web-based lineup management tool designed for rowing coaches to optimize boat 
 - Created both compact and expanded visualization modes for lineup comparison
 - Integrated athlete headshot display and country flag indicators for international rosters
 
-**Technologies:** Node.js, Express, React, Vite, TailwindCSS, Zustand, dnd-kit
+**Machine Learning Roadmap:**
+- Athlete ranking algorithm using aggregated performance data and erg score analysis
+- True relative speed calculations adjusting for seat position, boat class, and conditions
+- Predictive placement modeling against competing schools based on historical race data
+- AI-driven training suggestions based on individual athlete metrics and team goals
+- PostgreSQL database integration for longitudinal athlete data storage and analysis
+
+**Technologies:** Node.js, Express, React, Vite, TailwindCSS, Zustand, dnd-kit | *Planned: Python, Scikit-learn, PostgreSQL*
 
 <!-- LINKEDIN COPY-PASTE END -->
 
@@ -261,6 +268,36 @@ kill -9 <PID>
 - Real-time collaboration (WebSocket)
 - Mobile responsive design
 - Auto-lineup suggestions (AI)
+
+---
+
+## Machine Learning Roadmap
+
+### Athlete Performance Analytics
+| Feature | Description | Status |
+|---------|-------------|--------|
+| **Erg Score Analysis** | Import and analyze 2k, 6k, and other erg test results with trend visualization | Planned |
+| **Athlete Ranking Algorithm** | Aggregate performance metrics to generate dynamic power rankings | Planned |
+| **True Relative Speed** | Calculate adjusted speed accounting for seat position, boat class, and weather conditions | Planned |
+
+### Predictive Modeling
+| Feature | Description | Status |
+|---------|-------------|--------|
+| **Race Placement Prediction** | ML model to predict placement against competing schools using historical race data | Planned |
+| **Optimal Lineup Suggestions** | AI-driven recommendations for boat compositions based on athlete compatibility | Planned |
+| **Training Recommendations** | Personalized training suggestions based on individual metrics and team goals | Planned |
+
+### Data Infrastructure
+| Feature | Description | Status |
+|---------|-------------|--------|
+| **PostgreSQL Database** | Persistent storage for athlete data, lineups, and historical performance | Planned |
+| **Data Import Pipeline** | Automated ingestion from erg machines, race results, and training logs | Planned |
+| **Analytics Dashboard** | Visual reporting on team trends, individual progress, and competitive analysis | Planned |
+
+### Technologies (Planned)
+- **ML/Analytics**: Python, Scikit-learn, Pandas, NumPy
+- **Database**: PostgreSQL with Prisma ORM
+- **Visualization**: Recharts, D3.js
 
 See [PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md) for detailed roadmap.
 
