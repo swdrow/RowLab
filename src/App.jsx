@@ -6,7 +6,12 @@ import CompactBoatView from './components/BoatDisplay/CompactBoatView';
 import AssignmentControls from './components/Assignment/AssignmentControls';
 import PerformanceModal from './components/PerformanceView/PerformanceModal';
 import DarkModeToggle from './components/DarkModeToggle';
+import LoginModal from './components/Auth/LoginModal';
+import RegisterModal from './components/Auth/RegisterModal';
+import AdminPanel from './components/Auth/AdminPanel';
+import AuthButton from './components/Auth/AuthButton';
 import useLineupStore from './store/lineupStore';
+import useAuthStore from './store/authStore';
 import { useDarkMode } from './hooks/useDarkMode';
 import { loadAthletes, loadBoats, loadShells, loadErgData } from './utils/csvParser';
 import { preloadHeadshots } from './utils/fileLoader';
@@ -32,7 +37,18 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedAthleteForPerf, setSelectedAthleteForPerf] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [isDark, toggleDarkMode] = useDarkMode();
+
+  // Auth state
+  const { verify } = useAuthStore();
+
+  // Verify auth on mount
+  useEffect(() => {
+    verify();
+  }, []);
 
   // Load data on mount
   useEffect(() => {
@@ -121,7 +137,7 @@ function App() {
                   Rowing Lineup Manager
                 </p>
               </div>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4">
                 <div className="text-right text-sm hidden sm:block">
                   <div className="font-semibold text-gray-800 dark:text-gray-200">
                     {athletes.length} Athletes
@@ -130,6 +146,10 @@ function App() {
                     {activeBoats.length} Active Boats
                   </div>
                 </div>
+                <AuthButton
+                  onLoginClick={() => setShowLoginModal(true)}
+                  onAdminClick={() => setShowAdminPanel(true)}
+                />
                 <DarkModeToggle isDark={isDark} toggle={toggleDarkMode} />
               </div>
             </div>
@@ -206,6 +226,32 @@ function App() {
             ergData={[]} // Will be populated when erg data is available
           />
         )}
+
+        {/* Login Modal */}
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          onSwitchToRegister={() => {
+            setShowLoginModal(false);
+            setShowRegisterModal(true);
+          }}
+        />
+
+        {/* Register Modal */}
+        <RegisterModal
+          isOpen={showRegisterModal}
+          onClose={() => setShowRegisterModal(false)}
+          onSwitchToLogin={() => {
+            setShowRegisterModal(false);
+            setShowLoginModal(true);
+          }}
+        />
+
+        {/* Admin Panel */}
+        <AdminPanel
+          isOpen={showAdminPanel}
+          onClose={() => setShowAdminPanel(false)}
+        />
       </div>
     </DragDropProvider>
   );

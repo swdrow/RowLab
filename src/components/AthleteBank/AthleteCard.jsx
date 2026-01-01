@@ -7,7 +7,7 @@ import useLineupStore from '../../store/lineupStore';
  * Compact athlete card for athlete bank
  * Shows flag, name - no headshot (cleaner UI)
  */
-const AthleteCard = ({ athlete, isAssigned, onClick }) => {
+const AthleteCard = ({ athlete, isAssigned, onClick, onDoubleClick }) => {
   const { selectedAthlete } = useLineupStore();
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -32,6 +32,7 @@ const AthleteCard = ({ athlete, isAssigned, onClick }) => {
       {...listeners}
       {...attributes}
       onClick={() => !isAssigned && onClick(athlete)}
+      onDoubleClick={() => onDoubleClick && onDoubleClick(athlete)}
       className={`
         relative flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg border
         transition-all duration-200

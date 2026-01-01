@@ -29,3 +29,5 @@ Thumbs.db
 # Temporary files
 *.tmp
 .cache/
+
+/src/generated/prisma

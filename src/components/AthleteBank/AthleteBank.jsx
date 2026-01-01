@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import AthleteCard from './AthleteCard';
 import useLineupStore from '../../store/lineupStore';
 import { getAssignedAthletes } from '../../utils/boatConfig';
+import ErgDataModal from '../ErgData/ErgDataModal';
 
 /**
  * Athlete Bank component
@@ -9,9 +10,10 @@ import { getAssignedAthletes } from '../../utils/boatConfig';
  * Includes filtering and search capabilities
  */
 const AthleteBank = () => {
-  const { athletes, activeBoats, selectAthlete } = useLineupStore();
+  const { athletes, activeBoats, selectAthlete, selectedAthlete, clearAthleteSelection } = useLineupStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [sideFilter, setSideFilter] = useState('all'); // all, port, starboard, sculling, coxswain
+  const [ergDataAthlete, setErgDataAthlete] = useState(null);
 
   const assignedAthletes = useMemo(() => {
     return getAssignedAthletes(activeBoats);
@@ -43,6 +45,10 @@ const AthleteBank = () => {
   const availableCount = filteredAthletes.filter(a => !assignedAthletes.has(a.id)).length;
   const assignedCount = assignedAthletes.size;
 
+  const handleAthleteDoubleClick = (athlete) => {
+    setErgDataAthlete(athlete);
+  };
+
   return (
     <div className="glass-card rounded-2xl p-6 h-full flex flex-col animate-fade-in sticky top-24">
       {/* Header */}
@@ -67,6 +73,37 @@ const AthleteBank = () => {
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent-blue focus:border-transparent bg-white dark:bg-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
         />
       </div>
+
+      {/* Selected Athlete Actions */}
+      {selectedAthlete && (
+        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                {selectedAthlete.firstName} {selectedAthlete.lastName}
+              </div>
+              <div className="text-xs text-blue-600 dark:text-blue-400">
+                Click a seat to assign
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setErgDataAthlete(selectedAthlete)}
+                className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-all"
+                title="View erg data"
+              >
+                Erg Data
+              </button>
+              <button
+                onClick={clearAthleteSelection}
+                className="px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white text-xs font-medium rounded transition-all"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="mb-4 flex flex-wrap gap-2">
@@ -135,6 +172,7 @@ const AthleteBank = () => {
               athlete={athlete}
               isAssigned={assignedAthletes.has(athlete.id)}
               onClick={selectAthlete}
+              onDoubleClick={handleAthleteDoubleClick}
             />
           ))}
         </div>
@@ -151,10 +189,20 @@ const AthleteBank = () => {
         <p className="mb-1">
           <strong className="text-gray-800 dark:text-gray-300">To assign:</strong> Click athlete, then click empty seat
         </p>
-        <p>
+        <p className="mb-1">
           <strong className="text-gray-800 dark:text-gray-300">To swap:</strong> Click two filled seats
         </p>
+        <p>
+          <strong className="text-gray-800 dark:text-gray-300">Erg data:</strong> Double-click athlete or select and click "Erg Data"
+        </p>
       </div>
+
+      {/* Erg Data Modal */}
+      <ErgDataModal
+        athlete={ergDataAthlete}
+        isOpen={ergDataAthlete !== null}
+        onClose={() => setErgDataAthlete(null)}
+      />
     </div>
   );
 };

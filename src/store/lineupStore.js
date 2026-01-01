@@ -335,6 +335,130 @@ const useLineupStore = create((set, get) => ({
    */
   getSavedLineups: () => {
     return JSON.parse(localStorage.getItem('rowlab_lineups') || '{}');
+  },
+
+  /**
+   * Load lineup from saved data (database or localStorage)
+   */
+  loadLineupFromData: (lineup, athletes, boatConfigs, shells) => {
+    set(state => {
+      const newActiveBoats = [];
+
+      // For database lineups, reconstruct from assignments
+      if (lineup.assignments && Array.isArray(lineup.assignments)) {
+        // Group assignments by boat class and shell name
+        const boatGroups = {};
+        for (const assignment of lineup.assignments) {
+          const key = `${assignment.boatClass}-${assignment.shellName || 'default'}`;
+          if (!boatGroups[key]) {
+            boatGroups[key] = {
+              boatClass: assignment.boatClass,
+              shellName: assignment.shellName,
+              assignments: []
+            };
+          }
+          boatGroups[key].assignments.push(assignment);
+        }
+
+        // Create boats from groups
+        for (const group of Object.values(boatGroups)) {
+          const boatConfig = boatConfigs.find(b => b.name === group.boatClass);
+          if (!boatConfig) continue;
+
+          const timestamp = Date.now() + Math.random();
+          const boat = {
+            id: `boat-${timestamp}`,
+            name: group.boatClass,
+            shellName: group.shellName,
+            numSeats: boatConfig.numSeats,
+            hasCoxswain: boatConfig.hasCoxswain,
+            isExpanded: true,
+            seats: [],
+            coxswain: null
+          };
+
+          // Create seats
+          for (let i = boatConfig.numSeats; i >= 1; i--) {
+            const side = i % 2 === 0 ? 'Port' : 'Starboard';
+            boat.seats.push({
+              seatNumber: i,
+              side,
+              athlete: null
+            });
+          }
+
+          // Fill in assignments
+          for (const assignment of group.assignments) {
+            if (assignment.isCoxswain) {
+              const athlete = athletes.find(a => a.id === assignment.athleteId);
+              boat.coxswain = athlete || null;
+            } else {
+              const seatIndex = boat.seats.findIndex(s => s.seatNumber === assignment.seatNumber);
+              if (seatIndex !== -1) {
+                const athlete = athletes.find(a => a.id === assignment.athleteId);
+                boat.seats[seatIndex].athlete = athlete || null;
+                if (assignment.side) {
+                  boat.seats[seatIndex].side = assignment.side;
+                }
+              }
+            }
+          }
+
+          newActiveBoats.push(boat);
+        }
+      }
+      // For local storage lineups, use boats array format
+      else if (lineup.boats && Array.isArray(lineup.boats)) {
+        for (const savedBoat of lineup.boats) {
+          // Find matching athlete by name
+          const findAthlete = (saved) => {
+            if (!saved) return null;
+            return athletes.find(
+              a => a.lastName === saved.lastName && a.firstName === saved.firstName
+            ) || null;
+          };
+
+          const boatConfig = boatConfigs.find(b => b.name === savedBoat.name);
+          if (!boatConfig) continue;
+
+          const timestamp = Date.now() + Math.random();
+          const boat = {
+            id: `boat-${timestamp}`,
+            name: savedBoat.name,
+            shellName: savedBoat.shellName || null,
+            numSeats: boatConfig.numSeats,
+            hasCoxswain: boatConfig.hasCoxswain,
+            isExpanded: true,
+            seats: savedBoat.seats?.map(s => ({
+              seatNumber: s.seatNumber,
+              side: s.side,
+              athlete: findAthlete(s.athlete)
+            })) || [],
+            coxswain: findAthlete(savedBoat.coxswain)
+          };
+
+          newActiveBoats.push(boat);
+        }
+      }
+
+      return {
+        activeBoats: newActiveBoats,
+        lineupName: lineup.name || '',
+        selectedSeats: []
+      };
+    });
+  },
+
+  /**
+   * Clear current lineup
+   */
+  clearLineup: () => {
+    set({
+      activeBoats: [],
+      lineupName: '',
+      selectedSeats: [],
+      selectedAthlete: null
+    });
   }
 }));
 

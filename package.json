@@ -8,30 +8,46 @@
     "dev": "vite --port 3001",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node server/index.js",
-    "start": "NODE_ENV=production node server/index.js",
+    "server": "node --env-file=.env server/index.js",
+    "start": "NODE_ENV=production node --env-file=.env server/index.js",
     "dev:full": "concurrently \"npm run server\" \"npm run dev\" --names \"backend,frontend\" --prefix-colors \"blue,green\"",
     "dev:tmux": "./scripts/dev.sh",
-    "stop": "./scripts/stop-dev.sh"
+    "stop": "./scripts/stop-dev.sh",
+    "db:migrate": "npx prisma migrate dev",
+    "db:seed": "node --env-file=.env prisma/seed.js",
+    "db:reset": "npx prisma migrate reset --force && npm run db:seed",
+    "db:studio": "npx prisma studio"
+  },
+  "prisma": {
+    "seed": "node --env-file=.env prisma/seed.js"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "@dnd-kit/core": "^6.1.0",
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "papaparse": "^5.4.1",
-    "zustand": "^4.4.7",
-    "recharts": "^2.10.3",
+    "@prisma/adapter-better-sqlite3": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "html2canvas": "^1.4.1",
+    "jsonwebtoken": "^9.0.3",
+    "jspdf": "^3.0.4",
+    "papaparse": "^5.4.1",
+    "prisma": "^7.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.10.3",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.0.11",
-    "tailwindcss": "^3.4.1",
-    "postcss": "^8.4.33",
     "autoprefixer": "^10.4.17",
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.11"
   }
 }

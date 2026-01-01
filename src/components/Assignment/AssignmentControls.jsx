@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import useLineupStore from '../../store/lineupStore';
+import useAuthStore from '../../store/authStore';
 import BoatSelectionModal from './BoatSelectionModal';
+import SavedLineupsModal from './SavedLineupsModal';
+import PDFExportModal from '../Export/PDFExportModal';
 
 /**
  * Control panel for boat workspace
@@ -20,10 +23,18 @@ const AssignmentControls = () => {
     swapAthletes,
     exportLineup,
     saveLineup,
-    activeBoats
+    activeBoats,
+    loadLineupFromData,
+    athletes
   } = useLineupStore();
 
+  const { isAuthenticated, getAuthHeaders } = useAuthStore();
+
   const [showBoatModal, setShowBoatModal] = useState(false);
+  const [showSavedLineups, setShowSavedLineups] = useState(false);
+  const [showPDFExport, setShowPDFExport] = useState(false);
+  const [saveMessage, setSaveMessage] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleBoatSelect = (boatConfig, shellName) => {
     addBoat(boatConfig, shellName);
@@ -45,11 +56,50 @@ const AssignmentControls = () => {
     URL.revokeObjectURL(url);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const name = lineupName || prompt('Enter lineup name:');
-    if (name) {
-      saveLineup(name);
-      alert(`Lineup "${name}" saved to browser storage`);
+    if (!name) return;
+
+    setIsSaving(true);
+    setSaveMessage(null);
+
+    try {
+      if (isAuthenticated) {
+        // Save to database
+        const res = await fetch('/api/lineups', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+          },
+          body: JSON.stringify({
+            name,
+            boats: activeBoats,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        setSaveMessage({ type: 'success', text: `Saved to database` });
+      } else {
+        // Save to localStorage
+        saveLineup(name);
+        setSaveMessage({ type: 'success', text: `Saved locally` });
+      }
+      setLineupName(name);
+    } catch (err) {
+      setSaveMessage({ type: 'error', text: err.message });
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
+  };
+
+  const handleLoadLineup = (lineup) => {
+    // Load lineup data into the store
+    if (loadLineupFromData) {
+      loadLineupFromData(lineup, athletes, boatConfigs, shells);
     }
   };
 
@@ -73,12 +123,22 @@ const AssignmentControls = () => {
         </div>
 
         {/* Add Boat Button */}
-        <div className="mb-6">
+        <div className="mb-4">
           <button
             onClick={() => setShowBoatModal(true)}
             className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple text-white rounded-lg hover:shadow-lg transition-all duration-200 font-medium hover:scale-[1.02] active:scale-[0.98]"
           >
             + Add Boat to Lineup
+          </button>
+        </div>
+
+        {/* Load Saved Lineups */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowSavedLineups(true)}
+            className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:border-blue-500 dark:hover:border-accent-blue hover:text-blue-600 dark:hover:text-accent-blue transition-all duration-200 font-medium"
+          >
+            Load Saved Lineup
           </button>
         </div>
 
@@ -125,6 +185,17 @@ const AssignmentControls = () => {
           </div>
         )}
 
+        {/* Save Message */}
+        {saveMessage && (
+          <div className={`mb-4 p-3 rounded-lg text-sm ${
+            saveMessage.type === 'success'
+              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+          }`}>
+            {saveMessage.text}
+          </div>
+        )}
+
         {/* Lineup Actions */}
         {activeBoats.length > 0 && (
           <div className="mb-4">
@@ -132,9 +203,16 @@ const AssignmentControls = () => {
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleSave}
-                className="px-3 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-all text-sm font-medium hover:scale-105 active:scale-95 hover:shadow-lg"
+                disabled={isSaving}
+                className="px-3 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-all text-sm font-medium hover:scale-105 active:scale-95 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Save Lineup
+                {isSaving ? 'Saving...' : (isAuthenticated ? 'Save to Database' : 'Save Locally')}
+              </button>
+              <button
+                onClick={() => setShowPDFExport(true)}
+                className="px-3 py-2 bg-red-600 dark:bg-red-500 text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-600 transition-all text-sm font-medium hover:scale-105 active:scale-95 hover:shadow-lg"
+              >
+                Export PDF
               </button>
               <button
                 onClick={handleExport}
@@ -151,6 +229,11 @@ const AssignmentControls = () => {
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Workspace</h3>
           <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             <div>Active boats: {activeBoats.length}</div>
+            {!isAuthenticated && (
+              <div className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+                Sign in to save lineups to the database
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -164,6 +247,21 @@ const AssignmentControls = () => {
           onCancel={() => setShowBoatModal(false)}
         />
       )}
+
+      {/* Saved Lineups Modal */}
+      <SavedLineupsModal
+        isOpen={showSavedLineups}
+        onClose={() => setShowSavedLineups(false)}
+        onLoad={handleLoadLineup}
+      />
+
+      {/* PDF Export Modal */}
+      <PDFExportModal
+        isOpen={showPDFExport}
+        onClose={() => setShowPDFExport(false)}
+        lineupName={lineupName}
+        boats={activeBoats}
+      />
     </>
   );
 };

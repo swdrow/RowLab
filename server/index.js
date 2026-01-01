@@ -4,6 +4,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 
+// Routes
+import authRoutes from './routes/auth.js';
+import lineupRoutes from './routes/lineups.js';
+import ergDataRoutes from './routes/ergData.js';
+import { getStorageInfo } from './utils/storageMonitor.js';
+import { verifyToken } from './middleware/auth.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -20,6 +27,11 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/lineups', lineupRoutes);
+app.use('/api/erg-tests', ergDataRoutes);
 
 /**
  * CSV Data endpoint
@@ -120,6 +132,24 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: NODE_ENV
   });
+});
+
+/**
+ * Storage monitoring endpoint (admin only)
+ */
+app.get('/api/admin/storage', verifyToken, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+
+    const storageInfo = await getStorageInfo();
+    res.json(storageInfo);
+  } catch (err) {
+    console.error('Storage info error:', err);
+    res.status(500).json({ error: 'Failed to get storage info' });
+  }
 });
 
 /**
