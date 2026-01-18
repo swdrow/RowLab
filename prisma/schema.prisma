@@ -1,102 +1,361 @@
-// Prisma schema for RowLab
-// SQLite database with migration path to PostgreSQL
+// Prisma schema for RowLab v2.0
+// PostgreSQL with multi-tenant team isolation
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
-// Admin user for authentication
+// ============================================
+// CORE: Users, Teams, Membership
+// ============================================
+
 model User {
-  id             Int      @id @default(autoincrement())
-  username       String   @unique
-  email          String?  @unique
-  password       String   // bcrypt hashed
-  name           String
-  role           String   @default("coach") // admin, coach
-  status         String   @default("pending") // pending, approved, rejected
-  requestMessage String?  // Why they want to join
-  lineups        Lineup[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  name          String
+  status        String   @default("active") // active, suspended
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  memberships   TeamMember[]
+  refreshTokens RefreshToken[]
+  announcements Announcement[]
+
+  @@map("users")
 }
 
-// Athlete roster
+model Team {
+  id                String   @id @default(uuid())
+  name              String
+  slug              String   @unique
+  inviteCode        String?  @unique
+  isPublic          Boolean  @default(false)
+  visibilitySetting String   @default("coaches_only") // open, coaches_only, opt_in
+  settings          Json     @default("{}")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  members       TeamMember[]
+  athletes      Athlete[]
+  invitations   Invitation[]
+  lineups       Lineup[]
+  ergTests      ErgTest[]
+  workouts      Workout[]
+  announcements Announcement[]
+  shells        Shell[]
+  boatConfigs   BoatConfig[]
+
+  @@map("teams")
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  userId    String
+  teamId    String
+  role      String   // OWNER, COACH, ATHLETE
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@map("team_members")
+}
+
+// ============================================
+// AUTH: Tokens, Invitations
+// ============================================
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  userId      String
+  tokenHash   String   @unique
+  familyId    String   // For rotation detection
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
+}
+
+model Invitation {
+  id        String   @id @default(uuid())
+  teamId    String
+  athleteId String?  // For claim flow
+  email     String
+  tokenHash String   @unique // SHA-256 of actual token
+  expiresAt DateTime
+  status    String   @default("pending") // pending, claimed, expired, revoked
+  createdAt DateTime @default(now())
+
+  team    Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  athlete Athlete? @relation(fields: [athleteId], references: [id])
+
+  @@index([tokenHash])
+  @@map("invitations")
+}
+
+// ============================================
+// ATHLETES: Profiles (managed or linked)
+// ============================================
+
 model Athlete {
-  id          Int                @id @default(autoincrement())
-  lastName    String
-  firstName   String
-  country     String
-  side        String             // P, S, B, Cox
-  port        Boolean            @default(false)
-  starboard   Boolean            @default(false)
-  sculling    Boolean            @default(false)
-  isCoxswain  Boolean            @default(false)
-  ergTests    ErgTest[]
-  assignments LineupAssignment[]
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id              String   @id @default(uuid())
+  teamId          String
+  userId          String?  // NULL = managed by coach
+  firstName       String
+  lastName        String
+  email           String?  // For invites
+  side            String?  // Port, Starboard, Both, Cox
+  isManaged       Boolean  @default(true)
+  concept2UserId  String?
+  weightKg        Decimal? @db.Decimal(5, 2)
+  heightCm        Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  @@unique([lastName, firstName])
+  team            Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  ergTests        ErgTest[]
+  workouts        Workout[]
+  assignments     LineupAssignment[]
+  invitations     Invitation[]
+  concept2Auth    Concept2Auth?
+  athleteRatings  AthleteRating[]
+  telemetryData   AthleteTelemetry[]
+
+  @@unique([teamId, lastName, firstName])
+  @@index([teamId])
+  @@map("athletes")
 }
 
-// Saved lineup configurations
-model Lineup {
-  id          Int                @id @default(autoincrement())
-  name        String
-  userId      Int
-  user        User               @relation(fields: [userId], references: [id])
-  notes       String?
-  assignments LineupAssignment[]
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+model Concept2Auth {
+  athleteId      String   @id
+  c2UserId       String
+  accessToken    String
+  refreshToken   String
+  tokenExpiresAt DateTime
+  lastSyncedAt   DateTime?
+
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@map("concept2_auth")
 }
 
-// Individual seat assignments within a lineup
-model LineupAssignment {
-  id         Int      @id @default(autoincrement())
-  lineupId   Int
-  lineup     Lineup   @relation(fields: [lineupId], references: [id], onDelete: Cascade)
-  athleteId  Int
-  athlete    Athlete  @relation(fields: [athleteId], references: [id])
-  boatClass  String   // e.g., "Varsity 8+", "JV 4-"
-  shellName  String?  // e.g., "Seaweed", "Phoenix"
-  seatNumber Int
-  side       String   // Port, Starboard
-  isCoxswain Boolean  @default(false)
-  createdAt  DateTime @default(now())
-}
+// ============================================
+// ERG DATA: Tests and Workouts
+// ============================================
 
-// Erg test results
 model ErgTest {
-  id         Int      @id @default(autoincrement())
-  athleteId  Int
-  athlete    Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  testDate   DateTime
-  testType   String   // 2k, 6k, 30min, 500m, etc.
-  result     String   // mm:ss.t format
-  split      String?  // per 500m split
-  strokeRate Int?
-  watts      Int?
-  notes      String?
-  createdAt  DateTime @default(now())
+  id           String   @id @default(uuid())
+  athleteId    String
+  teamId       String
+  testType     String   // 2k, 6k, 30min, 500m
+  testDate     DateTime
+  distanceM    Int?
+  timeSeconds  Decimal  @db.Decimal(10, 1)
+  splitSeconds Decimal? @db.Decimal(6, 1)
+  watts        Int?
+  strokeRate   Int?
+  weightKg     Decimal? @db.Decimal(5, 2) // Weight at time of test
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([athleteId])
+  @@map("erg_tests")
 }
 
-// Boat configurations (reference table)
-model BoatConfig {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique // e.g., "Varsity 8+"
-  numSeats    Int
-  hasCoxswain Boolean
+model Workout {
+  id             String   @id @default(uuid())
+  athleteId      String
+  teamId         String
+  source         String   // manual, concept2_sync, csv_import, bluetooth
+  c2LogbookId    String?  @unique
+  date           DateTime
+  distanceM      Int?
+  durationSeconds Decimal? @db.Decimal(10, 1)
+  strokeRate     Int?
+  calories       Int?
+  dragFactor     Int?
+  deviceInfo     Json?
+  rawData        Json?
+  createdAt      DateTime @default(now())
+
+  athlete   Athlete           @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  team      Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  telemetry WorkoutTelemetry?
+
+  @@index([teamId])
+  @@index([athleteId])
+  @@map("workouts")
 }
 
-// Shell names (reference table)
+model WorkoutTelemetry {
+  workoutId        String    @id
+  timeSeriesS      Decimal[] @db.Decimal(10, 1)
+  wattsSeries      Int[]
+  heartRateSeries  Int[]
+  strokeRateSeries Int[]
+  forceCurves      Json?
+
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  @@map("workout_telemetry")
+}
+
+// ============================================
+// LINEUPS: Boat assignments
+// ============================================
+
+model Lineup {
+  id        String   @id @default(uuid())
+  teamId    String
+  name      String
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team        Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  assignments LineupAssignment[]
+
+  @@index([teamId])
+  @@map("lineups")
+}
+
+model LineupAssignment {
+  id         String  @id @default(uuid())
+  lineupId   String
+  athleteId  String
+  boatClass  String
+  shellName  String?
+  seatNumber Int
+  side       String  // Port, Starboard
+  isCoxswain Boolean @default(false)
+
+  lineup  Lineup  @relation(fields: [lineupId], references: [id], onDelete: Cascade)
+  athlete Athlete @relation(fields: [athleteId], references: [id])
+
+  @@map("lineup_assignments")
+}
+
 model Shell {
-  id        Int    @id @default(autoincrement())
-  name      String @unique
+  id        String  @id @default(uuid())
+  teamId    String
+  name      String
   boatClass String
   notes     String?
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, name])
+  @@map("shells")
+}
+
+model BoatConfig {
+  id          String  @id @default(uuid())
+  teamId      String
+  name        String  // e.g., "Varsity 8+"
+  numSeats    Int
+  hasCoxswain Boolean
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, name])
+  @@map("boat_configs")
+}
+
+// ============================================
+// COMMUNICATION: Announcements
+// ============================================
+
+model Announcement {
+  id        String   @id @default(uuid())
+  teamId    String
+  authorId  String
+  title     String
+  content   String
+  priority  String   @default("normal") // normal, important, urgent
+  visibleTo String   @default("all")    // all, athletes, coaches
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team   Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  author User               @relation(fields: [authorId], references: [id])
+  reads  AnnouncementRead[]
+
+  @@index([teamId])
+  @@map("announcements")
+}
+
+model AnnouncementRead {
+  announcementId String
+  userId         String
+  readAt         DateTime @default(now())
+
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+
+  @@id([announcementId, userId])
+  @@map("announcement_reads")
+}
+
+// ============================================
+// SEAT RACING: Selection system
+// ============================================
+
+model AthleteRating {
+  id              String   @id @default(uuid())
+  athleteId       String
+  teamId          String
+  ratingType      String   // seat_race_elo, combined
+  ratingValue     Decimal  @default(1000) @db.Decimal(8, 2)
+  confidenceScore Decimal? @db.Decimal(4, 3)
+  racesCounted    Int      @default(0)
+  lastCalculatedAt DateTime @default(now())
+
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([athleteId, ratingType])
+  @@map("athlete_ratings")
+}
+
+// ============================================
+// TELEMETRY: Oarlock/sensor data
+// ============================================
+
+model AthleteTelemetry {
+  id             String   @id @default(uuid())
+  athleteId      String
+  sessionDate    DateTime
+  source         String   // empower, peach, nk
+  seatNumber     Int?
+  avgWatts       Decimal? @db.Decimal(6, 2)
+  peakWatts      Decimal? @db.Decimal(6, 2)
+  workPerStroke  Decimal? @db.Decimal(8, 2)
+  slipDegrees    Decimal? @db.Decimal(5, 2)
+  washDegrees    Decimal? @db.Decimal(5, 2)
+  catchAngle     Decimal? @db.Decimal(5, 2)
+  finishAngle    Decimal? @db.Decimal(5, 2)
+  peakForceAngle Decimal? @db.Decimal(5, 2)
+  techScore      Decimal? @db.Decimal(5, 2)
+  createdAt      DateTime @default(now())
+
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@index([athleteId])
+  @@map("athlete_telemetry")
 }

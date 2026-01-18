@@ -1,0 +1,102 @@
+// Prisma schema for RowLab
+// SQLite database with migration path to PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Admin user for authentication
+model User {
+  id             Int      @id @default(autoincrement())
+  username       String   @unique
+  email          String?  @unique
+  password       String   // bcrypt hashed
+  name           String
+  role           String   @default("coach") // admin, coach
+  status         String   @default("pending") // pending, approved, rejected
+  requestMessage String?  // Why they want to join
+  lineups        Lineup[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// Athlete roster
+model Athlete {
+  id          Int                @id @default(autoincrement())
+  lastName    String
+  firstName   String
+  country     String
+  side        String             // P, S, B, Cox
+  port        Boolean            @default(false)
+  starboard   Boolean            @default(false)
+  sculling    Boolean            @default(false)
+  isCoxswain  Boolean            @default(false)
+  ergTests    ErgTest[]
+  assignments LineupAssignment[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@unique([lastName, firstName])
+}
+
+// Saved lineup configurations
+model Lineup {
+  id          Int                @id @default(autoincrement())
+  name        String
+  userId      Int
+  user        User               @relation(fields: [userId], references: [id])
+  notes       String?
+  assignments LineupAssignment[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+// Individual seat assignments within a lineup
+model LineupAssignment {
+  id         Int      @id @default(autoincrement())
+  lineupId   Int
+  lineup     Lineup   @relation(fields: [lineupId], references: [id], onDelete: Cascade)
+  athleteId  Int
+  athlete    Athlete  @relation(fields: [athleteId], references: [id])
+  boatClass  String   // e.g., "Varsity 8+", "JV 4-"
+  shellName  String?  // e.g., "Seaweed", "Phoenix"
+  seatNumber Int
+  side       String   // Port, Starboard
+  isCoxswain Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+// Erg test results
+model ErgTest {
+  id         Int      @id @default(autoincrement())
+  athleteId  Int
+  athlete    Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  testDate   DateTime
+  testType   String   // 2k, 6k, 30min, 500m, etc.
+  result     String   // mm:ss.t format
+  split      String?  // per 500m split
+  strokeRate Int?
+  watts      Int?
+  notes      String?
+  createdAt  DateTime @default(now())
+}
+
+// Boat configurations (reference table)
+model BoatConfig {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique // e.g., "Varsity 8+"
+  numSeats    Int
+  hasCoxswain Boolean
+}
+
+// Shell names (reference table)
+model Shell {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  boatClass String
+  notes     String?
+}
