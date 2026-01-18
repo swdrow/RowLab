@@ -62,6 +62,7 @@ app.use('/api/v1/athletes', apiLimiter, athleteRoutes);
 app.use('/api/v1/invites', apiLimiter, inviteRoutes);
 app.use('/api/v1/erg-tests', apiLimiter, ergTestRoutes);
 app.use('/api/v1/import', apiLimiter, importRoutes);
+app.use('/api/v1/workouts', apiLimiter, workoutRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
