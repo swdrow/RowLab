@@ -9,3 +9,4 @@ export * from './csvImportService.js';
 export * from './concept2Service.js';
 export * from './lineupService.js';
 export * from './shellService.js';
+export * from './boatConfigService.js';
