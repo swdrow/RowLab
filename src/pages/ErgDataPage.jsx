@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LineChart,
@@ -28,9 +28,11 @@ import {
   ChevronDown,
   X,
   FileText,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import useLineupStore from '../store/lineupStore';
+import { useErgDataStore } from '../store/ergDataStore';
 
 // Animation variants
 const fadeInUp = {
@@ -121,22 +123,81 @@ const StatCard = ({ icon: Icon, label, value, subValue, trend, color }) => (
 );
 
 // Add test modal
-const AddTestModal = ({ isOpen, onClose, athletes }) => {
+const AddTestModal = ({ isOpen, onClose, athletes, onSubmit, isSubmitting }) => {
   const [formData, setFormData] = useState({
     athleteId: '',
     testType: '2k',
     time: '',
     date: new Date().toISOString().split('T')[0],
+    watts: '',
+    strokeRate: '',
     notes: ''
   });
+  const [error, setError] = useState(null);
+
+  // Reset form when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        athleteId: '',
+        testType: '2k',
+        time: '',
+        date: new Date().toISOString().split('T')[0],
+        watts: '',
+        strokeRate: '',
+        notes: ''
+      });
+      setError(null);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement save
-    console.log('Saving test:', formData);
-    onClose();
+    setError(null);
+
+    // Parse time to seconds
+    const timeSeconds = parseTime(formData.time);
+    if (!timeSeconds) {
+      setError('Invalid time format. Please use mm:ss.t (e.g., 6:30.0)');
+      return;
+    }
+
+    // Calculate split (per 500m) - for 2k, split = time / 4
+    let splitSeconds = null;
+    if (formData.testType === '2k') {
+      splitSeconds = timeSeconds / 4;
+    } else if (formData.testType === '6k') {
+      splitSeconds = timeSeconds / 12;
+    } else if (formData.testType === '500m') {
+      splitSeconds = timeSeconds;
+    }
+
+    // Calculate distance based on test type
+    let distanceM = null;
+    if (formData.testType === '2k') distanceM = 2000;
+    else if (formData.testType === '6k') distanceM = 6000;
+    else if (formData.testType === '500m') distanceM = 500;
+
+    const testData = {
+      athleteId: formData.athleteId,
+      testType: formData.testType,
+      testDate: formData.date,
+      timeSeconds,
+      splitSeconds,
+      distanceM,
+      watts: formData.watts ? parseInt(formData.watts) : null,
+      strokeRate: formData.strokeRate ? parseInt(formData.strokeRate) : null,
+      notes: formData.notes || null
+    };
+
+    try {
+      await onSubmit(testData);
+      onClose();
+    } catch (err) {
+      setError(err.message || 'Failed to save test');
+    }
   };
 
   return (
@@ -159,6 +220,7 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-xl hover:bg-white/10"
+          disabled={isSubmitting}
         >
           <X className="w-5 h-5" />
         </button>
@@ -166,6 +228,13 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
         <h2 className="text-xl font-bold text-white mb-6">
           Add Erg Test
         </h2>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Athlete select */}
@@ -178,6 +247,7 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
               onChange={(e) => setFormData({ ...formData, athleteId: e.target.value })}
               className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 focus:border-accent-blue outline-none text-white"
               required
+              disabled={isSubmitting}
             >
               <option value="">Select athlete...</option>
               {athletes.map((a) => (
@@ -193,12 +263,13 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Test Type
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {['2k', '6k', '30min', '500m'].map((type) => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => setFormData({ ...formData, testType: type })}
+                  disabled={isSubmitting}
                   className={`py-2 rounded-xl text-sm font-medium transition-all ${
                     formData.testType === type
                       ? 'bg-gradient-to-r from-accent-blue to-accent-purple text-white'
@@ -223,6 +294,7 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
               onChange={(e) => setFormData({ ...formData, time: e.target.value })}
               className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 focus:border-accent-blue outline-none text-white font-mono"
               required
+              disabled={isSubmitting}
             />
           </div>
 
@@ -236,7 +308,38 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 focus:border-accent-blue outline-none text-white"
+              disabled={isSubmitting}
             />
+          </div>
+
+          {/* Watts and Stroke Rate */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Watts (optional)
+              </label>
+              <input
+                type="number"
+                placeholder="285"
+                value={formData.watts}
+                onChange={(e) => setFormData({ ...formData, watts: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 focus:border-accent-blue outline-none text-white font-mono"
+                disabled={isSubmitting}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                SPM (optional)
+              </label>
+              <input
+                type="number"
+                placeholder="32"
+                value={formData.strokeRate}
+                onChange={(e) => setFormData({ ...formData, strokeRate: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 focus:border-accent-blue outline-none text-white font-mono"
+                disabled={isSubmitting}
+              />
+            </div>
           </div>
 
           {/* Notes */}
@@ -250,15 +353,24 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
               placeholder="Test conditions, observations..."
               className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 focus:border-accent-blue outline-none text-white resize-none"
               rows={2}
+              disabled={isSubmitting}
             />
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-accent-blue to-accent-purple text-white font-medium hover:shadow-glow-blue transition-all"
+            disabled={isSubmitting}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-accent-blue to-accent-purple text-white font-medium hover:shadow-glow-blue transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Save Test
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save Test'
+            )}
           </button>
         </form>
       </motion.div>
@@ -266,68 +378,183 @@ const AddTestModal = ({ isOpen, onClose, athletes }) => {
   );
 };
 
+// Error banner component
+const ErrorBanner = ({ message, onDismiss }) => (
+  <motion.div
+    initial={{ opacity: 0, y: -10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    className="mb-4 p-4 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-between"
+  >
+    <div className="flex items-center gap-3">
+      <AlertCircle className="w-5 h-5 flex-shrink-0" />
+      <span>{message}</span>
+    </div>
+    {onDismiss && (
+      <button onClick={onDismiss} className="p-1 hover:bg-red-500/20 rounded-lg">
+        <X className="w-4 h-4" />
+      </button>
+    )}
+  </motion.div>
+);
+
+// Loading skeleton component
+const LoadingSkeleton = () => (
+  <div className="animate-pulse space-y-4">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex items-center gap-4 p-4">
+        <div className="w-10 h-10 rounded-xl bg-white/10" />
+        <div className="flex-1">
+          <div className="h-4 bg-white/10 rounded w-1/3 mb-2" />
+          <div className="h-3 bg-white/10 rounded w-1/4" />
+        </div>
+        <div className="text-right">
+          <div className="h-5 bg-white/10 rounded w-16 mb-1" />
+          <div className="h-3 bg-white/10 rounded w-20" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 function ErgDataPage() {
-  const { athletes, ergData } = useLineupStore();
+  const { athletes } = useLineupStore();
+  const {
+    ergTests,
+    loading,
+    error,
+    fetchErgTests,
+    createErgTest,
+    clearError
+  } = useErgDataStore();
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [testTypeFilter, setTestTypeFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Mock erg data for demonstration
-  const mockErgData = useMemo(() => {
-    // Generate some sample data
-    return athletes.slice(0, 10).map((athlete, i) => ({
-      id: `test-${i}`,
-      athleteId: athlete.id,
-      athleteName: `${athlete.lastName}, ${athlete.firstName}`,
-      testType: ['2k', '6k', '30min'][i % 3],
-      time: 380 + Math.random() * 40, // seconds
-      date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      watts: 280 + Math.floor(Math.random() * 50),
-      split: 95 + Math.random() * 10
-    }));
-  }, [athletes]);
+  // Fetch erg tests on mount
+  useEffect(() => {
+    fetchErgTests().catch((err) => {
+      console.error('Failed to fetch erg tests:', err);
+    });
+  }, [fetchErgTests]);
+
+  // Handle creating a new test
+  const handleCreateTest = async (testData) => {
+    setIsSubmitting(true);
+    try {
+      await createErgTest(testData);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Format tests for display (combine with athlete info)
+  const formattedTests = useMemo(() => {
+    return ergTests.map((test) => {
+      // Try to get athlete name from the test data or look it up
+      let athleteName = 'Unknown Athlete';
+      if (test.athlete?.name) {
+        athleteName = test.athlete.name;
+      } else if (test.athlete?.lastName && test.athlete?.firstName) {
+        athleteName = `${test.athlete.lastName}, ${test.athlete.firstName}`;
+      } else {
+        // Look up from athletes list
+        const athlete = athletes.find((a) => a.id === test.athleteId);
+        if (athlete) {
+          athleteName = `${athlete.lastName}, ${athlete.firstName}`;
+        }
+      }
+
+      return {
+        id: test.id,
+        athleteId: test.athleteId,
+        athleteName,
+        testType: test.testType,
+        time: test.timeSeconds,
+        date: test.testDate ? new Date(test.testDate).toISOString().split('T')[0] : '',
+        watts: test.watts,
+        split: test.splitSeconds
+      };
+    });
+  }, [ergTests, athletes]);
 
   // Team stats
   const teamStats = useMemo(() => {
-    if (mockErgData.length === 0) return null;
+    if (formattedTests.length === 0) return null;
 
-    const twoKTests = mockErgData.filter(t => t.testType === '2k');
-    if (twoKTests.length === 0) return null;
+    const twoKTests = formattedTests.filter((t) => t.testType === '2k');
+    if (twoKTests.length === 0) {
+      return {
+        avg: null,
+        best: null,
+        avgWatts: null,
+        testCount: formattedTests.length
+      };
+    }
 
-    const times = twoKTests.map(t => t.time);
-    const avg = times.reduce((a, b) => a + b, 0) / times.length;
-    const best = Math.min(...times);
-    const watts = twoKTests.map(t => t.watts);
-    const avgWatts = Math.round(watts.reduce((a, b) => a + b, 0) / watts.length);
+    const times = twoKTests.map((t) => t.time).filter(Boolean);
+    const avg = times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : null;
+    const best = times.length > 0 ? Math.min(...times) : null;
+    const watts = twoKTests.map((t) => t.watts).filter(Boolean);
+    const avgWatts = watts.length > 0 ? Math.round(watts.reduce((a, b) => a + b, 0) / watts.length) : null;
 
-    return { avg, best, avgWatts, testCount: mockErgData.length };
-  }, [mockErgData]);
+    return { avg, best, avgWatts, testCount: formattedTests.length };
+  }, [formattedTests]);
 
-  // Chart data - last 6 tests average
+  // Chart data - calculate from actual tests grouped by month
   const chartData = useMemo(() => {
-    const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-    return months.map((month, i) => ({
-      month,
-      teamAvg: 390 - i * 2 + Math.random() * 5,
-      teamBest: 375 - i * 2 + Math.random() * 3
-    }));
-  }, []);
+    const twoKTests = formattedTests.filter((t) => t.testType === '2k' && t.time);
+
+    if (twoKTests.length === 0) {
+      // Return placeholder data
+      const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+      return months.map((month) => ({
+        month,
+        teamAvg: null,
+        teamBest: null
+      }));
+    }
+
+    // Group by month
+    const byMonth = {};
+    for (const test of twoKTests) {
+      const date = new Date(test.date);
+      const monthKey = date.toLocaleDateString('en-US', { month: 'short' });
+      if (!byMonth[monthKey]) {
+        byMonth[monthKey] = [];
+      }
+      byMonth[monthKey].push(test.time);
+    }
+
+    // Get last 6 months
+    const months = Object.keys(byMonth).slice(-6);
+    return months.map((month) => {
+      const times = byMonth[month] || [];
+      return {
+        month,
+        teamAvg: times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : null,
+        teamBest: times.length > 0 ? Math.min(...times) : null
+      };
+    });
+  }, [formattedTests]);
 
   // Filtered tests
   const filteredTests = useMemo(() => {
-    let result = [...mockErgData];
+    let result = [...formattedTests];
 
     if (testTypeFilter !== 'all') {
-      result = result.filter(t => t.testType === testTypeFilter);
+      result = result.filter((t) => t.testType === testTypeFilter);
     }
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(t => t.athleteName.toLowerCase().includes(query));
+      result = result.filter((t) => t.athleteName.toLowerCase().includes(query));
     }
 
     return result.sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [mockErgData, testTypeFilter, searchQuery]);
+  }, [formattedTests, testTypeFilter, searchQuery]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -360,6 +587,13 @@ function ErgDataPage() {
         </div>
       </motion.div>
 
+      {/* Error Banner */}
+      <AnimatePresence>
+        {error && (
+          <ErrorBanner message={error} onDismiss={clearError} />
+        )}
+      </AnimatePresence>
+
       {/* Stats Grid */}
       <motion.div
         variants={staggerContainer}
@@ -370,27 +604,27 @@ function ErgDataPage() {
         <StatCard
           icon={Clock}
           label="Team Avg 2K"
-          value={teamStats ? formatTime(teamStats.avg) : '--:--.-'}
+          value={teamStats?.avg ? formatTime(teamStats.avg) : '--:--.-'}
           color="from-blue-500 to-blue-600"
-          trend={-2}
+          trend={teamStats?.avg ? -2 : null}
         />
         <StatCard
           icon={Award}
           label="Team Best 2K"
-          value={teamStats ? formatTime(teamStats.best) : '--:--.-'}
+          value={teamStats?.best ? formatTime(teamStats.best) : '--:--.-'}
           color="from-purple-500 to-purple-600"
         />
         <StatCard
           icon={Zap}
           label="Avg Watts"
-          value={teamStats ? `${teamStats.avgWatts}W` : '--'}
+          value={teamStats?.avgWatts ? `${teamStats.avgWatts}W` : '--'}
           color="from-amber-500 to-orange-500"
-          trend={5}
+          trend={teamStats?.avgWatts ? 5 : null}
         />
         <StatCard
           icon={Target}
           label="Total Tests"
-          value={teamStats ? teamStats.testCount : 0}
+          value={teamStats?.testCount ?? 0}
           color="from-teal-500 to-teal-600"
         />
       </motion.div>
@@ -426,6 +660,7 @@ function ErgDataPage() {
                 stroke="#0a84ff"
                 strokeWidth={2}
                 dot={{ fill: '#0a84ff', r: 4 }}
+                connectNulls
               />
               <Line
                 type="monotone"
@@ -434,6 +669,7 @@ function ErgDataPage() {
                 stroke="#bf5af2"
                 strokeWidth={2}
                 dot={{ fill: '#bf5af2', r: 4 }}
+                connectNulls
               />
             </LineChart>
           </ResponsiveContainer>
@@ -460,7 +696,7 @@ function ErgDataPage() {
             />
           </div>
           <div className="flex gap-2">
-            {['all', '2k', '6k', '30min'].map((type) => (
+            {['all', '2k', '6k', '30min', '500m'].map((type) => (
               <button
                 key={type}
                 onClick={() => setTestTypeFilter(type)}
@@ -478,7 +714,9 @@ function ErgDataPage() {
 
         {/* Test list */}
         <div className="divide-y divide-white/5">
-          {filteredTests.length > 0 ? (
+          {loading ? (
+            <LoadingSkeleton />
+          ) : filteredTests.length > 0 ? (
             filteredTests.map((test, i) => (
               <motion.div
                 key={test.id}
@@ -504,7 +742,8 @@ function ErgDataPage() {
                     {formatTime(test.time)}
                   </div>
                   <div className="text-xs text-gray-500">
-                    {test.watts}W • 1:{formatTime(test.split).slice(2)}
+                    {test.watts ? `${test.watts}W` : '--'}
+                    {test.split ? ` | 1:${formatTime(test.split).slice(2)}` : ''}
                   </div>
                 </div>
               </motion.div>
@@ -532,6 +771,8 @@ function ErgDataPage() {
             isOpen={showAddModal}
             onClose={() => setShowAddModal(false)}
             athletes={athletes}
+            onSubmit={handleCreateTest}
+            isSubmitting={isSubmitting}
           />
         )}
       </AnimatePresence>
