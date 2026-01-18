@@ -24,12 +24,14 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
     try {
       if (isAuthenticated) {
         // Fetch from database
-        const res = await fetch('/api/lineups', {
-          headers: getAuthHeaders(),
+        const res = await fetch('/api/v1/lineups', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          },
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
-        setLineups(data.lineups || []);
+        setLineups(data.data?.lineups || data.lineups || []);
       } else {
         // Fetch from localStorage
         const saved = JSON.parse(localStorage.getItem('rowlab_lineups') || '{}');
@@ -57,9 +59,11 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
         localStorage.setItem('rowlab_lineups', JSON.stringify(saved));
       } else {
         // Delete from database
-        const res = await fetch(`/api/lineups/${lineup.id}`, {
+        const res = await fetch(`/api/v1/lineups/${lineup.id}`, {
           method: 'DELETE',
-          headers: getAuthHeaders(),
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          },
         });
         if (!res.ok) {
           const data = await res.json();
