@@ -42,15 +42,16 @@ model Team {
   updatedAt         DateTime @updatedAt
 
   // Relations
-  members       TeamMember[]
-  athletes      Athlete[]
-  invitations   Invitation[]
-  lineups       Lineup[]
-  ergTests      ErgTest[]
-  workouts      Workout[]
-  announcements Announcement[]
-  shells        Shell[]
-  boatConfigs   BoatConfig[]
+  members          TeamMember[]
+  athletes         Athlete[]
+  invitations      Invitation[]
+  lineups          Lineup[]
+  ergTests         ErgTest[]
+  workouts         Workout[]
+  announcements    Announcement[]
+  shells           Shell[]
+  boatConfigs      BoatConfig[]
+  seatRaceSessions SeatRaceSession[]
 
   @@map("teams")
 }
@@ -125,14 +126,15 @@ model Athlete {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  team            Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  ergTests        ErgTest[]
-  workouts        Workout[]
-  assignments     LineupAssignment[]
-  invitations     Invitation[]
-  concept2Auth    Concept2Auth?
-  athleteRatings  AthleteRating[]
-  telemetryData   AthleteTelemetry[]
+  team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  ergTests            ErgTest[]
+  workouts            Workout[]
+  assignments         LineupAssignment[]
+  invitations         Invitation[]
+  concept2Auth        Concept2Auth?
+  athleteRatings      AthleteRating[]
+  telemetryData       AthleteTelemetry[]
+  seatRaceAssignments SeatRaceAssignment[]
 
   @@unique([teamId, lastName, firstName])
   @@index([teamId])
@@ -317,6 +319,64 @@ model AnnouncementRead {
 // SEAT RACING: Selection system
 // ============================================
 
+model SeatRaceSession {
+  id          String   @id @default(uuid())
+  teamId      String
+  date        DateTime
+  location    String?
+  conditions  String?  // calm, variable, rough
+  boatClass   String   // 8+, 4+, 4-, 2-
+  description String?
+  createdAt   DateTime @default(now())
+
+  team   Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  pieces SeatRacePiece[]
+
+  @@index([teamId])
+  @@map("seat_race_sessions")
+}
+
+model SeatRacePiece {
+  id            String  @id @default(uuid())
+  sessionId     String
+  sequenceOrder Int
+  distanceMeters Int?
+  direction     String? // upstream, downstream
+  notes         String?
+
+  session SeatRaceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  boats   SeatRaceBoat[]
+
+  @@map("seat_race_pieces")
+}
+
+model SeatRaceBoat {
+  id                String   @id @default(uuid())
+  pieceId           String
+  name              String   // "Boat A", "Boat B"
+  shellName         String?
+  finishTimeSeconds Decimal? @db.Decimal(10, 2)
+  handicapSeconds   Decimal  @default(0) @db.Decimal(5, 2)
+
+  piece       SeatRacePiece        @relation(fields: [pieceId], references: [id], onDelete: Cascade)
+  assignments SeatRaceAssignment[]
+
+  @@map("seat_race_boats")
+}
+
+model SeatRaceAssignment {
+  id         String @id @default(uuid())
+  boatId     String
+  athleteId  String
+  seatNumber Int    // 1=Bow, 8=Stroke, 9=Cox
+  side       String // Port, Starboard, Cox
+
+  boat    SeatRaceBoat @relation(fields: [boatId], references: [id], onDelete: Cascade)
+  athlete Athlete      @relation(fields: [athleteId], references: [id])
+
+  @@map("seat_race_assignments")
+}
+
 model AthleteRating {
   id              String   @id @default(uuid())
   athleteId       String
@@ -324,7 +384,7 @@ model AthleteRating {
   ratingType      String   // seat_race_elo, combined
   ratingValue     Decimal  @default(1000) @db.Decimal(8, 2)
   confidenceScore Decimal? @db.Decimal(4, 3)
-  racesCounted    Int      @default(0)
+  racesCount      Int      @default(0)
   lastCalculatedAt DateTime @default(now())
 
   athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)

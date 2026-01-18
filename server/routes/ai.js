@@ -1,6 +1,15 @@
 import express from 'express';
-import { verifyToken } from '../middleware/auth.js';
+import { createRequire } from 'module';
+import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
 import { getPromptForModel, ROWING_EXPERT_PROMPT } from '../prompts/rowing-expert.js';
+
+const require = createRequire(import.meta.url);
+const {
+  isOllamaAvailable,
+  parseCSVColumns,
+  matchAthleteName,
+  suggestLineup,
+} = require('../services/aiService.js');
 
 const router = express.Router();
 
@@ -34,43 +43,208 @@ router.get('/running', async (req, res) => {
 });
 
 /**
- * Check Ollama availability and list models
+ * GET /api/v1/ai/status
+ * Check Ollama availability and return provider info
+ * Requires authentication and team context
  */
-router.get('/status', async (req, res) => {
+router.get('/status', authenticateToken, teamIsolation, async (req, res) => {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const available = await isOllamaAvailable();
 
-    const response = await fetch(`${OLLAMA_ENDPOINT}/api/tags`, {
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-
-    if (response.ok) {
-      const data = await response.json();
-      const models = data.models?.map(m => ({
-        name: m.name,
-        size: m.size,
-        modified: m.modified_at,
-      })) || [];
-
-      res.json({
-        available: true,
-        endpoint: OLLAMA_ENDPOINT,
-        models,
-        defaultModel: DEFAULT_MODEL,
-      });
-    } else {
-      res.json({ available: false, error: 'Ollama not responding' });
-    }
-  } catch (err) {
     res.json({
-      available: false,
-      error: err.name === 'AbortError' ? 'Connection timeout' : err.message,
+      success: true,
+      data: {
+        provider: 'ollama',
+        available,
+        model: DEFAULT_MODEL,
+      },
+    });
+  } catch (err) {
+    res.status(503).json({
+      success: false,
+      error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
+      fallback: 'manual',
     });
   }
 });
+
+/**
+ * POST /api/v1/ai/parse-csv
+ * Parse CSV columns using AI
+ * Requires OWNER or COACH role
+ */
+router.post(
+  '/parse-csv',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  async (req, res) => {
+    const { headers, sampleRow } = req.body;
+
+    if (!headers || !Array.isArray(headers)) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'headers array is required' },
+      });
+    }
+
+    if (!sampleRow || !Array.isArray(sampleRow)) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'sampleRow array is required' },
+      });
+    }
+
+    try {
+      const available = await isOllamaAvailable();
+      if (!available) {
+        return res.status(503).json({
+          success: false,
+          error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
+          fallback: 'manual',
+        });
+      }
+
+      const mapping = await parseCSVColumns(headers, sampleRow);
+
+      if (!mapping) {
+        return res.status(503).json({
+          success: false,
+          error: { code: 'AI_FAILED', message: 'AI failed to parse columns' },
+          fallback: 'manual',
+        });
+      }
+
+      res.json({
+        success: true,
+        data: { mapping },
+      });
+    } catch (err) {
+      console.error('Parse CSV error:', err);
+      res.status(503).json({
+        success: false,
+        error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
+        fallback: 'manual',
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/v1/ai/match-name
+ * Match athlete name using AI fuzzy matching
+ * Requires OWNER or COACH role
+ */
+router.post(
+  '/match-name',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  async (req, res) => {
+    const { inputName, athletes } = req.body;
+
+    if (!inputName || typeof inputName !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'inputName string is required' },
+      });
+    }
+
+    if (!athletes || !Array.isArray(athletes)) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'athletes array is required' },
+      });
+    }
+
+    try {
+      const available = await isOllamaAvailable();
+      if (!available) {
+        return res.status(503).json({
+          success: false,
+          error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
+          fallback: 'manual',
+        });
+      }
+
+      const matchedId = await matchAthleteName(inputName, athletes);
+
+      res.json({
+        success: true,
+        data: { matchedId },
+      });
+    } catch (err) {
+      console.error('Match name error:', err);
+      res.status(503).json({
+        success: false,
+        error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
+        fallback: 'manual',
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/v1/ai/suggest-lineup
+ * Get AI-powered lineup suggestion
+ * Requires OWNER or COACH role
+ */
+router.post(
+  '/suggest-lineup',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  async (req, res) => {
+    const { athletes, boatClass, constraints } = req.body;
+
+    if (!athletes || !Array.isArray(athletes)) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'athletes array is required' },
+      });
+    }
+
+    if (!boatClass || typeof boatClass !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'boatClass string is required' },
+      });
+    }
+
+    try {
+      const available = await isOllamaAvailable();
+      if (!available) {
+        return res.status(503).json({
+          success: false,
+          error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
+          fallback: 'manual',
+        });
+      }
+
+      const suggestion = await suggestLineup(athletes, boatClass, constraints || {});
+
+      if (!suggestion) {
+        return res.status(503).json({
+          success: false,
+          error: { code: 'AI_FAILED', message: 'AI failed to generate lineup suggestion' },
+          fallback: 'manual',
+        });
+      }
+
+      res.json({
+        success: true,
+        data: { suggestion },
+      });
+    } catch (err) {
+      console.error('Suggest lineup error:', err);
+      res.status(503).json({
+        success: false,
+        error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
+        fallback: 'manual',
+      });
+    }
+  }
+);
 
 /**
  * Chat with AI assistant
@@ -183,7 +357,7 @@ router.post('/chat', async (req, res) => {
 /**
  * Pull a model (admin only)
  */
-router.post('/pull-model', verifyToken, async (req, res) => {
+router.post('/pull-model', authenticateToken, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
   }

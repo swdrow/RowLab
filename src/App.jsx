@@ -12,6 +12,7 @@ const AthletesPage = lazy(() => import('./pages/AthletesPage'));
 const ErgDataPage = lazy(() => import('./pages/ErgDataPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const SeatRacingPage = lazy(() => import('./pages/SeatRacingPage'));
 const AppLayout = lazy(() => import('./layouts/AppLayout'));
 
 // Error Boundary for catching rendering errors
@@ -124,6 +125,14 @@ function App() {
                 element={
                   <Suspense fallback={<LoadingFallback variant="component" />}>
                     <SettingsPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="seat-racing"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <SeatRacingPage />
                   </Suspense>
                 }
               />

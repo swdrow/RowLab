@@ -19,6 +19,8 @@ import workoutRoutes from './routes/workouts.js';
 import concept2Routes from './routes/concept2.js';
 import boatConfigRoutes from './routes/boatConfigs.js';
 import shellRoutes from './routes/v1/shells.js';
+import seatRaceRoutes from './routes/seatRaces.js';
+import rankingsRoutes from './routes/rankings.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
 
@@ -71,6 +73,9 @@ app.use('/api/v1/concept2', apiLimiter, concept2Routes);
 app.use('/api/v1/boat-configs', apiLimiter, boatConfigRoutes);
 app.use('/api/v1/shells', apiLimiter, shellRoutes);
 app.use('/api/v1/lineups', apiLimiter, lineupRoutesV1);
+app.use('/api/v1/seat-races', apiLimiter, seatRaceRoutes);
+app.use('/api/v1/rankings', apiLimiter, rankingsRoutes);
+app.use('/api/v1/ai', apiLimiter, aiRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
