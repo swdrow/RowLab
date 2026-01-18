@@ -2,14 +2,16 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
+import cookieParser from 'cookie-parser';
 
 // Routes
 import authRoutes from './routes/auth.js';
+import teamRoutes from './routes/teams.js';
 import lineupRoutes from './routes/lineups.js';
 import ergDataRoutes from './routes/ergData.js';
 import aiRoutes from './routes/ai.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
-import { verifyToken } from './middleware/auth.js';
+import { verifyToken, authenticateToken } from './middleware/auth.js';
 
 // Security & Logging
 import {
@@ -42,11 +44,18 @@ app.use(globalLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Cookie parsing (for refresh tokens)
+app.use(cookieParser());
+
 // Request logging
 app.use(requestLogger);
 
-// API Routes with rate limiting
-app.use('/api/auth', authLimiter, authRoutes);
+// API v1 Routes (new multi-tenant)
+app.use('/api/v1/auth', authLimiter, authRoutes);
+app.use('/api/v1/teams', apiLimiter, teamRoutes);
+
+// Legacy API Routes (will be migrated to v1)
+app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
 app.use('/api/lineups', apiLimiter, lineupRoutes);
 app.use('/api/erg-tests', apiLimiter, ergDataRoutes);
 app.use('/api/ai', aiLimiter, aiRoutes);
@@ -75,8 +84,8 @@ app.get('/api/data/athletes.csv', async (req, res) => {
  */
 app.get('/api/flags/:countryCode', async (req, res) => {
   const { countryCode } = req.params;
-  // Remove any extension if already provided in URL
-  const baseCode = countryCode.replace(/\.(png|svg)$/i, '');
+  // Remove any extension if already provided in URL and normalize to uppercase
+  const baseCode = countryCode.replace(/\.(png|svg)$/i, '').toUpperCase();
 
   // Try SVG first
   const svgPath = path.join('/home/swd/Rowing/Flags_SVG', `${baseCode}.svg`);
