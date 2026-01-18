@@ -16,6 +16,7 @@ import aiRoutes from './routes/ai.js';
 import importRoutes from './routes/import.js';
 import workoutRoutes from './routes/workouts.js';
 import concept2Routes from './routes/concept2.js';
+import boatConfigRoutes from './routes/boatConfigs.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
 
@@ -65,6 +66,7 @@ app.use('/api/v1/erg-tests', apiLimiter, ergTestRoutes);
 app.use('/api/v1/import', apiLimiter, importRoutes);
 app.use('/api/v1/workouts', apiLimiter, workoutRoutes);
 app.use('/api/v1/concept2', apiLimiter, concept2Routes);
+app.use('/api/v1/boat-configs', apiLimiter, boatConfigRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
