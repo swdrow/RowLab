@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 // Routes
 import authRoutes from './routes/auth.js';
 import teamRoutes from './routes/teams.js';
+import athleteRoutes from './routes/athletes.js';
+import inviteRoutes from './routes/invites.js';
 import lineupRoutes from './routes/lineups.js';
 import ergDataRoutes from './routes/ergData.js';
 import aiRoutes from './routes/ai.js';
@@ -53,6 +55,8 @@ app.use(requestLogger);
 // API v1 Routes (new multi-tenant)
 app.use('/api/v1/auth', authLimiter, authRoutes);
 app.use('/api/v1/teams', apiLimiter, teamRoutes);
+app.use('/api/v1/athletes', apiLimiter, athleteRoutes);
+app.use('/api/v1/invites', apiLimiter, inviteRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
