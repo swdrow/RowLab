@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createBoatInstance, getAssignedAthletes, findAthletePosition } from '../utils/boatConfig';
 import { undoMiddleware } from './undoMiddleware';
+import useAuthStore from './authStore';
 
 /**
  * Zustand store for managing lineup state
@@ -499,6 +500,234 @@ const useLineupStore = create(
       selectedSeats: [],
       selectedAthlete: null
     });
+  },
+
+  // ============================================
+  // API Integration Methods
+  // ============================================
+
+  // Track current lineup ID for updates
+  currentLineupId: null,
+  setCurrentLineupId: (id) => set({ currentLineupId: id }),
+
+  /**
+   * Fetch lineups from API
+   */
+  fetchLineups: async () => {
+    try {
+      const { authenticatedFetch } = useAuthStore.getState();
+      const response = await authenticatedFetch('/api/v1/lineups');
+      const data = await response.json();
+      if (data.success) {
+        return data.data.lineups;
+      }
+      throw new Error(data.error?.message || 'Failed to fetch lineups');
+    } catch (error) {
+      console.error('Fetch lineups error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Load lineup from API by ID
+   */
+  fetchLineupById: async (lineupId) => {
+    try {
+      const { authenticatedFetch } = useAuthStore.getState();
+      const response = await authenticatedFetch(`/api/v1/lineups/${lineupId}`);
+      const data = await response.json();
+      if (data.success) {
+        return data.data.lineup;
+      }
+      throw new Error(data.error?.message || 'Failed to fetch lineup');
+    } catch (error) {
+      console.error('Fetch lineup error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Save current lineup to API
+   */
+  saveLineupToAPI: async (name, notes = '') => {
+    const state = get();
+    const assignments = [];
+
+    // Convert activeBoats to assignments
+    for (const boat of state.activeBoats) {
+      // Add seat assignments
+      for (const seat of boat.seats) {
+        if (seat.athlete) {
+          assignments.push({
+            athleteId: seat.athlete.id,
+            boatClass: boat.name,
+            shellName: boat.shellName || null,
+            seatNumber: seat.seatNumber,
+            side: seat.side,
+            isCoxswain: false,
+          });
+        }
+      }
+      // Add coxswain
+      if (boat.coxswain) {
+        assignments.push({
+          athleteId: boat.coxswain.id,
+          boatClass: boat.name,
+          shellName: boat.shellName || null,
+          seatNumber: 0,
+          side: 'Port',
+          isCoxswain: true,
+        });
+      }
+    }
+
+    try {
+      const { authenticatedFetch } = useAuthStore.getState();
+      const response = await authenticatedFetch('/api/v1/lineups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, notes, assignments }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        set({ lineupName: name });
+        return data.data.lineup;
+      }
+      throw new Error(data.error?.message || 'Failed to save lineup');
+    } catch (error) {
+      console.error('Save lineup error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update existing lineup in API
+   */
+  updateLineupInAPI: async (lineupId, name, notes = '') => {
+    const state = get();
+    const assignments = [];
+
+    for (const boat of state.activeBoats) {
+      for (const seat of boat.seats) {
+        if (seat.athlete) {
+          assignments.push({
+            athleteId: seat.athlete.id,
+            boatClass: boat.name,
+            shellName: boat.shellName || null,
+            seatNumber: seat.seatNumber,
+            side: seat.side,
+            isCoxswain: false,
+          });
+        }
+      }
+      if (boat.coxswain) {
+        assignments.push({
+          athleteId: boat.coxswain.id,
+          boatClass: boat.name,
+          shellName: boat.shellName || null,
+          seatNumber: 0,
+          side: 'Port',
+          isCoxswain: true,
+        });
+      }
+    }
+
+    try {
+      const { authenticatedFetch } = useAuthStore.getState();
+      const response = await authenticatedFetch(`/api/v1/lineups/${lineupId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, notes, assignments }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        set({ lineupName: name });
+        return data.data.lineup;
+      }
+      throw new Error(data.error?.message || 'Failed to update lineup');
+    } catch (error) {
+      console.error('Update lineup error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete lineup from API
+   */
+  deleteLineupFromAPI: async (lineupId) => {
+    try {
+      const { authenticatedFetch } = useAuthStore.getState();
+      const response = await authenticatedFetch(`/api/v1/lineups/${lineupId}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      if (data.success) {
+        return true;
+      }
+      throw new Error(data.error?.message || 'Failed to delete lineup');
+    } catch (error) {
+      console.error('Delete lineup error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Duplicate lineup via API
+   */
+  duplicateLineupInAPI: async (lineupId, newName) => {
+    try {
+      const { authenticatedFetch } = useAuthStore.getState();
+      const response = await authenticatedFetch(`/api/v1/lineups/${lineupId}/duplicate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newName }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        return data.data.lineup;
+      }
+      throw new Error(data.error?.message || 'Failed to duplicate lineup');
+    } catch (error) {
+      console.error('Duplicate lineup error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get lineup export data from API
+   */
+  getLineupExportData: async (lineupId) => {
+    try {
+      const { authenticatedFetch } = useAuthStore.getState();
+      const response = await authenticatedFetch(`/api/v1/lineups/${lineupId}/export`);
+      const data = await response.json();
+      if (data.success) {
+        return data.data;
+      }
+      throw new Error(data.error?.message || 'Failed to get export data');
+    } catch (error) {
+      console.error('Get export data error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update shell name for a boat
+   */
+  updateBoatShell: (boatId, shellName) => {
+    set(state => ({
+      activeBoats: state.activeBoats.map(boat =>
+        boat.id === boatId
+          ? { ...boat, shellName }
+          : boat
+      )
+    }));
   },
 
   // Note: undo(), redo(), _history, checkpoint(), clearHistory()
