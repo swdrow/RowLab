@@ -69,6 +69,7 @@ app.use('/api/v1/import', apiLimiter, importRoutes);
 app.use('/api/v1/workouts', apiLimiter, workoutRoutes);
 app.use('/api/v1/concept2', apiLimiter, concept2Routes);
 app.use('/api/v1/boat-configs', apiLimiter, boatConfigRoutes);
+app.use('/api/v1/shells', apiLimiter, shellRoutes);
 app.use('/api/v1/lineups', apiLimiter, lineupRoutesV1);
 
 // Legacy API Routes (will be migrated to v1)
