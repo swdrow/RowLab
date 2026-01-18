@@ -74,6 +74,24 @@ export default {
         'error': '#EF4444',
         'info': '#06B6D4',
 
+        // Pop colors - Unexpected vibrant accents for delight
+        'pop': {
+          electric: '#00FFE5',    // Electric cyan - data highlights, special states
+          neon: '#FF00FF',        // Neon magenta - rare special actions
+          plasma: '#7B61FF',      // Plasma purple - premium features
+          coral: '#FF6B6B',       // Living coral - notifications
+          mint: '#00F5D4',        // Fresh mint - success with personality
+          solar: '#FFD600',       // Solar yellow - attention grabbers
+        },
+
+        // Aurora colors - For morphing background gradients
+        'aurora': {
+          1: 'rgba(99, 102, 241, 0.15)',    // Indigo
+          2: 'rgba(139, 92, 246, 0.12)',    // Purple
+          3: 'rgba(236, 72, 153, 0.10)',    // Pink
+          4: 'rgba(6, 182, 212, 0.10)',     // Cyan
+        },
+
         // Text colors
         'text': {
           primary: 'rgba(255, 255, 255, 0.95)',
@@ -162,6 +180,13 @@ export default {
         // Rainbow shimmer glow
         'glow-shimmer': '0 0 30px rgba(66, 133, 244, 0.25), 0 0 60px rgba(155, 114, 203, 0.15), 0 0 90px rgba(217, 101, 112, 0.10)',
 
+        // Pop color glows - vibrant unexpected accents
+        'glow-electric': '0 0 20px rgba(0, 255, 229, 0.4), 0 0 40px rgba(0, 255, 229, 0.2)',
+        'glow-neon': '0 0 20px rgba(255, 0, 255, 0.4), 0 0 40px rgba(255, 0, 255, 0.2)',
+        'glow-plasma': '0 0 20px rgba(123, 97, 255, 0.4), 0 0 40px rgba(123, 97, 255, 0.2)',
+        'glow-coral': '0 0 20px rgba(255, 107, 107, 0.4), 0 0 40px rgba(255, 107, 107, 0.2)',
+        'glow-mint': '0 0 20px rgba(0, 245, 212, 0.4), 0 0 40px rgba(0, 245, 212, 0.2)',
+
         // Card shadows
         'card': '0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03)',
         'card-hover': '0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06)',
@@ -249,6 +274,17 @@ export default {
         // Background shift (for gradient backgrounds)
         'bg-shift': 'bgShift 15s ease infinite',
         'bg-shift-fast': 'bgShift 8s ease infinite',
+
+        // Aurora morphing background
+        'aurora-morph': 'auroraMorph 30s ease-in-out infinite',
+        'aurora-morph-fast': 'auroraMorph 15s ease-in-out infinite',
+
+        // Prismatic shimmer (Gemini-style iridescent)
+        'prismatic': 'prismatic 8s ease infinite',
+        'prismatic-fast': 'prismatic 4s ease infinite',
+
+        // Glow pulse for sidebar edge
+        'edge-glow': 'edgeGlow 4s ease-in-out infinite',
       },
 
       // Keyframes
@@ -323,6 +359,32 @@ export default {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         },
+        // Aurora morphing - 4 gradient layers shift positions
+        auroraMorph: {
+          '0%, 100%': {
+            backgroundPosition: '0% 0%, 100% 100%, 50% 50%, 0% 100%',
+          },
+          '25%': {
+            backgroundPosition: '100% 0%, 0% 100%, 100% 0%, 50% 50%',
+          },
+          '50%': {
+            backgroundPosition: '100% 100%, 0% 0%, 0% 100%, 100% 0%',
+          },
+          '75%': {
+            backgroundPosition: '0% 100%, 100% 0%, 50% 100%, 0% 0%',
+          },
+        },
+        // Prismatic shimmer - iridescent color shift
+        prismatic: {
+          '0%': { backgroundPosition: '0% 50%', filter: 'hue-rotate(0deg)' },
+          '50%': { backgroundPosition: '100% 50%', filter: 'hue-rotate(15deg)' },
+          '100%': { backgroundPosition: '0% 50%', filter: 'hue-rotate(0deg)' },
+        },
+        // Edge glow for sidebar
+        edgeGlow: {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '1' },
+        },
       },
 
       // Transition timing functions
@@ -333,29 +395,34 @@ export default {
         'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
       },
 
-      // Font family (San Francisco / System UI - Apple style)
+      // Font family - Retrofuturistic Modern
       fontFamily: {
-        sans: [
+        // Display font for headings, hero text, branding
+        display: [
+          '"Clash Display"',
           '-apple-system',
           'BlinkMacSystemFont',
-          '"SF Pro Display"',
-          '"SF Pro Text"',
+          'system-ui',
+          'sans-serif',
+        ],
+        // Body/UI font - clean but distinctive
+        sans: [
+          'Satoshi',
+          '-apple-system',
+          'BlinkMacSystemFont',
           'system-ui',
           '"Segoe UI"',
           'Roboto',
-          '"Helvetica Neue"',
-          'Arial',
           'sans-serif',
         ],
+        // Monospace for code
         mono: [
+          '"JetBrains Mono"',
           '"SF Mono"',
-          'SFMono-Regular',
           'ui-monospace',
           'Menlo',
           'Monaco',
           'Consolas',
-          '"Liberation Mono"',
-          '"Courier New"',
           'monospace',
         ],
       },

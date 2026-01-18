@@ -4,8 +4,6 @@ import {
   Search,
   Filter,
   Users,
-  User,
-  Flag,
   ChevronRight,
   X,
   Activity,
@@ -14,22 +12,16 @@ import {
   Clock,
   Ship,
   BarChart3,
-  SortAsc,
-  SortDesc,
   Grid,
   List
 } from 'lucide-react';
 import useLineupStore from '../store/lineupStore';
 
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+// Simple fade-in animation - no stagger to avoid flicker
+const cardAnimation = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { duration: 0.2 }
 };
 
 // Side badge component
@@ -52,32 +44,26 @@ const SideBadge = ({ side }) => {
 
 // Athlete card component
 const AthleteCard = ({ athlete, onClick, view, headshotMap }) => {
-  const headshot = headshotMap?.get(`${athlete.lastName}_${athlete.firstName}`);
+  const headshot = headshotMap?.get(athlete.id);
 
   if (view === 'grid') {
     return (
       <motion.div
-        variants={fadeInUp}
-        whileHover={{ y: -4, scale: 1.02 }}
+        {...cardAnimation}
+        whileHover={{ y: -2 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => onClick(athlete)}
-        className="glass-card rounded-2xl p-6 border border-white/10 hover:border-white/20 cursor-pointer transition-all group"
+        className="glass-card rounded-2xl p-6 border border-white/10 hover:border-white/20 cursor-pointer transition-colors group"
       >
         <div className="flex flex-col items-center text-center">
           {/* Avatar */}
           <div className="relative mb-4">
-            <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 border-2 border-white/20 group-hover:border-accent-blue/50 transition-colors">
-              {headshot ? (
-                <img
-                  src={headshot}
-                  alt={`${athlete.firstName} ${athlete.lastName}`}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <User className="w-8 h-8 text-gray-400" />
-                </div>
-              )}
+            <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border-2 border-white/20 group-hover:border-indigo-400/50 transition-colors">
+              <img
+                src={headshot || '/images/placeholder-avatar.svg'}
+                alt={`${athlete.firstName} ${athlete.lastName}`}
+                className="w-full h-full object-cover"
+              />
             </div>
             {/* Country flag overlay */}
             {athlete.country && (
@@ -121,25 +107,19 @@ const AthleteCard = ({ athlete, onClick, view, headshotMap }) => {
   // List view
   return (
     <motion.div
-      variants={fadeInUp}
-      whileHover={{ x: 4 }}
+      {...cardAnimation}
+      whileHover={{ x: 2 }}
       whileTap={{ scale: 0.99 }}
       onClick={() => onClick(athlete)}
-      className="glass-card rounded-xl p-4 border border-white/10 hover:border-white/20 cursor-pointer transition-all flex items-center gap-4"
+      className="glass-card rounded-xl p-4 border border-white/10 hover:border-white/20 cursor-pointer transition-colors flex items-center gap-4"
     >
       {/* Avatar */}
-      <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 border border-white/20 flex-shrink-0">
-        {headshot ? (
-          <img
-            src={headshot}
-            alt={`${athlete.firstName} ${athlete.lastName}`}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <User className="w-5 h-5 text-gray-400" />
-          </div>
-        )}
+      <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-white/20 flex-shrink-0">
+        <img
+          src={headshot || '/images/placeholder-avatar.svg'}
+          alt={`${athlete.firstName} ${athlete.lastName}`}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Info */}
@@ -170,7 +150,7 @@ const AthleteCard = ({ athlete, onClick, view, headshotMap }) => {
 const AthleteDetailModal = ({ athlete, onClose, headshotMap }) => {
   if (!athlete) return null;
 
-  const headshot = headshotMap?.get(`${athlete.lastName}_${athlete.firstName}`);
+  const headshot = headshotMap?.get(athlete.id);
 
   return (
     <AnimatePresence>
@@ -203,18 +183,12 @@ const AthleteDetailModal = ({ athlete, onClose, headshotMap }) => {
           {/* Header */}
           <div className="flex items-start gap-6 mb-8">
             <div className="relative">
-              <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 border-2 border-white/20">
-                {headshot ? (
-                  <img
-                    src={headshot}
-                    alt={`${athlete.firstName} ${athlete.lastName}`}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <User className="w-10 h-10 text-gray-400" />
-                  </div>
-                )}
+              <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border-2 border-white/20">
+                <img
+                  src={headshot || '/images/placeholder-avatar.svg'}
+                  alt={`${athlete.firstName} ${athlete.lastName}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
               {athlete.country && (
                 <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl overflow-hidden border-2 border-white dark:border-gray-800 bg-white shadow-lg">
@@ -433,10 +407,7 @@ function AthletesPage() {
       </motion.div>
 
       {/* Athletes grid/list */}
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
+      <div
         className={
           viewMode === 'grid'
             ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
@@ -452,7 +423,7 @@ function AthletesPage() {
             headshotMap={headshotMap}
           />
         ))}
-      </motion.div>
+      </div>
 
       {/* Empty state */}
       {filteredAthletes.length === 0 && (

@@ -73,28 +73,22 @@ const BoatPreview = () => (
   </div>
 );
 
-// Feature card
+// Feature card with prismatic glass effect - mobile optimized
 const FeatureCard = ({ icon: Icon, title, description, color }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.4 }}
-    className="landing-card p-6 hover:shadow-card transition-shadow"
-  >
-    <div className={`feature-icon ${color} mb-4`}>
-      <Icon className="w-6 h-6" />
+  <div className="glass-prismatic p-4 sm:p-6 hover:-translate-y-1 transition-transform duration-200">
+    <div className={`feature-icon ${color} mb-3 sm:mb-4`}>
+      <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
     </div>
-    <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
-    <p className="text-sm text-white/60 leading-relaxed">{description}</p>
-  </motion.div>
+    <h3 className="text-base sm:text-lg font-semibold text-white mb-1.5 sm:mb-2 font-display">{title}</h3>
+    <p className="text-xs sm:text-sm text-white/60 leading-relaxed">{description}</p>
+  </div>
 );
 
-// Stat card
+// Stat card with glass glow effect - mobile optimized
 const StatCard = ({ value, label }) => (
-  <div className="landing-card p-5 text-center">
-    <div className="text-2xl font-bold text-white mb-1">{value}</div>
-    <div className="text-xs text-white/50 uppercase tracking-widest font-medium">{label}</div>
+  <div className="glass-glow p-3 sm:p-5 text-center">
+    <div className="text-xl sm:text-2xl font-bold text-white mb-0.5 sm:mb-1 font-display">{value}</div>
+    <div className="text-[10px] sm:text-xs text-white/50 uppercase tracking-wider sm:tracking-widest font-medium">{label}</div>
   </div>
 );
 
@@ -189,46 +183,26 @@ const LandingPage = () => {
       <section className="relative min-h-screen flex items-center justify-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/5 border border-white/10 mb-6 sm:mb-8"
-          >
+          <div className="animate-fade-in-up animate-delay-100 inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/5 border border-white/10 mb-6 sm:mb-8">
             <span className="text-xs sm:text-sm text-white/60">Built for Competitive Rowing Teams</span>
-          </motion.div>
+          </div>
 
           {/* Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight"
-          >
+          <h1 className="animate-fade-in-up animate-delay-200 text-4xl sm:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight font-display tracking-tight">
             <span className="text-white">Build Faster </span>
             <ShimmerText>Lineups</ShimmerText>
             <br />
             <span className="text-white">Win More </span>
             <GradientText>Races</GradientText>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-base sm:text-lg text-white/70 max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2"
-          >
+          <p className="animate-fade-in-up animate-delay-300 text-base sm:text-lg text-white/70 max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
             The modern platform for rowing coaches. Visualize your roster, optimize boat
             assignments, and track performance with beautiful analytics.
-          </motion.p>
+          </p>
 
           {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-10 sm:mb-12 px-4 sm:px-0"
-          >
+          <div className="animate-fade-in-up animate-delay-400 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-10 sm:mb-12 px-4 sm:px-0">
             <Link to="/app" className="landing-btn landing-btn-primary text-base">
               <Play className="w-4 h-4" />
               Get Started Free
@@ -237,21 +211,16 @@ const LandingPage = () => {
               See Features
               <ChevronDown className="w-4 h-4" />
             </a>
-          </motion.div>
+          </div>
 
           {/* Boat Preview Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="landing-card max-w-2xl mx-auto p-4 sm:p-6"
-          >
+          <div className="animate-fade-in-up animate-delay-500 glass-mesh max-w-2xl mx-auto p-4 sm:p-6">
             <div className="text-xs text-white/40 mb-2 sm:mb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Live Preview: Varsity 8+
             </div>
             <BoatPreview />
-          </motion.div>
+          </div>
         </div>
 
         {/* Scroll Indicator */}
@@ -265,9 +234,9 @@ const LandingPage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 relative">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="py-10 sm:py-16 relative">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             <StatCard value="53+" label="Athletes" />
             <StatCard value="9" label="Boat Classes" />
             <StatCard value="15" label="Named Shells" />
@@ -277,22 +246,17 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 relative">
-        <div className="max-w-5xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+      <section id="features" className="py-12 sm:py-20 relative">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 sm:mb-4 font-display tracking-tight">
               <span className="text-white">Everything You Need to </span>
               <ShimmerText>Win</ShimmerText>
             </h2>
             <p className="text-base text-white/60 max-w-md mx-auto">
               Purpose-built tools for rowing coaches who demand excellence.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map((feature, index) => (
@@ -303,46 +267,40 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 relative">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              <span className="text-white">Ready to </span>
-              <ShimmerText>Dominate</ShimmerText>
-              <span className="text-white">?</span>
-            </h2>
-            <p className="text-base text-white/60 mb-8">
-              Start building championship lineups today.
-            </p>
-            <Link to="/app" className="landing-btn landing-btn-primary text-lg px-8 py-4">
-              Launch RowLab
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </motion.div>
+      <section className="py-12 sm:py-20 relative">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 sm:mb-4 font-display tracking-tight">
+            <span className="text-white">Ready to </span>
+            <ShimmerText>Dominate</ShimmerText>
+            <span className="text-white">?</span>
+          </h2>
+          <p className="text-sm sm:text-base text-white/60 mb-6 sm:mb-8 px-2">
+            Start building championship lineups today.
+          </p>
+          <Link to="/app" className="landing-btn landing-btn-primary text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
+            Launch RowLab
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-white/[0.06]">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="py-6 sm:py-8 border-t border-white/[0.06]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
               >
-                <Waves className="w-4 h-4 text-white" />
+                <Waves className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>
               <span className="text-sm font-semibold">
                 <ShimmerText>RowLab</ShimmerText>
               </span>
             </div>
 
-            <div className="flex items-center gap-6 text-xs text-white/40">
+            <div className="flex items-center gap-4 sm:gap-6 text-[11px] sm:text-xs text-white/40">
               <span>&copy; {new Date().getFullYear()} RowLab</span>
               <a
                 href="https://github.com/swdrow/RowLab"
