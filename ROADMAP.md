@@ -1,0 +1,303 @@
+# RowLab Product Roadmap
+
+**Last Updated**: January 19, 2026
+**Status**: v2.0 - Active Development
+**Full Plan**: [docs/plans/2026-01-19-comprehensive-improvement-plan.md](docs/plans/2026-01-19-comprehensive-improvement-plan.md)
+
+---
+
+## Executive Summary
+
+RowLab is positioned to become the definitive rowing team management platform by combining:
+- **Modern SaaS design** (Linear/Raycast-inspired "Precision Instrument" aesthetic)
+- **AI-powered lineup optimization** (unique in the market)
+- **Statistical seat racing analysis** (data science approach)
+- **Unified platform** (management + analytics + optimization)
+
+---
+
+## Current Status: v2.0 ✅
+
+### Recently Completed (January 2026)
+
+- [x] Precision Instrument UI redesign
+- [x] Multi-tenant team management
+- [x] Seat racing with Elo ratings
+- [x] AI lineup recommendations (genetic algorithm)
+- [x] Combined scoring system
+- [x] **40+ CodeRabbit fixes applied**:
+  - Security vulnerabilities (Stripe, authorization)
+  - Runtime errors (null checks, input validation)
+  - Code quality (SpotlightCard extraction, duplicate removal)
+- [x] Comprehensive documentation (API, database, components)
+
+---
+
+## Short Term (Q1 2026)
+
+### 🔥 Phase 1: App Layout Redesign (Weeks 1-4)
+
+**Goal**: Modern SaaS navigation patterns
+
+```
+┌─────────────────────────────────────────────────────┐
+│ TopNav [Breadcrumbs] [🔍 Search] [Notifications] [👤]│
+├──────────┬──────────────────────────────────────────┤
+│ Sidebar  │ Content Area (max-w-6xl standardized)   │
+│ [Team]   │ ┌────────────────────────────────────┐  │
+│ Dashboard│ │ PageHeader + Toolbar               │  │
+│ Lineup*  │ │                                    │  │
+│ Athletes │ │ Consistent Container               │  │
+│ Erg Data │ │                                    │  │
+└──────────┴─┴────────────────────────────────────┴──┘
+
+Mobile: [🏠] [⚓] [👥] [···]  ← Bottom Dock
+```
+
+| Task | Status | Priority |
+|------|--------|----------|
+| PageContainer standardization | 🔲 Pending | P0 |
+| TopNav with GlobalSearch | 🔲 Pending | P0 |
+| MobileDock (bottom navigation) | 🔲 Pending | P0 |
+| Breadcrumbs navigation | 🔲 Pending | P1 |
+| Command palette (Cmd+K) UI | 🔲 Pending | P1 |
+| WorkspaceSwitcher for teams | 🔲 Pending | P2 |
+
+### 🔥 Phase 2: Real-Time Collaboration (Weeks 3-4)
+
+**Goal**: Multiple coaches editing lineups simultaneously
+
+| Task | Status | Priority |
+|------|--------|----------|
+| Collaboration presence UI | 🔲 Pending | P0 |
+| Live cursor positions | 🔲 Pending | P1 |
+| Change history logging | 🔲 Pending | P1 |
+| Conflict resolution | 🔲 Pending | P2 |
+
+*Note: WebSocket server already exists (`server/socket/collaboration.js`)*
+
+### 🔥 Phase 3: Regatta Day Mode (Weeks 5-6)
+
+**Goal**: Race-day interface with live timing
+
+| Task | Status | Priority |
+|------|--------|----------|
+| Race day schedule view | 🔲 Pending | P0 |
+| Live results entry | 🔲 Pending | P0 |
+| Live standings calculation | 🔲 Pending | P0 |
+| Countdown timers | 🔲 Pending | P1 |
+| Margin prediction | 🔲 Pending | P2 |
+
+---
+
+## Medium Term (Q2 2026)
+
+### Phase 4: Integration Hub (Weeks 7-8)
+
+| Integration | Status | Effort |
+|-------------|--------|--------|
+| Concept2 Logbook (complete) | 🔲 Pending | Medium |
+| Strava activities | 🔲 Pending | Medium |
+| Garmin .FIT import | 🔲 Pending | Medium |
+| Background sync jobs | 🔲 Pending | Small |
+
+### Phase 5: Design Token Migration (Weeks 9-10)
+
+**Files requiring update** (replace `gray-*` with design tokens):
+
+| Priority | Components |
+|----------|------------|
+| P0 | Auth Modals (Login, Register) |
+| P0 | BoatDisplay (Seat, CoxswainSeat) |
+| P1 | Performance Views (ErgDataTable, PerformanceModal) |
+| P1 | Export (PDFExportModal) |
+
+### Phase 6: Training Plans (Weeks 11-12)
+
+| Feature | Status | Effort |
+|---------|--------|--------|
+| Plan builder calendar | 🔲 Pending | Large |
+| Workout assignments | 🔲 Pending | Medium |
+| Training load charts | 🔲 Pending | Medium |
+| Periodization templates | 🔲 Pending | Small |
+
+---
+
+## Long Term (Q3-Q4 2026)
+
+### Phase 7: Advanced Features
+
+| Feature | Effort | Priority | Competition |
+|---------|--------|----------|-------------|
+| Weather Integration | Small (5d) | P2 | None have it |
+| Video Analysis | X-Large (16d) | P3 | CrewLAB has it |
+| Recruitment Tools | Large (10d) | P3 | None have it |
+| Alumni Network | Medium (8d) | P4 | None have it |
+
+### Phase 8: Mobile App (Q4 2026)
+
+| Platform | Approach | Timeline |
+|----------|----------|----------|
+| iOS | React Native | Q4 2026 |
+| Android | React Native | Q4 2026 |
+
+---
+
+## Technical Debt Priorities
+
+### P0 - Critical (Must Fix)
+
+| Issue | Location | Status |
+|-------|----------|--------|
+| Team auth on telemetry | `server/routes/telemetry.js` | 🔲 Pending |
+| Test coverage (1 file → 70%+) | All services/components | 🔲 Pending |
+| Replace console.log (26 files) | Backend services | 🔲 Pending |
+
+### P1 - High Priority
+
+| Issue | Impact |
+|-------|--------|
+| WCAG 2.1 AA compliance | Accessibility |
+| Component splitting (4 files > 500 lines) | Maintainability |
+| React.memo on expensive components | Performance |
+
+### P2 - Medium Priority
+
+| Issue | Decision |
+|-------|----------|
+| TypeScript migration | Full TS vs JSDoc |
+| Error handling standardization | Unified pattern |
+| CSS cleanup | Remove unused styles |
+
+---
+
+## Competitive Landscape
+
+| Feature | RowLab | RegattaCentral | CrewLAB | iCrew |
+|---------|--------|----------------|---------|-------|
+| Modern UI | ✅ | ❌ | ⚠️ | ❌ |
+| AI Lineup Optimization | ✅ | ❌ | ❌ | ❌ |
+| Seat Racing Analytics | ✅ | ❌ | ⚠️ | ❌ |
+| Real-Time Collaboration | 🔲 Soon | ❌ | ❌ | ❌ |
+| Video Analysis | 🔲 Planned | ❌ | ✅ | ❌ |
+| Weather Data | 🔲 Planned | ❌ | ❌ | ❌ |
+| Mobile App | 🔲 Planned | ❌ | ⚠️ | ❌ |
+
+**Key Differentiators**:
+1. Only platform with AI-powered lineup optimization
+2. Modern "Precision Instrument" UI (competitors stuck in 2010)
+3. Statistical seat racing analysis (regression models vs gut feeling)
+4. Accessible pricing for club programs
+
+---
+
+## Pricing Strategy (Proposed)
+
+| Tier | Price | Athletes | Key Features |
+|------|-------|----------|--------------|
+| **Free** | $0/mo | Personal | Training log, basic erg |
+| **Team** | $39/mo | Up to 30 | Lineup builder, analytics |
+| **Pro** | $149/mo | Unlimited | AI optimization, integrations |
+| **Enterprise** | Custom | Multi-team | API, support, customization |
+
+---
+
+## Success Metrics
+
+| Metric | Current | Target | Timeline |
+|--------|---------|--------|----------|
+| Test Coverage | ~0% | 70%+ | 8 weeks |
+| Lighthouse Performance | TBD | 90+ | 4 weeks |
+| Lighthouse Accessibility | TBD | 90+ | 4 weeks |
+| Teams Signed Up | 0 | 50 | 3 months |
+| Paid Conversion | - | 10% | 6 months |
+| MRR | $0 | $5,000 | 12 months |
+
+---
+
+## Release Timeline
+
+| Version | Target | Focus |
+|---------|--------|-------|
+| **v2.1** | Feb 2026 | Layout redesign, collaboration |
+| **v2.2** | Mar 2026 | Regatta day mode, integrations |
+| **v2.3** | Apr 2026 | Training plans, design tokens |
+| **v3.0** | Q3 2026 | Video analysis, mobile app |
+
+---
+
+## How to Contribute
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Priority for Contributors
+
+1. **Layout components** - Help build new navigation
+2. **Tests** - Reach 70% coverage goal
+3. **Accessibility** - WCAG compliance
+4. **Documentation** - Improve guides
+
+### Getting Started
+
+Look for issues labeled:
+- `good first issue` - Beginner friendly
+- `help wanted` - Community input needed
+- `priority:P0` - Critical path items
+
+---
+
+## Resources
+
+- **Full Plan**: [docs/plans/2026-01-19-comprehensive-improvement-plan.md](docs/plans/2026-01-19-comprehensive-improvement-plan.md)
+- **API Docs**: [docs/api/README.md](docs/api/README.md)
+- **Design System**: [.claude/design-standard.md](.claude/design-standard.md)
+- **CodeRabbit Review**: [docs/CODERABBIT_REVIEW.md](docs/CODERABBIT_REVIEW.md)
+
+---
+
+*Last updated: January 19, 2026*
+
+
+---
+
+## Future (2027+)
+
+### Native PM5 Companion App
+
+**Status**: Concept / Research  
+**Estimated Timeline**: 2027
+
+iOS/Android app that connects directly to Concept2 PM5 monitors via Bluetooth to enable:
+
+1. **Real-time split streaming** - Stream workout data live to RowLab web dashboard during erg sessions
+2. **Push workout configurations** - Send pre-built workouts from RowLab directly to the erg monitor
+3. **Wireless erg racing** - Synchronize multiple ergs to start/race together with countdown
+4. **Live leaderboard display** - Show real-time leaderboard during team erg sessions on any screen
+
+#### Technical Considerations
+
+| Aspect | Details |
+|--------|---------|
+| Protocol | Bluetooth LE (CSAFE protocol) |
+| SDK | Concept2 has SDK documentation for third-party apps |
+| Framework | React Native or Flutter for cross-platform |
+| Backend | Real-time WebSocket connection to RowLab for live data streaming |
+
+#### Dependencies
+
+| Dependency | Status | Notes |
+|------------|--------|-------|
+| Live Workout Dashboard | Pending | Data consumer must be built first |
+| Concept2 Developer Partnership | Pending | May need developer approval/partnership |
+| Phase 8: Mobile App Foundation | Pending | Core mobile infrastructure required |
+
+#### Use Cases
+
+- **Practice Sessions**: Coach sees all rowers' splits in real-time on the RowLab dashboard
+- **Erg Tests**: Synchronized starts ensure fair 2k/6k tests with live rankings
+- **Team Racing**: Fun competition mode with head-to-head display
+- **Remote Athletes**: Athletes training at home can still join team sessions
+
+#### Competitive Advantage
+
+No existing rowing platform offers native PM5 integration with live coaching dashboard. This would position RowLab as the only end-to-end platform for both on-water and erg training management.
