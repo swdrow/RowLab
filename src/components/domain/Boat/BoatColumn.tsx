@@ -69,7 +69,7 @@ export default function BoatColumn({ boat, index, onRemove }: BoatColumnProps) {
           <select
             value={boat.shellName || ''}
             onChange={(e) => updateBoatShell(boat.id, e.target.value || null)}
-            className="ml-2 px-2 py-1 text-xs rounded border border-gray-600 bg-gray-700 text-gray-100"
+            className="ml-2 px-2 py-1 text-xs rounded border border-white/10 bg-void-elevated text-text-primary"
             onClick={(e) => e.stopPropagation()}
           >
             <option value="">Shell...</option>
