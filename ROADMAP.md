@@ -1,6 +1,6 @@
 # RowLab Product Roadmap
 
-**Last Updated**: January 20, 2026
+**Last Updated**: January 21, 2026
 **Status**: v2.0 - Active Development
 **Full Plan**: [docs/plans/2026-01-19-comprehensive-improvement-plan.md](docs/plans/2026-01-19-comprehensive-improvement-plan.md)
 
@@ -101,16 +101,19 @@ Mobile: [🏠] [⚓] [👥] [···]  ← Bottom Dock
 | Garmin .FIT import | 🔲 Pending | Medium |
 | Background sync jobs | 🔲 Pending | Small |
 
-### Phase 5: Design Token Migration (Weeks 9-10)
+### Phase 5: Design Token Migration ✅ COMPLETE
 
-**Files requiring update** (replace `gray-*` with design tokens):
+**Status**: Completed January 21, 2026
 
-| Priority | Components |
-|----------|------------|
-| P0 | Auth Modals (Login, Register) |
-| P0 | BoatDisplay (Seat, CoxswainSeat) |
-| P1 | Performance Views (ErgDataTable, PerformanceModal) |
-| P1 | Export (PDFExportModal) |
+| Scope | Status | Details |
+|-------|--------|---------|
+| Initial audit | ✅ | 200+ gray-* occurrences in 33 files |
+| Phase 1 migration | ✅ | 9 high-priority files (84 occurrences) |
+| Phase 2 migration | ✅ | 6 medium-priority files (45 occurrences) |
+| Phase 3 migration | ✅ | 20+ remaining files |
+| **Final result** | ✅ | **Only 11 gray-* remaining (2 legacy "Old" files)** |
+
+Files migrated include: BoatDisplay, Seat, CoxswainSeat, PerformanceModal, PDFExportModal, ErgDataModal, ShellManagementModal, LineupToolbar, AthleteBank, BoatSelectionModal, SavedLineupsModal, LineupAssistant, BoatViewPage, AssignmentControls, BoatVisualizer, Boat3DViewer, PerformanceChart, GlassModal, GlassButton, GlassInput, GlassBadge, GlassContainer, AuthButton, App.jsx, and more.
 
 ### Phase 6: Training Plans (Weeks 11-12)
 
