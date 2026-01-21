@@ -12,7 +12,7 @@ import RegisterModal from '../components/Auth/RegisterModal';
 import AdminPanel from '../components/Auth/AdminPanel';
 import LineupAssistant, { AIAssistantButton } from '../components/AI/LineupAssistant';
 import { Sidebar } from '../components/compound/Sidebar';
-import { TopNav, MobileDock, Breadcrumbs, WorkspaceSwitcher } from '../components/Layout';
+import { TopNav, MobileDock, Breadcrumbs, WorkspaceSwitcher, CommandPalette } from '../components/Layout';
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -25,6 +25,7 @@ function AppLayout() {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [aiMinimized, setAiMinimized] = useState(false);
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
 
   const {
     setAthletes,
@@ -76,6 +77,18 @@ function AppLayout() {
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
+
+  // Global keyboard shortcut for command palette (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowCommandPalette(prev => !prev);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -146,9 +159,7 @@ function AppLayout() {
         {/* TopNav with Breadcrumbs */}
         <TopNav
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
-          onSearchClick={() => {
-            // TODO: Open command palette
-          }}
+          onSearchClick={() => setShowCommandPalette(true)}
           onNotificationsClick={() => {
             // TODO: Open notifications panel
           }}
@@ -240,6 +251,12 @@ function AppLayout() {
       {!showAIAssistant && aiEnabled && token && (
         <AIAssistantButton onClick={() => setShowAIAssistant(true)} />
       )}
+
+      {/* Command Palette */}
+      <CommandPalette
+        isOpen={showCommandPalette}
+        onClose={() => setShowCommandPalette(false)}
+      />
     </div>
   );
 }
