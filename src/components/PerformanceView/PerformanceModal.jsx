@@ -25,20 +25,20 @@ const PerformanceModal = ({ athlete, onClose, ergData = [] }) => {
   const hasData = athleteErgData.length > 0;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="glass-elevated rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-white/10">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+        <div className="sticky top-0 glass-card border-b border-white/10 px-6 py-4 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-rowing-blue">
+            <h2 className="text-2xl font-bold text-blade-blue">
               {athlete.lastName}
               {athlete.firstName && `, ${athlete.firstName}`}
             </h2>
-            <p className="text-sm text-gray-600">Performance Data</p>
+            <p className="text-sm text-text-secondary">Performance Data</p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full p-2 transition"
+            className="text-text-muted hover:text-text-primary hover:bg-white/10 rounded-full p-2 transition"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -52,20 +52,20 @@ const PerformanceModal = ({ athlete, onClose, ergData = [] }) => {
             // Data pending message
             <div className="text-center py-12">
               <div className="text-6xl mb-4">📊</div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              <h3 className="text-xl font-semibold text-text-primary mb-2">
                 Performance Data Pending
               </h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              <p className="text-text-secondary mb-6 max-w-md mx-auto">
                 Erg testing data will be displayed here once test results are imported.
-                Import data by populating <code className="bg-gray-100 px-2 py-1 rounded text-sm">erg_data.csv</code>.
+                Import data by populating <code className="bg-void-elevated px-2 py-1 rounded text-sm">erg_data.csv</code>.
               </p>
 
               {/* Preview of what will be shown */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-2xl mx-auto text-left">
-                <h4 className="font-semibold text-blue-900 mb-3">
+              <div className="bg-blade-blue/10 border border-blade-blue/30 rounded-lg p-6 max-w-2xl mx-auto text-left">
+                <h4 className="font-semibold text-blade-blue mb-3">
                   When data is available, you'll see:
                 </h4>
-                <ul className="space-y-2 text-sm text-blue-800">
+                <ul className="space-y-2 text-sm text-blade-blue/80">
                   <li className="flex items-start">
                     <span className="mr-2">✓</span>
                     <span>Complete erg test history (2k, 6k, 500m, etc.)</span>

@@ -67,7 +67,7 @@ const Seat = ({ position, side, seatNumber, athlete, isSelected, onClick, isCoxs
           distanceFactor={8}
           style={{ pointerEvents: 'none' }}
         >
-          <div className="px-2 py-0.5 bg-white/95 rounded text-xs font-semibold text-gray-800 shadow-sm whitespace-nowrap">
+          <div className="px-2 py-0.5 glass-card rounded text-xs font-semibold text-text-primary shadow-sm whitespace-nowrap">
             {athlete.lastName?.slice(0, 6) || (isCoxswain ? 'COX' : '')}
           </div>
         </Html>
@@ -355,18 +355,18 @@ const Boat3DViewer = ({
       </Canvas>
 
       {/* Boat info overlay */}
-      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
-        <div className="text-sm font-bold text-gray-800">
+      <div className="absolute top-4 left-4 glass-card rounded-xl px-4 py-2 shadow-lg">
+        <div className="text-sm font-bold text-text-primary">
           {boat?.boatConfig?.name || 'Boat'}
         </div>
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-text-muted">
           {boat?.shellName || 'Select a shell'}
         </div>
       </div>
 
       {/* Color legend */}
-      <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
-        <div className="flex items-center gap-4 text-xs font-medium text-gray-700">
+      <div className="absolute bottom-4 left-4 glass-card rounded-xl px-4 py-2 shadow-lg">
+        <div className="flex items-center gap-4 text-xs font-medium text-text-secondary">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: COLORS.port }} />
             <span>Port</span>

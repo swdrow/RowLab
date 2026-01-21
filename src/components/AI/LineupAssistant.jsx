@@ -206,11 +206,11 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
             onClick={onClose}
             className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
           >
-            <X className="w-4 h-4 text-gray-400" />
+            <X className="w-4 h-4 text-text-muted" />
           </button>
         </div>
         <div className="p-6 text-center">
-          <WifiOff className="w-12 h-12 mx-auto mb-3 text-gray-500" />
+          <WifiOff className="w-12 h-12 mx-auto mb-3 text-text-muted" />
           <h3 className="text-white font-medium mb-2">AI Disabled</h3>
           <p className="text-text-muted text-sm">
             The AI assistant is currently disabled. Enable it in the Admin Panel to use this feature.
@@ -247,16 +247,16 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
             className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
           >
             {isMinimized ? (
-              <Maximize2 className="w-4 h-4 text-gray-400" />
+              <Maximize2 className="w-4 h-4 text-text-muted" />
             ) : (
-              <Minimize2 className="w-4 h-4 text-gray-400" />
+              <Minimize2 className="w-4 h-4 text-text-muted" />
             )}
           </button>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
           >
-            <X className="w-4 h-4 text-gray-400" />
+            <X className="w-4 h-4 text-text-muted" />
           </button>
         </div>
       </div>

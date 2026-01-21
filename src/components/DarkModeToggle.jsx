@@ -12,7 +12,7 @@ const DarkModeToggle = ({ isDark, toggle }) => {
     >
       {/* Track */}
       <div className={`absolute inset-0 rounded-full transition-all duration-150 ${
-        isDark ? 'bg-blade-blue/20' : 'bg-gray-300/50'
+        isDark ? 'bg-blade-blue/20' : 'bg-white/20'
       }`} />
 
       {/* Slider */}
