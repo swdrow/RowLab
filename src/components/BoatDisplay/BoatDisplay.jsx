@@ -54,11 +54,11 @@ const BoatDisplay = ({ boat }) => {
           </h3>
           <div className="flex items-center gap-3 mt-1">
             {boat.shellName && boat.boatClass && (
-              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+              <span className="text-sm text-text-secondary font-medium">
                 {boat.boatClass}
               </span>
             )}
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-text-muted">
               {boat.numSeats} seats {boat.hasCoxswain ? '+ cox' : ''}
             </span>
             {complete && (
@@ -80,7 +80,7 @@ const BoatDisplay = ({ boat }) => {
           </button>
           <button
             onClick={handleRemoveBoat}
-            className="text-red-600 dark:text-red-400 hover:text-red-700 hover:bg-red-500/10 dark:hover:bg-red-500/20 rounded-lg p-2 transition-all duration-200 hover:scale-105 active:scale-95"
+            className="text-danger-red hover:text-danger-red/80 hover:bg-danger-red/10 rounded-lg p-2 transition-all duration-200 hover:scale-105 active:scale-95"
             title="Remove boat"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +93,7 @@ const BoatDisplay = ({ boat }) => {
       {/* Boat visualization - Vertical layout */}
       <div className="relative flex justify-center">
         {/* Direction indicators on left */}
-        <div className="flex flex-col justify-between text-xs text-gray-500 dark:text-gray-400 mr-4 py-2">
+        <div className="flex flex-col justify-between text-xs text-text-muted mr-4 py-2">
           <span className="font-semibold writing-mode-vertical">STERN</span>
           <span className="font-semibold writing-mode-vertical mt-auto">BOW</span>
         </div>
@@ -103,7 +103,7 @@ const BoatDisplay = ({ boat }) => {
           {/* Coxswain at top (stern) */}
           {boat.hasCoxswain && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold w-16 text-right">COX</span>
+              <span className="text-xs text-text-muted font-semibold w-16 text-right">COX</span>
               <CoxswainSeat
                 boatId={boat.id}
                 coxswain={boat.coxswain}
@@ -115,7 +115,7 @@ const BoatDisplay = ({ boat }) => {
           {/* Seats from Stroke (highest number) to Bow (1) */}
           {[...boat.seats].reverse().map((seat) => (
             <div key={seat.seatNumber} className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold w-16 text-right">
+              <span className="text-xs text-text-muted font-semibold w-16 text-right">
                 Seat {seat.seatNumber}
                 {seat.seatNumber === boat.numSeats && " (Stroke)"}
                 {seat.seatNumber === 1 && " (Bow)"}
@@ -130,7 +130,7 @@ const BoatDisplay = ({ boat }) => {
         </div>
 
         {/* Legend on right */}
-        <div className="ml-4 flex flex-col gap-3 text-xs text-gray-600 dark:text-gray-400 justify-center">
+        <div className="ml-4 flex flex-col gap-3 text-xs text-text-secondary justify-center">
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 bg-port rounded-full shadow-sm"></div>
             <span>Port</span>

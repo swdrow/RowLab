@@ -30,8 +30,8 @@ const CoxswainSeat = ({ boatId, coxswain, onCoxswainClick }) => {
         w-24 h-32 rounded-xl border-2 cursor-pointer
         transition-all duration-200 backdrop-blur-sm
         ${coxswain
-          ? 'border-purple-500 dark:border-coxswain-violet bg-white dark:bg-dark-card/90'
-          : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-elevated/50'
+          ? 'border-coxswain-violet bg-void-card/90'
+          : 'border-white/10 bg-void-elevated/50'
         }
         ${isOver ? 'ring-4 ring-purple-400 dark:ring-coxswain-violet scale-105 shadow-xl' : ''}
         ${isSelected ? 'ring-4 ring-yellow-400 dark:ring-yellow-500 shadow-xl' : ''}
@@ -39,7 +39,7 @@ const CoxswainSeat = ({ boatId, coxswain, onCoxswainClick }) => {
       `}
     >
       {/* Cox badge */}
-      <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-purple-600 dark:bg-coxswain-violet text-white text-xs font-bold flex items-center justify-center shadow-md">
+      <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-coxswain-violet text-white text-xs font-bold flex items-center justify-center shadow-md">
         C
       </div>
 
@@ -50,7 +50,7 @@ const CoxswainSeat = ({ boatId, coxswain, onCoxswainClick }) => {
             <img
               src={headshotMap.get(coxswain.id) || '/images/placeholder-avatar.svg'}
               alt={coxswain.lastName}
-              className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 shadow-md"
+              className="w-16 h-16 rounded-full object-cover border-2 border-white/10 shadow-md"
             />
             {/* Country flag in bottom right */}
             {coxswain.country && (
@@ -64,12 +64,12 @@ const CoxswainSeat = ({ boatId, coxswain, onCoxswainClick }) => {
               />
             )}
           </div>
-          <div className="text-xs font-semibold text-center leading-tight text-gray-900 dark:text-gray-100">
+          <div className="text-xs font-semibold text-center leading-tight text-text-primary">
             {coxswain.lastName}
           </div>
         </div>
       ) : (
-        <div className="text-gray-400 dark:text-gray-500 text-2xl">+</div>
+        <div className="text-text-muted text-2xl">+</div>
       )}
 
       <div className="absolute -bottom-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 dark:bg-coxswain-violet/20 text-purple-700 dark:text-purple-300 shadow-sm">

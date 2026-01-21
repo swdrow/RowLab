@@ -31,10 +31,10 @@ const BoatCard = ({ boat, isSelected, onClick }) => {
           <Ship className="w-4 h-4 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-gray-900 dark:text-white text-sm truncate">
+          <div className="font-medium text-text-primary text-sm truncate">
             {boat.boatConfig?.name || 'Boat'}
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-text-muted">
             {filledSeats}/{totalSeats} seats filled
           </div>
         </div>
@@ -72,11 +72,11 @@ function BoatViewPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-text-primary mb-1 flex items-center gap-3">
           <Ship className="w-7 h-7 text-blade-blue" />
           Boat View
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 text-sm">
+        <p className="text-text-secondary text-sm">
           Visual representation of your boat lineups
         </p>
       </motion.div>
@@ -98,10 +98,10 @@ function BoatViewPage() {
                 className="w-full h-full"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+              <div className="w-full h-full flex items-center justify-center bg-void-elevated">
                 <div className="text-center">
-                  <Ship className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                  <p className="text-gray-500">No boat selected</p>
+                  <Ship className="w-12 h-12 mx-auto mb-3 text-text-muted" />
+                  <p className="text-text-secondary">No boat selected</p>
                 </div>
               </div>
             )}
@@ -115,7 +115,7 @@ function BoatViewPage() {
           className="space-y-4"
         >
           <div className="glass-card rounded-xl p-4 border border-white/10">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
               <Layers className="w-4 h-4 text-coxswain-violet" />
               Active Boats
             </h3>
@@ -132,9 +132,9 @@ function BoatViewPage() {
                 ))
               ) : (
                 <div className="text-center py-6">
-                  <Ship className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p className="text-gray-500 text-xs">No boats in lineup</p>
-                  <p className="text-gray-400 text-xs mt-1">Showing demo boat</p>
+                  <Ship className="w-8 h-8 mx-auto mb-2 text-text-muted" />
+                  <p className="text-text-secondary text-xs">No boats in lineup</p>
+                  <p className="text-text-muted text-xs mt-1">Showing demo boat</p>
                 </div>
               )}
             </div>
@@ -142,10 +142,10 @@ function BoatViewPage() {
 
           {/* Info */}
           <div className="glass-subtle rounded-xl p-4 border border-white/5">
-            <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+            <h4 className="text-xs font-medium text-text-secondary mb-2">
               About This View
             </h4>
-            <p className="text-xs text-gray-400 leading-relaxed">
+            <p className="text-xs text-text-muted leading-relaxed">
               This is a stylized top-down view of your boat. Colored seats indicate assigned athletes.
               Oars appear for occupied positions.
             </p>
