@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar,
@@ -13,6 +13,7 @@ import {
 import RegattaList from '../components/Racing/RegattaList';
 import RaceResultsEntry from '../components/Racing/RaceResultsEntry';
 import TeamRankingsDisplay from '../components/Racing/TeamRankingsDisplay';
+import { RaceDayView } from '../components/Racing/RaceDay';
 import useRegattaStore from '../store/regattaStore';
 import SpotlightCard from '../components/ui/SpotlightCard';
 
@@ -313,10 +314,19 @@ function RacingPage() {
                             )}
                           </div>
                         </div>
-                        <Button variant="primary" onClick={handleOpenAddRaceModal}>
-                          <Plus className="w-4 h-4" />
-                          Add Race
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setActiveTab('raceday')}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-success-green/10 text-success-green border border-success-green/30 hover:bg-success-green/20 transition-all"
+                          >
+                            <Flag className="w-4 h-4" />
+                            Race Day Mode
+                          </button>
+                          <Button variant="primary" onClick={handleOpenAddRaceModal}>
+                            <Plus className="w-4 h-4" />
+                            Add Race
+                          </Button>
+                        </div>
                       </div>
                     </SpotlightCard>
 
@@ -390,6 +400,26 @@ function RacingPage() {
                     onCreateNew={handleCreateNew}
                   />
                 )}
+              </motion.div>
+            ) : activeTab === 'raceday' ? (
+              // Race Day Tab
+              <motion.div
+                key="raceday"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.15, ease: [0, 0, 0.2, 1] }}
+              >
+                <RaceDayView
+                  regatta={currentRegatta}
+                  onBack={() => {
+                    setSelectedRegatta(null);
+                    setActiveTab('regattas');
+                  }}
+                  onSelectRace={handleSelectRace}
+                  onRefresh={() => selectedRegatta && fetchRegatta(selectedRegatta.id)}
+                  loading={loading}
+                />
               </motion.div>
             ) : (
               // Rankings Tab
