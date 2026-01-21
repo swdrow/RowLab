@@ -56,25 +56,27 @@ Mobile: [🏠] [⚓] [👥] [···]  ← Bottom Dock
 
 | Task | Status | Priority |
 |------|--------|----------|
-| PageContainer standardization | 🔲 Pending | P0 |
-| TopNav with GlobalSearch | 🔲 Pending | P0 |
-| MobileDock (bottom navigation) | 🔲 Pending | P0 |
-| Breadcrumbs navigation | 🔲 Pending | P1 |
-| Command palette (Cmd+K) UI | 🔲 Pending | P1 |
-| WorkspaceSwitcher for teams | 🔲 Pending | P2 |
+| PageContainer standardization | ✅ Complete | P0 |
+| TopNav with GlobalSearch | ✅ Complete | P0 |
+| MobileDock (bottom navigation) | ✅ Complete | P0 |
+| Breadcrumbs navigation | ✅ Complete | P1 |
+| Command palette (Cmd+K) UI | ✅ Complete | P1 |
+| WorkspaceSwitcher for teams | ✅ Complete | P2 |
 
-### 🔥 Phase 2: Real-Time Collaboration (Weeks 3-4)
+### ✅ Phase 2: Real-Time Collaboration (Weeks 3-4)
 
 **Goal**: Multiple coaches editing lineups simultaneously
+**Status**: Completed January 21, 2026
 
 | Task | Status | Priority |
 |------|--------|----------|
-| Collaboration presence UI | 🔲 Pending | P0 |
+| Collaboration presence UI | ✅ Complete | P0 |
 | Live cursor positions | 🔲 Pending | P1 |
 | Change history logging | 🔲 Pending | P1 |
 | Conflict resolution | 🔲 Pending | P2 |
 
 *Note: WebSocket server already exists (`server/socket/collaboration.js`)*
+*Components: PresenceAvatarStack, CollaborationStatus, CollaborationPresence*
 
 ### 🔥 Phase 3: Regatta Day Mode (Weeks 5-6)
 

@@ -2,13 +2,14 @@
  * Racing Page Configuration
  * Constants and options for the racing module
  */
-import { Calendar, Trophy } from 'lucide-react';
+import { Calendar, Trophy, Flag } from 'lucide-react';
 
 /**
  * Tab configuration
  */
 export const TABS = [
-  { id: 'regattas', label: 'Regattas', icon: Calendar, color: 'green' },
+  { id: 'regattas', label: 'Regattas', icon: Calendar, color: 'blue' },
+  { id: 'raceday', label: 'Race Day', icon: Flag, color: 'green' },
   { id: 'rankings', label: 'Rankings', icon: Trophy, color: 'orange' },
 ];
 
@@ -16,8 +17,12 @@ export const TABS = [
  * Tab color styles
  */
 export const tabColorConfig = {
-  green: {
+  blue: {
     active: 'bg-blade-blue/10 text-blade-blue border-blade-blue/30 shadow-[0_0_15px_rgba(0,112,243,0.15)]',
+    inactive: 'text-text-muted hover:text-text-secondary hover:bg-white/[0.02]',
+  },
+  green: {
+    active: 'bg-success-green/10 text-success-green border-success-green/30 shadow-[0_0_15px_rgba(34,197,94,0.15)]',
     inactive: 'text-text-muted hover:text-text-secondary hover:bg-white/[0.02]',
   },
   orange: {
