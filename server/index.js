@@ -35,7 +35,9 @@ import settingsRoutes from './routes/settings.js';
 import calendarRoutes from './routes/calendar.js';
 import waterSessionRoutes from './routes/waterSessions.js';
 import healthRoutes from './routes/health.js';
+import backgroundSyncRoutes from './routes/backgroundSync.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
+import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
 
 // Security & Logging
@@ -106,6 +108,7 @@ app.use('/api/v1/subscriptions', subscriptionRoutes); // No limiter - webhook ne
 app.use('/api/v1/settings', apiLimiter, settingsRoutes);
 app.use('/api/v1/calendar', apiLimiter, calendarRoutes);
 app.use('/api/v1/water-sessions', apiLimiter, waterSessionRoutes);
+app.use('/api/v1/admin/sync', apiLimiter, backgroundSyncRoutes);
 app.use('/api/v1/ai', apiLimiter, aiRoutes);
 
 // Legacy API Routes (will be migrated to v1)
@@ -293,6 +296,18 @@ app.listen(PORT, async () => {
   // Check database health on startup
   const dbHealth = await checkDatabaseHealth();
 
+  // Start background sync jobs in production
+  let syncStatus = 'Disabled';
+  if (NODE_ENV === 'production' && dbHealth.healthy) {
+    try {
+      startBackgroundSync();
+      syncStatus = '✓ Running';
+    } catch (err) {
+      logger.error('Failed to start background sync', { error: err.message });
+      syncStatus = '✗ Error';
+    }
+  }
+
   // ASCII banner for visibility
   console.log(`
 ╔══════════════════════════════════════════════╗
@@ -303,6 +318,7 @@ app.listen(PORT, async () => {
 ║  URL:         http://localhost:${PORT.toString().padEnd(21)}║
 ║  Security:    Helmet + Rate Limiting         ║
 ║  Database:    ${(dbHealth.healthy ? (dbHealth.hasAdmin ? '✓ Healthy' : '⚠ No Admin') : '✗ Error').padEnd(30)}║
+║  Background:  ${syncStatus.padEnd(30)}║
 ╚══════════════════════════════════════════════╝
   `);
 });
