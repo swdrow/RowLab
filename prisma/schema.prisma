@@ -30,6 +30,7 @@ model User {
   announcements Announcement[]
   settings      UserSettings?
   concept2Auth  Concept2Auth?
+  stravaAuth    StravaAuth?
   boatSessions  BoatSession[]
 
   @@map("users")
@@ -169,6 +170,25 @@ model Concept2Auth {
   @@map("concept2_auth")
 }
 
+model StravaAuth {
+  userId         String   @id
+  stravaAthleteId BigInt   // Strava athlete ID
+  username       String?  // Strava username/display name
+  accessToken    String   @db.Text // OAuth access token (encrypted)
+  refreshToken   String   @db.Text // OAuth refresh token (encrypted)
+  tokenExpiresAt DateTime
+  lastSyncedAt   DateTime?
+  syncEnabled    Boolean  @default(true) // Auto-sync
+  scope          String?  // OAuth scopes granted
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([stravaAthleteId])
+  @@map("strava_auth")
+}
+
 // ============================================
 // ERG DATA: Tests and Workouts
 // ============================================
@@ -197,27 +217,31 @@ model ErgTest {
 }
 
 model Workout {
-  id             String   @id @default(uuid())
-  athleteId      String
-  teamId         String
-  source         String   // manual, concept2_sync, csv_import, bluetooth
-  c2LogbookId    String?  @unique
-  date           DateTime
-  distanceM      Int?
-  durationSeconds Decimal? @db.Decimal(10, 1)
-  strokeRate     Int?
-  calories       Int?
-  dragFactor     Int?
-  deviceInfo     Json?
-  rawData        Json?
-  createdAt      DateTime @default(now())
+  id               String   @id @default(uuid())
+  athleteId        String?  // Optional - may be synced by user without athlete record
+  userId           String?  // For user-level syncs (Strava, etc.)
+  teamId           String
+  source           String   // manual, concept2_sync, strava_sync, csv_import, bluetooth, fit_import
+  type             String?  // on_water, erg, strength, cardio, other
+  c2LogbookId      String?  @unique
+  stravaActivityId String?  @unique
+  date             DateTime
+  distanceM        Int?
+  durationSeconds  Decimal? @db.Decimal(10, 1)
+  strokeRate       Int?
+  calories         Int?
+  dragFactor       Int?
+  deviceInfo       Json?
+  rawData          Json?
+  createdAt        DateTime @default(now())
 
-  athlete   Athlete           @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  athlete   Athlete?          @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   team      Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
   telemetry WorkoutTelemetry?
 
   @@index([teamId])
   @@index([athleteId])
+  @@index([userId])
   @@map("workouts")
 }
 

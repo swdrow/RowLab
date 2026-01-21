@@ -256,7 +256,12 @@ function SettingsPage() {
   const [integrations, setIntegrations] = useState({
     concept2Connected: false,
     concept2Username: '',
+    concept2LastSynced: null,
+    concept2SyncEnabled: false,
     stravaConnected: false,
+    stravaUsername: '',
+    stravaLastSynced: null,
+    stravaSyncEnabled: false,
     trainingPeaksConnected: false
   });
 
@@ -285,11 +290,28 @@ function SettingsPage() {
 
     loadSettings();
     fetchC2Status();
+    fetchStravaStatus();
     if (isOwner) {
       fetchSubscription();
       fetchTeamSettings();
     }
   }, [accessToken, isOwner, fetchSubscription]);
+
+  // Check for OAuth success from URL params (redirect-based flow)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const stravaStatus = params.get('strava');
+    const stravaMessage = params.get('message');
+
+    if (stravaStatus === 'success') {
+      fetchStravaStatus();
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname + '?tab=integrations');
+    } else if (stravaStatus === 'error') {
+      setError(stravaMessage || 'Failed to connect Strava');
+      window.history.replaceState({}, '', window.location.pathname + '?tab=integrations');
+    }
+  }, []);
 
   // Listen for OAuth popup messages
   useEffect(() => {
@@ -304,6 +326,10 @@ function SettingsPage() {
         fetchC2Status();
       } else if (type === 'c2_oauth_error') {
         setError(oauthError || 'Failed to connect Concept2');
+      } else if (type === 'strava_oauth_success') {
+        fetchStravaStatus();
+      } else if (type === 'strava_oauth_error') {
+        setError(oauthError || 'Failed to connect Strava');
       }
     };
 
@@ -549,6 +575,126 @@ function SettingsPage() {
       }));
     } catch (err) {
       console.error('Disconnect Concept2 error:', err);
+      setError(err.message);
+    }
+  };
+
+  // Fetch Strava connection status
+  const fetchStravaStatus = async () => {
+    try {
+      const res = await fetch(`${API_URL}/strava/status/me`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setIntegrations(prev => ({
+          ...prev,
+          stravaConnected: data.data.connected,
+          stravaUsername: data.data.username || '',
+          stravaLastSynced: data.data.lastSyncedAt,
+          stravaSyncEnabled: data.data.syncEnabled,
+        }));
+      }
+    } catch (err) {
+      console.error('Fetch Strava status error:', err);
+    }
+  };
+
+  const handleConnectStrava = async () => {
+    try {
+      const res = await fetch(`${API_URL}/strava/auth-url`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error?.message || 'Failed to get authorization URL');
+      }
+
+      // Open OAuth URL in sized popup window
+      const width = 600;
+      const height = 700;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      window.open(
+        data.data.authUrl,
+        'strava_oauth',
+        `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no,location=yes,status=no`
+      );
+    } catch (err) {
+      console.error('Connect Strava error:', err);
+      setError(err.message);
+    }
+  };
+
+  const handleDisconnectStrava = async () => {
+    try {
+      const res = await fetch(`${API_URL}/strava/disconnect/me`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error?.message || 'Failed to disconnect Strava');
+      }
+
+      setIntegrations(prev => ({
+        ...prev,
+        stravaConnected: false,
+        stravaUsername: '',
+        stravaLastSynced: null,
+        stravaSyncEnabled: false,
+      }));
+    } catch (err) {
+      console.error('Disconnect Strava error:', err);
+      setError(err.message);
+    }
+  };
+
+  const handleSyncStrava = async () => {
+    try {
+      const res = await fetch(`${API_URL}/strava/sync/me`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({}),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error?.message || 'Sync failed');
+      }
+
+      // Refresh status after sync
+      await fetchStravaStatus();
+
+      // Show success message
+      console.log('Strava sync complete:', data.data);
+    } catch (err) {
+      console.error('Strava sync error:', err);
       setError(err.message);
     }
   };
@@ -985,16 +1131,77 @@ function SettingsPage() {
               </div>
             </SettingsSection>
 
-            <SettingsSection title="Coming Soon" icon={Plug} accentColor="violet">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04] opacity-50">
+            <SettingsSection title="Strava" icon={Plug} accentColor="orange">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04]">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-warning-orange/20 border border-warning-orange/30 flex items-center justify-center">
                       <span className="text-xl">🏃</span>
                     </div>
                     <div>
-                      <h4 className="font-medium text-text-primary">Strava</h4>
-                      <p className="text-sm text-text-muted">Sync training activities</p>
+                      <h4 className="font-medium text-text-primary">Strava Activities</h4>
+                      {integrations.stravaConnected ? (
+                        <div className="mt-1 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-warning-orange" />
+                            <span className="text-sm text-warning-orange">Connected as {integrations.stravaUsername}</span>
+                          </div>
+                          {integrations.stravaLastSynced && (
+                            <p className="text-xs text-text-muted">
+                              Last synced: {new Date(integrations.stravaLastSynced).toLocaleDateString()} at{' '}
+                              {new Date(integrations.stravaLastSynced).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-text-muted mt-1">Sync rowing and training activities</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {integrations.stravaConnected && (
+                      <button
+                        onClick={handleSyncStrava}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-void-elevated/50 border border-white/[0.06] text-text-secondary hover:bg-void-elevated hover:border-white/10 transition-all"
+                      >
+                        Sync Now
+                      </button>
+                    )}
+                    {integrations.stravaConnected ? (
+                      <button
+                        onClick={handleDisconnectStrava}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-red/10 border border-danger-red/20 text-danger-red hover:bg-danger-red/20 transition-all"
+                      >
+                        <XCircle className="w-4 h-4" />
+                        Disconnect
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleConnectStrava}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-warning-orange text-void-deep border border-warning-orange hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all"
+                      >
+                        <Plug className="w-4 h-4" />
+                        Connect
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <p className="text-sm text-text-muted">
+                  Connect Strava to automatically import rowing activities, cross-training, and other workouts.
+                </p>
+              </div>
+            </SettingsSection>
+
+            <SettingsSection title="Coming Soon" icon={Plug} accentColor="violet">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04] opacity-50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-coxswain-violet/20 border border-coxswain-violet/30 flex items-center justify-center">
+                      <span className="text-xl">📊</span>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-text-primary">TrainingPeaks</h4>
+                      <p className="text-sm text-text-muted">Import training plans</p>
                     </div>
                   </div>
                   <span className="text-xs font-medium text-text-muted px-3 py-1 rounded-full bg-void-elevated border border-white/[0.06]">
@@ -1004,12 +1211,12 @@ function SettingsPage() {
 
                 <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04] opacity-50">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-coxswain-violet/20 border border-coxswain-violet/30 flex items-center justify-center">
-                      <span className="text-xl">📊</span>
+                    <div className="w-12 h-12 rounded-xl bg-success-green/20 border border-success-green/30 flex items-center justify-center">
+                      <span className="text-xl">⌚</span>
                     </div>
                     <div>
-                      <h4 className="font-medium text-text-primary">TrainingPeaks</h4>
-                      <p className="text-sm text-text-muted">Import training plans</p>
+                      <h4 className="font-medium text-text-primary">Garmin .FIT Import</h4>
+                      <p className="text-sm text-text-muted">Import workout files directly</p>
                     </div>
                   </div>
                   <span className="text-xs font-medium text-text-muted px-3 py-1 rounded-full bg-void-elevated border border-white/[0.06]">
