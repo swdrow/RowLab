@@ -98,14 +98,19 @@ Mobile: [🏠] [⚓] [👥] [···]  ← Bottom Dock
 
 ## Medium Term (Q2 2026)
 
-### Phase 4: Integration Hub (Weeks 7-8)
+### ✅ Phase 4: Integration Hub (Weeks 7-8)
+
+**Goal**: Unified integration platform for fitness devices and services
+**Status**: Completed January 21, 2026
 
 | Integration | Status | Effort |
 |-------------|--------|--------|
-| Concept2 Logbook (complete) | 🔲 Pending | Medium |
-| Strava activities | 🔲 Pending | Medium |
-| Garmin .FIT import | 🔲 Pending | Medium |
-| Background sync jobs | 🔲 Pending | Small |
+| Concept2 Logbook | ✅ Complete | Medium |
+| Strava activities | ✅ Complete | Medium |
+| Garmin .FIT import | ✅ Complete | Medium |
+| Background sync jobs | ✅ Complete | Small |
+
+*Features: OAuth flows with encrypted token storage, multi-file FIT upload, scheduled background sync (Concept2 every 6h, Strava every 4h), admin controls for manual trigger/start/stop*
 
 ### Phase 5: Design Token Migration ✅ COMPLETE
 
