@@ -31,6 +31,7 @@ import {
   XCircle
 } from 'lucide-react';
 import SpotlightCard from '../components/ui/SpotlightCard';
+import { importFitFiles, formatDuration, formatDistance, formatWorkoutType } from '../services/fitImportService';
 
 // Animation variants
 const fadeInUp = {
@@ -280,6 +281,10 @@ function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // FIT Import state
+  const [fitImporting, setFitImporting] = useState(false);
+  const [fitResults, setFitResults] = useState(null);
 
   // Check if user is team owner
   const isOwner = activeTeamRole === 'OWNER';
@@ -696,6 +701,29 @@ function SettingsPage() {
     } catch (err) {
       console.error('Strava sync error:', err);
       setError(err.message);
+    }
+  };
+
+  // Handle FIT file import
+  const handleFitImport = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+
+    setFitImporting(true);
+    setFitResults(null);
+    setError(null);
+
+    try {
+      const results = await importFitFiles(files);
+      setFitResults(results);
+
+      // Clear the file input
+      event.target.value = '';
+    } catch (err) {
+      console.error('FIT import error:', err);
+      setError(err.message);
+    } finally {
+      setFitImporting(false);
     }
   };
 
@@ -1209,20 +1237,101 @@ function SettingsPage() {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04] opacity-50">
+              </div>
+            </SettingsSection>
+
+            <SettingsSection title="Garmin .FIT Import" icon={Upload} accentColor="green">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04]">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-success-green/20 border border-success-green/30 flex items-center justify-center">
                       <span className="text-xl">⌚</span>
                     </div>
                     <div>
-                      <h4 className="font-medium text-text-primary">Garmin .FIT Import</h4>
-                      <p className="text-sm text-text-muted">Import workout files directly</p>
+                      <h4 className="font-medium text-text-primary">Import .FIT Files</h4>
+                      <p className="text-sm text-text-muted">Upload files from Garmin, Polar, Suunto, Wahoo, or Concept2</p>
                     </div>
                   </div>
-                  <span className="text-xs font-medium text-text-muted px-3 py-1 rounded-full bg-void-elevated border border-white/[0.06]">
-                    Coming Soon
-                  </span>
+                  <label className={`flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer transition-all ${
+                    fitImporting
+                      ? 'bg-void-elevated/50 border border-white/[0.06] text-text-muted'
+                      : 'bg-success-green text-void-deep border border-success-green hover:shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                  }`}>
+                    {fitImporting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Importing...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4" />
+                        Select Files
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept=".fit"
+                      multiple
+                      onChange={handleFitImport}
+                      disabled={fitImporting}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
+
+                {fitResults && (
+                  <div className="p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04]">
+                    <div className="flex items-center gap-2 mb-3">
+                      <CheckCircle2 className="w-5 h-5 text-success-green" />
+                      <span className="font-medium text-text-primary">
+                        Imported {fitResults.imported} workout{fitResults.imported !== 1 ? 's' : ''}
+                      </span>
+                      {fitResults.failed > 0 && (
+                        <span className="text-sm text-warning-orange">
+                          ({fitResults.failed} failed)
+                        </span>
+                      )}
+                    </div>
+
+                    {fitResults.results.imported.length > 0 && (
+                      <div className="space-y-2">
+                        {fitResults.results.imported.map((item, idx) => (
+                          <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-void-deep/30">
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs px-2 py-1 rounded bg-success-green/10 text-success-green border border-success-green/20">
+                                {formatWorkoutType(item.type)}
+                              </span>
+                              <span className="text-sm text-text-secondary truncate max-w-[200px]">
+                                {item.filename}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-4 text-xs text-text-muted">
+                              <span>{formatDuration(item.duration)}</span>
+                              <span>{formatDistance(item.distance)}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {fitResults.results.failed.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        <p className="text-xs text-text-muted">Failed imports:</p>
+                        {fitResults.results.failed.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-danger-red/5 border border-danger-red/10">
+                            <XCircle className="w-4 h-4 text-danger-red flex-shrink-0" />
+                            <span className="text-sm text-text-secondary truncate">{item.filename}</span>
+                            <span className="text-xs text-danger-red">{item.error}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <p className="text-sm text-text-muted">
+                  Import .FIT files directly from your fitness devices. Supports rowing, running, cycling, and cross-training activities.
+                </p>
               </div>
             </SettingsSection>
           </>
