@@ -113,7 +113,7 @@ const GlassModal = ({
           <div className="relative px-6 py-4 border-b border-white/10 dark:border-white/5">
             <div className="flex items-center justify-between">
               {title && (
-                <h2 id={titleId} className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 id={titleId} className="text-xl font-semibold text-text-primary">
                   {title}
                 </h2>
               )}
@@ -122,8 +122,8 @@ const GlassModal = ({
                   onClick={onClose}
                   className="
                     ml-auto p-2 rounded-lg
-                    text-gray-500 dark:text-gray-400
-                    hover:bg-white/10 dark:hover:bg-white/5
+                    text-text-muted
+                    hover:bg-white/10
                     transition-colors duration-200
                     focus:outline-none focus:ring-2 focus:ring-white/30
                   "

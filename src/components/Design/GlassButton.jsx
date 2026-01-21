@@ -61,21 +61,21 @@ const GlassButton = ({
       focus:ring-blade-blue
     `,
     secondary: `
-      bg-white/10 dark:bg-white/5
-      text-gray-900 dark:text-white
-      border-white/20 dark:border-white/10
+      bg-white/10
+      text-text-primary
+      border-white/10
       shadow-md
-      hover:bg-white/15 dark:hover:bg-white/10
+      hover:bg-white/15
       hover:shadow-lg hover:scale-[1.02]
       active:scale-[0.98]
       focus:ring-white/50
     `,
     ghost: `
       bg-transparent
-      text-gray-700 dark:text-white/70
+      text-text-secondary
       border-transparent
-      hover:bg-white/10 dark:hover:bg-white/5
-      hover:text-gray-900 dark:hover:text-white
+      hover:bg-white/10
+      hover:text-text-primary
       active:scale-[0.98]
       focus:ring-white/30
     `,

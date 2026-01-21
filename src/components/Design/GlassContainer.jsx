@@ -30,14 +30,12 @@ const GlassContainer = ({
 
     // Solid color with subtle gradient
     solid: `
-      bg-gradient-to-br from-gray-50 to-gray-100
-      dark:from-gray-900 dark:to-gray-800
+      bg-gradient-to-br from-void-surface to-void-elevated
     `,
 
     // Directional gradient
     gradient: `
-      bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50
-      dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-800
+      bg-gradient-to-br from-void-deep via-coxswain-violet/10 to-void-elevated
     `,
   };
 

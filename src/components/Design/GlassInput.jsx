@@ -43,9 +43,9 @@ const GlassInput = ({
     <div className={`w-full ${className}`}>
       {/* Label */}
       {label && (
-        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+        <label className="block mb-2 text-sm font-medium text-text-primary">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-danger-red ml-1">*</span>}
         </label>
       )}
 
@@ -53,7 +53,7 @@ const GlassInput = ({
       <div className="relative">
         {/* Icon */}
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
             {icon}
           </div>
         )}
@@ -72,17 +72,17 @@ const GlassInput = ({
             pr-4 py-3
             rounded-xl
             backdrop-blur-md
-            bg-white/40 dark:bg-white/5
-            border border-white/30 dark:border-white/10
-            text-gray-900 dark:text-white
-            placeholder-gray-500 dark:placeholder-gray-400
+            bg-white/5
+            border border-white/10
+            text-text-primary
+            placeholder-text-muted
             shadow-md
             transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-            focus:bg-white/60 dark:focus:bg-white/10
-            hover:bg-white/50 dark:hover:bg-white/8
+            focus:outline-none focus:ring-2 focus:ring-blade-blue focus:border-transparent
+            focus:bg-white/10
+            hover:bg-white/8
             disabled:opacity-50 disabled:cursor-not-allowed
-            ${error ? 'border-red-500 focus:ring-red-500' : ''}
+            ${error ? 'border-danger-red focus:ring-danger-red' : ''}
           `}
           {...props}
         />
@@ -96,7 +96,7 @@ const GlassInput = ({
         <p
           className={`
             mt-2 text-sm
-            ${error ? 'text-red-500' : 'text-gray-600 dark:text-gray-400'}
+            ${error ? 'text-danger-red' : 'text-text-muted'}
           `}
         >
           {error || helperText}

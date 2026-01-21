@@ -30,8 +30,8 @@ const PerformanceChart = ({ data }) => {
       <h3 className="text-lg font-semibold mb-3">Performance Trends</h3>
 
       {/* Watts over time */}
-      <div className="bg-gray-50 p-4 rounded-lg mb-4">
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Power Output (Watts)</h4>
+      <div className="bg-void-elevated p-4 rounded-lg mb-4">
+        <h4 className="text-sm font-medium text-text-secondary mb-2">Power Output (Watts)</h4>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -51,7 +51,7 @@ const PerformanceChart = ({ data }) => {
       </div>
 
       {/* Note about future enhancements */}
-      <div className="text-xs text-gray-500 italic">
+      <div className="text-xs text-text-muted italic">
         Chart displays power output trends. Additional visualizations available once full dataset is loaded.
       </div>
     </div>

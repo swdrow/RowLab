@@ -57,7 +57,7 @@ const CoxswainSeat = ({ boatId, coxswain, onCoxswainClick }) => {
               <img
                 src={`/api/flags/${coxswain.country}.png`}
                 alt={coxswain.country}
-                className="absolute -bottom-1 -right-1 w-8 h-5 object-cover rounded-sm shadow-lg border border-white dark:border-gray-800"
+                className="absolute -bottom-1 -right-1 w-8 h-5 object-cover rounded-sm shadow-lg border border-void-elevated"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}

@@ -343,34 +343,34 @@ const BoatVisualizer = ({
       </svg>
 
       {/* Legend */}
-      <div className="absolute bottom-3 left-3 flex items-center gap-4 text-xs bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
+      <div className="absolute bottom-3 left-3 flex items-center gap-4 text-xs glass-card rounded-lg px-3 py-2 shadow-sm">
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: COLORS.port }} />
-          <span className="text-gray-600">Port</span>
+          <span className="text-text-secondary">Port</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: COLORS.starboard }} />
-          <span className="text-gray-600">Starboard</span>
+          <span className="text-text-secondary">Starboard</span>
         </div>
         {hasCoxswain && (
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: COLORS.coxswain }} />
-            <span className="text-gray-600">Cox</span>
+            <span className="text-text-secondary">Cox</span>
           </div>
         )}
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: COLORS.empty }} />
-          <span className="text-gray-600">Empty</span>
+          <span className="text-text-secondary">Empty</span>
         </div>
       </div>
 
       {/* Boat info */}
       {showLabels && (
-        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
-          <div className="text-sm font-semibold text-gray-800">
+        <div className="absolute top-3 left-3 glass-card rounded-lg px-3 py-2 shadow-sm">
+          <div className="text-sm font-semibold text-text-primary">
             {boat?.boatConfig?.name || 'Boat'}
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-text-muted">
             {boat?.shellName || 'No shell assigned'}
           </div>
         </div>
