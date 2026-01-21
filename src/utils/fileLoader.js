@@ -4,7 +4,7 @@
  */
 
 const HEADSHOT_BASE_PATH = '/api/headshots';
-const PLACEHOLDER_IMAGE = '/images/placeholder-avatar.png';
+const PLACEHOLDER_IMAGE = '/images/placeholder-avatar.svg';
 
 /**
  * Get the URL for an athlete's headshot

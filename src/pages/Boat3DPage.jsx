@@ -24,7 +24,7 @@ const Loading3D = () => (
     <motion.div
       animate={{ rotate: 360 }}
       transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-blue to-accent-purple flex items-center justify-center"
+      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blade-blue to-coxswain-violet flex items-center justify-center"
     >
       <Rotate3D className="w-8 h-8 text-white" />
     </motion.div>
@@ -45,7 +45,7 @@ const BoatSelectorCard = ({ boat, isSelected, onClick }) => {
       className={`
         w-full p-4 rounded-xl text-left transition-all
         ${isSelected
-          ? 'bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border-accent-blue'
+          ? 'bg-gradient-to-r from-blade-blue/20 to-coxswain-violet/20 border-blade-blue'
           : 'glass-card border-white/10 hover:border-white/20'
         }
         border
@@ -55,7 +55,7 @@ const BoatSelectorCard = ({ boat, isSelected, onClick }) => {
         <div className={`
           w-10 h-10 rounded-xl flex items-center justify-center
           ${isSelected
-            ? 'bg-gradient-to-br from-accent-blue to-accent-purple'
+            ? 'bg-gradient-to-br from-blade-blue to-coxswain-violet'
             : 'bg-white/10'
           }
         `}>
@@ -114,7 +114,7 @@ function Boat3DPage() {
           className="mb-6"
         >
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
-            <Rotate3D className="w-8 h-8 text-accent-blue" />
+            <Rotate3D className="w-8 h-8 text-blade-blue" />
             3D Boat Visualization
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
@@ -136,8 +136,8 @@ function Boat3DPage() {
                 <Boat3DViewer
                   boat={displayBoat}
                   autoRotate={autoRotate}
-                  onSeatClick={(seatNum, side) => {
-                    console.log('Clicked seat:', seatNum, side);
+                  onSeatClick={() => {
+                    // TODO: Show seat detail modal
                   }}
                 />
               ) : (
@@ -163,7 +163,7 @@ function Boat3DPage() {
               className={`
                 p-3 rounded-xl border transition-all
                 ${autoRotate
-                  ? 'bg-accent-blue/20 border-accent-blue text-accent-blue'
+                  ? 'bg-blade-blue/20 border-blade-blue text-blade-blue'
                   : 'glass-card border-white/10 text-gray-400 hover:text-white'
                 }
               `}
@@ -208,7 +208,7 @@ function Boat3DPage() {
           >
             <div className="glass-card rounded-2xl p-4 border border-white/10">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <Layers className="w-5 h-5 text-accent-purple" />
+                <Layers className="w-5 h-5 text-coxswain-violet" />
                 Active Boats
               </h3>
 
@@ -244,7 +244,7 @@ function Boat3DPage() {
                 className="glass-card rounded-2xl p-4 border border-white/10"
               >
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <Eye className="w-5 h-5 text-accent-teal" />
+                  <Eye className="w-5 h-5 text-blade-blue" />
                   Boat Details
                 </h3>
 

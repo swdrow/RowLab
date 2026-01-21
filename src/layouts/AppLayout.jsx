@@ -12,6 +12,7 @@ import RegisterModal from '../components/Auth/RegisterModal';
 import AdminPanel from '../components/Auth/AdminPanel';
 import LineupAssistant, { AIAssistantButton } from '../components/AI/LineupAssistant';
 import { Sidebar } from '../components/compound/Sidebar';
+import { TopNav, MobileDock, Breadcrumbs, WorkspaceSwitcher } from '../components/Layout';
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ function AppLayout() {
   const { user, accessToken: token, initialize, logout } = useAuthStore();
   const { features } = useSettingsStore();
   const aiEnabled = features.aiAssistant;
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.isAdmin === true;
 
   useEffect(() => {
     initialize();
@@ -86,8 +87,8 @@ function AppLayout() {
       <div className="min-h-screen flex items-center justify-center bg-void-deep">
         <div className="text-center">
           {/* Glowing brand icon */}
-          <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-blade-green/20 border border-blade-green/30 flex items-center justify-center shadow-[0_0_30px_rgba(0,229,153,0.3)]">
-            <Anchor className="w-7 h-7 text-blade-green animate-pulse" />
+          <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-blade-blue/20 border border-blade-blue/30 flex items-center justify-center shadow-[0_0_30px_rgba(0,112,243,0.3)]">
+            <Anchor className="w-7 h-7 text-blade-blue animate-pulse" />
           </div>
           <p className="text-text-muted font-mono text-sm tracking-wider uppercase">Loading...</p>
         </div>
@@ -105,7 +106,7 @@ function AppLayout() {
           <p className="text-danger-red mb-4 font-medium">Error: {error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2.5 rounded-xl bg-blade-green text-void-deep font-semibold text-sm transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,229,153,0.4)] hover:translate-y-[-2px]"
+            className="px-6 py-2.5 rounded-xl bg-blade-blue text-void-deep font-semibold text-sm transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,112,243,0.4)] hover:translate-y-[-2px]"
           >
             Retry
           </button>
@@ -120,6 +121,7 @@ function AppLayout() {
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        isAdmin={isAdmin}
         onSettingsClick={() => {
           setSidebarOpen(false);
           setShowAdminPanel(true);
@@ -141,71 +143,42 @@ function AppLayout() {
 
       {/* Main content */}
       <div className="main-content">
-        {/* Topbar with glass morphism */}
-        <header className="topbar bg-void-surface/80 backdrop-blur-xl saturate-[180%] border-b border-white/[0.06]">
+        {/* TopNav with Breadcrumbs */}
+        <TopNav
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onSearchClick={() => {
+            // TODO: Open command palette
+          }}
+          onNotificationsClick={() => {
+            // TODO: Open notifications panel
+          }}
+          onSettingsClick={() => navigate('/app/settings')}
+          onAdminClick={() => setShowAdminPanel(true)}
+          onLogout={handleLogout}
+          user={user}
+        >
           <div className="flex items-center gap-3">
-            {/* Mobile menu button */}
-            <button
-              className="menu-button w-9 h-9 rounded-lg bg-void-elevated/50 border border-white/[0.06] flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-void-elevated hover:border-white/[0.1] transition-all duration-200 md:hidden"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-            >
-              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-            <span className="font-display text-lg font-semibold text-text-primary">
+            {/* Workspace Switcher (hidden on mobile) */}
+            <div className="hidden md:block">
+              <WorkspaceSwitcher />
+            </div>
+            {/* Breadcrumbs */}
+            <Breadcrumbs className="hidden sm:flex" />
+            {/* Mobile: Just show current page title */}
+            <span className="font-display text-base font-semibold text-text-primary sm:hidden">
               {location.pathname === '/app' && 'Dashboard'}
               {location.pathname === '/app/lineup' && 'Lineup Builder'}
+              {location.pathname === '/app/coxswain' && 'Coxswain View'}
               {location.pathname === '/app/athletes' && 'Athletes'}
               {location.pathname === '/app/erg' && 'Erg Data'}
               {location.pathname === '/app/analytics' && 'Analytics'}
               {location.pathname === '/app/settings' && 'Settings'}
             </span>
           </div>
-
-          <div className="flex items-center gap-2">
-            {token && user ? (
-              <div className="flex items-center gap-2">
-                {isAdmin && (
-                  <button
-                    onClick={() => setShowAdminPanel(true)}
-                    className="w-9 h-9 rounded-lg bg-void-elevated/50 border border-white/[0.06] flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-void-elevated hover:border-white/[0.1] transition-all duration-200"
-                    title="Admin Panel"
-                  >
-                    <Settings size={16} />
-                  </button>
-                )}
-                {aiEnabled && (
-                  <button
-                    onClick={() => setShowAIAssistant(!showAIAssistant)}
-                    className="w-9 h-9 rounded-lg bg-coxswain-violet/20 border border-coxswain-violet/30 flex items-center justify-center text-coxswain-violet hover:bg-coxswain-violet/30 hover:shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all duration-200"
-                    title="AI Assistant"
-                  >
-                    <Sparkles size={16} />
-                  </button>
-                )}
-                <span className="text-sm text-text-muted hidden sm:block px-2">
-                  {user.name || user.username}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="w-9 h-9 rounded-lg bg-void-elevated/50 border border-white/[0.06] flex items-center justify-center text-text-secondary hover:text-danger-red hover:bg-danger-red/10 hover:border-danger-red/30 transition-all duration-200"
-                  title="Logout"
-                >
-                  <LogOut size={16} />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowLoginModal(true)}
-                className="px-4 py-2 rounded-lg bg-blade-green text-void-deep font-semibold text-sm transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,229,153,0.4)] hover:translate-y-[-1px]"
-              >
-                Sign In
-              </button>
-            )}
-          </div>
-        </header>
+        </TopNav>
 
         {/* Page content */}
-        <main className="flex-1 flex flex-col bg-void-deep">
+        <main className="flex-1 flex flex-col bg-void-deep pb-16 md:pb-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -220,6 +193,11 @@ function AppLayout() {
           </AnimatePresence>
         </main>
       </div>
+
+      {/* Mobile Bottom Dock */}
+      <MobileDock
+        onMoreClick={() => setSidebarOpen(true)}
+      />
 
       {/* Modals */}
       <LoginModal

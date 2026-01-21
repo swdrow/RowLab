@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../utils/logger.js';
 import prisma from '../db/connection.js';
 import { verifyToken } from '../middleware/auth.js';
 
@@ -30,7 +31,7 @@ router.get('/', async (req, res) => {
 
     res.json({ tests });
   } catch (err) {
-    console.error('Get erg tests error:', err);
+    logger.error('Get erg tests error', { error: err.message });
     res.status(500).json({ error: 'Failed to fetch erg tests' });
   }
 });
@@ -60,7 +61,7 @@ router.get('/:id', async (req, res) => {
 
     res.json({ test });
   } catch (err) {
-    console.error('Get erg test error:', err);
+    logger.error('Get erg test error', { error: err.message });
     res.status(500).json({ error: 'Failed to fetch erg test' });
   }
 });
@@ -101,7 +102,7 @@ router.post('/', verifyToken, async (req, res) => {
 
     res.status(201).json({ test });
   } catch (err) {
-    console.error('Create erg test error:', err);
+    logger.error('Create erg test error', { error: err.message });
     res.status(500).json({ error: 'Failed to create erg test' });
   }
 });
@@ -147,7 +148,7 @@ router.put('/:id', verifyToken, async (req, res) => {
 
     res.json({ test });
   } catch (err) {
-    console.error('Update erg test error:', err);
+    logger.error('Update erg test error', { error: err.message });
     res.status(500).json({ error: 'Failed to update erg test' });
   }
 });
@@ -174,7 +175,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
 
     res.json({ message: 'Erg test deleted' });
   } catch (err) {
-    console.error('Delete erg test error:', err);
+    logger.error('Delete erg test error', { error: err.message });
     res.status(500).json({ error: 'Failed to delete erg test' });
   }
 });
@@ -209,7 +210,7 @@ router.get('/athlete/:athleteId/history', async (req, res) => {
 
     res.json({ tests });
   } catch (err) {
-    console.error('Get erg history error:', err);
+    logger.error('Get erg history error', { error: err.message });
     res.status(500).json({ error: 'Failed to fetch erg history' });
   }
 });

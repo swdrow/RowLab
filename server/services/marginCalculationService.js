@@ -1,4 +1,5 @@
 /**
+import logger from '../utils/logger.js';
  * Margin Calculation Service
  *
  * Implements the margin swing formula for seat racing analysis:
@@ -283,14 +284,14 @@ function analyzeSession(session) {
       });
     } catch (error) {
       // Skip pairs that can't be analyzed (e.g., not enough boats)
-      console.warn(`Could not analyze pieces ${i} and ${i + 1}: ${error.message}`);
+      logger.warn('Could not analyze pieces', { piece1: i, piece2: i + 1, error: error.message });
     }
   }
 
   return results;
 }
 
-module.exports = {
+export {
   calculateMargin,
   calculateSwing,
   estimatePerformanceDiff,

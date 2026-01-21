@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../../utils/logger.js';
 import { body, param, query, validationResult } from 'express-validator';
 import {
   createLineup,
@@ -46,7 +47,7 @@ router.get(
         data: { lineups },
       });
     } catch (error) {
-      console.error('Get lineups error:', error);
+      logger.error('Get lineups error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get lineups' },
@@ -79,7 +80,7 @@ router.get(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Get lineup error:', error);
+      logger.error('Get lineup error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get lineup' },
@@ -112,7 +113,7 @@ router.get(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Export lineup error:', error);
+      logger.error('Export lineup error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to export lineup' },
@@ -150,7 +151,7 @@ router.post(
         data: { lineup },
       });
     } catch (error) {
-      console.error('Create lineup error:', error);
+      logger.error('Create lineup error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to create lineup' },
@@ -191,7 +192,7 @@ router.post(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Duplicate lineup error:', error);
+      logger.error('Duplicate lineup error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to duplicate lineup' },
@@ -235,7 +236,7 @@ router.patch(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Update lineup error:', error);
+      logger.error('Update lineup error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to update lineup' },
@@ -269,7 +270,7 @@ router.delete(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Delete lineup error:', error);
+      logger.error('Delete lineup error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to delete lineup' },

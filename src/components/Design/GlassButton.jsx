@@ -49,43 +49,43 @@ const GlassButton = ({
     lg: 'px-8 py-4 text-lg rounded-2xl min-h-[52px]',
   };
 
-  // Variant styles
+  // Variant styles - Following "Signal Blue" philosophy
+  // Blue is reserved for active/selected states, primary actions use blade-blue
   const variants = {
     primary: `
-      bg-gradient-to-r from-blue-500 to-purple-600
-      dark:from-accent-blue dark:to-accent-purple
-      text-white
-      shadow-lg
-      hover:shadow-xl hover:scale-[1.02]
+      bg-blade-blue
+      text-void-deep
+      shadow-lg shadow-blade-blue/20
+      hover:bg-blade-blue/90 hover:shadow-xl hover:shadow-blade-blue/30 hover:scale-[1.02]
       active:scale-[0.98]
-      focus:ring-blue-500
+      focus:ring-blade-blue
     `,
     secondary: `
       bg-white/10 dark:bg-white/5
       text-gray-900 dark:text-white
-      border-white/30 dark:border-white/20
+      border-white/20 dark:border-white/10
       shadow-md
-      hover:bg-white/20 dark:hover:bg-white/10
+      hover:bg-white/15 dark:hover:bg-white/10
       hover:shadow-lg hover:scale-[1.02]
       active:scale-[0.98]
-      focus:ring-gray-500
+      focus:ring-white/50
     `,
     ghost: `
       bg-transparent
-      text-gray-700 dark:text-gray-200
+      text-gray-700 dark:text-white/70
       border-transparent
       hover:bg-white/10 dark:hover:bg-white/5
-      hover:border-white/20
+      hover:text-gray-900 dark:hover:text-white
       active:scale-[0.98]
-      focus:ring-gray-400
+      focus:ring-white/30
     `,
     danger: `
-      bg-gradient-to-r from-red-500 to-pink-600
+      bg-danger-red
       text-white
-      shadow-lg
-      hover:shadow-xl hover:scale-[1.02]
+      shadow-lg shadow-danger-red/20
+      hover:bg-danger-red/90 hover:shadow-xl hover:shadow-danger-red/30 hover:scale-[1.02]
       active:scale-[0.98]
-      focus:ring-red-500
+      focus:ring-danger-red
     `,
   };
 
@@ -100,11 +100,8 @@ const GlassButton = ({
       disabled={disabled || loading}
       {...props}
     >
-      {/* Glass shimmer effect on hover */}
-      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 -translate-x-full hover:translate-x-full transform" />
-
       {/* Button content */}
-      <span className="relative flex items-center justify-center gap-2">
+      <span className="flex items-center justify-center gap-2">
         {loading && (
           <svg
             className="animate-spin h-4 w-4"

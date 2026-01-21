@@ -14,6 +14,7 @@ import {
 } from '../services/tokenService.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { prisma } from '../db/connection.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -72,7 +73,7 @@ router.post(
           error: { code: 'EMAIL_EXISTS', message: error.message },
         });
       }
-      console.error('Register error:', error);
+      logger.error('Register error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Registration failed' },
@@ -84,12 +85,13 @@ router.post(
 /**
  * POST /api/v1/auth/login
  * Login and get tokens
+ * Accepts either email (for regular users) or username (for admin accounts)
  */
 router.post(
   '/login',
   authLimiter,
   [
-    body('email').isEmail().normalizeEmail(),
+    body('email').trim().notEmpty().withMessage('Email or username is required'),
     body('password').notEmpty(),
   ],
   validateRequest,
@@ -128,7 +130,7 @@ router.post(
           error: { code: 'ACCOUNT_SUSPENDED', message: error.message },
         });
       }
-      console.error('Login error:', error);
+      logger.error('Login error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Login failed' },
@@ -185,7 +187,7 @@ router.post('/refresh', async (req, res) => {
       data: { accessToken },
     });
   } catch (error) {
-    console.error('Refresh error:', error);
+    logger.error('Refresh error', { error: error.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Token refresh failed' },
@@ -207,7 +209,7 @@ router.post('/logout', authenticateToken, async (req, res) => {
       data: { message: 'Logged out successfully' },
     });
   } catch (error) {
-    console.error('Logout error:', error);
+    logger.error('Logout error', { error: error.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Logout failed' },
@@ -240,7 +242,7 @@ router.post(
           error: { code: 'NOT_MEMBER', message: error.message },
         });
       }
-      console.error('Switch team error:', error);
+      logger.error('Switch team error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to switch team' },
@@ -262,7 +264,7 @@ router.get('/me', authenticateToken, async (req, res) => {
       data: { user },
     });
   } catch (error) {
-    console.error('Get user error:', error);
+    logger.error('Get user error', { error: error.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to get user' },

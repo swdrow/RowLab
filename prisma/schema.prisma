@@ -15,9 +15,11 @@ datasource db {
 
 model User {
   id            String   @id @default(uuid())
-  email         String   @unique
+  email         String?  @unique // Optional for admin accounts
+  username      String?  @unique // For admin accounts (non-email login)
   passwordHash  String
   name          String
+  isAdmin       Boolean  @default(false) // Admin accounts have special privileges
   status        String   @default("active") // active, suspended
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -26,6 +28,9 @@ model User {
   memberships   TeamMember[]
   refreshTokens RefreshToken[]
   announcements Announcement[]
+  settings      UserSettings?
+  concept2Auth  Concept2Auth?
+  boatSessions  BoatSession[]
 
   @@map("users")
 }
@@ -38,20 +43,26 @@ model Team {
   isPublic          Boolean  @default(false)
   visibilitySetting String   @default("coaches_only") // open, coaches_only, opt_in
   settings          Json     @default("{}")
+  aiModel           String?  // Preferred AI model (e.g., "phi4-mini-reasoning:3.8b")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   // Relations
-  members          TeamMember[]
-  athletes         Athlete[]
-  invitations      Invitation[]
-  lineups          Lineup[]
-  ergTests         ErgTest[]
-  workouts         Workout[]
-  announcements    Announcement[]
-  shells           Shell[]
-  boatConfigs      BoatConfig[]
-  seatRaceSessions SeatRaceSession[]
+  members            TeamMember[]
+  athletes           Athlete[]
+  invitations        Invitation[]
+  lineups            Lineup[]
+  ergTests           ErgTest[]
+  workouts           Workout[]
+  announcements      Announcement[]
+  shells             Shell[]
+  boatConfigs        BoatConfig[]
+  seatRaceSessions   SeatRaceSession[]
+  regattas           Regatta[]
+  teamSpeedEstimates TeamSpeedEstimate[]
+  subscription       Subscription?
+  calendarEvents     CalendarEvent[]
+  waterSessions      WaterSession[]
 
   @@map("teams")
 }
@@ -131,7 +142,6 @@ model Athlete {
   workouts            Workout[]
   assignments         LineupAssignment[]
   invitations         Invitation[]
-  concept2Auth        Concept2Auth?
   athleteRatings      AthleteRating[]
   telemetryData       AthleteTelemetry[]
   seatRaceAssignments SeatRaceAssignment[]
@@ -142,15 +152,20 @@ model Athlete {
 }
 
 model Concept2Auth {
-  athleteId      String   @id
+  userId         String   @id
   c2UserId       String
-  accessToken    String
-  refreshToken   String
+  username       String?  // Concept2 username
+  accessToken    String   @db.Text // OAuth access token (encrypted)
+  refreshToken   String   @db.Text // OAuth refresh token (encrypted)
   tokenExpiresAt DateTime
   lastSyncedAt   DateTime?
+  syncEnabled    Boolean  @default(true) // Auto-sync on webhook
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([c2UserId])
   @@map("concept2_auth")
 }
 
@@ -233,6 +248,7 @@ model Lineup {
 
   team        Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
   assignments LineupAssignment[]
+  raceResults RaceResult[]
 
   @@index([teamId])
   @@map("lineups")
@@ -418,4 +434,243 @@ model AthleteTelemetry {
 
   @@index([athleteId])
   @@map("athlete_telemetry")
+}
+
+// ============================================
+// RACING: Regattas, Races, Results
+// ============================================
+
+model Regatta {
+  id          String   @id @default(uuid())
+  teamId      String
+  name        String
+  location    String?
+  date        DateTime
+  courseType  String?  // 2000m, 1500m, head
+  conditions  Json?    // wind, temp, current
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  races Race[]
+
+  @@index([teamId])
+  @@map("regattas")
+}
+
+model Race {
+  id             String    @id @default(uuid())
+  regattaId      String
+  eventName      String
+  boatClass      String
+  distanceMeters Int       @default(2000)
+  isHeadRace     Boolean   @default(false)
+  scheduledTime  DateTime?
+
+  regatta Regatta      @relation(fields: [regattaId], references: [id], onDelete: Cascade)
+  results RaceResult[]
+
+  @@map("races")
+}
+
+model RaceResult {
+  id                String   @id @default(uuid())
+  raceId            String
+  teamName          String
+  isOwnTeam         Boolean  @default(false)
+  lineupId          String?
+  finishTimeSeconds Decimal? @db.Decimal(10, 2)
+  place             Int?
+  marginBackSeconds Decimal? @db.Decimal(8, 2)
+  rawSpeed          Decimal? @db.Decimal(6, 4)    // m/s
+  adjustedSpeed     Decimal? @db.Decimal(6, 4)    // Normalized
+
+  race   Race    @relation(fields: [raceId], references: [id], onDelete: Cascade)
+  lineup Lineup? @relation(fields: [lineupId], references: [id])
+
+  @@map("race_results")
+}
+
+model ExternalTeam {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  conference String?
+  division   String?  // D1, D2, D3, Club
+  createdAt  DateTime @default(now())
+
+  @@map("external_teams")
+}
+
+model TeamSpeedEstimate {
+  id               String   @id @default(uuid())
+  teamId           String
+  boatClass        String
+  season           String?  // "Spring 2025"
+  rawSpeed         Decimal? @db.Decimal(6, 4)
+  adjustedSpeed    Decimal? @db.Decimal(6, 4)
+  confidenceScore  Decimal? @db.Decimal(4, 3)
+  sampleCount      Int      @default(0)
+  lastCalculatedAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, boatClass, season])
+  @@map("team_speed_estimates")
+}
+
+// ============================================
+// BILLING: Subscriptions
+// ============================================
+
+model Subscription {
+  id                   String    @id @default(uuid())
+  teamId               String    @unique
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
+  plan                 String    @default("free") // free, starter, pro, enterprise
+  status               String    @default("active") // active, past_due, canceled, trialing
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean   @default(false)
+  athleteLimit         Int       @default(15)
+  coachLimit           Int       @default(1)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  team   Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  events SubscriptionEvent[]
+
+  @@map("subscriptions")
+}
+
+model SubscriptionEvent {
+  id             String   @id @default(uuid())
+  subscriptionId String
+  eventType      String // created, updated, canceled, payment_failed, payment_succeeded
+  stripeEventId  String?  @unique
+  data           Json?
+  createdAt      DateTime @default(now())
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@map("subscription_events")
+}
+
+// ============================================
+// CALENDAR: Team events and workouts
+// ============================================
+
+model CalendarEvent {
+  id          String   @id @default(uuid())
+  teamId      String
+  title       String
+  description String?
+  eventType   String   // erg-test, erg-pieces, steady-state, water, lift, rest, meeting, regatta
+  date        DateTime
+  startTime   String?  // HH:MM format
+  endTime     String?  // HH:MM format
+  location    String?
+  completed   Boolean  @default(false)
+  notes       String?
+  visibility  String   @default("all") // all, coaches - controls who can see this event
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  waterSessions WaterSession[]
+
+  @@index([teamId])
+  @@index([date])
+  @@map("calendar_events")
+}
+
+// ============================================
+// ON-WATER SESSIONS: Coxswain recorded data
+// ============================================
+
+model WaterSession {
+  id              String    @id @default(uuid())
+  teamId          String
+  date            DateTime  @default(now())
+  startTime       DateTime?
+  endTime         DateTime?
+  location        String?
+  conditions      String?   // weather, water conditions
+  notes           String?
+  calendarEventId String?
+
+  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  calendarEvent CalendarEvent? @relation(fields: [calendarEventId], references: [id])
+  boatSessions  BoatSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teamId])
+  @@index([date])
+  @@map("water_sessions")
+}
+
+model BoatSession {
+  id             String  @id @default(uuid())
+  waterSessionId String
+  boatId         String? // Optional link to BoatConfig/Lineup
+  boatName       String
+  coxswainId     String?
+  notes          String?
+
+  waterSession WaterSession @relation(fields: [waterSessionId], references: [id], onDelete: Cascade)
+  coxswain     User?        @relation(fields: [coxswainId], references: [id])
+  pieces       WaterPiece[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([waterSessionId])
+  @@index([coxswainId])
+  @@map("boat_sessions")
+}
+
+model WaterPiece {
+  id            String   @id @default(uuid())
+  boatSessionId String
+  pieceNumber   Int
+  distance      Int?     // meters
+  timeSeconds   Decimal? @db.Decimal(10, 1)
+  strokeRate    Int?
+  pieceType     String?  // steady, interval, start, race
+  notes         String?
+  startTime     DateTime?
+
+  boatSession BoatSession @relation(fields: [boatSessionId], references: [id], onDelete: Cascade)
+
+  @@index([boatSessionId])
+  @@map("water_pieces")
+}
+
+// ============================================
+// SETTINGS: User preferences
+// ============================================
+
+model UserSettings {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  emailNotifications Boolean  @default(true)
+  pushNotifications  Boolean  @default(false)
+  darkMode           Boolean  @default(true)
+  compactView        Boolean  @default(false)
+  autoSave           Boolean  @default(true)
+  firstName          String?
+  lastName           String?
+  role               String?
+  avatar             String?  @db.Text
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
 }

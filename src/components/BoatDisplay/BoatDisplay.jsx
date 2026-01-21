@@ -49,7 +49,7 @@ const BoatDisplay = ({ boat }) => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent">
+          <h3 className="text-2xl font-bold text-text-primary">
             {boat.shellName || boat.boatClass || boat.name}
           </h3>
           <div className="flex items-center gap-3 mt-1">
@@ -62,7 +62,7 @@ const BoatDisplay = ({ boat }) => {
               {boat.numSeats} seats {boat.hasCoxswain ? '+ cox' : ''}
             </span>
             {complete && (
-              <span className="px-2 py-1 bg-green-500/20 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold backdrop-blur-sm">
+              <span className="px-2 py-1 bg-success/20 text-success rounded-full text-xs font-semibold backdrop-blur-sm">
                 Complete ✓
               </span>
             )}
@@ -71,7 +71,7 @@ const BoatDisplay = ({ boat }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => toggleBoatExpanded(boat.id)}
-            className="text-blue-600 dark:text-accent-blue hover:text-blue-700 hover:bg-blue-500/10 dark:hover:bg-accent-blue/10 rounded-lg p-2 transition-all duration-200 hover:scale-105 active:scale-95"
+            className="text-text-muted hover:text-text-primary hover:bg-white/5 rounded-lg p-2 transition-all duration-200 hover:scale-105 active:scale-95"
             title="Collapse to compact view"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

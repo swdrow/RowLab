@@ -35,10 +35,10 @@ const Seat = ({ boatId, seat, onSeatClick }) => {
         w-24 h-32 rounded-xl border-2 cursor-pointer
         transition-all duration-200 backdrop-blur-sm
         ${seat.athlete
-          ? 'border-blue-500 dark:border-accent-blue bg-white dark:bg-dark-card/90'
-          : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-elevated/50'
+          ? 'border-white/30 bg-white dark:bg-void-card/90'
+          : 'border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-void-elevated/50'
         }
-        ${isOver ? 'ring-4 ring-blue-400 dark:ring-accent-blue scale-105 shadow-xl' : ''}
+        ${isOver ? 'ring-4 ring-blade-blue scale-105 shadow-xl' : ''}
         ${isSelected ? 'ring-4 ring-yellow-400 dark:ring-yellow-500 shadow-xl' : ''}
         hover:shadow-lg hover:scale-105
       `}

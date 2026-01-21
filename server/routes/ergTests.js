@@ -11,6 +11,7 @@ import {
   bulkImportErgTests,
 } from '../services/ergTestService.js';
 import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -48,7 +49,7 @@ router.get(
         data: { tests },
       });
     } catch (error) {
-      console.error('Get erg tests error:', error);
+      logger.error('Get erg tests error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get erg tests' },
@@ -83,7 +84,7 @@ router.get(
         data: { leaderboard },
       });
     } catch (error) {
-      console.error('Get leaderboard error:', error);
+      logger.error('Get leaderboard error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get leaderboard' },
@@ -113,7 +114,7 @@ router.get(
         data: history,
       });
     } catch (error) {
-      console.error('Get athlete history error:', error);
+      logger.error('Get athlete history error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get athlete history' },
@@ -146,7 +147,7 @@ router.get(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Get erg test error:', error);
+      logger.error('Get erg test error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get erg test' },
@@ -185,7 +186,7 @@ router.post(
         data: { test },
       });
     } catch (error) {
-      console.error('Create erg test error:', error);
+      logger.error('Create erg test error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to create erg test' },
@@ -219,7 +220,7 @@ router.post(
         data: result,
       });
     } catch (error) {
-      console.error('Bulk import error:', error);
+      logger.error('Bulk import error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to import erg tests' },
@@ -264,7 +265,7 @@ router.patch(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Update erg test error:', error);
+      logger.error('Update erg test error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to update erg test' },
@@ -298,7 +299,7 @@ router.delete(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Delete erg test error:', error);
+      logger.error('Delete erg test error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to delete erg test' },

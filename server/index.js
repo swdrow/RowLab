@@ -21,6 +21,18 @@ import boatConfigRoutes from './routes/boatConfigs.js';
 import shellRoutes from './routes/v1/shells.js';
 import seatRaceRoutes from './routes/seatRaces.js';
 import rankingsRoutes from './routes/rankings.js';
+import regattaRoutes from './routes/regattas.js';
+import teamRankingsRoutes from './routes/teamRankings.js';
+import externalTeamsRoutes from './routes/externalTeams.js';
+import announcementRoutes from './routes/announcements.js';
+import telemetryRoutes from './routes/telemetry.js';
+import combinedScoringRoutes from './routes/combinedScoring.js';
+import aiLineupRoutes from './routes/aiLineup.js';
+import subscriptionRoutes from './routes/subscriptions.js';
+import settingsRoutes from './routes/settings.js';
+import calendarRoutes from './routes/calendar.js';
+import waterSessionRoutes from './routes/waterSessions.js';
+import healthRoutes from './routes/health.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
 
@@ -61,6 +73,10 @@ app.use(cookieParser());
 // Request logging
 app.use(requestLogger);
 
+// Health checks (no auth, for Docker/k8s)
+app.use('/api/health', healthRoutes);
+app.use('/health', healthRoutes);
+
 // API v1 Routes (new multi-tenant)
 app.use('/api/v1/auth', authLimiter, authRoutes);
 app.use('/api/v1/teams', apiLimiter, teamRoutes);
@@ -75,6 +91,17 @@ app.use('/api/v1/shells', apiLimiter, shellRoutes);
 app.use('/api/v1/lineups', apiLimiter, lineupRoutesV1);
 app.use('/api/v1/seat-races', apiLimiter, seatRaceRoutes);
 app.use('/api/v1/rankings', apiLimiter, rankingsRoutes);
+app.use('/api/v1/regattas', apiLimiter, regattaRoutes);
+app.use('/api/v1/team-rankings', apiLimiter, teamRankingsRoutes);
+app.use('/api/v1/external-teams', apiLimiter, externalTeamsRoutes);
+app.use('/api/v1/announcements', apiLimiter, announcementRoutes);
+app.use('/api/v1/telemetry', apiLimiter, telemetryRoutes);
+app.use('/api/v1/combined-scoring', apiLimiter, combinedScoringRoutes);
+app.use('/api/v1/ai-lineup', apiLimiter, aiLineupRoutes);
+app.use('/api/v1/subscriptions', subscriptionRoutes); // No limiter - webhook needs raw body
+app.use('/api/v1/settings', apiLimiter, settingsRoutes);
+app.use('/api/v1/calendar', apiLimiter, calendarRoutes);
+app.use('/api/v1/water-sessions', apiLimiter, waterSessionRoutes);
 app.use('/api/v1/ai', apiLimiter, aiRoutes);
 
 // Legacy API Routes (will be migrated to v1)
@@ -95,7 +122,7 @@ app.get('/api/data/athletes.csv', async (req, res) => {
     res.setHeader('Content-Type', 'text/csv');
     res.sendFile(csvPath);
   } catch (err) {
-    console.error('CSV file not found:', err);
+    logger.warn('CSV file not found', { error: err.message });
     res.status(404).json({ error: 'Athletes CSV not found' });
   }
 });
@@ -126,7 +153,7 @@ app.get('/api/flags/:countryCode', async (req, res) => {
     await fs.access(pngPath);
     return res.sendFile(pngPath);
   } catch (err) {
-    console.error(`Flag not found: ${baseCode} (tried SVG and PNG)`, err.message);
+    logger.debug('Flag not found', { code: baseCode, error: err.message });
     res.status(404).json({ error: 'Flag not found' });
   }
 });
@@ -174,17 +201,6 @@ app.get('/api/headshots/:filename', async (req, res) => {
 });
 
 /**
- * Health check endpoint
- */
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    environment: NODE_ENV
-  });
-});
-
-/**
  * Storage monitoring endpoint (admin only)
  */
 app.get('/api/admin/storage', verifyToken, async (req, res) => {
@@ -197,7 +213,7 @@ app.get('/api/admin/storage', verifyToken, async (req, res) => {
     const storageInfo = await getStorageInfo();
     res.json(storageInfo);
   } catch (err) {
-    console.error('Storage info error:', err);
+    logger.error('Storage info error', { error: err.message, stack: err.stack });
     res.status(500).json({ error: 'Failed to get storage info' });
   }
 });
@@ -236,13 +252,42 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Database health check function
+async function checkDatabaseHealth() {
+  try {
+    const { prisma } = await import('./db/connection.js');
+
+    // Check if we can connect
+    await prisma.$queryRaw`SELECT 1`;
+
+    // Check if admin user exists
+    const adminUser = await prisma.user.findFirst({
+      where: { isAdmin: true }
+    });
+
+    if (!adminUser) {
+      logger.warn('No admin user found - run: npm run db:seed');
+      return { healthy: true, hasAdmin: false };
+    }
+
+    logger.info('Database healthy', { adminUser: adminUser.email });
+    return { healthy: true, hasAdmin: true };
+  } catch (err) {
+    logger.error('Database health check failed', { error: err.message, stack: err.stack });
+    return { healthy: false, error: err.message };
+  }
+}
+
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   logger.info('RowLab Server Started', {
     environment: NODE_ENV,
     port: PORT,
     url: `http://localhost:${PORT}`,
   });
+
+  // Check database health on startup
+  const dbHealth = await checkDatabaseHealth();
 
   // ASCII banner for visibility
   console.log(`
@@ -253,6 +298,7 @@ app.listen(PORT, () => {
 ║  Port:        ${PORT.toString().padEnd(30)}║
 ║  URL:         http://localhost:${PORT.toString().padEnd(21)}║
 ║  Security:    Helmet + Rate Limiting         ║
+║  Database:    ${(dbHealth.healthy ? (dbHealth.hasAdmin ? '✓ Healthy' : '⚠ No Admin') : '✗ Error').padEnd(30)}║
 ╚══════════════════════════════════════════════╝
   `);
 });

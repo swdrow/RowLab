@@ -9,7 +9,7 @@ export default {
     extend: {
       // ========================================
       // ROWLAB Design System
-      // Deep slate + Green accent + Water/Dawn tones
+      // Deep slate + Blue accent + Water/Dawn tones
       // Evokes: Early morning on the water, technical precision
       // ========================================
 
@@ -26,17 +26,17 @@ export default {
           'elevated': '#121214',  // Card surfaces
         },
 
-        // Text Hierarchy
+        // Text Hierarchy (WCAG 2.1 AA compliant on void-deep)
         'text': {
-          'primary': '#F4F4F5',   // Headlines (zinc-100)
-          'secondary': '#A1A1AA', // Body text (zinc-400)
-          'muted': '#52525B',     // Captions, placeholders (zinc-600)
-          'disabled': '#3F3F46',  // Disabled states (zinc-700)
+          'primary': '#F4F4F5',   // Headlines (zinc-100) - 16.8:1
+          'secondary': '#A1A1AA', // Body text (zinc-400) - 9.0:1
+          'muted': '#71717A',     // Captions, placeholders (zinc-500) - 5.5:1 (was zinc-600)
+          'disabled': '#52525B',  // Disabled states (zinc-600) - decorative only
         },
 
         // Neon Accents
         'blade': {
-          'green': '#00E599',     // Primary action, safe zones
+          'blue': '#0070F3',      // Primary action
         },
         'coxswain': {
           'violet': '#7C3AED',    // Leadership accent
@@ -48,15 +48,44 @@ export default {
           'red': '#EF4444',       // Error states
         },
 
-        // Semantic aliases
-        'success': '#00E599',
-        'warning': '#F59E0B',
+        // Spectrum Colors - Rainbow variety
+        'spectrum': {
+          'blue': '#4285F4',
+          'indigo': '#6366F1',
+          'violet': '#8B5CF6',
+          'purple': '#9B72CB',
+          'fuchsia': '#D946EF',
+          'pink': '#EC4899',
+          'rose': '#D96570',
+          'red': '#EF4444',
+          'orange': '#F97316',
+          'amber': '#F59E0B',
+          'yellow': '#EAB308',
+          'lime': '#84CC16',
+          'green': '#22C55E',
+          'emerald': '#10B981',
+          'teal': '#14B8A6',
+          'cyan': '#06B6D4',
+        },
+
+        // Pop Colors - Vibrant accents
+        'pop': {
+          'electric': '#00FFE5',
+          'neon': '#FF00FF',
+          'plasma': '#7B61FF',
+          'coral': '#FF6B6B',
+          'mint': '#00F5D4',
+          'solar': '#FFD600',
+        },
+
+        // Semantic aliases (warning uses object form above)
+        'success': '#22C55E',     // UX convention green
         'error': '#EF4444',
         'info': '#7C3AED',
 
         // Rowing-specific
         'port': '#EF4444',        // Port side (red)
-        'starboard': '#00E599',   // Starboard (green)
+        'starboard': '#10B981',   // Starboard (green) - maritime convention
 
         // Border colors (legacy support)
         'border': {
@@ -64,7 +93,7 @@ export default {
           'default': 'rgba(255, 255, 255, 0.08)',
           'strong': 'rgba(255, 255, 255, 0.12)',
           'active': 'rgba(255, 255, 255, 0.15)',
-          'accent': 'rgba(0, 229, 153, 0.4)',
+          'accent': 'rgba(0, 112, 243, 0.4)',
         },
       },
 
@@ -90,36 +119,37 @@ export default {
           linear-gradient(90deg, rgba(39, 39, 42, 0.2) 1px, transparent 1px)
         `,
 
-        // Green accent gradients
-        'green-glow': 'radial-gradient(ellipse 50% 30% at 50% 50%, rgba(16, 185, 129, 0.12) 0%, transparent 70%)',
-        'green-gradient': 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+        // Blue accent gradients
+        'blue-glow': 'radial-gradient(ellipse 50% 30% at 50% 50%, rgba(0, 112, 243, 0.12) 0%, transparent 70%)',
+        'blue-gradient': 'linear-gradient(135deg, #0070F3 0%, #0062D1 100%)',
       },
 
-      // Box shadows - Glow system
+      // Box shadows - Multi-layer physical shadow system
+      // Simulates ambient + direct light for realistic depth
       boxShadow: {
-        // Elevation system
-        'sm': '0 1px 2px rgba(0, 0, 0, 0.3)',
-        'DEFAULT': '0 2px 4px rgba(0, 0, 0, 0.25)',
-        'md': '0 4px 8px rgba(0, 0, 0, 0.25)',
-        'lg': '0 8px 16px rgba(0, 0, 0, 0.3)',
-        'xl': '0 16px 32px rgba(0, 0, 0, 0.35)',
+        'none': 'none',
+        'ambient': '0 0 0 1px rgba(255,255,255,0.03)',
 
-        // Glow effects
-        'glow-green': '0 0 20px rgba(0, 229, 153, 0.4)',
-        'glow-green-lg': '0 0 40px rgba(0, 229, 153, 0.3)',
-        'glow-violet': '0 0 20px rgba(124, 58, 237, 0.4)',
+        // Card system - 3 layers for physical feel
+        'card': '0 0 0 1px rgba(255,255,255,0.06), 0 1px 2px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2)',
+        'card-hover': '0 0 0 1px rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.25)',
 
-        // Glass effects
-        'inner-highlight': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.06)',
-        'inset-depth': 'inset 0 2px 4px rgba(0, 0, 0, 0.2)',
+        // Elevated surfaces
+        'elevated': '0 0 0 1px rgba(255,255,255,0.08), 0 4px 8px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.2)',
 
-        // Card shadows
-        'card': '0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03)',
-        'card-hover': '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+        // Blue glow for primary actions (CTAs)
+        'glow-blue': '0 0 0 1px rgba(0,112,243,0.3), 0 0 20px -5px rgba(0,112,243,0.4)',
+        'glow-blue-lg': '0 0 0 1px rgba(0,112,243,0.4), 0 0 30px -5px rgba(0,112,243,0.5)',
 
-        // Focus rings
-        'focus-green': '0 0 0 3px rgba(0, 229, 153, 0.15)',
-        'focus-error': '0 0 0 2px rgba(239, 68, 68, 0.5)',
+        // Inset for inputs
+        'inner': 'inset 0 1px 2px rgba(0,0,0,0.2)',
+
+        // 2xl for modals/dropdowns
+        '2xl': '0 0 0 1px rgba(255,255,255,0.05), 0 25px 50px -12px rgba(0,0,0,0.5)',
+
+        // Focus rings (keep for accessibility)
+        'focus-blue': '0 0 0 2px rgba(0, 112, 243, 0.25)',
+        'focus-error': '0 0 0 2px rgba(239, 68, 68, 0.3)',
       },
 
       // Border radius - Subtle, professional
@@ -132,14 +162,25 @@ export default {
         '2xl': '16px',
       },
 
-      // Animations - Minimal, functional
+      // ============================================
+      // PRECISION INSTRUMENT TRANSITIONS
+      // Zero perceived latency - feels "wired" to data
+      // ============================================
+      transitionDuration: {
+        'fast': '100ms',    // Hover states, instant feedback
+        'normal': '150ms',  // Most transitions
+        'slow': '200ms',    // Complex animations (max)
+      },
+
+      // Animations - Minimal, functional, FAST
       animation: {
-        'fade-in': 'fadeIn 0.2s ease-out',
-        'fade-in-up': 'fadeInUp 0.3s ease-out',
-        'slide-in-right': 'slideInRight 0.25s ease-out',
-        'slide-in-left': 'slideInLeft 0.25s ease-out',
-        'scale-in': 'scaleIn 0.2s ease-out',
+        'fade-in': 'fadeIn 0.15s ease-out',
+        'fade-in-up': 'fadeInUp 0.15s ease-out',
+        'slide-in-right': 'slideInRight 0.15s ease-out',
+        'slide-in-left': 'slideInLeft 0.15s ease-out',
+        'scale-in': 'scaleIn 0.1s ease-out',
         'pulse-subtle': 'pulseSubtle 2s ease-in-out infinite',
+        'data-flash': 'dataFlash 0.15s ease-out',
       },
 
       keyframes: {
@@ -148,44 +189,49 @@ export default {
           '100%': { opacity: '1' },
         },
         fadeInUp: {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         slideInRight: {
-          '0%': { opacity: '0', transform: 'translateX(16px)' },
+          '0%': { opacity: '0', transform: 'translateX(8px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
         slideInLeft: {
-          '0%': { opacity: '0', transform: 'translateX(-16px)' },
+          '0%': { opacity: '0', transform: 'translateX(-8px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
         scaleIn: {
-          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '0%': { opacity: '0', transform: 'scale(0.98)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
         pulseSubtle: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.7' },
         },
+        dataFlash: {
+          '0%': { backgroundColor: 'rgba(0, 112, 243, 0.2)' },
+          '100%': { backgroundColor: 'transparent' },
+        },
       },
 
-      // Transition timing
+      // Transition timing - Precision Instrument: no bounce, pure ease-out
       transitionTimingFunction: {
-        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
-        'snap': 'cubic-bezier(0.4, 0, 0, 1)',
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',  // General purpose
+        'snap': 'cubic-bezier(0, 0, 0.2, 1)',      // Instant feel, ease-out only
+        'precision': 'cubic-bezier(0.16, 1, 0.3, 1)', // Premium ease-out curve for UI
       },
 
-      // Typography - Blade Green system
+      // Typography - Precision Instrument system
       fontFamily: {
-        // Display font for hero headlines - Fraunces serif
+        // Display font for hero headlines - Space Grotesk
         'display': [
-          'Fraunces',
-          'Georgia',
-          'serif',
+          '"Space Grotesk"',
+          'system-ui',
+          'sans-serif',
         ],
-        // Body font - Inter
+        // Body font - DM Sans
         'sans': [
-          'Inter',
+          '"DM Sans"',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',

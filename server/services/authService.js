@@ -32,16 +32,34 @@ export async function registerUser({ email, password, name }) {
 
 /**
  * Login user and generate tokens
+ * Supports login with email (regular users) or username (admin accounts)
  */
 export async function loginUser({ email, password }) {
-  const user = await prisma.user.findUnique({
-    where: { email },
-    include: {
-      memberships: {
-        include: { team: true },
+  // Check if input looks like an email or username
+  const isEmail = email && email.includes('@');
+
+  let user;
+  if (isEmail) {
+    // Regular email login
+    user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        memberships: {
+          include: { team: true },
+        },
       },
-    },
-  });
+    });
+  } else {
+    // Username login (for admin accounts)
+    user = await prisma.user.findUnique({
+      where: { username: email }, // 'email' field contains username
+      include: {
+        memberships: {
+          include: { team: true },
+        },
+      },
+    });
+  }
 
   if (!user) {
     throw new Error('Invalid credentials');
@@ -69,7 +87,9 @@ export async function loginUser({ email, password }) {
     user: {
       id: user.id,
       email: user.email,
+      username: user.username,
       name: user.name,
+      isAdmin: user.isAdmin,
     },
     teams: user.memberships.map((m) => ({
       id: m.team.id,
@@ -138,7 +158,9 @@ export async function getCurrentUser(userId) {
   return {
     id: user.id,
     email: user.email,
+    username: user.username,
     name: user.name,
+    isAdmin: user.isAdmin,
     teams: user.memberships.map((m) => ({
       id: m.team.id,
       name: m.team.name,

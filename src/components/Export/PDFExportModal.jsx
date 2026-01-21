@@ -76,16 +76,16 @@ function PDFExportModal({ isOpen, onClose, lineupName, boats }) {
               onClick={() => setLayout('compact')}
               className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
                 layout === 'compact'
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                  ? 'border-blade-blue bg-blade-blue/10'
+                  : 'border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  layout === 'compact' ? 'border-blue-500' : 'border-gray-400'
+                  layout === 'compact' ? 'border-blade-blue' : 'border-gray-400 dark:border-white/30'
                 }`}>
                   {layout === 'compact' && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-blade-blue" />
                   )}
                 </div>
                 <div>
@@ -102,16 +102,16 @@ function PDFExportModal({ isOpen, onClose, lineupName, boats }) {
               onClick={() => setLayout('detailed')}
               className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
                 layout === 'detailed'
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                  ? 'border-blade-blue bg-blade-blue/10'
+                  : 'border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  layout === 'detailed' ? 'border-blue-500' : 'border-gray-400'
+                  layout === 'detailed' ? 'border-blade-blue' : 'border-gray-400 dark:border-white/30'
                 }`}>
                   {layout === 'detailed' && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-blade-blue" />
                   )}
                 </div>
                 <div>
@@ -143,7 +143,7 @@ function PDFExportModal({ isOpen, onClose, lineupName, boats }) {
         <button
           onClick={handleExport}
           disabled={isExporting || boats.length === 0}
-          className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 px-4 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blade-blue/20"
         >
           {isExporting ? (
             <span className="flex items-center justify-center gap-2">

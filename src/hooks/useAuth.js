@@ -44,8 +44,8 @@ export function useAuth() {
       const result = await storeLogin(email, password);
 
       if (result.success) {
-        // Redirect to original destination or dashboard
-        const from = location.state?.from?.pathname || '/dashboard';
+        // Redirect to original destination or app
+        const from = location.state?.from?.pathname || '/app';
         navigate(from, { replace: true });
       }
 
@@ -97,7 +97,7 @@ export function useAuth() {
       const result = await storeCreateTeam(data);
 
       if (result.success) {
-        navigate('/dashboard', { replace: true });
+        navigate('/app', { replace: true });
       }
 
       return result;
@@ -199,7 +199,7 @@ export function useRequireRole(...requiredRoles) {
   useEffect(() => {
     if (isInitialized && !isLoading && isAuthenticated) {
       if (!requiredRoles.includes(activeTeamRole)) {
-        navigate('/dashboard', { replace: true });
+        navigate('/app', { replace: true });
       }
     }
   }, [isAuthenticated, activeTeamRole, isInitialized, isLoading, navigate, requiredRoles]);

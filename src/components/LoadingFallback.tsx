@@ -21,7 +21,7 @@ export const LoadingFallback: React.FC<LoadingFallbackProps> = ({
     return (
       <div className="flex items-center justify-center p-4">
         <motion.div
-          className="w-6 h-6 border-2 border-accent-blue border-t-transparent rounded-full"
+          className="w-6 h-6 border-2 border-blade-blue border-t-transparent rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -52,18 +52,18 @@ export const LoadingFallback: React.FC<LoadingFallbackProps> = ({
         {/* Animated logo/spinner */}
         <div className="relative w-20 h-20 mx-auto mb-6">
           <motion.div
-            className="absolute inset-0 rounded-full border-4 border-accent-blue/20"
+            className="absolute inset-0 rounded-full border-4 border-blade-blue/20"
           />
           <motion.div
-            className="absolute inset-0 rounded-full border-4 border-accent-blue border-t-transparent"
+            className="absolute inset-0 rounded-full border-4 border-blade-blue border-t-transparent"
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
           <motion.div
-            className="absolute inset-2 rounded-full border-4 border-accent-purple/20"
+            className="absolute inset-2 rounded-full border-4 border-coxswain-violet/20"
           />
           <motion.div
-            className="absolute inset-2 rounded-full border-4 border-accent-purple border-b-transparent"
+            className="absolute inset-2 rounded-full border-4 border-coxswain-violet border-b-transparent"
             animate={{ rotate: -360 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
           />

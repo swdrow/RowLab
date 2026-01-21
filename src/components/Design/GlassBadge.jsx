@@ -31,14 +31,13 @@ const GlassBadge = ({
     lg: 'px-4 py-1.5 text-base rounded-xl',
   };
 
-  // Variant styles
+  // Variant styles - "Signal Blue" philosophy: blue only for active/selected states
   const variants = {
     primary: `
-      bg-gradient-to-r from-blue-500/20 to-purple-600/20
-      dark:from-accent-blue/20 dark:to-accent-purple/20
-      text-blue-700 dark:text-blue-300
-      border-blue-500/30 dark:border-accent-blue/30
-      ${glow ? 'shadow-glow-blue' : ''}
+      bg-white/10 dark:bg-white/5
+      text-gray-700 dark:text-white/90
+      border-white/20 dark:border-white/10
+      ${glow ? 'shadow-[0_0_10px_rgba(255,255,255,0.1)]' : ''}
     `,
     secondary: `
       bg-white/20 dark:bg-white/10
@@ -81,7 +80,7 @@ const GlassBadge = ({
 
   // Dot color based on variant
   const dotColors = {
-    primary: 'bg-blue-500',
+    primary: 'bg-white/70',
     secondary: 'bg-gray-500',
     success: 'bg-green-500',
     warning: 'bg-amber-500',

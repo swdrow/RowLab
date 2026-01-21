@@ -10,18 +10,15 @@ const Input = forwardRef(function Input(
       type={type}
       ref={ref}
       className={clsx(
-        `w-full px-4 py-3
-        bg-void-surface
-        border border-white/[0.08] rounded-[10px]
-        shadow-inset-depth
-        font-body text-sm text-text-primary
-        placeholder:text-text-muted
+        `w-full px-4 py-2.5
+        bg-void-surface/50
+        border border-white/[0.08] rounded-xl
+        shadow-inner
+        text-text-primary placeholder:text-white/40
         transition-all duration-150
-        hover:border-white/[0.12]
-        focus:outline-none focus:border-blade-green
-        focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2),0_0_0_3px_rgba(0,229,153,0.15)]
+        focus:outline-none focus:border-blade-blue/50 focus:ring-2 focus:ring-blade-blue/20
         disabled:opacity-50 disabled:cursor-not-allowed`,
-        error && 'border-danger-red focus:border-danger-red focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2),0_0_0_3px_rgba(239,68,68,0.15)]',
+        error && 'border-danger-red focus:border-danger-red focus:ring-danger-red/20',
         className
       )}
       {...props}
@@ -74,7 +71,7 @@ const PasswordInput = forwardRef(function PasswordInput(props, ref) {
       <button
         type="button"
         onClick={() => setShowPassword(!showPassword)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors p-1"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors p-1"
         tabIndex={-1}
       >
         {showPassword ? (
@@ -99,19 +96,16 @@ const Textarea = forwardRef(function Textarea(
       ref={ref}
       rows={rows}
       className={clsx(
-        `w-full px-4 py-3
-        bg-void-surface
-        border border-white/[0.08] rounded-[10px]
-        shadow-inset-depth
-        font-body text-sm text-text-primary
-        placeholder:text-text-muted
+        `w-full px-4 py-2.5
+        bg-void-surface/50
+        border border-white/[0.08] rounded-xl
+        shadow-inner
+        text-text-primary placeholder:text-white/40
         transition-all duration-150
-        hover:border-white/[0.12]
-        focus:outline-none focus:border-blade-green
-        focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2),0_0_0_3px_rgba(0,229,153,0.15)]
+        focus:outline-none focus:border-blade-blue/50 focus:ring-2 focus:ring-blade-blue/20
         disabled:opacity-50 disabled:cursor-not-allowed
         resize-none`,
-        error && 'border-danger-red focus:border-danger-red focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2),0_0_0_3px_rgba(239,68,68,0.15)]',
+        error && 'border-danger-red focus:border-danger-red focus:ring-danger-red/20',
         className
       )}
       {...props}

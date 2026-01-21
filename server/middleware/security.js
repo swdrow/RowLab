@@ -95,6 +95,25 @@ export const aiLimiter = rateLimit({
 });
 
 /**
+ * AI Chat rate limiter - stricter limits for expensive chat operations
+ * Per-user limiting using JWT user ID
+ */
+export const aiChatLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 chat requests per minute per user
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many chat requests. Please wait before sending more.' },
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    // Use user ID from JWT if available, otherwise IP
+    return req.user?.id || req.ip;
+  },
+});
+
+/**
  * API general rate limiter
  */
 export const apiLimiter = rateLimit({
@@ -115,5 +134,6 @@ export default {
   globalLimiter,
   authLimiter,
   aiLimiter,
+  aiChatLimiter,
   apiLimiter,
 };

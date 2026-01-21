@@ -3,9 +3,8 @@ import { clsx } from 'clsx';
 
 const Button = forwardRef(function Button(
   {
-    variant = 'glow',
+    variant = 'primary',
     size = 'md',
-    color = 'green',
     loading = false,
     disabled = false,
     className,
@@ -16,8 +15,10 @@ const Button = forwardRef(function Button(
 ) {
   const baseStyles = `
     relative inline-flex items-center justify-center
-    font-medium transition-all duration-200
-    disabled:opacity-40 disabled:pointer-events-none
+    font-medium rounded-xl
+    transition-all duration-150
+    focus:outline-none focus:ring-2 focus:ring-blade-blue/50 focus:ring-offset-2 focus:ring-offset-void-deep
+    disabled:opacity-40 disabled:pointer-events-none disabled:translate-y-0
   `;
 
   const sizeStyles = {
@@ -26,84 +27,79 @@ const Button = forwardRef(function Button(
     lg: 'px-8 py-4 text-base',
   };
 
-  const colorMap = {
-    green: {
-      text: 'text-blade-green',
-      glow: 'after:bg-blade-green after:shadow-[0_0_8px_var(--blade-green)]',
-      hoverGlow: 'hover:after:shadow-[0_0_12px_var(--blade-green),0_0_24px_rgba(0,229,153,0.4)]',
-    },
-    violet: {
-      text: 'text-coxswain-violet',
-      glow: 'after:bg-coxswain-violet after:shadow-[0_0_8px_var(--coxswain-violet)]',
-      hoverGlow: 'hover:after:shadow-[0_0_12px_var(--coxswain-violet),0_0_24px_rgba(124,58,237,0.4)]',
-    },
-  };
-
   const variantStyles = {
-    glow: `
-      bg-transparent border-none cursor-pointer
-      ${colorMap[color]?.text || colorMap.green.text}
-      after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0
-      after:h-[2px] after:rounded-[1px]
-      ${colorMap[color]?.glow || colorMap.green.glow}
-      after:transition-all after:duration-200
-      ${colorMap[color]?.hoverGlow || colorMap.green.hoverGlow}
-      hover:after:scale-x-105
-      active:scale-[0.98]
-    `,
-    pill: `
-      bg-white/[0.06] backdrop-blur-[10px]
-      border border-transparent rounded-full
-      text-text-primary
-      hover:bg-white/[0.1]
-      [background-image:linear-gradient(rgba(255,255,255,0.06),rgba(255,255,255,0.06)),linear-gradient(to_bottom,rgba(255,255,255,0.15),rgba(255,255,255,0))]
-      [background-origin:padding-box,border-box]
-      [background-clip:padding-box,border-box]
-    `,
-    ghost: `
-      bg-transparent border-none cursor-pointer
-      text-text-secondary
-      hover:text-text-primary
-      after:content-[''] after:absolute after:bottom-1 after:left-3 after:right-3
-      after:h-[1px] after:bg-blade-green
-      after:scale-x-0 after:opacity-0
-      after:transition-all after:duration-200
-      hover:after:scale-x-100 hover:after:opacity-100
-    `,
-    icon: `
-      w-10 h-10 p-0
-      bg-white/[0.04] border border-white/[0.08] rounded-[10px]
-      text-text-secondary
-      hover:bg-white/[0.08] hover:border-white/[0.12] hover:text-text-primary
-      active:scale-95
-    `,
-    // Legacy variants for compatibility
+    // Primary - gradient with glow
     primary: `
-      bg-blade-green text-void-deep font-semibold
-      rounded-lg
-      hover:bg-[#00ffaa]
-      active:scale-[0.98]
-      shadow-glow-green hover:shadow-glow-green-lg
+      bg-gradient-to-b from-blade-blue to-blade-blue/90
+      text-void-deep font-semibold
+      shadow-[0_0_20px_-5px_rgba(0,112,243,0.4)]
+      hover:shadow-[0_0_30px_-5px_rgba(0,112,243,0.5)]
+      hover:translate-y-[-1px]
+      active:translate-y-0 active:shadow-[0_0_15px_-5px_rgba(0,112,243,0.3)]
     `,
+
+    // Secondary - subtle border with hover lift
     secondary: `
-      bg-white/[0.06] text-text-primary
-      border border-white/[0.08] rounded-lg
-      hover:bg-white/[0.1] hover:border-white/[0.12]
+      bg-white/[0.04]
+      text-text-primary
+      border border-white/10
+      hover:bg-white/[0.06] hover:border-white/20
+      hover:translate-y-[-1px]
+      hover:shadow-[0_4px_12px_-4px_rgba(0,0,0,0.3)]
+      active:translate-y-0
     `,
+
+    // Ghost - minimal, text only with subtle hover
+    ghost: `
+      bg-transparent
+      text-text-secondary
+      border border-white/10
+      hover:bg-white/[0.04] hover:border-white/20
+      hover:text-text-primary
+    `,
+
+    // Danger - red accent
     danger: `
-      bg-danger-red/20 text-danger-red
-      border border-danger-red/30 rounded-lg
-      hover:bg-danger-red/30
+      bg-gradient-to-b from-danger-red to-danger-red/90
+      text-white font-semibold
+      shadow-[0_0_20px_-5px_rgba(239,68,68,0.4)]
+      hover:shadow-[0_0_30px_-5px_rgba(239,68,68,0.5)]
+      hover:translate-y-[-1px]
+      active:translate-y-0 active:shadow-[0_0_15px_-5px_rgba(239,68,68,0.3)]
     `,
+
+    // Success - green accent
     success: `
-      bg-blade-green/20 text-blade-green
-      border border-blade-green/30 rounded-lg
-      hover:bg-blade-green/30
+      bg-gradient-to-b from-success to-success/90
+      text-void-deep font-semibold
+      shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]
+      hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.5)]
+      hover:translate-y-[-1px]
+      active:translate-y-0
     `,
+
+    // Outline - bordered with accent color
     outline: `
-      bg-transparent text-blade-green
-      border border-blade-green rounded-lg
-      hover:bg-blade-green/10
+      bg-transparent
+      text-blade-blue
+      border border-blade-blue/50
+      hover:bg-blade-blue/10 hover:border-blade-blue
+      hover:translate-y-[-1px]
+      hover:shadow-[0_0_20px_-5px_rgba(0,112,243,0.3)]
+      active:translate-y-0
+    `,
+
+    // Icon button - square with subtle background
+    icon: `
+      !rounded-xl !p-0 w-10 h-10
+      bg-white/[0.04]
+      text-text-secondary
+      border border-white/10
+      hover:bg-white/[0.08] hover:border-white/20
+      hover:text-text-primary
+      hover:translate-y-[-1px]
+      hover:shadow-[0_4px_12px_-4px_rgba(0,0,0,0.3)]
+      active:translate-y-0 active:scale-95
     `,
   };
 
@@ -111,19 +107,40 @@ const Button = forwardRef(function Button(
     <button
       ref={ref}
       disabled={disabled || loading}
+      aria-busy={loading}
       className={clsx(
         baseStyles,
         variant !== 'icon' && sizeStyles[size],
         variantStyles[variant],
+        loading && 'cursor-wait',
         className
       )}
       {...props}
     >
-      {loading ? (
-        <span className="w-4 h-4 border-2 border-white/20 border-t-blade-green rounded-full animate-spin" />
-      ) : (
-        children
+      {loading && (
+        <svg
+          className="animate-spin -ml-1 mr-2 h-4 w-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
       )}
+      {children}
     </button>
   );
 });

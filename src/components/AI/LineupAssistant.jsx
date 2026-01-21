@@ -28,7 +28,7 @@ const Message = ({ message, isUser, isStreaming }) => (
     <div className={`
       w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
       ${isUser
-        ? 'bg-accent-blue'
+        ? 'bg-blade-blue'
         : 'bg-gradient-to-br from-purple-500 to-pink-500'
       }
     `}>
@@ -41,7 +41,7 @@ const Message = ({ message, isUser, isStreaming }) => (
     <div className={`
       flex-1 px-4 py-3 rounded-xl text-sm leading-relaxed
       ${isUser
-        ? 'bg-accent-blue text-white'
+        ? 'bg-blade-blue text-white'
         : 'bg-white/10 text-gray-200'
       }
     `}>
@@ -150,6 +150,10 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
         })),
       };
 
+      // Get selected model from settings store or use the one from AI status
+      const { aiModel } = useSettingsStore.getState();
+      const selectedModel = aiModel || aiStatus?.model;
+
       // Stream response
       let fullResponse = '';
       await sendChatMessage(
@@ -158,7 +162,8 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
         (chunk, full) => {
           fullResponse = full;
           setStreamingText(full);
-        }
+        },
+        { model: selectedModel }
       );
 
       setMessages(prev => [...prev, { role: 'assistant', content: fullResponse }]);

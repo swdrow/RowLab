@@ -65,7 +65,7 @@ function LineupToolbar({ onExportPDF, onExportCSV }) {
       <div className="flex items-center gap-2 p-2 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
         {/* Lineup Name */}
         {lineupName && (
-          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-lg text-sm font-medium">
+          <span className="px-3 py-1 bg-white/10 text-text-primary rounded-lg text-sm font-medium border border-white/10">
             {lineupName}
           </span>
         )}
@@ -104,7 +104,7 @@ function LineupToolbar({ onExportPDF, onExportCSV }) {
               setShowSaveModal(true);
             }}
             disabled={!hasLineup}
-            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white text-sm font-medium rounded-lg flex items-center gap-1 transition-all"
+            className="px-3 py-1.5 bg-blade-blue hover:bg-blade-blue/90 disabled:bg-white/10 text-void-deep disabled:text-text-muted text-sm font-medium rounded-lg flex items-center gap-1 transition-all"
             title="Save Lineup"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +184,7 @@ function LineupToolbar({ onExportPDF, onExportCSV }) {
                 type="text"
                 value={saveName}
                 onChange={(e) => setSaveName(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blade-blue/50"
                 placeholder="e.g., Race Day Lineup"
                 autoFocus
               />
@@ -197,7 +197,7 @@ function LineupToolbar({ onExportPDF, onExportCSV }) {
               <textarea
                 value={saveNotes}
                 onChange={(e) => setSaveNotes(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blade-blue/50"
                 placeholder="Any notes about this lineup..."
                 rows={2}
               />
@@ -213,7 +213,7 @@ function LineupToolbar({ onExportPDF, onExportCSV }) {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all disabled:opacity-50"
+                className="px-4 py-2 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-medium rounded-lg transition-all disabled:opacity-50"
               >
                 {isSaving ? 'Saving...' : 'Save'}
               </button>
@@ -227,8 +227,7 @@ function LineupToolbar({ onExportPDF, onExportCSV }) {
         isOpen={showLoadModal}
         onClose={() => setShowLoadModal(false)}
         onLoad={(lineup) => {
-          // This will be handled by the parent component
-          console.log('Load lineup:', lineup);
+          // TODO: Wire up to parent via onLoadLineup prop
         }}
       />
 

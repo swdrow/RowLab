@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../utils/logger.js';
 import multer from 'multer';
 import { body, validationResult } from 'express-validator';
 import {
@@ -72,7 +73,7 @@ router.post(
         },
       });
     } catch (error) {
-      console.error('CSV preview error:', error);
+      logger.error('CSV preview error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: error.message || 'Failed to preview CSV' },
@@ -103,7 +104,7 @@ router.post(
         data: result,
       });
     } catch (error) {
-      console.error('CSV execute error:', error);
+      logger.error('CSV execute error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to import CSV' },
@@ -155,7 +156,7 @@ router.post(
         },
       });
     } catch (error) {
-      console.error('Detect mapping error:', error);
+      logger.error('Detect mapping error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: error.message || 'Failed to detect mapping' },

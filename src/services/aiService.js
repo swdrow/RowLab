@@ -1,19 +1,60 @@
 /**
  * AI Service - Handles communication with the Ollama-backed AI assistant
  */
+import useAuthStore from '../store/authStore';
 
 const API_URL = '/api/ai';
+
+/**
+ * Get auth headers for API requests
+ */
+function getAuthHeaders() {
+  const token = useAuthStore.getState().accessToken;
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
 
 /**
  * Check if AI service is available
  */
 export async function checkAIStatus() {
   try {
-    const res = await fetch(`${API_URL}/status`);
+    const res = await fetch(`${API_URL}/status`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error('Status check failed');
-    return await res.json();
+    const data = await res.json();
+    return data.success ? data.data : { available: false, error: 'Invalid response' };
   } catch (err) {
     return { available: false, error: err.message };
+  }
+}
+
+/**
+ * Set the preferred AI model for the team
+ * @param {string} model - Model name (e.g., "phi4-mini-reasoning:3.8b")
+ * @returns {Promise<object>} - Success status
+ */
+export async function setPreferredModel(model) {
+  try {
+    const res = await fetch(`${API_URL}/set-model`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ model }),
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error?.message || 'Failed to set model');
+    }
+
+    const data = await res.json();
+    return { success: true, model: data.data.model };
+  } catch (err) {
+    console.error('Set model error:', err);
+    return { success: false, error: err.message };
   }
 }
 
@@ -128,5 +169,6 @@ export default {
   checkAIStatus,
   sendChatMessage,
   sendChatMessageSimple,
+  setPreferredModel,
   SUGGESTED_PROMPTS,
 };

@@ -46,21 +46,29 @@
   --color-spectrum-cyan: #06B6D4;
 
   /* ================================================
-     COLOR TOKENS - Primary Accent (Indigo)
-     Blue-to-purple gradient feel
+     COLOR TOKENS - Primary Accent (Deep Blue)
+     Blade blue scale
      ================================================ */
+  --color-blade-blue: #0070F3;
+  --color-blade-blue-hover: #2186EB;
+  --color-blade-blue-active: #0062D1;
+  --color-blade-blue-subtle: rgba(0, 112, 243, 0.15);
+  --color-blade-blue-muted: rgba(0, 112, 243, 0.08);
+  --color-blade-blue-glow: rgba(0, 112, 243, 0.4);
+
+  /* Legacy accent scale (indigo) */
   --color-accent-50: #EEF2FF;
   --color-accent-100: #E0E7FF;
   --color-accent-200: #C7D2FE;
   --color-accent-300: #A5B4FC;
   --color-accent-400: #818CF8;
-  --color-accent-500: #6366F1;
-  --color-accent-600: #4F46E5;
+  --color-accent-500: #0070F3;
+  --color-accent-600: #0062D1;
   --color-accent-700: #4338CA;
   --color-accent-800: #3730A3;
   --color-accent-900: #312E81;
   --color-accent-950: #1E1B4B;
-  --color-accent-default: #6366F1;
+  --color-accent-default: #0070F3;
 
   /* ================================================
      COLOR TOKENS - Semantic Colors
@@ -160,9 +168,8 @@
   /* ================================================
      TYPOGRAPHY TOKENS - Font Families
      ================================================ */
-  --font-family-display: 'Clash Display', -apple-system, BlinkMacSystemFont,
-    system-ui, sans-serif;
-  --font-family-sans: Satoshi, -apple-system, BlinkMacSystemFont, system-ui,
+  --font-family-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-family-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui,
     'Segoe UI', Roboto, sans-serif;
   --font-family-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Monaco,
     Consolas, monospace;
@@ -221,28 +228,35 @@
   --radius-4xl: 32px;
 
   /* ================================================
-     ANIMATION TOKENS - Durations
+     ANIMATION TOKENS - Precision Instrument Durations
+     Zero perceived latency - feels "wired" to data
      ================================================ */
+  --transition-fast: 100ms;    /* Hover states, instant feedback */
+  --transition-normal: 150ms;  /* Most transitions */
+  --transition-slow: 200ms;    /* Complex animations (max) */
+
+  /* Legacy duration aliases (mapped to precision values) */
   --duration-75: 75ms;
   --duration-100: 100ms;
   --duration-150: 150ms;
   --duration-200: 200ms;
-  --duration-300: 300ms;
-  --duration-500: 500ms;
-  --duration-700: 700ms;
-  --duration-1000: 1000ms;
+  --duration-300: 150ms;       /* Remapped: was 300ms, now 150ms */
+  --duration-500: 200ms;       /* Remapped: was 500ms, now 200ms */
+  --duration-700: 200ms;       /* Remapped: was 700ms, now 200ms (max) */
+  --duration-1000: 200ms;      /* Remapped: was 1000ms, now 200ms (max) */
 
   /* ================================================
      ANIMATION TOKENS - Easing Functions
+     Precision Instrument: NO bouncy/spring animations
      ================================================ */
   --ease-linear: linear;
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);           /* Primary: instant start, smooth stop */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-snap: cubic-bezier(0.4, 0, 0, 1);
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-snap: cubic-bezier(0, 0, 0.2, 1);          /* Fastest perceived response */
+  --ease-precision: cubic-bezier(0, 0, 0.2, 1);    /* Alias for precision instrument feel */
+  /* REMOVED: --ease-bounce - no playful animations in precision instruments */
 
   /* ================================================
      SHADOW TOKENS - Elevation System

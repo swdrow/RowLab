@@ -1,11 +1,13 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoadingFallback } from './components/LoadingFallback';
 import './App.css';
 
 // Lazy load all pages for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage'));
+const DashboardRouter = lazy(() => import('./components/DashboardRouter'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const AthleteDashboard = lazy(() => import('./pages/AthleteDashboard'));
 const LineupBuilder = lazy(() => import('./pages/LineupBuilder'));
 const BoatViewPage = lazy(() => import('./pages/BoatViewPage'));
 const AthletesPage = lazy(() => import('./pages/AthletesPage'));
@@ -13,7 +15,20 @@ const ErgDataPage = lazy(() => import('./pages/ErgDataPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const SeatRacingPage = lazy(() => import('./pages/SeatRacingPage'));
+const RacingPage = lazy(() => import('./pages/RacingPage'));
+const CommunicationPage = lazy(() => import('./pages/CommunicationPage'));
+const AdvancedPage = lazy(() => import('./pages/AdvancedPage'));
+const BillingPage = lazy(() => import('./pages/BillingPage'));
+const CoxswainView = lazy(() => import('./pages/CoxswainView'));
 const AppLayout = lazy(() => import('./layouts/AppLayout'));
+
+// Auth pages
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
+const InviteClaimPage = lazy(() => import('./pages/auth/InviteClaimPage'));
+
+// Integration callback pages
+const Concept2CallbackPage = lazy(() => import('./pages/Concept2CallbackPage'));
 
 // Error Boundary for catching rendering errors
 class ErrorBoundary extends React.Component {
@@ -48,7 +63,7 @@ class ErrorBoundary extends React.Component {
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/90 transition-colors"
+              className="px-4 py-2 bg-blade-blue text-white rounded-lg hover:bg-blade-blue/90 transition-colors"
             >
               Reload Page
             </button>
@@ -70,13 +85,65 @@ function App() {
             {/* Public landing page */}
             <Route path="/" element={<LandingPage />} />
 
+            {/* Auth routes */}
+            <Route
+              path="/login"
+              element={
+                <Suspense fallback={<LoadingFallback message="Loading..." />}>
+                  <LoginPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <Suspense fallback={<LoadingFallback message="Loading..." />}>
+                  <RegisterPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/join"
+              element={
+                <Suspense fallback={<LoadingFallback message="Loading..." />}>
+                  <InviteClaimPage />
+                </Suspense>
+              }
+            />
+
+            {/* Integration callbacks */}
+            <Route
+              path="/settings/integrations"
+              element={
+                <Suspense fallback={<LoadingFallback message="Loading..." />}>
+                  <Concept2CallbackPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/concept2/callback"
+              element={
+                <Suspense fallback={<LoadingFallback message="Loading..." />}>
+                  <Concept2CallbackPage />
+                </Suspense>
+              }
+            />
+
             {/* App routes with layout */}
             <Route path="/app" element={<AppLayout />}>
               <Route
                 index
                 element={
                   <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <Dashboard />
+                    <DashboardRouter />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="athlete-dashboard"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <AthleteDashboard />
                   </Suspense>
                 }
               />
@@ -101,6 +168,14 @@ function App() {
                 element={
                   <Suspense fallback={<LoadingFallback variant="component" />}>
                     <AthletesPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="athletes/:id"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <AthleteDashboard />
                   </Suspense>
                 }
               />
@@ -136,6 +211,42 @@ function App() {
                   </Suspense>
                 }
               />
+              <Route
+                path="racing"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <RacingPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="communication"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <CommunicationPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="advanced"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <AdvancedPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="billing"
+                element={<Navigate to="/app/settings?tab=billing" replace />}
+              />
+              <Route
+                path="coxswain"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <CoxswainView />
+                  </Suspense>
+                }
+              />
             </Route>
 
             {/* 404 fallback */}
@@ -153,7 +264,7 @@ function App() {
                     </p>
                     <a
                       href="/app"
-                      className="inline-block px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/90 transition-colors"
+                      className="inline-block px-4 py-2 bg-blade-blue text-white rounded-lg hover:bg-blade-blue/90 transition-colors"
                     >
                       Back to Dashboard
                     </a>

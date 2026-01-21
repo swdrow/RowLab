@@ -94,16 +94,16 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
         <div className="relative glass-card rounded-2xl p-8 w-full max-w-md mx-4 animate-slide-up">
           <div className="text-center">
             <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+            <h2 className="text-2xl font-bold text-text-primary mb-2">
               Application Submitted!
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-text-secondary mb-6">
               Your account request has been submitted and is pending approval.
               You'll be able to log in once an administrator approves your application.
             </p>
             <button
               onClick={handleClose}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200"
+              className="px-6 py-3 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blade-blue/20"
             >
               Got it
             </button>
@@ -125,7 +125,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
       <div className="relative glass-card rounded-2xl p-8 w-full max-w-md mx-4 animate-slide-up max-h-[90vh] overflow-y-auto">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -134,10 +134,10 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
 
         <div className="text-center mb-6">
           <div className="text-4xl mb-2">📝</div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+          <h2 className="text-2xl font-bold text-text-primary">
             Request Access
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-text-secondary mt-1">
             Submit your application to become a coach
           </p>
         </div>
@@ -150,7 +150,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Name *
             </label>
             <input
@@ -158,14 +158,14 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition"
               placeholder="Your full name"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Username *
             </label>
             <input
@@ -173,14 +173,14 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition"
               placeholder="Choose a username"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Email
             </label>
             <input
@@ -188,13 +188,13 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition"
               placeholder="your@email.com (optional)"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Password *
             </label>
             <input
@@ -202,7 +202,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition"
               placeholder="At least 6 characters"
               required
               minLength={6}
@@ -210,7 +210,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Confirm Password *
             </label>
             <input
@@ -218,14 +218,14 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition"
               placeholder="Confirm your password"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Why do you want to join?
             </label>
             <textarea
@@ -233,7 +233,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               value={formData.requestMessage}
               onChange={handleChange}
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition resize-none"
               placeholder="Tell us about yourself (optional)"
             />
           </div>
@@ -241,7 +241,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blade-blue/20"
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
@@ -257,12 +257,12 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mt-6">
+        <p className="text-sm text-center text-text-muted mt-6">
           Already have an account?{' '}
           <button
             type="button"
             onClick={onSwitchToLogin}
-            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            className="text-blade-blue hover:underline font-medium"
           >
             Sign in
           </button>

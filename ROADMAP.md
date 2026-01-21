@@ -1,6 +1,6 @@
 # RowLab Product Roadmap
 
-**Last Updated**: January 19, 2026
+**Last Updated**: January 20, 2026
 **Status**: v2.0 - Active Development
 **Full Plan**: [docs/plans/2026-01-19-comprehensive-improvement-plan.md](docs/plans/2026-01-19-comprehensive-improvement-plan.md)
 
@@ -301,3 +301,43 @@ iOS/Android app that connects directly to Concept2 PM5 monitors via Bluetooth to
 #### Competitive Advantage
 
 No existing rowing platform offers native PM5 integration with live coaching dashboard. This would position RowLab as the only end-to-end platform for both on-water and erg training management.
+
+---
+
+### Shell Margin Visualization
+
+**Status**: Concept / Backlog  
+**Priority**: P3  
+**Estimated Effort**: Large (10-15 days)
+
+Visual representation of time/distance margins between boats during water workouts, accounting for shell type differences.
+
+#### Features
+
+| Feature | Description | Effort |
+|---------|-------------|--------|
+| Distance margin conversion | Convert time gaps to physical distance (e.g., "1V beat 2V by 2.3 seconds = ~8 meters") | Medium |
+| Shell type speed adjustment | Account for baseline speed differences between shell types (8+ vs 4+ vs 4- vs 2x) | Medium |
+| Visual margin representation | Show boats spaced by their actual margin in an intuitive visualization | Medium |
+| Animated race replay | Replay showing how margins changed throughout pieces | Large |
+| "What-if" analysis | "If 2V maintained their piece 1 pace, they would have won by X meters" | Medium |
+
+#### Technical Considerations
+
+- **Speed/velocity models**: Need baseline speed data for different shell types at various stroke rates
+- **Margin calculation**: `time_gap * boat_speed = distance_margin`
+- **Environmental factors**: May need to account for water conditions, head/tail wind
+- **Future integration**: Could integrate with GPS data from SpeedCoach or NK devices
+
+#### Use Cases
+
+1. **Race analysis**: Help coaches understand how close races actually were
+2. **Pacing feedback**: Identify where boats gained/lost margin during pieces
+3. **Fair comparison**: Compare performance across different shell types fairly
+4. **Training decisions**: Data-driven boat selection and lineup changes
+
+#### Dependencies
+
+- Regatta Day Mode (Phase 3) for live timing data
+- Integration Hub (Phase 4) for potential SpeedCoach/NK device data
+

@@ -9,6 +9,7 @@ import {
   getStandardConfigs,
 } from '../services/boatConfigService.js';
 import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -45,7 +46,7 @@ router.get(
         data: { configs },
       });
     } catch (error) {
-      console.error('Get boat configs error:', error);
+      logger.error('Get boat configs error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get boat configs' },
@@ -69,7 +70,7 @@ router.get(
         data: { configs },
       });
     } catch (error) {
-      console.error('Get standard configs error:', error);
+      logger.error('Get standard configs error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get standard configs' },
@@ -100,7 +101,7 @@ router.get(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Get boat config error:', error);
+      logger.error('Get boat config error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get boat config' },
@@ -138,7 +139,7 @@ router.post(
           error: { code: 'DUPLICATE', message: error.message },
         });
       }
-      console.error('Create boat config error:', error);
+      logger.error('Create boat config error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to create boat config' },
@@ -188,7 +189,7 @@ router.patch(
           error: { code: 'DUPLICATE', message: error.message },
         });
       }
-      console.error('Update boat config error:', error);
+      logger.error('Update boat config error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to update boat config' },
@@ -226,7 +227,7 @@ router.delete(
           error: { code: 'INVALID_OPERATION', message: error.message },
         });
       }
-      console.error('Delete boat config error:', error);
+      logger.error('Delete boat config error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to delete boat config' },

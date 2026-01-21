@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../utils/logger.js';
 import { body, param, query, validationResult } from 'express-validator';
 import {
   createWorkout,
@@ -47,7 +48,7 @@ router.get(
         data: { workouts },
       });
     } catch (error) {
-      console.error('Get workouts error:', error);
+      logger.error('Get workouts error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get workouts' },
@@ -81,7 +82,7 @@ router.get(
         data: { summary },
       });
     } catch (error) {
-      console.error('Get workout summary error:', error);
+      logger.error('Get workout summary error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get workout summary' },
@@ -114,7 +115,7 @@ router.get(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Get workout error:', error);
+      logger.error('Get workout error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get workout' },
@@ -153,7 +154,7 @@ router.post(
         data: { workout },
       });
     } catch (error) {
-      console.error('Create workout error:', error);
+      logger.error('Create workout error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to create workout' },
@@ -195,7 +196,7 @@ router.patch(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Update workout error:', error);
+      logger.error('Update workout error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to update workout' },
@@ -229,7 +230,7 @@ router.delete(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Delete workout error:', error);
+      logger.error('Delete workout error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to delete workout' },

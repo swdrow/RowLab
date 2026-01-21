@@ -33,14 +33,12 @@ export function HeroCockpitCard({ children, className }) {
         rounded-3xl
         backdrop-blur-[40px] saturate-[200%]
 
-        /* Gradient stroke border */
-        border border-transparent
-        [background-image:linear-gradient(rgba(18,18,20,0.9),rgba(18,18,20,0.9)),linear-gradient(135deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.05)_50%,rgba(255,255,255,0)_100%)]
-        [background-origin:padding-box,border-box]
-        [background-clip:padding-box,border-box]
+        /* Simple border */
+        border border-white/10
+        bg-void-elevated/90
 
         /* Shadow layers */
-        shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_20px_50px_-20px_rgba(0,0,0,0.5),0_0_100px_-20px_rgba(0,229,153,0.2)]`,
+        shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5),0_0_100px_-20px_rgba(0,112,243,0.2)]`,
         className
       )}
       style={{
@@ -56,7 +54,7 @@ export function HeroCockpitCard({ children, className }) {
       transition={{ duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
     >
       {/* Top highlight line */}
-      <div className="absolute top-0 left-[20%] right-[20%] h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+      <div className="absolute top-0 left-[20%] right-[20%] h-px bg-white/10" />
 
       {children}
     </motion.div>
@@ -83,18 +81,18 @@ export function LineupPreview() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <span className="font-mono text-[11px] font-medium tracking-[0.08em] uppercase text-blade-green">
+          <span className="font-mono text-[11px] font-medium tracking-widest uppercase text-blade-blue">
             VARSITY 8+
           </span>
-          <h3 className="font-display text-xl font-semibold text-text-primary mt-1">
+          <h3 className="font-display text-xl font-semibold text-text-primary mt-1 tracking-[-0.02em]">
             Spring Lineup
           </h3>
         </div>
         <div className="text-right">
-          <span className="font-mono text-[11px] font-medium tracking-[0.08em] uppercase text-text-muted">
+          <span className="font-mono text-[11px] font-medium tracking-widest uppercase text-text-muted">
             PREDICTED SPEED
           </span>
-          <div className="font-mono text-2xl font-semibold text-blade-green text-glow-green">
+          <div className="font-mono text-2xl font-semibold text-blade-blue tabular-nums">
             1:42.5
           </div>
         </div>
@@ -122,7 +120,7 @@ export function LineupPreview() {
                 'text-xs font-semibold',
                 seat.side === 'port'
                   ? 'bg-danger-red/20 text-danger-red border border-danger-red/30'
-                  : 'bg-blade-green/20 text-blade-green border border-blade-green/30'
+                  : 'bg-blade-blue/20 text-blade-blue border border-blade-blue/30'
               )}
             >
               {seat.num}
@@ -133,7 +131,7 @@ export function LineupPreview() {
               <div className="text-sm font-medium text-text-primary truncate">
                 {seat.name}
               </div>
-              <div className="font-mono text-xs text-text-muted">
+              <div className="font-mono text-xs text-text-muted tabular-nums">
                 {seat.erg}
               </div>
             </div>

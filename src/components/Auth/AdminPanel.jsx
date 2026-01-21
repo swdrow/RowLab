@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 import useSettingsStore from '../../store/settingsStore';
-import { checkAIStatus } from '../../services/aiService';
+import { checkAIStatus, setPreferredModel } from '../../services/aiService';
 
 /**
  * Admin Panel Component
@@ -52,8 +52,8 @@ function AdminPanel({ isOpen, onClose }) {
   const [aiStatus, setAiStatus] = useState(null);
   const [checkingAI, setCheckingAI] = useState(false);
 
-  // Check if current user is admin
-  const isAdmin = user?.role === 'admin';
+  // Check if current user is admin (only users with isAdmin flag can access)
+  const isAdmin = user?.isAdmin === true;
 
   useEffect(() => {
     if (isOpen && isAdmin) {
@@ -69,7 +69,28 @@ function AdminPanel({ isOpen, onClose }) {
     setCheckingAI(true);
     const status = await checkAIStatus();
     setAiStatus(status);
+
+    // Update local settings store with the persisted model from backend
+    if (status?.model) {
+      setAIModel(status.model);
+    }
+
     setCheckingAI(false);
+  };
+
+  const handleModelChange = async (newModel) => {
+    // Update local state immediately
+    setAIModel(newModel);
+
+    // Persist to backend
+    const result = await setPreferredModel(newModel);
+    if (!result.success) {
+      setError(`Failed to save model preference: ${result.error}`);
+      // Revert on error
+      if (aiStatus?.model) {
+        setAIModel(aiStatus.model);
+      }
+    }
   };
 
   const fetchData = async () => {
@@ -78,19 +99,31 @@ function AdminPanel({ isOpen, onClose }) {
 
     try {
       if (activeTab === 'applications') {
-        const res = await fetch('/api/auth/applications', {
+        const res = await fetch('/api/v1/auth/applications', {
           headers: getAuthHeaders(),
         });
+        // Check if response is JSON before parsing
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          // Endpoint not implemented yet
+          setApplications([]);
+          return;
+        }
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        setApplications(data.applications || []);
+        if (!res.ok) throw new Error(data.error?.message || 'Failed to load applications');
+        setApplications(data.data?.applications || data.applications || []);
       } else if (activeTab === 'users') {
-        const res = await fetch('/api/auth/users', {
+        const res = await fetch('/api/v1/auth/users', {
           headers: getAuthHeaders(),
         });
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          setUsers([]);
+          return;
+        }
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        setUsers(data.users || []);
+        if (!res.ok) throw new Error(data.error?.message || 'Failed to load users');
+        setUsers(data.data?.users || data.users || []);
       }
     } catch (err) {
       setError(err.message);
@@ -102,12 +135,14 @@ function AdminPanel({ isOpen, onClose }) {
   const handleApprove = async (id) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/auth/applications/${id}/approve`, {
+      const res = await fetch(`/api/v1/auth/applications/${id}/approve`, {
         method: 'POST',
         headers: getAuthHeaders(),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error?.message || 'Failed to approve application');
+      }
       fetchData();
     } catch (err) {
       setError(err.message);
@@ -119,12 +154,14 @@ function AdminPanel({ isOpen, onClose }) {
   const handleReject = async (id) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/auth/applications/${id}/reject`, {
+      const res = await fetch(`/api/v1/auth/applications/${id}/reject`, {
         method: 'POST',
         headers: getAuthHeaders(),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error?.message || 'Failed to reject application');
+      }
       fetchData();
     } catch (err) {
       setError(err.message);
@@ -140,12 +177,14 @@ function AdminPanel({ isOpen, onClose }) {
 
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/auth/users/${id}`, {
+      const res = await fetch(`/api/v1/auth/users/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error?.message || 'Failed to delete user');
+      }
       fetchData();
     } catch (err) {
       setError(err.message);
@@ -169,15 +208,15 @@ function AdminPanel({ isOpen, onClose }) {
         <div className="relative glass-card rounded-2xl p-8 w-full max-w-md mx-4">
           <div className="text-center">
             <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+            <h2 className="text-2xl font-bold text-text-primary mb-2">
               Access Denied
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-text-secondary mb-6">
               Only administrators can access this panel.
             </p>
             <button
               onClick={onClose}
-              className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all"
+              className="px-6 py-3 bg-void-surface hover:bg-void-elevated text-text-primary font-semibold rounded-xl transition-all"
             >
               Close
             </button>
@@ -215,18 +254,18 @@ function AdminPanel({ isOpen, onClose }) {
       {/* Ollama Status Display */}
       <div className={`p-4 rounded-xl border ${aiStatus?.available
         ? 'bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/30'
-        : 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
+        : 'bg-void-surface border-white/[0.06]'
       }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${aiStatus?.available ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gray-400'}`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${aiStatus?.available ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-white/20'}`}>
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200">
+              <h3 className="font-semibold text-text-primary">
                 Ollama AI Model
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-text-muted">
                 {aiStatus?.available
                   ? 'Running - using system resources'
                   : 'Stopped - control via Home Assistant'
@@ -240,7 +279,7 @@ function AdminPanel({ isOpen, onClose }) {
             className="p-2 rounded-lg hover:bg-white/10 transition-colors"
             title="Refresh status"
           >
-            <RefreshCw className={`w-5 h-5 text-gray-500 ${checkingAI ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-5 h-5 text-text-muted ${checkingAI ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
@@ -248,8 +287,8 @@ function AdminPanel({ isOpen, onClose }) {
         <div className="mt-3 flex items-center gap-2">
           {checkingAI ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
-              <span className="text-sm text-gray-500">Checking status...</span>
+              <Loader2 className="w-4 h-4 animate-spin text-text-muted" />
+              <span className="text-sm text-text-muted">Checking status...</span>
             </>
           ) : aiStatus?.available ? (
             <>
@@ -258,17 +297,17 @@ function AdminPanel({ isOpen, onClose }) {
             </>
           ) : (
             <>
-              <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span className="text-sm text-gray-500">Ollama is not running</span>
+              <div className="w-2 h-2 rounded-full bg-white/20" />
+              <span className="text-sm text-text-muted">Ollama is not running</span>
             </>
           )}
         </div>
 
         {/* Home Assistant control info */}
         {!aiStatus?.available && (
-          <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p className="text-xs text-blue-700 dark:text-blue-300">
-              <strong>Control via Home Assistant:</strong> Use the Ollama switch in your HA dashboard to start/stop the AI service and save system resources.
+          <div className="mt-3 p-3 bg-white/5 border border-white/10 rounded-lg">
+            <p className="text-xs text-text-secondary">
+              <strong className="text-text-primary">Control via Home Assistant:</strong> Use the Ollama switch in your HA dashboard to start/stop the AI service and save system resources.
             </p>
           </div>
         )}
@@ -276,22 +315,22 @@ function AdminPanel({ isOpen, onClose }) {
 
       {/* Connection Status - Only show when Ollama is running */}
       {aiStatus?.available && (
-        <div className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="p-4 bg-void-elevated/50 rounded-xl border border-white/[0.06]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-200">
+            <h3 className="font-semibold text-text-primary">
               Ollama Connection
             </h3>
             <button
               onClick={checkAI}
               disabled={checkingAI}
-              className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-lg hover:bg-white/[0.06] transition-colors"
             >
-              <RefreshCw className={`w-4 h-4 text-gray-500 ${checkingAI ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 text-text-muted ${checkingAI ? 'animate-spin' : ''}`} />
             </button>
           </div>
 
           {checkingAI ? (
-            <div className="flex items-center gap-2 text-gray-500">
+            <div className="flex items-center gap-2 text-text-muted">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span>Checking connection...</span>
             </div>
@@ -301,18 +340,18 @@ function AdminPanel({ isOpen, onClose }) {
                 <Wifi className="w-5 h-5" />
                 <span className="font-medium">Connected to Ollama</span>
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-sm text-text-muted">
                 Endpoint: {aiStatus.endpoint}
               </div>
               {aiStatus.models?.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Active Model
                   </label>
                   <select
                     value={aiModel}
-                    onChange={(e) => setAIModel(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    onChange={(e) => handleModelChange(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-void-surface border border-white/[0.08] text-text-primary"
                   >
                     {aiStatus.models.map((m) => (
                       <option key={m.name} value={m.name}>
@@ -320,11 +359,14 @@ function AdminPanel({ isOpen, onClose }) {
                       </option>
                     ))}
                   </select>
+                  <p className="text-xs text-text-muted mt-1">
+                    Selection is saved for your team
+                  </p>
                 </div>
               )}
             </div>
           ) : aiStatus?.disabled ? (
-            <div className="flex items-center gap-2 text-gray-500">
+            <div className="flex items-center gap-2 text-text-muted">
               <WifiOff className="w-5 h-5" />
               <span className="font-medium">AI Disabled by Server</span>
             </div>
@@ -334,11 +376,11 @@ function AdminPanel({ isOpen, onClose }) {
                 <WifiOff className="w-5 h-5" />
                 <span className="font-medium">Ollama Not Running</span>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-text-muted">
                 {aiStatus?.error || 'Start Ollama to enable AI features'}
               </p>
-              <div className="p-3 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
-                <p className="text-xs font-mono text-gray-600 dark:text-gray-400">
+              <div className="p-3 bg-void-surface/50 rounded-lg">
+                <p className="text-xs font-mono text-text-secondary">
                   # Install Ollama<br />
                   curl -fsSL https://ollama.ai/install.sh | sh<br /><br />
                   # Pull a model<br />
@@ -373,28 +415,28 @@ function AdminPanel({ isOpen, onClose }) {
 
   // Feature toggle component
   const FeatureToggle = ({ name, label, description, icon: Icon, category }) => (
-    <div className="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg">
+    <div className="flex items-center justify-between p-3 bg-void-elevated/30 rounded-lg">
       <div className="flex items-center gap-3">
         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-          features[name] ? 'bg-green-500/20 text-green-600' : 'bg-gray-400/20 text-gray-500'
+          features[name] ? 'bg-green-500/20 text-green-600' : 'bg-white/[0.08] text-text-muted'
         }`}>
           <Icon className="w-4 h-4" />
         </div>
         <div>
-          <p className="font-medium text-gray-800 dark:text-gray-200 text-sm">{label}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+          <p className="font-medium text-text-primary text-sm">{label}</p>
+          <p className="text-xs text-text-muted">{description}</p>
         </div>
       </div>
       <button
         onClick={() => setFeature(name, !features[name])}
         disabled={performance.lowPowerMode && ['aiAssistant', 'aiSuggestions', 'collaboration', 'presenceTracking', 'liveCursors', 'waterSimulation', 'highResPDF'].includes(name)}
-        className={`relative w-11 h-6 rounded-full transition-colors ${
-          features[name] ? 'bg-green-500' : 'bg-gray-400'
+        className={`relative w-14 h-6 rounded-full transition-colors ${
+          features[name] ? 'bg-green-500' : 'bg-white/20'
         } ${performance.lowPowerMode ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <motion.div
           className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow"
-          animate={{ left: features[name] ? '1.25rem' : '0.125rem' }}
+          animate={{ left: features[name] ? '1.875rem' : '0.125rem' }}
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         />
       </button>
@@ -410,28 +452,28 @@ function AdminPanel({ isOpen, onClose }) {
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
               performance.lowPowerMode
                 ? 'bg-amber-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-500'
+                : 'bg-void-surface text-text-muted'
             }`}>
               <Zap className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200">
+              <h3 className="font-semibold text-text-primary">
                 Low Power Mode
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-text-muted">
                 Disables all heavy features to reduce server/client load
               </p>
             </div>
           </div>
           <button
             onClick={() => performance.lowPowerMode ? disableLowPowerMode() : enableLowPowerMode()}
-            className={`relative w-14 h-7 rounded-full transition-colors ${
-              performance.lowPowerMode ? 'bg-amber-500' : 'bg-gray-400'
+            className={`relative w-18 h-7 rounded-full transition-colors ${
+              performance.lowPowerMode ? 'bg-amber-500' : 'bg-white/20'
             }`}
           >
             <motion.div
               className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
-              animate={{ left: performance.lowPowerMode ? '1.75rem' : '0.25rem' }}
+              animate={{ left: performance.lowPowerMode ? '2.75rem' : '0.25rem' }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           </button>
@@ -446,10 +488,10 @@ function AdminPanel({ isOpen, onClose }) {
 
       {/* AI Features */}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+        <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider px-1">
           AI Features (High Overhead)
         </h3>
-        <div className="space-y-2 p-3 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="space-y-2 p-3 bg-void-elevated/50 rounded-xl border border-white/[0.06]">
           <FeatureToggle
             name="aiAssistant"
             label="AI Chat Assistant"
@@ -467,10 +509,10 @@ function AdminPanel({ isOpen, onClose }) {
 
       {/* Real-time Features */}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+        <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider px-1">
           Real-time Features (Moderate Overhead)
         </h3>
-        <div className="space-y-2 p-3 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="space-y-2 p-3 bg-void-elevated/50 rounded-xl border border-white/[0.06]">
           <FeatureToggle
             name="collaboration"
             label="Real-time Collaboration"
@@ -494,10 +536,10 @@ function AdminPanel({ isOpen, onClose }) {
 
       {/* 3D Features */}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+        <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider px-1">
           3D Visualization (Client Overhead)
         </h3>
-        <div className="space-y-2 p-3 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="space-y-2 p-3 bg-void-elevated/50 rounded-xl border border-white/[0.06]">
           <FeatureToggle
             name="threeDViewer"
             label="3D Boat Viewer"
@@ -521,10 +563,10 @@ function AdminPanel({ isOpen, onClose }) {
 
       {/* Export Features */}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+        <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider px-1">
           Export Features
         </h3>
-        <div className="space-y-2 p-3 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="space-y-2 p-3 bg-void-elevated/50 rounded-xl border border-white/[0.06]">
           <FeatureToggle
             name="pdfExport"
             label="PDF Export"
@@ -542,24 +584,24 @@ function AdminPanel({ isOpen, onClose }) {
 
       {/* Performance Settings */}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+        <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider px-1">
           Performance Settings
         </h3>
-        <div className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 space-y-4">
+        <div className="p-4 bg-void-elevated/50 rounded-xl border border-white/[0.06] space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-800 dark:text-gray-200 text-sm">Reduced Motion</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Disable animations</p>
+              <p className="font-medium text-text-primary text-sm">Reduced Motion</p>
+              <p className="text-xs text-text-muted">Disable animations</p>
             </div>
             <button
               onClick={() => setPerformance('reducedMotion', !performance.reducedMotion)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${
-                performance.reducedMotion ? 'bg-blue-500' : 'bg-gray-400'
+              className={`relative w-14 h-6 rounded-full transition-colors ${
+                performance.reducedMotion ? 'bg-blade-blue' : 'bg-white/20 dark:bg-white/20'
               }`}
             >
               <motion.div
                 className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow"
-                animate={{ left: performance.reducedMotion ? '1.25rem' : '0.125rem' }}
+                animate={{ left: performance.reducedMotion ? '1.875rem' : '0.125rem' }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               />
             </button>
@@ -568,10 +610,10 @@ function AdminPanel({ isOpen, onClose }) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <div>
-                <p className="font-medium text-gray-800 dark:text-gray-200 text-sm">Max Active Boats</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Limit concurrent boats in workspace</p>
+                <p className="font-medium text-text-primary text-sm">Max Active Boats</p>
+                <p className="text-xs text-text-muted">Limit concurrent boats in workspace</p>
               </div>
-              <span className="text-sm font-mono text-gray-600 dark:text-gray-300">
+              <span className="text-sm font-mono text-text-secondary">
                 {performance.maxActiveBoats}
               </span>
             </div>
@@ -581,7 +623,7 @@ function AdminPanel({ isOpen, onClose }) {
               max="20"
               value={performance.maxActiveBoats}
               onChange={(e) => setPerformance('maxActiveBoats', parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              className="w-full h-2 bg-void-surface rounded-lg appearance-none cursor-pointer"
             />
           </div>
         </div>
@@ -605,11 +647,11 @@ function AdminPanel({ isOpen, onClose }) {
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 transition-colors"
         >
-          <X className="w-5 h-5 text-gray-500" />
+          <X className="w-5 h-5 text-text-muted" />
         </button>
 
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+          <h2 className="text-2xl font-bold text-text-primary">
             Admin Panel
           </h2>
         </div>
@@ -620,8 +662,8 @@ function AdminPanel({ isOpen, onClose }) {
             onClick={() => setActiveTab('applications')}
             className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
               activeTab === 'applications'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-blade-blue text-white'
+                : 'bg-void-surface text-text-primary hover:bg-white/[0.08]'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -636,8 +678,8 @@ function AdminPanel({ isOpen, onClose }) {
             onClick={() => setActiveTab('users')}
             className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
               activeTab === 'users'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-blade-blue text-white'
+                : 'bg-void-surface text-text-primary hover:bg-white/[0.08]'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -647,8 +689,8 @@ function AdminPanel({ isOpen, onClose }) {
             onClick={() => setActiveTab('ai')}
             className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
               activeTab === 'ai'
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-blade-blue text-white'
+                : 'bg-void-surface text-text-primary hover:bg-white/[0.08]'
             }`}
           >
             <Sparkles className="w-4 h-4" />
@@ -658,8 +700,8 @@ function AdminPanel({ isOpen, onClose }) {
             onClick={() => setActiveTab('features')}
             className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
               activeTab === 'features'
-                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-blade-blue text-white'
+                : 'bg-void-surface text-text-primary hover:bg-white/[0.08]'
             }`}
           >
             <Settings className="w-4 h-4" />
@@ -681,11 +723,11 @@ function AdminPanel({ isOpen, onClose }) {
             renderAISettings()
           ) : isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+              <Loader2 className="w-8 h-8 animate-spin text-blade-blue" />
             </div>
           ) : activeTab === 'applications' ? (
             applications.length === 0 ? (
-              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+              <div className="text-center py-12 text-text-muted">
                 <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-green-500" />
                 <p>No pending applications</p>
               </div>
@@ -694,29 +736,29 @@ function AdminPanel({ isOpen, onClose }) {
                 {applications.map((app) => (
                   <div
                     key={app.id}
-                    className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700"
+                    className="p-4 bg-void-elevated/50 rounded-xl border border-white/[0.06]"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-gray-800 dark:text-gray-200">
+                          <span className="font-semibold text-text-primary">
                             {app.name}
                           </span>
-                          <span className="text-gray-500 dark:text-gray-400 text-sm">
+                          <span className="text-text-muted text-sm">
                             @{app.username}
                           </span>
                         </div>
                         {app.email && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-text-secondary">
                             {app.email}
                           </p>
                         )}
                         {app.requestMessage && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 italic">
+                          <p className="text-sm text-text-secondary mt-2 italic">
                             "{app.requestMessage}"
                           </p>
                         )}
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                        <p className="text-xs text-text-muted mt-2">
                           Applied: {formatDate(app.createdAt)}
                         </p>
                       </div>
@@ -743,7 +785,7 @@ function AdminPanel({ isOpen, onClose }) {
             )
           ) : (
             users.length === 0 ? (
-              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+              <div className="text-center py-12 text-text-muted">
                 <Users className="w-12 h-12 mx-auto mb-3" />
                 <p>No users found</p>
               </div>
@@ -752,15 +794,15 @@ function AdminPanel({ isOpen, onClose }) {
                 {users.map((u) => (
                   <div
                     key={u.id}
-                    className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700"
+                    className="p-4 bg-void-elevated/50 rounded-xl border border-white/[0.06]"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-gray-800 dark:text-gray-200">
+                          <span className="font-semibold text-text-primary">
                             {u.name}
                           </span>
-                          <span className="text-gray-500 dark:text-gray-400 text-sm">
+                          <span className="text-text-muted text-sm">
                             @{u.username}
                           </span>
                           {u.role === 'admin' && (
@@ -771,11 +813,11 @@ function AdminPanel({ isOpen, onClose }) {
                           {getStatusBadge(u.status)}
                         </div>
                         {u.email && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-text-secondary">
                             {u.email}
                           </p>
                         )}
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                        <p className="text-xs text-text-muted mt-1">
                           Joined: {formatDate(u.createdAt)}
                         </p>
                       </div>

@@ -7,17 +7,17 @@ const DarkModeToggle = ({ isDark, toggle }) => {
   return (
     <button
       onClick={toggle}
-      className="relative w-14 h-8 rounded-full transition-all duration-300 glass-card hover:scale-105 active:scale-95"
+      className="relative w-20 h-8 rounded-full transition-all duration-150 glass-card hover:scale-105 active:scale-95"
       aria-label="Toggle dark mode"
     >
       {/* Track */}
-      <div className={`absolute inset-0 rounded-full transition-all duration-300 ${
-        isDark ? 'bg-accent-blue/20' : 'bg-gray-300/50'
+      <div className={`absolute inset-0 rounded-full transition-all duration-150 ${
+        isDark ? 'bg-blade-blue/20' : 'bg-gray-300/50'
       }`} />
 
       {/* Slider */}
-      <div className={`absolute top-1 left-1 w-6 h-6 rounded-full shadow-lg transition-all duration-300 transform ${
-        isDark ? 'translate-x-6 bg-accent-blue' : 'translate-x-0 bg-white'
+      <div className={`absolute top-1 left-1 w-6 h-6 rounded-full shadow-lg transition-all duration-150 transform ${
+        isDark ? 'translate-x-12 bg-blade-blue' : 'translate-x-0 bg-white'
       }`}>
         {/* Icon */}
         <div className="w-full h-full flex items-center justify-center">

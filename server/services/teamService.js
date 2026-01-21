@@ -258,7 +258,7 @@ export async function updateMemberRole(teamId, targetUserId, newRole, requesterI
     throw new Error('Cannot change your own role');
   }
 
-  const validRoles = ['OWNER', 'COACH', 'ATHLETE'];
+  const validRoles = ['OWNER', 'COACH', 'COXSWAIN', 'ATHLETE'];
   if (!validRoles.includes(newRole)) {
     throw new Error('Invalid role');
   }
