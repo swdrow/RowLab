@@ -46,7 +46,7 @@ const GlassContainer = ({
       className={`
         min-h-screen
         ${variants[variant]}
-        transition-colors duration-300
+        transition-colors duration-150
         ${className}
       `}
       {...props}

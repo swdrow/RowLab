@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Layers, AlertCircle, CheckCircle, XCircle, Loader2, Users } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { Button } from '../../components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
+import SpotlightCard from '../../components/ui/SpotlightCard';
 
 const API_URL = '/api/v1';
 
@@ -45,7 +45,6 @@ export default function InviteClaimPage() {
   // Claim invitation
   const handleClaim = async () => {
     if (!isAuthenticated) {
-      // Redirect to login with return URL
       navigate('/login', {
         state: { from: { pathname: `/invite/claim/${token}` } },
       });
@@ -68,9 +67,8 @@ export default function InviteClaimPage() {
 
       setSuccess(true);
 
-      // Redirect to dashboard after short delay
       setTimeout(() => {
-        navigate('/dashboard', { replace: true });
+        navigate('/app', { replace: true });
       }, 2000);
     } catch (err) {
       setError(err.message);
@@ -79,45 +77,97 @@ export default function InviteClaimPage() {
     }
   };
 
+  // Background component
+  const Background = () => (
+    <>
+      {/* Background atmosphere - void glow */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-blade-blue/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed bottom-0 right-0 w-[400px] h-[400px] bg-coxswain-violet/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Subtle grid background */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.015]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}
+      />
+    </>
+  );
+
   // Loading state
   if (isValidating || !isInitialized) {
     return (
-      <div className="min-h-screen bg-surface-900 flex items-center justify-center">
-        <div className="text-center">
-          <LoadingSpinner className="w-8 h-8 text-accent mx-auto mb-4" />
-          <p className="text-text-secondary">Validating invitation...</p>
-        </div>
+      <div className="min-h-screen bg-void-deep flex items-center justify-center">
+        <Background />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="relative z-10 text-center"
+        >
+          <Loader2 className="w-8 h-8 text-blade-blue mx-auto mb-4 animate-spin" />
+          <p className="text-text-secondary text-sm">Validating invitation...</p>
+        </motion.div>
       </div>
     );
   }
 
-  // Error state
+  // Error state (no invitation found)
   if (error && !invitation) {
     return (
-      <div className="min-h-screen bg-surface-900 flex flex-col items-center justify-center p-4">
-        <div className="fixed inset-0 bg-mesh opacity-50 pointer-events-none" />
+      <div className="min-h-screen bg-void-deep flex flex-col items-center justify-center p-4">
+        <Background />
 
-        <Card variant="elevated" padding="lg" radius="xl" className="relative z-10 max-w-md w-full">
-          <CardContent className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-spectrum-red/20 flex items-center justify-center">
-              <XCircleIcon className="w-8 h-8 text-spectrum-red" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 w-full max-w-md"
+        >
+          {/* Logo/Brand */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-danger-red/10 border border-danger-red/20 mb-4 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+              <XCircle className="w-7 h-7 text-danger-red" />
             </div>
-
-            <h2 className="text-xl font-semibold text-text-primary mb-2">
+            <h1 className="text-3xl font-display font-bold text-text-primary tracking-[-0.02em] mb-1">
               Invalid Invitation
-            </h2>
-            <p className="text-text-secondary mb-6">{error}</p>
+            </h1>
+            <p className="text-text-secondary text-sm">{error}</p>
+          </div>
 
-            <div className="space-y-3">
-              <Button variant="primary" size="lg" className="w-full" onClick={() => navigate('/login')}>
+          <SpotlightCard
+            spotlightColor="rgba(239, 68, 68, 0.08)"
+            className={`
+              rounded-2xl
+              bg-void-elevated border border-white/5
+              shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)]
+            `}
+          >
+            <div className="p-6 sm:p-8 space-y-4">
+              <button
+                onClick={() => navigate('/login')}
+                className={`
+                  w-full px-4 py-3 rounded-xl font-medium
+                  bg-blade-blue text-void-deep border border-blade-blue
+                  hover:shadow-[0_0_20px_rgba(0,112,243,0.4)]
+                  active:scale-[0.98]
+                  transition-all duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+                `}
+              >
                 Go to Login
-              </Button>
-              <Button variant="ghost" size="lg" className="w-full" onClick={() => navigate('/join')}>
+              </button>
+              <button
+                onClick={() => navigate('/join')}
+                className={`
+                  w-full px-4 py-3 rounded-xl font-medium
+                  bg-void-elevated/50 text-text-primary border border-white/[0.06]
+                  hover:border-white/10 hover:bg-void-elevated
+                  transition-all duration-200
+                `}
+              >
                 Enter Different Code
-              </Button>
+              </button>
             </div>
-          </CardContent>
-        </Card>
+          </SpotlightCard>
+        </motion.div>
       </div>
     );
   }
@@ -125,70 +175,92 @@ export default function InviteClaimPage() {
   // Success state
   if (success) {
     return (
-      <div className="min-h-screen bg-surface-900 flex flex-col items-center justify-center p-4">
-        <div className="fixed inset-0 bg-mesh opacity-50 pointer-events-none" />
+      <div className="min-h-screen bg-void-deep flex flex-col items-center justify-center p-4">
+        <Background />
 
-        <Card variant="elevated" padding="lg" radius="xl" className="relative z-10 max-w-md w-full">
-          <CardContent className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-success/20 flex items-center justify-center">
-              <CheckCircleIcon className="w-8 h-8 text-success" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="relative z-10 w-full max-w-md"
+        >
+          <SpotlightCard
+            className={`
+              rounded-2xl
+              bg-void-elevated border border-white/5
+              shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)]
+            `}
+          >
+            <div className="p-6 sm:p-8 text-center">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', delay: 0.1 }}
+                className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-blade-blue/10 border border-blade-blue/20 flex items-center justify-center shadow-[0_0_30px_rgba(0,112,243,0.3)]"
+              >
+                <CheckCircle className="w-8 h-8 text-blade-blue" />
+              </motion.div>
+
+              <h2 className="text-2xl font-display font-bold text-text-primary mb-2">
+                Welcome to {invitation.team.name}!
+              </h2>
+              <p className="text-text-secondary mb-4">
+                You've successfully joined the team.
+              </p>
+              <div className="flex items-center justify-center gap-2 text-text-muted text-sm">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Redirecting to dashboard...</span>
+              </div>
             </div>
-
-            <h2 className="text-xl font-semibold text-text-primary mb-2">
-              Welcome to {invitation.team.name}!
-            </h2>
-            <p className="text-text-secondary mb-4">
-              You've successfully joined the team.
-            </p>
-            <p className="text-text-tertiary text-sm">
-              Redirecting to dashboard...
-            </p>
-          </CardContent>
-        </Card>
+          </SpotlightCard>
+        </motion.div>
       </div>
     );
   }
 
   // Main invitation view
   return (
-    <div className="min-h-screen bg-surface-900 flex flex-col items-center justify-center p-4">
-      {/* Background effects */}
-      <div className="fixed inset-0 bg-mesh opacity-50 pointer-events-none" />
-      <div className="fixed inset-0 bg-hero-glow pointer-events-none" />
+    <div className="min-h-screen bg-void-deep flex flex-col items-center justify-center p-4">
+      <Background />
 
-      <div className="relative z-10 w-full max-w-md">
-        {/* Logo */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative z-10 w-full max-w-md"
+      >
+        {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-display font-bold text-text-primary mb-2">
-            RowLab
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blade-blue/10 border border-blade-blue/20 mb-4 shadow-[0_0_30px_rgba(0,112,243,0.2)]">
+            <Layers className="w-7 h-7 text-blade-blue" />
+          </div>
+          <h1 className="text-3xl font-display font-bold text-text-primary tracking-[-0.02em] mb-1">
+            You're Invited!
           </h1>
-          <p className="text-text-secondary">Team Invitation</p>
+          <p className="text-text-secondary text-sm">You've been invited to join a rowing team</p>
         </div>
 
-        <Card variant="glow" padding="lg" radius="xl">
-          <CardHeader>
-            <div className="text-center w-full">
-              <CardTitle className="text-2xl">You're Invited!</CardTitle>
-              <CardDescription className="mt-2">
-                You've been invited to join a rowing team
-              </CardDescription>
-            </div>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
+        <SpotlightCard
+          className={`
+            rounded-2xl
+            bg-void-surface/95 backdrop-blur-2xl saturate-[180%]
+            border border-transparent
+            [background-image:linear-gradient(rgba(12,12,14,0.95),rgba(12,12,14,0.95)),linear-gradient(to_bottom,rgba(255,255,255,0.1),rgba(255,255,255,0.02))]
+            [background-origin:padding-box,border-box]
+            [background-clip:padding-box,border-box]
+            shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)]
+          `}
+        >
+          <div className="p-6 sm:p-8 space-y-6">
             {/* Team info */}
-            <div className="p-4 rounded-lg bg-surface-800 border border-border-subtle">
+            <div className="p-4 rounded-xl bg-void-deep/50 border border-white/[0.06]">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center">
-                  <span className="text-xl font-bold text-white">
-                    {invitation.team.name.charAt(0)}
-                  </span>
+                <div className="w-12 h-12 rounded-xl bg-blade-blue/15 border border-blade-blue/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,112,243,0.15)]">
+                  <Users className="w-6 h-6 text-blade-blue" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-text-primary">
                     {invitation.team.name}
                   </h3>
-                  <p className="text-sm text-text-tertiary">
+                  <p className="text-sm text-text-muted font-mono">
                     @{invitation.team.slug}
                   </p>
                 </div>
@@ -197,9 +269,9 @@ export default function InviteClaimPage() {
 
             {/* Athlete info (if specific athlete) */}
             {invitation.athleteName && (
-              <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
-                <p className="text-sm text-text-secondary mb-1">
-                  Claiming athlete profile:
+              <div className="p-4 rounded-xl bg-coxswain-violet/10 border border-coxswain-violet/20">
+                <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-1">
+                  Claiming athlete profile
                 </p>
                 <p className="font-medium text-text-primary">
                   {invitation.athleteName}
@@ -209,101 +281,80 @@ export default function InviteClaimPage() {
 
             {/* Error message */}
             {error && (
-              <div className="p-3 rounded-lg bg-spectrum-red/10 border border-spectrum-red/30 text-spectrum-red text-sm">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-xl bg-danger-red/10 border border-danger-red/20 text-danger-red text-sm flex items-center gap-2"
+              >
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 {error}
-              </div>
+              </motion.div>
             )}
 
             {/* Action buttons */}
             {isAuthenticated ? (
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-full"
-                isLoading={isClaiming}
+              <button
                 onClick={handleClaim}
+                disabled={isClaiming}
+                className={`
+                  w-full px-4 py-3 rounded-xl font-medium
+                  bg-blade-blue text-void-deep border border-blade-blue
+                  hover:shadow-[0_0_20px_rgba(0,112,243,0.4)]
+                  active:scale-[0.98]
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  transition-all duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+                  flex items-center justify-center gap-2
+                `}
               >
-                Accept Invitation
-              </Button>
+                {isClaiming ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Accepting...
+                  </>
+                ) : (
+                  'Accept Invitation'
+                )}
+              </button>
             ) : (
               <div className="space-y-3">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  className="w-full"
+                <button
                   onClick={() => navigate('/login', {
                     state: { from: { pathname: `/invite/claim/${token}` } },
                   })}
+                  className={`
+                    w-full px-4 py-3 rounded-xl font-medium
+                    bg-blade-blue text-void-deep border border-blade-blue
+                    hover:shadow-[0_0_20px_rgba(0,112,243,0.4)]
+                    active:scale-[0.98]
+                    transition-all duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+                  `}
                 >
                   Sign in to Accept
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="w-full"
+                </button>
+                <button
                   onClick={() => navigate('/register', {
                     state: { from: { pathname: `/invite/claim/${token}` } },
                   })}
+                  className={`
+                    w-full px-4 py-3 rounded-xl font-medium
+                    bg-void-elevated/50 text-text-primary border border-white/[0.06]
+                    hover:border-white/10 hover:bg-void-elevated
+                    transition-all duration-200
+                  `}
                 >
                   Create Account
-                </Button>
+                </button>
               </div>
             )}
 
             {/* Info text */}
-            <p className="text-xs text-text-tertiary text-center">
-              This invitation was sent to {invitation.email}
+            <p className="text-xs text-text-muted text-center">
+              This invitation was sent to{' '}
+              <span className="text-text-secondary font-mono">{invitation.email}</span>
             </p>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </SpotlightCard>
+      </motion.div>
     </div>
-  );
-}
-
-// Icons
-function LoadingSpinner({ className }) {
-  return (
-    <svg className={`animate-spin ${className}`} fill="none" viewBox="0 0 24 24">
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
-  );
-}
-
-function CheckCircleIcon({ className }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-  );
-}
-
-function XCircleIcon({ className }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
   );
 }

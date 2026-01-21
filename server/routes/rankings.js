@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../utils/logger.js';
 import { authenticateToken, requireTeam, requireRole } from '../middleware/auth.js';
 import * as eloRatingService from '../services/eloRatingService.js';
 
@@ -26,7 +27,7 @@ router.get('/', async (req, res) => {
 
     res.json({ success: true, data: { rankings } });
   } catch (err) {
-    console.error('Get rankings error:', err);
+    logger.error('Get rankings error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to fetch rankings' },
@@ -58,7 +59,7 @@ router.get('/athlete/:athleteId', async (req, res) => {
         error: { code: 'NOT_FOUND', message: 'Athlete not found' },
       });
     }
-    console.error('Get athlete rating error:', err);
+    logger.error('Get athlete rating error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to fetch athlete rating' },
@@ -76,7 +77,7 @@ router.post('/recalculate', requireRole('OWNER', 'COACH'), async (req, res) => {
 
     res.json({ success: true, data: { result } });
   } catch (err) {
-    console.error('Recalculate ratings error:', err);
+    logger.error('Recalculate ratings error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to recalculate ratings' },

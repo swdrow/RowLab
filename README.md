@@ -1,381 +1,367 @@
-# RowLab - Rowing Lineup Manager
+<p align="center">
+  <img src="public/images/logo.svg" alt="RowLab Logo" width="80" height="80">
+</p>
 
-> Web application for rowing coaches to create and manage boat lineups
+<h1 align="center">RowLab</h1>
 
----
+<p align="center">
+  <strong>Data-Driven Lineup Optimization for Competitive Rowing</strong>
+</p>
 
-## Project Summary
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#documentation">Documentation</a> •
+  <a href="#roadmap">Roadmap</a> •
+  <a href="#contributing">Contributing</a>
+</p>
 
-<!-- LINKEDIN COPY-PASTE START -->
-
-A web-based lineup management tool designed for rowing coaches to optimize boat assignments and visualize team configurations. The application enables coaches to drag-and-drop athletes into various boat types, manage roster data from CSV imports, and experiment with different lineup combinations in real-time. Features a modern glassmorphism UI with animated aurora backgrounds, AI-powered lineup assistance, and a comprehensive analytics dashboard. Includes a machine learning roadmap for predictive analytics and performance optimization.
-
-**Key Technical Achievements:**
-- Designed an intuitive drag-and-drop interface for seat assignments across multiple boat configurations (1x through 8+)
-- Implemented a modern "Liquid Glass" design system with glassmorphism effects, aurora backgrounds, and responsive layouts
-- Built a Node.js/Express backend API with JWT authentication, rate limiting, and security middleware
-- Created AI-powered lineup assistant using Ollama for intelligent lineup recommendations
-- Integrated real-time erg data tracking with performance trend visualization using Recharts
-- Implemented comprehensive account settings and user management system
-
-**Machine Learning Roadmap:**
-- Athlete ranking algorithm using aggregated performance data and erg score analysis
-- True relative speed calculations adjusting for seat position, boat class, and conditions
-- Predictive placement modeling against competing schools based on historical race data
-- AI-driven training suggestions based on individual athlete metrics and team goals
-- PostgreSQL database integration for longitudinal athlete data storage and analysis
-
-**Technologies:** Node.js, Express, React, Vite, TailwindCSS, Zustand, dnd-kit, Framer Motion, Ollama AI | *Planned: Python, Scikit-learn, PostgreSQL*
-
-<!-- LINKEDIN COPY-PASTE END -->
+<p align="center">
+  <img src="https://img.shields.io/badge/version-2.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
+  <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node">
+  <img src="https://img.shields.io/badge/react-18-61dafb.svg" alt="React">
+</p>
 
 ---
 
-## Recent Updates (v2.0)
+## The Problem
 
-### UI/UX Redesign
-- **Aurora Background**: Subtle animated northern lights gradient effect across all pages
-- **Glass Morphism**: Enhanced glass panel effects with improved opacity for better text readability
-- **Dark Mode Optimized**: All text now properly styled for dark backgrounds across every page
-- **Gradient Navigation**: Sidebar and navigation elements feature smooth gradient hover effects
-- **Responsive Design**: Mobile-first approach with collapsible sidebar and touch-friendly interactions
+Rowing coaches spend countless hours creating boat lineups based on:
 
-### New Features
-- **Account Settings Page**: Complete user profile management with avatar upload, notifications, and preferences
-- **AI Lineup Assistant**: Integrated Ollama-powered assistant for intelligent lineup recommendations
-- **Performance Analytics Dashboard**: Visual charts for erg scores, side distribution, and team trends
-- **Admin Panel**: User management and feature toggles for administrators
+- **Institutional knowledge** that walks out the door with departing coaches
+- **Erg scores** that don't account for on-water performance
+- **Gut feel** and politics rather than data
+- **Spreadsheets** that can't capture complex athlete relationships
 
-### Security & Performance
-- **JWT Authentication**: Secure token-based auth with refresh tokens
-- **Rate Limiting**: Endpoint-specific rate limits to prevent abuse
-- **Helmet Security Headers**: CSP, CORS, and other security middleware
-- **Code Splitting**: Lazy-loaded pages for faster initial load times
+The result? Suboptimal boat speed, inconsistent performance, and no systematic way to improve.
+
+## The Solution
+
+**RowLab** is a modern SaaS platform that transforms how rowing coaches build lineups and analyze team performance.
+
+### Core Capabilities
+
+| Capability | Description |
+|------------|-------------|
+| **Visual Lineup Builder** | Drag-and-drop interface for assigning athletes to seats across all boat classes (1x to 8+) |
+| **Erg Analytics** | Track 2k, 6k, and other test results with trend visualization and Concept2 integration |
+| **Seat Racing System** | Record racing pieces with Elo-based ranking algorithm for objective athlete comparisons |
+| **AI Recommendations** | Local LLM-powered lineup suggestions using genetic algorithm optimization |
+| **Team Benchmarking** | Compare boat speed estimates against competitors |
+| **Real-time Collaboration** | Multi-user team management with role-based access control |
+
+---
+
+## Features
+
+### Lineup Builder
+
+<img src="screenshot-landing.png" alt="RowLab Lineup Builder" width="100%">
+
+Build optimized lineups with an intuitive drag-and-drop interface:
+
+- **Multi-boat support**: 8+, 4+, 4-, 2x, 1x configurations
+- **Side preferences**: Port, starboard, or both with visual indicators
+- **Athlete swapping**: Click two seats to swap athletes instantly
+- **Save & export**: Persist lineups locally or export as JSON
+- **Search & filter**: Find athletes quickly with real-time filtering
+
+### Performance Analytics
+
+Track and analyze every dimension of athlete performance:
+
+- **Erg score tracking**: Record 2k, 6k, 500m, and 30-minute test results
+- **Concept2 integration**: OAuth sync with Concept2 logbook for automatic workout import
+- **Trend visualization**: Chart performance over time with Recharts
+- **Side distribution**: Analyze port/starboard balance across lineups
+- **Telemetry import**: Support for Empower, Peach, and NK sensor data
+
+### Seat Racing & Rankings
+
+Objective athlete evaluation through head-to-head racing:
+
+- **Piece recording**: Log seat race sessions with multiple boats
+- **Elo ratings**: Chess-inspired ranking system adapted for rowing
+- **Margin analysis**: Calculate true speed differences accounting for conditions
+- **Historical tracking**: View rating changes over the season
+- **Combined scoring**: Weight erg data, seat racing, and telemetry into unified rankings
+
+### AI-Powered Optimization
+
+Leverage machine learning for lineup recommendations:
+
+- **Genetic algorithm**: Optimize lineups against multiple constraints
+- **Side balancing**: Ensure proper port/starboard distribution
+- **Constraint handling**: Respect athlete preferences and capabilities
+- **Speed prediction**: Estimate boat speed based on athlete combinations
+- **Local LLM**: Ollama integration for privacy-preserving AI assistance
 
 ---
 
 ## Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Access to athlete CSV file: `/home/swd/Rowing/LN_Country.csv`
-- Access to headshots directory: `/home/swd/Rowing/Roster_Headshots_cropped/`
+
+- **Node.js** 18+ and npm
+- **PostgreSQL** 14+ (or use Docker)
+- **Ollama** (optional, for AI features)
 
 ### Installation
 
 ```bash
-cd /home/swd/RowLab
+# Clone the repository
+git clone https://github.com/swdrow/RowLab.git
+cd RowLab
+
+# Install dependencies
 npm install
-```
 
-### Development
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your database URL and secrets
 
-**Option 1: Single command (recommended):**
-```bash
+# Run database migrations
+npx prisma migrate deploy
+npx prisma generate
+
+# Start development servers
 npm run dev:full
 ```
-Runs both frontend (port 3001) and backend (port 3002) simultaneously.
 
-**Option 2: tmux session (persistent):**
+Open [http://localhost:3001](http://localhost:3001) in your browser.
+
+### Docker Deployment
+
 ```bash
-npm run dev:tmux
-```
-Creates a persistent tmux session with 3 windows (backend, frontend, shell).
+# Build and run with Docker Compose
+docker-compose up -d
 
-**Option 3: Run separately (two terminal windows):**
-
-Terminal 1 - Frontend:
-```bash
-npm run dev
+# Access the application
+open http://localhost:3001
 ```
 
-Terminal 2 - Backend:
-```bash
-npm run server
-```
+See [docs/self-hosted-setup.md](docs/self-hosted-setup.md) for detailed deployment instructions.
 
-**Stop all development servers:**
-```bash
-npm stop
-```
-Kills all RowLab dev servers (works for both concurrently and tmux modes).
+---
 
-Open browser to `http://localhost:3001`
+## Tech Stack
 
-### Production
+### Frontend
 
-Build and run:
-```bash
-npm run build
-npm start
-```
-Server runs on port 3002
+| Technology | Purpose |
+|------------|---------|
+| **React 18** | UI framework with hooks and concurrent features |
+| **Vite** | Fast development server with HMR |
+| **TailwindCSS** | Utility-first styling with custom design system |
+| **Zustand** | Lightweight state management |
+| **@dnd-kit** | Accessible drag-and-drop |
+| **Framer Motion** | Smooth animations and transitions |
+| **Recharts** | Data visualization |
+| **Three.js** | 3D boat visualization |
 
-## Features
+### Backend
 
-### ✅ Core Features
-- **Visual Boat Builder**: Kanban-style drag-and-drop lineup builder for 8+, 4+, 4-, 2x, 1x configurations
-- **Athlete Management**: Full roster management with headshots, country flags, and side preferences
-- **Drag-and-Drop**: Intuitive @dnd-kit powered interface for seat assignments
-- **Athlete Swapping**: Click two seats to swap athletes within or across boats
-- **Search & Filter**: Real-time athlete search with multiple filter options
-- **Save & Export**: Persist lineups to localStorage or export as JSON
+| Technology | Purpose |
+|------------|---------|
+| **Express.js** | REST API framework |
+| **PostgreSQL** | Primary database |
+| **Prisma** | Type-safe ORM with migrations |
+| **JWT** | Authentication with refresh tokens |
+| **Helmet** | Security headers |
+| **Ollama** | Local LLM inference |
+| **Stripe** | Subscription billing |
 
-### ✅ Analytics & Data
-- **Performance Dashboard**: Team statistics and trends visualization
-- **Erg Data Tracking**: Record and analyze 2k, 6k, and other erg test results
-- **Side Distribution Charts**: Visual breakdown of port/starboard assignments
-- **Boat Utilization**: Track active boats and seat fill rates
+### Design System: Precision Instrument
 
-### ✅ User Experience
-- **Account Settings**: Profile management, avatar upload, and preference controls
-- **AI Lineup Assistant**: Ollama-powered chatbot for lineup recommendations
-- **Dark Mode**: Fully optimized dark theme with aurora background effects
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
+RowLab uses a custom "Precision Instrument" design system inspired by Linear and Raycast:
 
-### ✅ Security & Admin
-- **JWT Authentication**: Secure login with token refresh
-- **Admin Panel**: User management and feature toggles
-- **Rate Limiting**: Protection against API abuse
-- **Role-Based Access**: Admin and user role separation
+- **Void-deep backgrounds** (#08080A) for focused interfaces
+- **Blade blue accent** (#0070F3) for primary actions
+- **Port/Starboard semantics** (red/green) following maritime conventions
+- **Glass morphism** with subtle backdrop blur
+- **Spotlight hover effects** for interactive elements
 
-### ⚠️ In Development
-- **Performance Predictions**: ML-based race placement predictions
-- **Team Comparisons**: Side-by-side lineup analysis
-- **Training Recommendations**: AI-driven workout suggestions
+---
 
-## Usage
+## Documentation
 
-### Creating a Lineup
+| Document | Description |
+|----------|-------------|
+| [**API Reference**](docs/api/README.md) | Complete REST API documentation |
+| [**Database Schema**](docs/database/README.md) | Prisma models and relationships |
+| [**Component Guide**](docs/components/README.md) | React component documentation |
+| [**Services Guide**](docs/services/README.md) | Backend service documentation |
+| [**Self-Hosted Setup**](docs/self-hosted-setup.md) | Deployment instructions |
 
-1. **Add a boat** from the controls panel (e.g., "Varsity 8+")
-2. **Select an athlete** from the roster (click or drag)
-3. **Assign to seat**:
-   - Click method: Click athlete, then click empty seat
-   - Drag method: Drag athlete card onto seat
-4. **Repeat** until all seats filled
-
-### Swapping Athletes
-
-1. Click an athlete in an assigned seat (yellow ring appears)
-2. Click another assigned seat (shows "Seats Selected: 2/2")
-3. Click "Swap Athletes" button in controls panel
-
-### Saving Lineups
-
-- **Save to Browser**: Click "Save Lineup" (persists in localStorage)
-- **Export**: Click "Export JSON" to download file
+---
 
 ## Project Structure
 
 ```
-/home/swd/RowLab/
-├── src/                    # React source code
-│   ├── components/         # React components
-│   ├── utils/              # Utilities (CSV, boat config, etc.)
-│   └── store/              # Zustand state management
-├── server/                 # Express API server
-├── data/                   # CSV data files
-├── docs/                   # Full documentation
+RowLab/
+├── src/                    # React frontend
+│   ├── components/         # UI components
+│   │   ├── ui/            # Base design system
+│   │   ├── domain/        # Domain-specific (LineupBoard)
+│   │   └── compound/      # Composite components
+│   ├── pages/             # Route pages
+│   ├── store/             # Zustand state stores
+│   └── theme/             # Design tokens
+├── server/                 # Express backend
+│   ├── routes/            # API endpoints
+│   ├── services/          # Business logic
+│   └── middleware/        # Auth, rate limiting
+├── prisma/                 # Database schema
+│   ├── schema.prisma      # Model definitions
+│   └── migrations/        # Version history
+├── docs/                   # Documentation
 └── public/                 # Static assets
 ```
 
-## Data Files
+---
 
-### Athletes: `LN_Country.csv`
-- **Location**: `/home/swd/Rowing/LN_Country.csv`
-- **Contains**: LastName, Country (53 athletes)
-- **Loaded**: Automatically on app start
+## Roadmap
 
-### Boat Configs: `boats.csv`
-- **Location**: `data/boats.csv`
-- **Contains**: Boat definitions (Varsity 8+, JV 4-, etc.)
-- **Status**: ✅ Complete
+### Current Focus (v2.x)
 
-### Headshots
-- **Location**: `/home/swd/Rowing/Roster_Headshots_cropped/`
-- **Naming**: `LastName.jpg` (or `.jpeg`, `.png`)
-- **Fallback**: Placeholder avatar if not found
+- [x] Precision Instrument UI redesign
+- [x] Multi-tenant team management
+- [x] Seat racing with Elo ratings
+- [x] Concept2 OAuth integration
+- [ ] Stripe billing implementation
+- [ ] Production security hardening
 
-## Technical Stack
+### Near Term (v3.0)
 
-### Frontend
-- **Framework**: React 18 + Vite (ES modules, fast HMR)
-- **Styling**: Tailwind CSS + Custom glassmorphism design system
-- **Animations**: Framer Motion (page transitions, micro-interactions)
-- **State Management**: Zustand (lightweight, no boilerplate)
-- **Drag-and-Drop**: @dnd-kit (accessible, customizable)
-- **Charts**: Recharts (responsive data visualization)
-- **Icons**: Lucide React
+- [ ] Real-time collaboration (WebSockets)
+- [ ] Mobile-responsive optimization
+- [ ] Advanced telemetry import
+- [ ] Race prediction ML model
 
-### Backend
-- **Runtime**: Node.js 18+
-- **Framework**: Express.js
-- **Authentication**: JWT with bcrypt password hashing
-- **Security**: Helmet, CORS, express-rate-limit
-- **AI Integration**: Ollama API for local LLM inference
-- **Data Parsing**: PapaParse for CSV imports
+### Future Vision
 
-### Development
-- **Build Tool**: Vite with Rollup
-- **TypeScript**: Gradual migration (components)
-- **Linting**: ESLint with React config
-- **Process Management**: Concurrently, PM2
+- [ ] React Native mobile app
+- [ ] Video analysis integration
+- [ ] Recruitment analytics
+- [ ] Integration marketplace
 
-## Scripts
-
-### Development
-- `npm run dev:full` - **Start both servers** (recommended, uses concurrently)
-- `npm run dev:tmux` - **Start in tmux session** (persistent, detachable)
-- `npm stop` - **Stop all development servers** (both concurrently and tmux)
-- `npm run dev` - Start Vite dev server only (port 3001)
-- `npm run server` - Start Express API server only (port 3002)
-
-### Production
-- `npm run build` - Build for production
-- `npm start` - Run production server (port 3002)
-
-## Configuration
-
-### Environment Variables
-Copy `.env.example` to `.env` and customize:
-
-```bash
-PORT=3002
-NODE_ENV=development
-HEADSHOTS_PATH=/home/swd/Rowing/Roster_Headshots_cropped
-ATHLETES_CSV=/home/swd/Rowing/LN_Country.csv
-```
-
-### nginx Deployment
-See `config/nginx-location.conf` for example nginx configuration.
-
-**Subdomain option (recommended):**
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name rowlab.yourdomain.com;
-
-    location / {
-        proxy_pass http://localhost:3002;
-        # ... proxy headers
-    }
-}
-```
-
-**Subpath option:**
-```nginx
-location /rowlab {
-    proxy_pass http://localhost:3002;
-    # ... proxy headers
-}
-```
-
-## Documentation
-
-📚 **Full documentation**: [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md)
-
-Includes:
-- Complete component architecture
-- Data flow diagrams
-- Feature implementation matrix
-- Troubleshooting guide
-- Future development roadmap
-
-## Troubleshooting
-
-### Headshots not loading?
-1. Check Express server is running (`npm run server`)
-2. Verify headshots exist: `ls /home/swd/Rowing/Roster_Headshots_cropped/`
-3. Check server logs for 404 errors
-4. Test endpoint: `curl http://localhost:3002/api/headshots/Smith`
-
-### No athletes showing?
-1. Check browser console for errors
-2. Verify CSV exists: `cat /home/swd/Rowing/LN_Country.csv`
-3. Check CSV format (commas, no extra quotes)
-
-### Drag-and-drop not working?
-1. Verify @dnd-kit installed: `npm list @dnd-kit/core`
-2. Try different browser
-3. Check console for React errors
-
-### Port already in use?
-```bash
-# Find and kill process
-lsof -i :3001
-kill -9 <PID>
-```
-
-## Feature Roadmap
-
-### Phase 1: Data Integration (Current)
-- [ ] Full erg data CSV import and validation
-- [ ] Side preference enforcement and warnings
-- [ ] Athlete capability matrix (port/starboard/both)
-- [ ] Historical performance tracking
-
-### Phase 2: Analytics (Q1 2026)
-- [ ] Power ranking algorithm implementation
-- [ ] Erg score trend analysis and predictions
-- [ ] Team comparison dashboards
-- [ ] Printable lineup sheets
-
-### Phase 3: Collaboration (Q2 2026)
-- [ ] PostgreSQL database migration
-- [ ] Multi-user real-time editing (WebSocket)
-- [ ] Team sharing and permissions
-- [ ] Lineup version history
-
-### Phase 4: AI/ML Features (Q3 2026)
-- [ ] Predictive race placement model
-- [ ] Optimal lineup suggestions
-- [ ] Training load recommendations
-- [ ] Weather condition adjustments
+See [ROADMAP.md](ROADMAP.md) for detailed planning.
 
 ---
 
-## Machine Learning Roadmap
+## Development
 
-### Athlete Performance Analytics
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **Erg Score Analysis** | Import and analyze 2k, 6k, and other erg test results with trend visualization | Planned |
-| **Athlete Ranking Algorithm** | Aggregate performance metrics to generate dynamic power rankings | Planned |
-| **True Relative Speed** | Calculate adjusted speed accounting for seat position, boat class, and weather conditions | Planned |
+### Scripts
 
-### Predictive Modeling
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **Race Placement Prediction** | ML model to predict placement against competing schools using historical race data | Planned |
-| **Optimal Lineup Suggestions** | AI-driven recommendations for boat compositions based on athlete compatibility | Planned |
-| **Training Recommendations** | Personalized training suggestions based on individual metrics and team goals | Planned |
+```bash
+# Development
+npm run dev:full     # Start frontend + backend
+npm run dev:tmux     # Persistent tmux session
+npm stop             # Stop all servers
 
-### Data Infrastructure
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **PostgreSQL Database** | Persistent storage for athlete data, lineups, and historical performance | Planned |
-| **Data Import Pipeline** | Automated ingestion from erg machines, race results, and training logs | Planned |
-| **Analytics Dashboard** | Visual reporting on team trends, individual progress, and competitive analysis | Planned |
+# Database
+npm run db:migrate   # Apply migrations
+npm run db:seed      # Seed test data
+npm run db:studio    # Open Prisma Studio
 
-### Technologies (Planned)
-- **ML/Analytics**: Python, Scikit-learn, Pandas, NumPy
-- **Database**: PostgreSQL with Prisma ORM
-- **Visualization**: Recharts, D3.js
+# Production
+npm run build        # Build for production
+npm start            # Run production server
 
-See [PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md) for detailed roadmap.
+# Quality
+npm run lint         # Run ESLint
+npm run test         # Run tests
+npm run typecheck    # TypeScript check
+```
+
+### Environment Variables
+
+```bash
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/rowlab
+
+# Authentication
+JWT_SECRET=your-secret-key
+JWT_REFRESH_SECRET=your-refresh-secret
+
+# AI (optional)
+OLLAMA_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2
+
+# Billing (optional)
+STRIPE_SECRET_KEY=sk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Concept2 (optional)
+CONCEPT2_CLIENT_ID=...
+CONCEPT2_CLIENT_SECRET=...
+```
+
+---
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Ways to Contribute
+
+- **Bug Reports**: Open an issue with reproduction steps
+- **Feature Requests**: Describe the use case and proposed solution
+- **Code**: Submit a PR following our coding standards
+- **Documentation**: Improve docs, add examples, fix typos
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## Market Context
+
+### Target Audience
+
+- **Collegiate programs**: 250+ NCAA/ACRA programs nationally
+- **Club teams**: 2,000+ competitive club programs
+- **High school**: Growing varsity programs
+
+### Why RowLab?
+
+| Traditional Approach | RowLab |
+|---------------------|--------|
+| Spreadsheets and paper | Modern drag-and-drop interface |
+| Gut-feel decisions | Data-driven recommendations |
+| Lost knowledge when coaches leave | Persistent, searchable history |
+| No objective athlete comparisons | Elo-based seat racing rankings |
+| Manual data entry | Concept2 sync, telemetry import |
+
+---
 
 ## License
 
-Private - (Specify license if open-sourcing)
-
-## Contact
-
-- **Issues**: Document bugs and feature requests
-- **Questions**: Contact project maintainer
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**RowLab v2.0** - Built with React, Vite, and a passion for rowing
+## Acknowledgments
 
-*Last updated: January 2026*
+- **Concept2** for erg data API
+- **Ollama** for local LLM inference
+- **@dnd-kit** for accessible drag-and-drop
+- **Linear** and **Raycast** for design inspiration
+
+---
+
+<p align="center">
+  <strong>RowLab</strong> — Built for coaches who demand precision
+</p>
+
+<p align="center">
+  <a href="https://github.com/swdrow/RowLab">GitHub</a> •
+  <a href="docs/README.md">Documentation</a> •
+  <a href="ROADMAP.md">Roadmap</a>
+</p>

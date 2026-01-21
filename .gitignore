@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-package-lock.json
+# Note: package-lock.json SHOULD be committed for apps (ensures consistent deps)
 
 # Build outputs
 dist/
@@ -10,6 +10,7 @@ build/
 .env
 .env.local
 .env.production
+.env.development
 
 # Logs
 logs/
@@ -30,5 +31,87 @@ Thumbs.db
 *.tmp
 .cache/
 
+# Generated Prisma
 /src/generated/prisma
 logs/*.log
+
+# ===========================================
+# SENSITIVE FILES - DO NOT COMMIT TO PUBLIC REPO
+# ===========================================
+
+# Claude Code configuration and costs
+.claude-cost
+.claude/
+
+# Database files (contain user data)
+*.db
+*.sqlite
+*.sqlite3
+prisma/dev.db
+data/*.db
+
+# Admin seed script (contains credentials)
+seed-admin.mjs
+
+# Audit and debug screenshots
+audit-screenshots/
+
+# Working documents (optional - remove if you want to track these)
+# plan.md
+# design.md
+
+# Test coverage
+coverage/
+
+# Docker volumes
+docker-data/
+
+# Docker local overrides
+docker-compose.override.yml
+
+# ===========================================
+# SECURITY & KEYS
+# ===========================================
+
+# TLS/SSL Certificates and Keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# SSH Keys (if accidentally placed in repo)
+id_rsa
+id_dsa
+id_ed25519
+*.pub
+
+# ===========================================
+# DATABASE TEMP FILES
+# ===========================================
+
+# SQLite journal/WAL files
+*.db-journal
+*.db-wal
+*.db-shm
+
+# ===========================================
+# BUILD & CACHE
+# ===========================================
+
+# TypeScript incremental build
+*.tsbuildinfo
+
+# Linter caches
+.eslintcache
+.stylelintcache
+
+# Test results
+test-results/
+playwright-report/
+blob-report/
+
+# Yarn logs
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*

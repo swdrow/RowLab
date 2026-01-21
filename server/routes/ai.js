@@ -1,15 +1,15 @@
 import express from 'express';
-import { createRequire } from 'module';
+import logger from '../utils/logger.js';
 import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
+import { aiChatLimiter } from '../middleware/security.js';
 import { getPromptForModel, ROWING_EXPERT_PROMPT } from '../prompts/rowing-expert.js';
-
-const require = createRequire(import.meta.url);
-const {
+import {
   isOllamaAvailable,
   parseCSVColumns,
   matchAthleteName,
   suggestLineup,
-} = require('../services/aiService.js');
+} from '../services/aiService.js';
+import prisma from '../db/connection.js';
 
 const router = express.Router();
 
@@ -51,12 +51,18 @@ router.get('/status', authenticateToken, teamIsolation, async (req, res) => {
   try {
     const available = await isOllamaAvailable();
 
+    // Get team's preferred model from database
+    let preferredModel = DEFAULT_MODEL;
+    if (req.team?.aiModel) {
+      preferredModel = req.team.aiModel;
+    }
+
     res.json({
       success: true,
       data: {
         provider: 'ollama',
         available,
-        model: DEFAULT_MODEL,
+        model: preferredModel,
       },
     });
   } catch (err) {
@@ -120,7 +126,7 @@ router.post(
         data: { mapping },
       });
     } catch (err) {
-      console.error('Parse CSV error:', err);
+      logger.error('Parse CSV error', { error: err.message });
       res.status(503).json({
         success: false,
         error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
@@ -174,7 +180,7 @@ router.post(
         data: { matchedId },
       });
     } catch (err) {
-      console.error('Match name error:', err);
+      logger.error('Match name error', { error: err.message });
       res.status(503).json({
         success: false,
         error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
@@ -236,7 +242,7 @@ router.post(
         data: { suggestion },
       });
     } catch (err) {
-      console.error('Suggest lineup error:', err);
+      logger.error('Suggest lineup error', { error: err.message });
       res.status(503).json({
         success: false,
         error: { code: 'AI_UNAVAILABLE', message: 'AI service unavailable' },
@@ -249,37 +255,75 @@ router.post(
 /**
  * Chat with AI assistant
  * Supports streaming responses
+ * Requires authentication and team context
  */
-router.post('/chat', async (req, res) => {
-  const { message, context, model, stream = true } = req.body;
+router.post('/chat', authenticateToken, aiChatLimiter, teamIsolation, async (req, res) => {
+  const { message, model, stream = true } = req.body;
 
-  if (!message) {
-    return res.status(400).json({ error: 'Message is required' });
+  // Input validation
+  if (!message || typeof message !== 'string') {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Message string is required' },
+    });
   }
 
-  // Build context string from app state
+  if (message.length > 2000) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Message exceeds 2000 character limit' },
+    });
+  }
+
+  // Build context from server-side data (not trusting client input)
   let contextStr = '';
-  if (context) {
-    if (context.athletes?.length) {
-      const portCount = context.athletes.filter(a => a.side === 'P' || a.side === 'B').length;
-      const starboardCount = context.athletes.filter(a => a.side === 'S' || a.side === 'B').length;
-      const coxCount = context.athletes.filter(a => a.side === 'Cox').length;
-      contextStr += `\nRoster: ${context.athletes.length} athletes (${portCount} port, ${starboardCount} starboard, ${coxCount} coxswains)`;
+  try {
+    // Fetch team's athletes from database
+    const athletes = await prisma.athlete.findMany({
+      where: { teamId: req.teamId },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        side: true,
+        ergScore: true,
+      },
+    });
+
+    if (athletes.length > 0) {
+      const portCount = athletes.filter(a => a.side === 'P' || a.side === 'B').length;
+      const starboardCount = athletes.filter(a => a.side === 'S' || a.side === 'B').length;
+      const coxCount = athletes.filter(a => a.side === 'Cox').length;
+      contextStr += `\nRoster: ${athletes.length} athletes (${portCount} port, ${starboardCount} starboard, ${coxCount} coxswains)`;
 
       // Include top athletes by erg if available
-      const withErg = context.athletes.filter(a => a.ergScore).sort((a, b) => a.ergScore - b.ergScore);
+      const withErg = athletes.filter(a => a.ergScore).sort((a, b) => a.ergScore - b.ergScore);
       if (withErg.length > 0) {
         contextStr += `\nTop 5 by erg: ${withErg.slice(0, 5).map(a => `${a.lastName} (${a.ergScore})`).join(', ')}`;
       }
     }
 
-    if (context.activeBoats?.length) {
-      contextStr += `\nActive boats: ${context.activeBoats.map(b => {
-        const filled = b.seats?.filter(s => s.athlete).length || 0;
-        const total = b.seats?.length || 0;
-        return `${b.boatConfig?.name || 'Boat'} (${filled}/${total} filled)`;
+    // Fetch team's active lineups/boats
+    const lineups = await prisma.lineup.findMany({
+      where: { teamId: req.teamId },
+      include: {
+        boatConfig: true,
+        athletes: true,
+      },
+      take: 5,
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    if (lineups.length > 0) {
+      contextStr += `\nRecent lineups: ${lineups.map(l => {
+        const filled = l.athletes?.length || 0;
+        const total = l.boatConfig?.seats || 0;
+        return `${l.boatConfig?.name || 'Lineup'} (${filled}/${total} filled)`;
       }).join(', ')}`;
     }
+  } catch (dbErr) {
+    // Log but don't fail - context is optional enhancement
+    logger.error('Failed to fetch context data', { error: dbErr.message });
   }
 
   const fullPrompt = contextStr
@@ -305,7 +349,7 @@ router.post('/chat', async (req, res) => {
 
     if (!ollamaRes.ok) {
       const error = await ollamaRes.text();
-      console.error('Ollama error:', error);
+      logger.error('Ollama error', { error });
       return res.status(502).json({ error: 'AI service error', details: error });
     }
 
@@ -349,7 +393,7 @@ router.post('/chat', async (req, res) => {
       res.json({ response: data.response, done: true });
     }
   } catch (err) {
-    console.error('AI chat error:', err);
+    logger.error('AI chat error', { error: err.message });
     res.status(500).json({ error: 'Failed to connect to AI service', details: err.message });
   }
 });
@@ -384,5 +428,46 @@ router.post('/pull-model', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to connect to Ollama', details: err.message });
   }
 });
+
+/**
+ * POST /api/v1/ai/set-model
+ * Set the preferred AI model for the team
+ * Requires OWNER or COACH role
+ */
+router.post(
+  '/set-model',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  async (req, res) => {
+    const { model } = req.body;
+
+    if (!model || typeof model !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'model string is required' },
+      });
+    }
+
+    try {
+      // Update the team's preferred AI model
+      await prisma.team.update({
+        where: { id: req.teamId },
+        data: { aiModel: model },
+      });
+
+      res.json({
+        success: true,
+        data: { model },
+      });
+    } catch (err) {
+      logger.error('Set model error', { error: err.message });
+      res.status(500).json({
+        success: false,
+        error: { code: 'DATABASE_ERROR', message: 'Failed to update model preference' },
+      });
+    }
+  }
+);
 
 export default router;

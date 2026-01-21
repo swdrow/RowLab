@@ -41,7 +41,7 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       <div className="relative glass-card rounded-2xl p-8 w-full max-w-md mx-4 animate-slide-up">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -50,10 +50,10 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 
         <div className="text-center mb-6">
           <div className="text-4xl mb-2">🔐</div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+          <h2 className="text-2xl font-bold text-text-primary">
             Coach Login
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-text-secondary mt-1">
             Sign in to save lineups and access all features
           </p>
         </div>
@@ -66,14 +66,14 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Username
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition"
               placeholder="Enter username"
               required
               autoFocus
@@ -81,14 +81,14 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 rounded-xl border border-white/[0.08] bg-void-elevated/50 text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition"
               placeholder="Enter password"
               required
             />
@@ -97,7 +97,7 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blade-blue/20"
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
@@ -113,12 +113,12 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mt-6">
+        <p className="text-sm text-center text-text-muted mt-6">
           Don't have an account?{' '}
           <button
             type="button"
             onClick={onSwitchToRegister}
-            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            className="text-blade-blue hover:underline font-medium"
           >
             Request access
           </button>

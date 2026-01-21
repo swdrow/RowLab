@@ -20,6 +20,7 @@ const useAuthStore = create(
       teams: [],
       activeTeamId: null,
       activeTeamRole: null,
+      activeTeamIsCoxswain: false, // Track if current user is coxswain in active team
       accessToken: null,
       isAuthenticated: false,
       isLoading: false,
@@ -83,6 +84,7 @@ const useAuthStore = create(
             teams,
             activeTeamId,
             activeTeamRole: activeTeam?.role || null,
+            activeTeamIsCoxswain: activeTeam?.isCoxswain || false,
             accessToken,
             isAuthenticated: true,
             isLoading: false,
@@ -124,6 +126,7 @@ const useAuthStore = create(
           teams: [],
           activeTeamId: null,
           activeTeamRole: null,
+          activeTeamIsCoxswain: false,
           accessToken: null,
           isAuthenticated: false,
           error: null,
@@ -147,6 +150,7 @@ const useAuthStore = create(
               teams: [],
               activeTeamId: null,
               activeTeamRole: null,
+              activeTeamIsCoxswain: false,
               accessToken: null,
               isAuthenticated: false,
             });
@@ -196,7 +200,9 @@ const useAuthStore = create(
             user: {
               id: user.id,
               email: user.email,
+              username: user.username,
               name: user.name,
+              isAdmin: user.isAdmin,
             },
             teams: user.teams,
           });
@@ -240,6 +246,7 @@ const useAuthStore = create(
           set({
             activeTeamId: team.id,
             activeTeamRole: team.role,
+            activeTeamIsCoxswain: team.isCoxswain || false,
             accessToken: newAccessToken,
             isLoading: false,
           });
@@ -426,6 +433,7 @@ const useAuthStore = create(
         teams: state.teams,
         activeTeamId: state.activeTeamId,
         activeTeamRole: state.activeTeamRole,
+        activeTeamIsCoxswain: state.activeTeamIsCoxswain,
       }),
     }
   )

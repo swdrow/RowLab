@@ -125,7 +125,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       subtitle: 'Download lineup as PDF',
       icon: Download,
       shortcut: ['Cmd', 'P'],
-      action: () => { console.log('Export PDF'); onClose(); },
+      action: () => { onClose(); }, // TODO: Implement export
       category: 'Actions',
       keywords: ['download', 'print', 'save'],
     },
@@ -134,7 +134,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       title: 'Import Data',
       subtitle: 'Upload CSV or Excel file',
       icon: Upload,
-      action: () => { console.log('Import data'); onClose(); },
+      action: () => { onClose(); }, // TODO: Implement import
       category: 'Actions',
       keywords: ['csv', 'excel', 'upload'],
     },
@@ -146,7 +146,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       subtitle: 'Get AI-powered recommendations',
       icon: Sparkles,
       shortcut: ['Cmd', 'J'],
-      action: () => { console.log('AI suggest'); onClose(); },
+      action: () => { onClose(); }, // TODO: Implement AI suggestions
       category: 'AI',
       keywords: ['suggest', 'recommend', 'optimize'],
     },
@@ -158,7 +158,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       subtitle: 'Configure preferences',
       icon: Settings,
       shortcut: ['Cmd', ','],
-      action: () => { console.log('Settings'); onClose(); },
+      action: () => { navigate('/app/settings'); onClose(); },
       category: 'Settings',
       keywords: ['preferences', 'config', 'options'],
     },

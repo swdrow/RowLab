@@ -1,7 +1,12 @@
 import React from 'react';
 
 /**
- * GlassNavbar - Liquid Glass Navigation Bar
+ * GlassNavbar - Precision Instrument Navigation Bar
+ *
+ * Design Standard:
+ * - Void-deep backdrop with blur
+ * - Subtle white border (6% opacity)
+ * - Blue glow accents (not green)
  *
  * Usage:
  *   <GlassNavbar
@@ -9,6 +14,16 @@ import React from 'react';
  *     leftContent={<Logo />}
  *     rightContent={<DarkModeToggle />}
  *   />
+ *
+ *   // With nav links and CTA
+ *   <GlassNavbar>
+ *     <GlassNavbar.Brand>RowLab</GlassNavbar.Brand>
+ *     <GlassNavbar.Links>
+ *       <GlassNavbar.Link href="#features">Features</GlassNavbar.Link>
+ *       <GlassNavbar.Link href="#pricing">Pricing</GlassNavbar.Link>
+ *     </GlassNavbar.Links>
+ *     <GlassNavbar.CTA href="/signup">Get Started</GlassNavbar.CTA>
+ *   </GlassNavbar>
  *
  * Props:
  *   - title: string - app title
@@ -39,20 +54,16 @@ const GlassNavbar = ({
   return (
     <nav
       className={`
-        ${sticky ? 'sticky top-0 z-40' : 'relative'}
+        ${sticky ? 'sticky top-0 z-50' : 'relative'}
         w-full
         ${blurLevels[blur]}
-        bg-white/70 dark:bg-dark-card/70
-        border-b border-white/20 dark:border-white/10
-        shadow-md
-        transition-all duration-300
+        bg-void-deep/80
+        border-b border-white/[0.06]
+        transition-all duration-150
         ${className}
       `}
       {...props}
     >
-      {/* Top edge highlight */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {children ? (
@@ -63,7 +74,7 @@ const GlassNavbar = ({
               <div className="flex items-center gap-4">
                 {leftContent}
                 {title && (
-                  <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  <h1 className="text-xl font-semibold text-text-primary">
                     {title}
                   </h1>
                 )}
@@ -79,11 +90,107 @@ const GlassNavbar = ({
           )}
         </div>
       </div>
-
-      {/* Bottom edge subtle glow */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/10 to-transparent" />
     </nav>
   );
 };
+
+/**
+ * Brand component for navbar logo/title
+ */
+GlassNavbar.Brand = ({ children, className = '', ...props }) => (
+  <div className={`flex items-center gap-3 ${className}`} {...props}>
+    {typeof children === 'string' ? (
+      <span className="text-xl font-semibold text-text-primary">{children}</span>
+    ) : (
+      children
+    )}
+  </div>
+);
+
+/**
+ * Container for navigation links
+ */
+GlassNavbar.Links = ({ children, className = '', ...props }) => (
+  <div className={`flex items-center gap-8 ${className}`} {...props}>
+    {children}
+  </div>
+);
+
+/**
+ * Individual navigation link
+ * Subtle hover with color change, no underlines
+ */
+GlassNavbar.Link = ({
+  children,
+  href,
+  active = false,
+  className = '',
+  ...props
+}) => (
+  <a
+    href={href}
+    className={`
+      text-sm font-medium
+      transition-colors duration-200
+      ${active
+        ? 'text-text-primary'
+        : 'text-text-secondary hover:text-text-primary'
+      }
+      ${className}
+    `}
+    {...props}
+  >
+    {children}
+  </a>
+);
+
+/**
+ * CTA Button for navbar
+ * Uses blue glow, rounded-xl corners
+ */
+GlassNavbar.CTA = ({
+  children,
+  href,
+  onClick,
+  className = '',
+  ...props
+}) => {
+  const buttonClasses = `
+    inline-flex items-center justify-center
+    px-5 py-2.5
+    text-sm font-semibold
+    text-white
+    bg-accent-blue
+    rounded-xl
+    shadow-[0_0_20px_-5px_rgba(0,112,243,0.4)]
+    hover:shadow-[0_0_30px_-5px_rgba(0,112,243,0.5)]
+    hover:bg-accent-blue/90
+    transition-all duration-200
+    ${className}
+  `;
+
+  if (href) {
+    return (
+      <a href={href} className={buttonClasses} {...props}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <button onClick={onClick} className={buttonClasses} {...props}>
+      {children}
+    </button>
+  );
+};
+
+/**
+ * Actions container for right-side items
+ */
+GlassNavbar.Actions = ({ children, className = '', ...props }) => (
+  <div className={`flex items-center gap-4 ${className}`} {...props}>
+    {children}
+  </div>
+);
 
 export default GlassNavbar;

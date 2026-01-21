@@ -39,7 +39,7 @@ export const cardShadows = {
   elevated: '0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
 
   // Active/selected card
-  active: '0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.3)',
+  active: '0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 112, 243, 0.3)',
 
   // Floating card (modals, dropdowns)
   floating: '0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
@@ -51,7 +51,7 @@ export const cardShadows = {
   column: '0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
 
   // Dragging card
-  dragging: '0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(99, 102, 241, 0.4)',
+  dragging: '0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(0, 112, 243, 0.4)',
 } as const;
 
 // ========================================
@@ -59,13 +59,17 @@ export const cardShadows = {
 // For hover states and emphasis
 // ========================================
 export const glowShadows = {
-  // Primary accent (indigo)
-  accent: '0 0 20px rgba(99, 102, 241, 0.35), 0 0 40px rgba(99, 102, 241, 0.15)',
-  accentSm: '0 0 12px rgba(99, 102, 241, 0.3)',
-  accentLg: '0 0 30px rgba(99, 102, 241, 0.4), 0 0 60px rgba(99, 102, 241, 0.2)',
+  // Primary accent (blade blue)
+  accent: '0 0 20px rgba(0, 112, 243, 0.35), 0 0 40px rgba(0, 112, 243, 0.15)',
+  accentSm: '0 0 12px rgba(0, 112, 243, 0.3)',
+  accentLg: '0 0 30px rgba(0, 112, 243, 0.4), 0 0 60px rgba(0, 112, 243, 0.2)',
+
+  // Blade blue specific
+  bladeBlue: '0 0 20px rgba(0, 112, 243, 0.4)',
+  bladeBlueIntense: '0 0 10px rgba(0, 112, 243, 0.5), 0 0 30px rgba(0, 112, 243, 0.3)',
 
   // Spectrum colors
-  blue: '0 0 20px rgba(66, 133, 244, 0.35), 0 0 40px rgba(66, 133, 244, 0.15)',
+  blue: '0 0 20px rgba(0, 112, 243, 0.35), 0 0 40px rgba(0, 112, 243, 0.15)',
   purple: '0 0 20px rgba(155, 114, 203, 0.35), 0 0 40px rgba(155, 114, 203, 0.15)',
   rose: '0 0 20px rgba(217, 101, 112, 0.35), 0 0 40px rgba(217, 101, 112, 0.15)',
   cyan: '0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(6, 182, 212, 0.15)',
@@ -79,7 +83,7 @@ export const glowShadows = {
   info: '0 0 16px rgba(6, 182, 212, 0.3)',
 
   // Multi-color shimmer glow (Gemini-style)
-  shimmer: '0 0 30px rgba(66, 133, 244, 0.25), 0 0 60px rgba(155, 114, 203, 0.15), 0 0 90px rgba(217, 101, 112, 0.10)',
+  shimmer: '0 0 30px rgba(0, 112, 243, 0.25), 0 0 60px rgba(155, 114, 203, 0.15), 0 0 90px rgba(217, 101, 112, 0.10)',
 
   // Rowing specific
   port: '0 0 20px rgba(217, 101, 112, 0.35), 0 0 40px rgba(217, 101, 112, 0.15)',
@@ -103,7 +107,8 @@ export const highlights = {
 // For keyboard navigation
 // ========================================
 export const focusShadows = {
-  default: '0 0 0 2px rgba(99, 102, 241, 0.5)',
+  default: '0 0 0 2px rgba(0, 112, 243, 0.5)',
+  bladeBlue: '0 0 0 3px rgba(0, 112, 243, 0.15)',
   error: '0 0 0 2px rgba(239, 68, 68, 0.5)',
   success: '0 0 0 2px rgba(34, 197, 94, 0.5)',
 } as const;

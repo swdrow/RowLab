@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../utils/logger.js';
 import { body, param, validationResult } from 'express-validator';
 import {
   createInvitation,
@@ -64,7 +65,7 @@ router.post(
           error: { code: 'CONFLICT', message: error.message },
         });
       }
-      console.error('Create invitation error:', error);
+      logger.error('Create invitation error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to create invitation' },
@@ -91,7 +92,7 @@ router.get(
         data: { invitations },
       });
     } catch (error) {
-      console.error('Get invitations error:', error);
+      logger.error('Get invitations error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get invitations' },
@@ -124,7 +125,7 @@ router.get(
         data: { invitation: result.invitation },
       });
     } catch (error) {
-      console.error('Validate invitation error:', error);
+      logger.error('Validate invitation error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to validate invitation' },
@@ -157,7 +158,7 @@ router.post(
           error: { code: 'INVALID_INVITATION', message: error.message },
         });
       }
-      console.error('Claim invitation error:', error);
+      logger.error('Claim invitation error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to claim invitation' },
@@ -198,7 +199,7 @@ router.delete(
           error: { code: 'INVALID_STATUS', message: error.message },
         });
       }
-      console.error('Revoke invitation error:', error);
+      logger.error('Revoke invitation error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to revoke invitation' },
@@ -233,7 +234,7 @@ router.post(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Resend invitation error:', error);
+      logger.error('Resend invitation error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to resend invitation' },

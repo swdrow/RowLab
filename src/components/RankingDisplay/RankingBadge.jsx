@@ -32,7 +32,7 @@ const RankingBadge = ({ rank, side = null, size = 'sm' }) => {
     if (rank === 1) return 'bg-yellow-400 text-yellow-900';
     if (rank === 2) return 'bg-gray-300 text-gray-800';
     if (rank === 3) return 'bg-orange-400 text-orange-900';
-    return 'bg-blue-500 text-white';
+    return 'bg-blade-blue text-white';
   };
 
   // Side-specific emoji indicators

@@ -1,4 +1,5 @@
-const axios = require('axios');
+import axios from 'axios';
+import logger from '../utils/logger.js';
 
 // Configuration
 const OLLAMA_BASE = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -28,7 +29,7 @@ async function queryOllama(prompt, options = {}) {
 
     return response.data.response || null;
   } catch (error) {
-    console.error('Ollama query failed:', error.message);
+    logger.error('Ollama query failed', { error: error.message });
     return null;
   }
 }
@@ -44,7 +45,7 @@ async function isOllamaAvailable() {
     });
     return response.status === 200;
   } catch (error) {
-    console.error('Ollama not available:', error.message);
+    logger.error('Ollama not available', { error: error.message });
     return false;
   }
 }
@@ -84,13 +85,13 @@ Do not include any explanation, only the JSON object.`;
     // Extract JSON from response (handle cases where LLM adds explanation)
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('No JSON found in AI response');
+      logger.error('No JSON found in AI response');
       return null;
     }
 
     return JSON.parse(jsonMatch[0]);
   } catch (error) {
-    console.error('Failed to parse AI column mapping:', error.message);
+    logger.error('Failed to parse AI column mapping', { error: error.message });
     return null;
   }
 }
@@ -205,18 +206,18 @@ Return ONLY the JSON object, no other text.`;
     // Extract JSON from response
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('No JSON found in AI response');
+      logger.error('No JSON found in AI response');
       return null;
     }
 
     return JSON.parse(jsonMatch[0]);
   } catch (error) {
-    console.error('Failed to parse AI lineup suggestion:', error.message);
+    logger.error('Failed to parse AI lineup suggestion', { error: error.message });
     return null;
   }
 }
 
-module.exports = {
+export {
   queryOllama,
   isOllamaAvailable,
   parseCSVColumns,

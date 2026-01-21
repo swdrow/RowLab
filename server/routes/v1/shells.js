@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../../utils/logger.js';
 import { body, param, query, validationResult } from 'express-validator';
 import {
   createShell,
@@ -44,7 +45,7 @@ router.get(
         data: { shells },
       });
     } catch (error) {
-      console.error('Get shells error:', error);
+      logger.error('Get shells error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get shells' },
@@ -69,7 +70,7 @@ router.get(
         data: { grouped },
       });
     } catch (error) {
-      console.error('Get grouped shells error:', error);
+      logger.error('Get grouped shells error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get shells' },
@@ -102,7 +103,7 @@ router.get(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Get shell error:', error);
+      logger.error('Get shell error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get shell' },
@@ -140,7 +141,7 @@ router.post(
           error: { code: 'DUPLICATE', message: error.message },
         });
       }
-      console.error('Create shell error:', error);
+      logger.error('Create shell error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to create shell' },
@@ -172,7 +173,7 @@ router.post(
         data: result,
       });
     } catch (error) {
-      console.error('Bulk import shells error:', error);
+      logger.error('Bulk import shells error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to import shells' },
@@ -217,7 +218,7 @@ router.patch(
           error: { code: 'DUPLICATE', message: error.message },
         });
       }
-      console.error('Update shell error:', error);
+      logger.error('Update shell error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to update shell' },
@@ -251,7 +252,7 @@ router.delete(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Delete shell error:', error);
+      logger.error('Delete shell error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to delete shell' },

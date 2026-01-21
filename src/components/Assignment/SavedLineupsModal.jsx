@@ -133,7 +133,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <svg className="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
+              <svg className="animate-spin h-8 w-8 text-blade-blue" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
@@ -153,7 +153,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
               {lineups.map((lineup) => (
                 <div
                   key={lineup.id}
-                  className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all"
+                  className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-white/10 hover:border-white/20 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -182,7 +182,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
                     <div className="flex gap-2 ml-4">
                       <button
                         onClick={() => handleLoad(lineup)}
-                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all"
+                        className="px-3 py-1.5 bg-blade-blue hover:bg-blade-blue/90 text-void-deep text-sm font-medium rounded-lg transition-all"
                       >
                         Load
                       </button>
@@ -218,7 +218,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
         </div>
 
         {!isAuthenticated && (
-          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-blue-700 dark:text-blue-300">
+          <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg text-sm text-text-secondary">
             Sign in to save lineups to the database and access them from anywhere.
           </div>
         )}

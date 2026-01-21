@@ -25,12 +25,24 @@ export const surface = {
 } as const;
 
 // ========================================
+// BLADE BLUE - Primary accent
+// ========================================
+export const blade = {
+  blue: '#0070F3',       // Primary action
+  hover: '#2186EB',      // Hover state
+  active: '#0062D1',     // Active/pressed
+  subtle: 'rgba(0, 112, 243, 0.15)',
+  muted: 'rgba(0, 112, 243, 0.08)',
+  glow: 'rgba(0, 112, 243, 0.4)',
+} as const;
+
+// ========================================
 // SPECTRUM PALETTE - Rainbow shimmer colors
 // Gemini 74deg gradient inspired
 // ========================================
 export const spectrum = {
-  blue: '#4285F4',       // Google blue - primary actions
-  indigo: '#6366F1',     // Main accent - CTAs
+  blue: '#0070F3',       // Blade blue - primary actions
+  indigo: '#6366F1',     // Secondary accent - CTAs
   violet: '#8B5CF6',     // Secondary accent
   purple: '#9B72CB',     // Gemini purple
   fuchsia: '#D946EF',    // Highlights
@@ -48,20 +60,20 @@ export const spectrum = {
 } as const;
 
 // ========================================
-// PRIMARY ACCENT SCALE (Indigo)
+// PRIMARY ACCENT SCALE (Blade Blue)
 // ========================================
 export const accent = {
-  50: '#EEF2FF',
-  100: '#E0E7FF',
-  200: '#C7D2FE',
-  300: '#A5B4FC',
-  400: '#818CF8',
-  500: '#6366F1',    // DEFAULT
-  600: '#4F46E5',
-  700: '#4338CA',
-  800: '#3730A3',
-  900: '#312E81',
-  950: '#1E1B4B',
+  50: '#EBF5FF',
+  100: '#D6EBFF',
+  200: '#ADD6FF',
+  300: '#85C2FF',
+  400: '#5CADFF',
+  500: '#0070F3',    // DEFAULT - Blade Blue
+  600: '#0062D1',
+  700: '#0054B4',
+  800: '#004697',
+  900: '#00387A',
+  950: '#002A5C',
 } as const;
 
 // ========================================
@@ -112,8 +124,8 @@ export const border = {
   subtle: 'rgba(255, 255, 255, 0.06)',
   default: 'rgba(255, 255, 255, 0.10)',
   strong: 'rgba(255, 255, 255, 0.15)',
-  accent: 'rgba(99, 102, 241, 0.40)',
-  focus: 'rgba(99, 102, 241, 0.60)',
+  accent: 'rgba(0, 112, 243, 0.40)',
+  focus: 'rgba(0, 112, 243, 0.60)',
 } as const;
 
 // ========================================
@@ -147,53 +159,60 @@ export const rowing = {
 // GRADIENT DEFINITIONS
 // ========================================
 export const gradients = {
+  // Blade blue gradient (primary)
+  bladeBlue: 'linear-gradient(135deg, #0070F3 0%, #2186EB 100%)',
+  bladeBlueSubtle: 'linear-gradient(135deg, rgba(0, 112, 243, 0.15) 0%, rgba(33, 134, 235, 0.10) 100%)',
+
   // Gemini-style shimmer (74deg angle, animated)
-  shimmer: 'linear-gradient(74deg, #4285F4 0%, #9B72CB 15%, #D96570 30%, #4285F4 45%, #9B72CB 60%, #D96570 75%, #4285F4 90%, #9B72CB 100%)',
-  shimmerSubtle: 'linear-gradient(74deg, rgba(66, 133, 244, 0.15) 0%, rgba(155, 114, 203, 0.15) 25%, rgba(217, 101, 112, 0.15) 50%, rgba(66, 133, 244, 0.15) 75%, rgba(155, 114, 203, 0.15) 100%)',
+  shimmer: 'linear-gradient(74deg, #0070F3 0%, #9B72CB 15%, #D96570 30%, #0070F3 45%, #9B72CB 60%, #D96570 75%, #0070F3 90%, #9B72CB 100%)',
+  shimmerSubtle: 'linear-gradient(74deg, rgba(0, 112, 243, 0.15) 0%, rgba(155, 114, 203, 0.15) 25%, rgba(217, 101, 112, 0.15) 50%, rgba(0, 112, 243, 0.15) 75%, rgba(155, 114, 203, 0.15) 100%)',
 
   // Primary gradient
-  primary: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #9B72CB 100%)',
-  primarySubtle: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.10) 100%)',
+  primary: 'linear-gradient(135deg, #0070F3 0%, #2186EB 50%, #6366F1 100%)',
+  primarySubtle: 'linear-gradient(135deg, rgba(0, 112, 243, 0.15) 0%, rgba(99, 102, 241, 0.10) 100%)',
 
   // Accent gradients
-  accent: 'linear-gradient(135deg, #4285F4 0%, #6366F1 50%, #8B5CF6 100%)',
+  accent: 'linear-gradient(135deg, #0070F3 0%, #2186EB 50%, #6366F1 100%)',
   warm: 'linear-gradient(135deg, #D96570 0%, #EC4899 50%, #9B72CB 100%)',
-  cool: 'linear-gradient(135deg, #06B6D4 0%, #4285F4 50%, #6366F1 100%)',
+  cool: 'linear-gradient(135deg, #06B6D4 0%, #0070F3 50%, #6366F1 100%)',
 
   // Full rainbow
-  rainbow: 'linear-gradient(90deg, #4285F4, #6366F1, #8B5CF6, #9B72CB, #D946EF, #EC4899, #D96570, #F97316, #F59E0B, #22C55E, #14B8A6, #06B6D4, #4285F4)',
+  rainbow: 'linear-gradient(90deg, #0070F3, #6366F1, #8B5CF6, #9B72CB, #D946EF, #EC4899, #D96570, #F97316, #F59E0B, #22C55E, #14B8A6, #06B6D4, #0070F3)',
 
   // Background mesh (Stripe-inspired)
   mesh: `
-    radial-gradient(ellipse 80% 50% at 20% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 50% at 20% 30%, rgba(0, 112, 243, 0.08) 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 60%),
     radial-gradient(ellipse 50% 50% at 60% 80%, rgba(217, 101, 112, 0.04) 0%, transparent 60%)
   `,
 
   // Hero glow
-  heroGlow: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
+  heroGlow: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 112, 243, 0.15) 0%, transparent 70%)',
 
   // Sidebar gradient
   sidebar: 'linear-gradient(180deg, rgba(20, 20, 20, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%)',
 
   // Command palette glow
-  commandGlow: 'radial-gradient(ellipse 100% 100% at 50% 0%, rgba(99, 102, 241, 0.10) 0%, transparent 50%)',
+  commandGlow: 'radial-gradient(ellipse 100% 100% at 50% 0%, rgba(0, 112, 243, 0.10) 0%, transparent 50%)',
 } as const;
 
 // ========================================
 // GLOW EFFECTS
 // ========================================
 export const glows = {
-  accent: '0 0 20px rgba(99, 102, 241, 0.35), 0 0 40px rgba(99, 102, 241, 0.15)',
-  blue: '0 0 20px rgba(66, 133, 244, 0.35), 0 0 40px rgba(66, 133, 244, 0.15)',
+  accent: '0 0 20px rgba(0, 112, 243, 0.35), 0 0 40px rgba(0, 112, 243, 0.15)',
+  blue: '0 0 20px rgba(0, 112, 243, 0.35), 0 0 40px rgba(0, 112, 243, 0.15)',
+  bladeBlue: '0 0 20px rgba(0, 112, 243, 0.4)',
+  bladeBlueIntense: '0 0 10px rgba(0, 112, 243, 0.5), 0 0 30px rgba(0, 112, 243, 0.3)',
   purple: '0 0 20px rgba(155, 114, 203, 0.35), 0 0 40px rgba(155, 114, 203, 0.15)',
   rose: '0 0 20px rgba(217, 101, 112, 0.35), 0 0 40px rgba(217, 101, 112, 0.15)',
   cyan: '0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(6, 182, 212, 0.15)',
   emerald: '0 0 20px rgba(16, 185, 129, 0.35), 0 0 40px rgba(16, 185, 129, 0.15)',
-  shimmer: '0 0 30px rgba(66, 133, 244, 0.25), 0 0 60px rgba(155, 114, 203, 0.15), 0 0 90px rgba(217, 101, 112, 0.10)',
+  shimmer: '0 0 30px rgba(0, 112, 243, 0.25), 0 0 60px rgba(155, 114, 203, 0.15), 0 0 90px rgba(217, 101, 112, 0.10)',
 } as const;
 
 export default {
+  blade,
   surface,
   spectrum,
   accent,

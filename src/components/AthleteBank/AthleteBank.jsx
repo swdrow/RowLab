@@ -53,7 +53,7 @@ const AthleteBank = () => {
     <div className="glass-card rounded-2xl p-6 h-full flex flex-col animate-fade-in sticky top-24">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl font-bold text-text-primary mb-2">
           Athlete Roster
         </h2>
         <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
@@ -70,26 +70,27 @@ const AthleteBank = () => {
           placeholder="Search by name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent-blue focus:border-transparent bg-white dark:bg-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 bg-white dark:bg-void-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
         />
       </div>
 
       {/* Selected Athlete Actions */}
+      {/* Selected Athlete - Blue IS a signal here (active selection state) */}
       {selectedAthlete && (
-        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <div className="mb-4 p-3 bg-blade-blue/10 border border-blade-blue/30 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-medium text-blue-800 dark:text-blue-300">
+              <div className="text-sm font-medium text-blade-blue">
                 {selectedAthlete.firstName} {selectedAthlete.lastName}
               </div>
-              <div className="text-xs text-blue-600 dark:text-blue-400">
+              <div className="text-xs text-blade-blue/70">
                 Click a seat to assign
               </div>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setErgDataAthlete(selectedAthlete)}
-                className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-all"
+                className="px-2 py-1 bg-white/10 hover:bg-white/15 text-white text-xs font-medium rounded transition-all border border-white/10"
                 title="View erg data"
               >
                 Erg Data
@@ -111,8 +112,8 @@ const AthleteBank = () => {
           onClick={() => setSideFilter('all')}
           className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
             sideFilter === 'all'
-              ? 'bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple text-white shadow-lg'
-              : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              ? 'bg-blade-blue text-void-deep shadow-lg shadow-blade-blue/20'
+              : 'bg-gray-200 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-white/10 border border-transparent dark:border-white/5'
           } hover:scale-105 active:scale-95`}
         >
           All
@@ -143,7 +144,7 @@ const AthleteBank = () => {
           onClick={() => setSideFilter('sculling')}
           className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
             sideFilter === 'sculling'
-              ? 'bg-purple-600 dark:bg-accent-purple text-white shadow-lg'
+              ? 'bg-purple-600 dark:bg-coxswain-violet text-white shadow-lg'
               : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
           } hover:scale-105 active:scale-95`}
           title="Filter by Sculling capability (needs full athlete data)"
@@ -154,7 +155,7 @@ const AthleteBank = () => {
           onClick={() => setSideFilter('coxswain')}
           className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
             sideFilter === 'coxswain'
-              ? 'bg-gradient-to-r from-purple-600 to-pink-600 dark:from-accent-purple dark:to-pink-500 text-white shadow-lg'
+              ? 'bg-gradient-to-r from-purple-600 to-pink-600 dark:from-coxswain-violet dark:to-pink-500 text-white shadow-lg'
               : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
           } hover:scale-105 active:scale-95`}
           title="Filter for Coxswains"

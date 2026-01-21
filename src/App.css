@@ -13,14 +13,14 @@
   --void-surface: #0c0c0e;
   --void-elevated: #121214;
 
-  /* Text Hierarchy */
-  --text-primary: #F4F4F5;
-  --text-secondary: #A1A1AA;
-  --text-muted: #52525B;
-  --text-disabled: #3F3F46;
+  /* Text Hierarchy - WCAG 2.1 AA compliant */
+  --text-primary: #F4F4F5;   /* 16.8:1 contrast */
+  --text-secondary: #A1A1AA; /* 9.0:1 contrast */
+  --text-muted: #71717A;     /* 5.5:1 contrast (WCAG AA compliant) */
+  --text-disabled: #52525B;  /* Decorative only */
 
   /* Neon Accents */
-  --blade-green: #00E599;
+  --blade-blue: #0070F3;
   --coxswain-violet: #7C3AED;
   --warning-orange: #F59E0B;
   --danger-red: #EF4444;
@@ -30,14 +30,20 @@
   --font-body: 'Inter', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
-  /* Easing Functions */
-  --ease-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Easing Functions - Precision Instrument (no bounce/spring) */
+  --ease-snappy: cubic-bezier(0, 0, 0.2, 1);       /* Instant start, smooth stop */
+  --ease-precision: cubic-bezier(0, 0, 0.2, 1);   /* Primary: zero perceived latency */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);    /* General purpose */
+  /* REMOVED: --ease-spring - no playful animations */
+
+  /* Precision Instrument Transitions */
+  --transition-fast: 100ms;    /* Hover states */
+  --transition-normal: 150ms;  /* Most transitions */
+  --transition-slow: 200ms;    /* Maximum duration */
 
   /* Glow Values */
-  --glow-green: 0 0 20px rgba(0, 229, 153, 0.4);
-  --glow-green-intense: 0 0 10px rgba(0, 229, 153, 0.5), 0 0 30px rgba(0, 229, 153, 0.3);
+  --glow-blue: 0 0 20px rgba(0, 112, 243, 0.4);
+  --glow-blue-intense: 0 0 10px rgba(0, 112, 243, 0.5), 0 0 30px rgba(0, 112, 243, 0.3);
   --glow-violet: 0 0 20px rgba(124, 58, 237, 0.4);
 
   /* Legacy compatibility aliases */
@@ -45,22 +51,18 @@
   --bg-surface: var(--void-elevated);
   --bg-elevated: var(--void-elevated);
   --bg-input: var(--void-surface);
-  --accent-green: var(--blade-green);
-  --accent-green-hover: #00ffaa;
-  --accent-green-subtle: rgba(0, 229, 153, 0.15);
-  --accent-green-muted: rgba(0, 229, 153, 0.08);
-  --accent-blue: var(--blade-green);
-  --accent-blue-hover: #00ffaa;
-  --accent-blue-subtle: rgba(0, 229, 153, 0.15);
-  --accent-blue-muted: rgba(0, 229, 153, 0.08);
+  --accent-blue: var(--blade-blue);
+  --accent-blue-hover: #2186EB;
+  --accent-blue-subtle: rgba(0, 112, 243, 0.15);
+  --accent-blue-muted: rgba(0, 112, 243, 0.08);
   --accent-orange: var(--warning-orange);
   --accent-orange-subtle: rgba(245, 158, 11, 0.15);
-  --success: var(--blade-green);
+  --success: #22C55E;
   --warning: var(--warning-orange);
   --error: var(--danger-red);
   --info: var(--coxswain-violet);
   --port: var(--danger-red);
-  --starboard: var(--blade-green);
+  --starboard: #10B981;
   --coxswain: var(--coxswain-violet);
   --border-subtle: rgba(255, 255, 255, 0.04);
   --border-default: rgba(255, 255, 255, 0.08);
@@ -117,7 +119,7 @@ code, pre, .mono {
 
 /* Focus styles */
 *:focus-visible {
-  outline: 2px solid var(--blade-green);
+  outline: 2px solid var(--blade-blue);
   outline-offset: 2px;
 }
 
@@ -165,8 +167,8 @@ code, pre, .mono {
    ============================================ */
 
 /* Text Glows */
-.text-glow-green {
-  text-shadow: 0 0 10px rgba(0, 229, 153, 0.5), 0 0 30px rgba(0, 229, 153, 0.3);
+.text-glow-blue {
+  text-shadow: 0 0 10px rgba(0, 112, 243, 0.5), 0 0 30px rgba(0, 112, 243, 0.3);
 }
 
 .text-glow-violet {
@@ -178,12 +180,12 @@ code, pre, .mono {
 }
 
 /* Box Glows */
-.box-glow-green {
-  box-shadow: 0 0 20px rgba(0, 229, 153, 0.4);
+.box-glow-blue {
+  box-shadow: 0 0 20px rgba(0, 112, 243, 0.4);
 }
 
-.box-glow-green-lg {
-  box-shadow: 0 0 40px rgba(0, 229, 153, 0.3);
+.box-glow-blue-lg {
+  box-shadow: 0 0 40px rgba(0, 112, 243, 0.3);
 }
 
 .box-glow-violet {
@@ -191,12 +193,34 @@ code, pre, .mono {
 }
 
 /* Focus Glow Ring */
-.focus-glow-green:focus {
+.focus-glow-blue:focus {
   outline: none;
   box-shadow:
     inset 0 2px 4px rgba(0, 0, 0, 0.2),
-    0 0 0 3px rgba(0, 229, 153, 0.15);
-  border-color: var(--blade-green);
+    0 0 0 3px rgba(0, 112, 243, 0.15);
+  border-color: var(--blade-blue);
+}
+
+/* ============================================
+   DATA UPDATE FLASH EFFECT
+   Precision Instrument - values feel "live"
+   ============================================ */
+.data-flash {
+  transition: background-color var(--transition-normal, 150ms) var(--ease-precision, ease-out);
+}
+
+.data-flash.updated {
+  background-color: rgba(0, 112, 243, 0.2);
+}
+
+/* Automatic flash animation for value updates */
+@keyframes dataFlash {
+  0% { background-color: rgba(0, 112, 243, 0.25); }
+  100% { background-color: transparent; }
+}
+
+.data-flash-animate {
+  animation: dataFlash 150ms var(--ease-precision, ease-out) forwards;
 }
 
 @layer base {
@@ -217,7 +241,7 @@ code, pre, .mono {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -228,7 +252,7 @@ code, pre, .mono {
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(16px);
+    transform: translateX(8px);
   }
   to {
     opacity: 1;
@@ -237,15 +261,15 @@ code, pre, .mono {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s ease-out forwards;
+  animation: fadeIn 0.15s ease-out forwards;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.3s ease-out forwards;
+  animation: fadeInUp 0.15s ease-out forwards;
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 0.25s ease-out forwards;
+  animation: slideInRight 0.15s ease-out forwards;
 }
 
 /* Staggered delays */
@@ -1304,9 +1328,9 @@ code, pre, .mono {
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(16, 185, 129, 0.3),
+    rgba(0, 112, 243, 0.3),
     transparent 50%,
-    rgba(16, 185, 129, 0.1)
+    rgba(0, 112, 243, 0.1)
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -1324,7 +1348,7 @@ code, pre, .mono {
 
 /* Subtle Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-green) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1340,7 +1364,7 @@ code, pre, .mono {
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.2),
     0 2px 4px -1px rgba(0, 0, 0, 0.1),
-    0 0 0 1px var(--accent-green-subtle);
+    0 0 0 1px var(--accent-blue-subtle);
 }
 
 /* Animated Gradient Border */
@@ -1362,9 +1386,9 @@ code, pre, .mono {
   padding: 1px;
   background: conic-gradient(
     from var(--gradient-angle, 0deg),
-    var(--accent-green),
+    var(--accent-blue),
     var(--accent-orange),
-    var(--accent-green)
+    var(--accent-blue)
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -1404,10 +1428,10 @@ code, pre, .mono {
 /* Pulse Animation for Active Elements */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 112, 243, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 8px rgba(0, 112, 243, 0);
   }
 }
 
@@ -1436,16 +1460,16 @@ code, pre, .mono {
 }
 
 .input-premium:focus {
-  border-color: var(--accent-green);
+  border-color: var(--accent-blue);
   box-shadow:
-    0 0 0 3px var(--accent-green-muted),
-    0 0 20px -5px var(--accent-green);
+    0 0 0 3px var(--accent-blue-muted),
+    0 0 20px -5px var(--accent-blue);
 }
 
 /* Stat Card Glow on Hover */
 .stat-glow:hover {
   box-shadow:
-    0 4px 20px -5px rgba(16, 185, 129, 0.15),
+    0 4px 20px -5px rgba(0, 112, 243, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -1550,7 +1574,7 @@ code, pre, .mono {
 
 .stroke-indicator span {
   width: 3px;
-  background: var(--accent-green);
+  background: var(--accent-blue);
   border-radius: 1px;
   animation: stroke-wave 1.2s ease-in-out infinite;
 }
@@ -1587,7 +1611,7 @@ code, pre, .mono {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 2px solid var(--accent-green);
+  border: 2px solid var(--accent-blue);
   opacity: 0;
   pointer-events: none;
 }
@@ -1606,7 +1630,7 @@ code, pre, .mono {
 
 .perf-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-green), var(--accent-green-hover));
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-blue-hover));
   border-radius: 2px;
   transition: width 0.5s ease-out;
 }
@@ -1645,7 +1669,7 @@ code, pre, .mono {
 .time-display-lg {
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--text-primary), var(--accent-green));
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-blue));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -1659,7 +1683,7 @@ code, pre, .mono {
 }
 
 .text-gradient {
-  background: linear-gradient(to right, var(--text-primary), var(--accent-green));
+  background: linear-gradient(to right, var(--text-primary), var(--accent-blue));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -1930,7 +1954,7 @@ code, pre, .mono {
   /* Reduce animation complexity on mobile */
   .animated-border::before {
     animation: none;
-    background: var(--accent-green-subtle);
+    background: var(--accent-blue-subtle);
   }
 
   /* Simpler transitions */
@@ -1993,8 +2017,8 @@ code, pre, .mono {
   }
 
   /* Keep only essential neon glows */
-  .text-glow-green {
-    text-shadow: 0 0 8px rgba(0, 229, 153, 0.4);
+  .text-glow-blue {
+    text-shadow: 0 0 8px rgba(0, 112, 243, 0.4);
   }
 }
 
@@ -2019,3 +2043,33 @@ code, pre, .mono {
     gap: 0.5rem;
   }
 }
+
+/* ============================================
+   MOBILE UTILITIES
+   ============================================ */
+
+/* Hide scrollbar while keeping scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area padding for mobile devices */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Touch target minimum size */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+

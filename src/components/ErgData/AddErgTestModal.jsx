@@ -102,7 +102,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
       <div className="relative glass-card rounded-2xl p-6 w-full max-w-md mx-4 animate-slide-up">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -111,10 +111,10 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
 
         <div className="text-center mb-6">
           <div className="text-4xl mb-2">🚣</div>
-          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+          <h2 className="text-xl font-bold text-text-primary">
             Add Erg Test
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-text-secondary mt-1">
             {athlete?.firstName} {athlete?.lastName}
           </p>
         </div>
@@ -128,7 +128,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text-primary mb-1">
                 Date *
               </label>
               <input
@@ -136,20 +136,20 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
                 name="testDate"
                 value={formData.testDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text-primary mb-1">
                 Test Type *
               </label>
               <select
                 name="testType"
                 value={formData.testType}
                 onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm"
                 required
               >
                 {testTypes.map(type => (
@@ -160,7 +160,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Result (mm:ss.t) *
             </label>
             <input
@@ -169,13 +169,13 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
               value={formData.result}
               onChange={handleChange}
               placeholder="e.g., 6:30.5 or 1:45.2"
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Split (per 500m)
             </label>
             <input
@@ -184,13 +184,13 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
               value={formData.split}
               onChange={handleChange}
               placeholder="e.g., 1:37.6"
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text-primary mb-1">
                 Stroke Rate
               </label>
               <input
@@ -201,12 +201,12 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
                 placeholder="e.g., 32"
                 min="10"
                 max="50"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text-primary mb-1">
                 Watts
               </label>
               <input
@@ -217,13 +217,13 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
                 placeholder="e.g., 350"
                 min="50"
                 max="600"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-text-primary mb-1">
               Notes
             </label>
             <textarea
@@ -232,14 +232,14 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
               onChange={handleChange}
               rows={2}
               placeholder="Any additional notes..."
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm resize-none"
+              className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm resize-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blade-blue/20"
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">

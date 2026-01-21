@@ -110,11 +110,11 @@ export default function LineupToolbar({
         <div className="h-5 w-px bg-white/10" />
 
         {/* Quick Actions */}
-        <button className="btn-icon" title="Undo (Ctrl+Z)">
-          <Undo2 size={18} />
+        <button className="btn-icon" title="Undo (Ctrl+Z)" aria-label="Undo (Ctrl+Z)">
+          <Undo2 size={18} aria-hidden="true" />
         </button>
-        <button className="btn-icon" title="Redo (Ctrl+Shift+Z)">
-          <Redo2 size={18} />
+        <button className="btn-icon" title="Redo (Ctrl+Shift+Z)" aria-label="Redo (Ctrl+Shift+Z)">
+          <Redo2 size={18} aria-hidden="true" />
         </button>
 
         {/* Separator */}
@@ -134,13 +134,13 @@ export default function LineupToolbar({
         )}
 
         {/* Export */}
-        <button className="btn-icon" title="Export to PDF">
-          <Download size={18} />
+        <button className="btn-icon" title="Export to PDF" aria-label="Export to PDF">
+          <Download size={18} aria-hidden="true" />
         </button>
 
         {/* Save */}
-        <button className="btn-icon" title="Save Lineup">
-          <Save size={18} />
+        <button className="btn-icon" title="Save Lineup" aria-label="Save lineup">
+          <Save size={18} aria-hidden="true" />
         </button>
 
         {/* Toggle Athlete Panel */}

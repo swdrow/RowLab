@@ -3,6 +3,7 @@ import { authenticateToken, requireTeam, requireRole } from '../middleware/auth.
 import * as seatRaceService from '../services/seatRaceService.js';
 import * as marginService from '../services/marginCalculationService.js';
 import * as eloService from '../services/eloRatingService.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ router.get('/', async (req, res) => {
 
     res.json({ success: true, data: { sessions } });
   } catch (err) {
-    console.error('Get seat race sessions error:', err);
+    logger.error('Get seat race sessions error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to fetch seat race sessions' },
@@ -47,7 +48,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
 
     res.status(201).json({ success: true, data: { session } });
   } catch (err) {
-    console.error('Create seat race session error:', err);
+    logger.error('Create seat race session error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to create seat race session' },
@@ -72,7 +73,7 @@ router.get('/:id', async (req, res) => {
         error: { code: 'NOT_FOUND', message: 'Seat race session not found' },
       });
     }
-    console.error('Get seat race session error:', err);
+    logger.error('Get seat race session error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to fetch seat race session' },
@@ -97,7 +98,7 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
         error: { code: 'NOT_FOUND', message: 'Seat race session not found' },
       });
     }
-    console.error('Update seat race session error:', err);
+    logger.error('Update seat race session error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to update seat race session' },
@@ -122,7 +123,7 @@ router.delete('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
         error: { code: 'NOT_FOUND', message: 'Seat race session not found' },
       });
     }
-    console.error('Delete seat race session error:', err);
+    logger.error('Delete seat race session error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to delete seat race session' },
@@ -151,7 +152,7 @@ router.post('/:sessionId/pieces', requireRole('OWNER', 'COACH'), async (req, res
         error: { code: 'NOT_FOUND', message: 'Seat race session not found' },
       });
     }
-    console.error('Add piece error:', err);
+    logger.error('Add piece error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to add piece' },
@@ -176,7 +177,7 @@ router.patch('/pieces/:pieceId', requireRole('OWNER', 'COACH'), async (req, res)
         error: { code: 'NOT_FOUND', message: 'Piece not found' },
       });
     }
-    console.error('Update piece error:', err);
+    logger.error('Update piece error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to update piece' },
@@ -201,7 +202,7 @@ router.delete('/pieces/:pieceId', requireRole('OWNER', 'COACH'), async (req, res
         error: { code: 'NOT_FOUND', message: 'Piece not found' },
       });
     }
-    console.error('Delete piece error:', err);
+    logger.error('Delete piece error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to delete piece' },
@@ -230,7 +231,7 @@ router.post('/pieces/:pieceId/boats', requireRole('OWNER', 'COACH'), async (req,
         error: { code: 'NOT_FOUND', message: 'Piece not found' },
       });
     }
-    console.error('Add boat error:', err);
+    logger.error('Add boat error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to add boat' },
@@ -255,7 +256,7 @@ router.patch('/boats/:boatId', requireRole('OWNER', 'COACH'), async (req, res) =
         error: { code: 'NOT_FOUND', message: 'Boat not found' },
       });
     }
-    console.error('Update boat error:', err);
+    logger.error('Update boat error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to update boat' },
@@ -280,7 +281,7 @@ router.delete('/boats/:boatId', requireRole('OWNER', 'COACH'), async (req, res) 
         error: { code: 'NOT_FOUND', message: 'Boat not found' },
       });
     }
-    console.error('Delete boat error:', err);
+    logger.error('Delete boat error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to delete boat' },
@@ -306,7 +307,7 @@ router.put('/boats/:boatId/assignments', requireRole('OWNER', 'COACH'), async (r
         error: { code: 'NOT_FOUND', message: 'Boat not found' },
       });
     }
-    console.error('Set boat assignments error:', err);
+    logger.error('Set boat assignments error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to set boat assignments' },
@@ -336,7 +337,7 @@ router.get('/:id/analysis', async (req, res) => {
         error: { code: 'NOT_FOUND', message: 'Seat race session not found' },
       });
     }
-    console.error('Analyze seat race session error:', err);
+    logger.error('Analyze seat race session error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to analyze seat race session' },
@@ -377,7 +378,7 @@ router.post('/:id/process', requireRole('OWNER', 'COACH'), async (req, res) => {
         error: { code: 'NOT_FOUND', message: 'Seat race session not found' },
       });
     }
-    console.error('Process seat race session error:', err);
+    logger.error('Process seat race session error', { error: err.message });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to process seat race session' },

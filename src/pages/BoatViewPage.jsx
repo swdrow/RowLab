@@ -17,7 +17,7 @@ const BoatCard = ({ boat, isSelected, onClick }) => {
       className={`
         w-full p-3 rounded-xl text-left transition-all
         ${isSelected
-          ? 'bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border-accent-blue'
+          ? 'bg-gradient-to-r from-blade-blue/20 to-coxswain-violet/20 border-blade-blue'
           : 'glass-subtle border-white/10 hover:border-white/20'
         }
         border
@@ -26,7 +26,7 @@ const BoatCard = ({ boat, isSelected, onClick }) => {
       <div className="flex items-center gap-3">
         <div className={`
           w-8 h-8 rounded-lg flex items-center justify-center
-          ${isSelected ? 'bg-accent-blue' : 'bg-white/10'}
+          ${isSelected ? 'bg-blade-blue' : 'bg-white/10'}
         `}>
           <Ship className="w-4 h-4 text-white" />
         </div>
@@ -73,7 +73,7 @@ function BoatViewPage() {
         className="mb-6"
       >
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-3">
-          <Ship className="w-7 h-7 text-accent-blue" />
+          <Ship className="w-7 h-7 text-blade-blue" />
           Boat View
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-sm">
@@ -92,8 +92,8 @@ function BoatViewPage() {
             {displayBoat ? (
               <BoatVisualizer
                 boat={displayBoat}
-                onSeatClick={(seatNum, side) => {
-                  console.log('Clicked seat:', seatNum, side);
+                onSeatClick={() => {
+                  // TODO: Show seat detail modal
                 }}
                 className="w-full h-full"
               />
@@ -116,7 +116,7 @@ function BoatViewPage() {
         >
           <div className="glass-card rounded-xl p-4 border border-white/10">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <Layers className="w-4 h-4 text-accent-purple" />
+              <Layers className="w-4 h-4 text-coxswain-violet" />
               Active Boats
             </h3>
 

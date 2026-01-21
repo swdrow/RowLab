@@ -8,7 +8,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { collaborationService, type CollaborationCallbacks } from '@/services/collaborationService';
 import type { PresenceUser } from '@/types';
-import { useAuthStore } from '@/store/authStore';
+import useAuthStore from '@/store/authStore';
 
 interface CursorPosition {
   socketId: string;
@@ -83,13 +83,9 @@ export function useCollaboration({
           })),
         }));
 
-        // Show toast for join/leave events
-        if (event.joined) {
-          console.log(`${event.joined.name} joined the session`);
-        }
-        if (event.left) {
-          console.log(`${event.left.name} left the session`);
-        }
+        // TODO: Show toast notification for join/leave events
+        // if (event.joined) toast(`${event.joined.name} joined`)
+        // if (event.left) toast(`${event.left.name} left`)
       },
       onCursorUpdate: (cursor) => {
         setState((prev) => {

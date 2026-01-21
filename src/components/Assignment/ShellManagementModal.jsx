@@ -114,7 +114,7 @@ function ShellManagementModal({ isOpen, onClose }) {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blade-blue/50"
                   placeholder="e.g., Varsity Eight"
                   required
                 />
@@ -126,7 +126,7 @@ function ShellManagementModal({ isOpen, onClose }) {
                 <select
                   value={formData.boatClass}
                   onChange={(e) => setFormData({ ...formData, boatClass: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blade-blue/50"
                 >
                   {boatClasses.map((bc) => (
                     <option key={bc} value={bc}>{bc}</option>
@@ -141,7 +141,7 @@ function ShellManagementModal({ isOpen, onClose }) {
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blade-blue/50"
                 placeholder="e.g., Empacher 2019, lightweight"
                 rows={2}
               />
@@ -157,7 +157,7 @@ function ShellManagementModal({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all disabled:opacity-50"
+                className="px-4 py-2 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-medium rounded-lg transition-all disabled:opacity-50"
               >
                 {loading ? 'Saving...' : (editingId ? 'Update' : 'Add Shell')}
               </button>
@@ -169,7 +169,7 @@ function ShellManagementModal({ isOpen, onClose }) {
         <div className="flex-1 overflow-y-auto">
           {loading && shells.length === 0 ? (
             <div className="flex items-center justify-center py-12">
-              <svg className="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
+              <svg className="animate-spin h-8 w-8 text-blade-blue" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
@@ -210,7 +210,7 @@ function ShellManagementModal({ isOpen, onClose }) {
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleEdit(shell)}
-                              className="px-2 py-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+                              className="px-2 py-1 text-text-muted hover:text-text-primary text-sm"
                             >
                               Edit
                             </button>
@@ -253,7 +253,7 @@ function ShellManagementModal({ isOpen, onClose }) {
           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setIsAdding(true)}
-              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
+              className="w-full px-4 py-2 bg-blade-blue hover:bg-blade-blue/90 text-void-deep font-medium rounded-lg transition-all flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

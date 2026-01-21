@@ -12,6 +12,7 @@ import {
   removeMember,
 } from '../services/teamService.js';
 import { authenticateToken, requireRole } from '../middleware/auth.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -48,7 +49,7 @@ router.post(
         data: { team },
       });
     } catch (error) {
-      console.error('Create team error:', error);
+      logger.error('Create team error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to create team' },
@@ -74,7 +75,7 @@ router.get(
         data: { teams },
       });
     } catch (error) {
-      console.error('Search teams error:', error);
+      logger.error('Search teams error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Search failed' },
@@ -112,7 +113,7 @@ router.post(
           error: { code: 'ALREADY_MEMBER', message: error.message },
         });
       }
-      console.error('Join team error:', error);
+      logger.error('Join team error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to join team' },
@@ -150,7 +151,7 @@ router.get(
           error: { code: 'FORBIDDEN', message: error.message },
         });
       }
-      console.error('Get team error:', error);
+      logger.error('Get team error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get team' },
@@ -187,7 +188,7 @@ router.patch(
           error: { code: 'FORBIDDEN', message: error.message },
         });
       }
-      console.error('Update team error:', error);
+      logger.error('Update team error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to update team' },
@@ -222,7 +223,7 @@ router.get(
           error: { code: 'FORBIDDEN', message: error.message },
         });
       }
-      console.error('Get members error:', error);
+      logger.error('Get members error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get members' },
@@ -241,7 +242,7 @@ router.patch(
   [
     param('id').isUUID(),
     param('userId').isUUID(),
-    body('role').isIn(['OWNER', 'COACH', 'ATHLETE']),
+    body('role').isIn(['OWNER', 'COACH', 'COXSWAIN', 'ATHLETE']),
   ],
   validateRequest,
   async (req, res) => {
@@ -263,7 +264,7 @@ router.patch(
           error: { code: 'FORBIDDEN', message: error.message },
         });
       }
-      console.error('Update member role error:', error);
+      logger.error('Update member role error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to update role' },
@@ -304,7 +305,7 @@ router.delete(
           error: { code: 'NOT_FOUND', message: error.message },
         });
       }
-      console.error('Remove member error:', error);
+      logger.error('Remove member error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to remove member' },
@@ -336,7 +337,7 @@ router.post(
           error: { code: 'FORBIDDEN', message: error.message },
         });
       }
-      console.error('Regenerate code error:', error);
+      logger.error('Regenerate code error', { error: error.message });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to regenerate code' },

@@ -35,7 +35,7 @@ export function DataStreamTicker({ className }) {
             className="flex items-center gap-8 px-8 border-r border-white/[0.06] last:border-r-0"
           >
             {/* Label */}
-            <span className="font-mono text-[11px] font-medium tracking-[0.08em] uppercase text-text-muted">
+            <span className="font-mono text-[11px] font-medium tracking-widest uppercase text-text-muted">
               {metric.label}
             </span>
 
@@ -45,7 +45,7 @@ export function DataStreamTicker({ className }) {
                 className={clsx(
                   'font-mono text-3xl font-semibold tabular-nums',
                   metric.highlight
-                    ? 'text-blade-green text-glow-green'
+                    ? 'text-blade-blue'
                     : 'text-text-primary'
                 )}
               >

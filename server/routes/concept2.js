@@ -1,14 +1,23 @@
 import express from 'express';
 import { param, validationResult } from 'express-validator';
+import { verifyHmacSignature } from '../utils/encryption.js';
+import logger from '../utils/logger.js';
 import {
   getAuthorizationUrl,
+  generateAuthUrl,
   exchangeCodeForTokens,
   storeTokens,
+  fetchUserProfile,
   getC2UserProfile,
   syncAthleteWorkouts,
   disconnectC2,
   getC2Status,
+  getMyC2Status,
+  syncUserWorkouts,
+  disconnectMyC2,
   parseState,
+  handleWebhook,
+  connectAthlete,
 } from '../services/concept2Service.js';
 import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
 
@@ -47,7 +56,7 @@ router.get(
         data: { url },
       });
     } catch (error) {
-      console.error('Get auth URL error:', error);
+      logger.error('Get auth URL error:', { error: error.message, stack: error.stack });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to generate auth URL' },
@@ -59,22 +68,91 @@ router.get(
 /**
  * GET /api/v1/concept2/callback
  * OAuth callback handler (no auth required - called by Concept2)
+ * Returns HTML that sends postMessage to opener window for popup flow
  */
 router.get('/callback', async (req, res) => {
+  // Helper to send response HTML that communicates with opener
+  const sendPopupResponse = (success, data = {}) => {
+    const message = success
+      ? { type: 'c2_oauth_success', ...data }
+      : { type: 'c2_oauth_error', error: data.error || 'Unknown error' };
+
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Concept2 Connection</title>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+              background: #0a0a0f;
+              color: #ffffff;
+            }
+            .container {
+              text-align: center;
+              padding: 40px;
+            }
+            .icon {
+              font-size: 48px;
+              margin-bottom: 20px;
+            }
+            h1 { font-size: 24px; margin-bottom: 10px; }
+            p { color: #888; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="icon">${success ? '✓' : '✗'}</div>
+            <h1>${success ? 'Connected!' : 'Connection Failed'}</h1>
+            <p>${success ? 'You can close this window.' : (data.error || 'Please try again.')}</p>
+          </div>
+          <script>
+            // Send message to opener window
+            // Message is base64 encoded to prevent XSS
+            if (window.opener) {
+              try {
+                const encoded = '${Buffer.from(JSON.stringify(message)).toString('base64')}';
+                const message = JSON.parse(atob(encoded));
+                window.opener.postMessage(message, window.location.origin);
+              } catch (e) {
+                console.error('Failed to send OAuth message:', e);
+              }
+              // Auto-close after a short delay
+              setTimeout(() => window.close(), 1500);
+            } else {
+              // If no opener (direct navigation), redirect
+              setTimeout(() => {
+                window.location.href = '/app/settings?tab=integrations${success ? '&c2_connected=true' : ''}';
+              }, 2000);
+            }
+          </script>
+        </body>
+      </html>
+    `);
+  };
+
   try {
     const { code, state, error } = req.query;
 
     if (error) {
-      // Redirect to frontend with error
-      return res.redirect(`/settings/integrations?error=${encodeURIComponent(error)}`);
+      return sendPopupResponse(false, { error });
     }
 
     if (!code || !state) {
-      return res.redirect('/settings/integrations?error=missing_params');
+      return sendPopupResponse(false, { error: 'Missing required parameters' });
     }
 
-    // Parse state to get athleteId
-    const { athleteId } = parseState(state);
+    // Parse state to get userId
+    const { userId } = parseState(state);
+
+    if (!userId) {
+      return sendPopupResponse(false, { error: 'Invalid state parameter' });
+    }
 
     const redirectUri = process.env.CONCEPT2_REDIRECT_URI ||
       `${req.protocol}://${req.get('host')}/api/v1/concept2/callback`;
@@ -85,14 +163,14 @@ router.get('/callback', async (req, res) => {
     // Get C2 user profile
     const profile = await getC2UserProfile(tokens.accessToken);
 
-    // Store tokens
-    await storeTokens(athleteId, String(profile.id), tokens);
+    // Store tokens linked to user
+    await storeTokens(userId, String(profile.id), tokens, profile.username);
 
-    // Redirect to frontend with success
-    res.redirect(`/settings/integrations?c2_connected=true`);
+    // Send success response
+    sendPopupResponse(true, { username: profile.username });
   } catch (error) {
-    console.error('OAuth callback error:', error);
-    res.redirect(`/settings/integrations?error=${encodeURIComponent(error.message)}`);
+    logger.error('OAuth callback error:', { error: error.message, stack: error.stack });
+    sendPopupResponse(false, { error: error.message });
   }
 });
 
@@ -114,7 +192,7 @@ router.get(
         data: status,
       });
     } catch (error) {
-      console.error('Get status error:', error);
+      logger.error('Get status error:', { error: error.message, stack: error.stack });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get status' },
@@ -151,7 +229,7 @@ router.post(
           error: { code: 'NOT_CONNECTED', message: error.message },
         });
       }
-      console.error('Sync error:', error);
+      logger.error('Sync error:', { error: error.message, stack: error.stack });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to sync workouts' },
@@ -185,7 +263,199 @@ router.delete(
           error: { code: 'NOT_CONNECTED', message: error.message },
         });
       }
-      console.error('Disconnect error:', error);
+      logger.error('Disconnect error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to disconnect' },
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/v1/concept2/webhook
+ * Webhook receiver for Concept2 events (no auth - verified by signature)
+ *
+ * Security: Validates HMAC signature from Concept2 before processing
+ */
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    // Get signature from header (Concept2 uses X-Signature or similar)
+    const signature = req.headers['x-concept2-signature'] || req.headers['x-signature'];
+    const webhookSecret = process.env.CONCEPT2_WEBHOOK_SECRET;
+
+    // Verify webhook signature if secret is configured
+    if (webhookSecret) {
+      if (!signature) {
+        logger.warn('Webhook missing signature header');
+        return res.status(401).json({ error: 'Missing signature' });
+      }
+
+      // Get raw body for signature verification
+      const rawBody = Buffer.isBuffer(req.body) ? req.body.toString() : JSON.stringify(req.body);
+
+      if (!verifyHmacSignature(rawBody, signature, webhookSecret)) {
+        logger.warn('Webhook signature verification failed');
+        return res.status(401).json({ error: 'Invalid signature' });
+      }
+    } else {
+      logger.warn('CONCEPT2_WEBHOOK_SECRET not configured - skipping signature verification');
+    }
+
+    // Parse body if it was raw
+    const payload = Buffer.isBuffer(req.body) ? JSON.parse(req.body.toString()) : req.body;
+
+    // Check for replay attacks using timestamp (if provided by Concept2)
+    const timestamp = req.headers['x-timestamp'] || payload.timestamp;
+    if (timestamp) {
+      const eventTime = new Date(timestamp).getTime();
+      const now = Date.now();
+      const fiveMinutes = 5 * 60 * 1000;
+
+      if (Math.abs(now - eventTime) > fiveMinutes) {
+        logger.error('Webhook timestamp too old/future', { timestamp });
+        return res.status(401).json({ error: 'Request expired' });
+      }
+    }
+
+    logger.info('Concept2 webhook received', { type: payload.type, verified: true });
+
+    const result = await handleWebhook(payload);
+
+    if (result.success) {
+      res.status(200).json({ received: true });
+    } else {
+      logger.error('Webhook processing failed', { error: result.error });
+      res.status(200).json({ received: true, warning: result.error });
+    }
+  } catch (error) {
+    logger.error('Webhook handler error:', { error: error.message, stack: error.stack });
+    // Always return 200 to prevent retries for processing errors
+    // (signature errors return 401 above)
+    res.status(200).json({ received: true, error: error.message });
+  }
+});
+
+/**
+ * POST /api/v1/concept2/connect
+ * Start OAuth flow - returns authorization URL
+ * Connects the current user's Concept2 account (coaches and athletes can both connect)
+ */
+router.post(
+  '/connect',
+  authenticateToken,
+  teamIsolation,
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+
+      // Generate state with user ID and timestamp
+      const state = Buffer.from(JSON.stringify({
+        userId,
+        nonce: Date.now().toString(36),
+      })).toString('base64url');
+
+      const url = generateAuthUrl(state);
+
+      res.json({
+        success: true,
+        data: { url, state },
+      });
+    } catch (error) {
+      logger.error('Connect error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to initiate connection' },
+      });
+    }
+  }
+);
+
+/**
+ * GET /api/v1/concept2/status/me
+ * Get current user's Concept2 connection status
+ * Used by Settings page to check/display connection status
+ */
+router.get(
+  '/status/me',
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const status = await getMyC2Status(req.user.id);
+      res.json({
+        success: true,
+        data: status,
+      });
+    } catch (error) {
+      logger.error('Get my C2 status error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to get status' },
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/v1/concept2/sync/me
+ * Sync current user's Concept2 workouts
+ * Athletes can sync their own data
+ */
+router.post(
+  '/sync/me',
+  authenticateToken,
+  teamIsolation,
+  async (req, res) => {
+    try {
+      const result = await syncUserWorkouts(req.user.id, req.user.activeTeamId);
+      res.json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      if (error.message === 'No Concept2 connection') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_CONNECTED', message: error.message },
+        });
+      }
+      if (error.message === 'No athlete profile linked to this user') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NO_ATHLETE_PROFILE', message: error.message },
+        });
+      }
+      logger.error('Sync my workouts error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to sync workouts' },
+      });
+    }
+  }
+);
+
+/**
+ * DELETE /api/v1/concept2/disconnect/me
+ * Disconnect current user's Concept2 account
+ */
+router.delete(
+  '/disconnect/me',
+  authenticateToken,
+  async (req, res) => {
+    try {
+      await disconnectMyC2(req.user.id);
+      res.json({
+        success: true,
+        data: { message: 'Concept2 disconnected' },
+      });
+    } catch (error) {
+      if (error.message === 'No Concept2 connection') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_CONNECTED', message: error.message },
+        });
+      }
+      logger.error('Disconnect my C2 error:', { error: error.message, stack: error.stack });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to disconnect' },

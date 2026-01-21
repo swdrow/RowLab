@@ -1,135 +1,82 @@
-import { PrismaClient } from '@prisma/client';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Database path
-const dbPath = path.resolve(__dirname, '../data/rowlab.db');
-const dbUrl = `file:${dbPath}`;
-
-// Create adapter and client
-const adapter = new PrismaBetterSqlite3({ url: dbUrl });
+const connectionString = process.env.DATABASE_URL;
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-// Parse CSV file
-function parseCSV(filepath) {
-  const content = fs.readFileSync(filepath, 'utf-8');
-  const lines = content.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
-
-  return lines.slice(1).map(line => {
-    const values = line.split(',').map(v => v.trim());
-    const obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = values[index] || '';
-    });
-    return obj;
-  });
-}
-
 async function main() {
-  console.log('Seeding database...');
+  console.log('🌱 Starting database seed...');
 
-  // Create admin user
-  const adminUsername = process.env.ADMIN_USERNAME || 'swd';
-  const adminPassword = process.env.ADMIN_PASSWORD || '$r1j4JGMH03';
-  const hashedPassword = await bcrypt.hash(adminPassword, 10);
-
-  const admin = await prisma.user.upsert({
-    where: { username: adminUsername },
-    update: { password: hashedPassword, status: 'approved' },
-    create: {
-      username: adminUsername,
-      password: hashedPassword,
-      name: 'Head Coach',
-      role: 'admin',
-      status: 'approved',
-    },
+  // Check if admin user exists
+  const existingAdmin = await prisma.user.findFirst({
+    where: { isAdmin: true }
   });
-  console.log(`Created/updated admin user: ${admin.username}`);
 
-  // Seed athletes from CSV
-  const athletesPath = path.join(__dirname, '..', 'data', 'athletes.csv');
-  if (fs.existsSync(athletesPath)) {
-    const athletes = parseCSV(athletesPath);
-
-    for (const athlete of athletes) {
-      const side = athlete['Side'] || athlete['side'] || '';
-
-      await prisma.athlete.upsert({
-        where: {
-          lastName_firstName: {
-            lastName: athlete['Last Name'] || athlete['LastName'] || '',
-            firstName: athlete['First Name'] || athlete['FirstName'] || '',
-          },
-        },
-        update: {},
-        create: {
-          lastName: athlete['Last Name'] || athlete['LastName'] || '',
-          firstName: athlete['First Name'] || athlete['FirstName'] || '',
-          country: athlete['Country'] || athlete['country'] || 'USA',
-          side: side,
-          port: side === 'P' || side === 'B',
-          starboard: side === 'S' || side === 'B',
-          sculling: side === 'B',
-          isCoxswain: side === 'Cox',
-        },
-      });
-    }
-    console.log(`Seeded ${athletes.length} athletes`);
+  if (existingAdmin) {
+    console.log('✅ Admin user already exists:', existingAdmin.email);
+    return;
   }
 
-  // Seed boat configs
-  const boatsPath = path.join(__dirname, '..', 'data', 'boats.csv');
-  if (fs.existsSync(boatsPath)) {
-    const boats = parseCSV(boatsPath);
-
-    for (const boat of boats) {
-      await prisma.boatConfig.upsert({
-        where: { name: boat['BoatName'] || boat['Name'] || '' },
-        update: {},
-        create: {
-          name: boat['BoatName'] || boat['Name'] || '',
-          numSeats: parseInt(boat['NumSeats'] || boat['Seats'] || '8', 10),
-          hasCoxswain: boat['HasCoxswain'] === '1' || boat['Coxswain'] === 'true',
-        },
-      });
-    }
-    console.log(`Seeded ${boats.length} boat configs`);
+  // Create admin user - password MUST be set via environment variable
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) {
+    throw new Error('ADMIN_PASSWORD environment variable is required for seeding. Do not use default passwords.');
   }
+  const hashedPassword = await bcrypt.hash(adminPassword, 12);
 
-  // Seed shells
-  const shellsPath = path.join(__dirname, '..', 'data', 'shells.csv');
-  if (fs.existsSync(shellsPath)) {
-    const shells = parseCSV(shellsPath);
-
-    for (const shell of shells) {
-      await prisma.shell.upsert({
-        where: { name: shell['ShellName'] || shell['Name'] || '' },
-        update: {},
-        create: {
-          name: shell['ShellName'] || shell['Name'] || '',
-          boatClass: shell['BoatClass'] || shell['Class'] || '',
-          notes: shell['Notes'] || null,
-        },
-      });
+  const user = await prisma.user.create({
+    data: {
+      email: 'swd@rowlab.net',
+      username: 'swd',
+      name: 'Admin',
+      passwordHash: hashedPassword,
+      isAdmin: true
     }
-    console.log(`Seeded ${shells.length} shells`);
-  }
+  });
 
-  console.log('Database seeding complete!');
+  // Create a team for the admin
+  const team = await prisma.team.create({
+    data: {
+      name: 'Admin Team',
+      slug: 'admin-team'
+    }
+  });
+
+  // Add user as team owner
+  await prisma.teamMember.create({
+    data: {
+      userId: user.id,
+      teamId: team.id,
+      role: 'OWNER'
+    }
+  });
+
+  // Create enterprise subscription
+  await prisma.subscription.create({
+    data: {
+      teamId: team.id,
+      plan: 'enterprise',
+      status: 'active',
+      currentPeriodStart: new Date(),
+      currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+    }
+  });
+
+  console.log('✅ Admin user created:', user.email);
+  console.log('✅ Team created:', team.name);
+  console.log('✅ Role: OWNER with Enterprise subscription');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('❌ Seed failed:', e);
     process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
+    await pool.end();
   });

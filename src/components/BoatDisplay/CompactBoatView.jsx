@@ -24,13 +24,13 @@ const CompactBoatView = ({ boat, onExpand }) => {
   return (
     <div
       onClick={onExpand}
-      className="glass-card rounded-2xl p-5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer animate-scale-in group"
+      className="glass-card rounded-2xl p-5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer animate-scale-in group"
     >
       <div className="flex items-center justify-between">
         {/* Left: Boat info */}
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent">
+            <h3 className="text-lg font-bold text-text-primary">
               {boat.shellName || boat.boatClass}
             </h3>
             {boat.shellName && (
@@ -64,7 +64,7 @@ const CompactBoatView = ({ boat, onExpand }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={onExpand}
-            className="text-blue-600 dark:text-accent-blue hover:text-blue-700 text-sm font-medium px-3 py-1.5 hover:bg-blue-500/10 dark:hover:bg-accent-blue/10 rounded-lg transition opacity-0 group-hover:opacity-100"
+            className="text-text-muted hover:text-text-primary text-sm font-medium px-3 py-1.5 hover:bg-white/5 rounded-lg transition opacity-0 group-hover:opacity-100"
           >
             Expand →
           </button>
@@ -84,8 +84,8 @@ const CompactBoatView = ({ boat, onExpand }) => {
       <div className="mt-4 space-y-2">
         {/* Coxswain */}
         {boat.hasCoxswain && (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 dark:bg-accent-purple/20 rounded-lg border border-purple-200 dark:border-purple-500/30">
-            <span className="text-xs font-bold text-purple-700 dark:text-purple-300 min-w-[3rem]">COX</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-coxswain-violet/10 dark:bg-coxswain-violet/20 rounded-lg border border-coxswain-violet/30">
+            <span className="text-xs font-bold text-coxswain-violet min-w-[3rem]">COX</span>
             <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
               {boat.coxswain ? `${boat.coxswain.lastName}${boat.coxswain.firstName ? `, ${boat.coxswain.firstName}` : ''}` : '—'}
             </span>

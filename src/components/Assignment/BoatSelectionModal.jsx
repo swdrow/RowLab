@@ -28,7 +28,7 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
       <div className="glass-card rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
         {/* Header */}
         <div className="sticky top-0 glass-elevated rounded-t-2xl border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent">Add Boat to Lineup</h2>
+          <h2 className="text-2xl font-bold text-text-primary">Add Boat to Lineup</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Select boat class and shell name</p>
         </div>
 
@@ -50,8 +50,8 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
                   className={`
                     px-4 py-3 rounded-xl border-2 font-medium transition-all
                     ${selectedClass?.id === config.id
-                      ? 'border-blue-600 dark:border-accent-blue bg-blue-500/10 dark:bg-accent-blue/20 text-blue-900 dark:text-accent-blue shadow-lg scale-105'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card/50 text-gray-700 dark:text-gray-300 hover:border-blue-400 dark:hover:border-accent-blue hover:scale-105'
+                      ? 'border-blade-blue bg-blade-blue/10 text-blade-blue shadow-lg scale-105'
+                      : 'border-gray-300 dark:border-white/10 bg-white dark:bg-void-elevated/50 text-gray-700 dark:text-gray-300 hover:border-white/30 hover:scale-105'
                     }
                   `}
                 >
@@ -80,8 +80,8 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
                       className={`
                         w-full px-4 py-3 rounded-xl border-2 text-left transition-all
                         ${selectedShell?.id === shell.id
-                          ? 'border-green-600 dark:border-green-500 bg-green-500/10 dark:bg-green-500/20 shadow-lg scale-[1.02]'
-                          : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card/50 hover:border-green-400 dark:hover:border-green-500 hover:scale-[1.01]'
+                          ? 'border-blade-blue bg-blade-blue/10 shadow-lg scale-[1.02]'
+                          : 'border-white/10 bg-void-elevated/50 hover:border-blade-blue/50 hover:scale-[1.01]'
                         }
                       `}
                     >
@@ -111,7 +111,7 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
                     setSelectedShell(null);
                   }}
                   placeholder="e.g., Seaweed, Titanic, Phoenix..."
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent-blue focus:border-transparent bg-white dark:bg-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+                  className="w-full px-4 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 bg-void-elevated text-text-primary placeholder-text-muted transition-all"
                 />
               </div>
             </div>
@@ -132,8 +132,8 @@ const BoatSelectionModal = ({ boatConfigs, shells, onSelect, onCancel }) => {
             className={`
               px-6 py-2 rounded-lg font-medium transition-all
               ${selectedClass
-                ? 'bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple text-white hover:shadow-lg hover:scale-105 active:scale-95'
-                : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed'
+                ? 'bg-blade-blue text-white hover:shadow-lg hover:shadow-glow-blue hover:scale-105 active:scale-95'
+                : 'bg-white/5 text-text-muted cursor-not-allowed'
               }
             `}
           >

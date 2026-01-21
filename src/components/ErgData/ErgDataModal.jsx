@@ -115,7 +115,7 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
           {isAuthenticated && (
             <button
               onClick={() => setShowAddTest(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all"
+              className="px-4 py-2 bg-blade-blue hover:bg-blade-blue/90 text-void-deep text-sm font-medium rounded-lg transition-all"
             >
               + Add Test
             </button>
@@ -132,7 +132,7 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <svg className="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
+              <svg className="animate-spin h-8 w-8 text-blade-blue" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
@@ -144,7 +144,7 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
               {isAuthenticated && (
                 <button
                   onClick={() => setShowAddTest(true)}
-                  className="mt-4 text-blue-600 dark:text-blue-400 hover:underline"
+                  className="mt-4 text-blade-blue hover:underline"
                 >
                   Add first test
                 </button>
@@ -160,7 +160,7 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium rounded">
+                        <span className="px-2 py-1 bg-white/10 text-text-primary text-sm font-medium rounded border border-white/10">
                           {test.testType}
                         </span>
                         <span className="text-2xl font-bold text-gray-800 dark:text-gray-200">

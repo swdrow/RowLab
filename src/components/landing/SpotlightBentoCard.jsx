@@ -9,7 +9,7 @@ import { clsx } from 'clsx';
 export function SpotlightBentoCard({
   children,
   className,
-  spotlightColor = 'rgba(0, 229, 153, 0.08)',
+  spotlightColor = 'rgba(0, 112, 243, 0.08)',
   backgroundImage,
 }) {
   const divRef = useRef(null);
@@ -36,35 +36,40 @@ export function SpotlightBentoCard({
       onMouseLeave={() => setOpacity(0)}
       className={clsx(
         'group relative min-h-[280px] p-8 overflow-hidden',
-        'rounded-[20px] isolate',
-        // Gradient stroke border
-        'border border-transparent',
-        '[background-image:linear-gradient(rgba(18,18,20,0.85),rgba(18,18,20,0.85)),linear-gradient(to_bottom,rgba(255,255,255,0.1),rgba(255,255,255,0))]',
-        '[background-origin:padding-box,border-box]',
-        '[background-clip:padding-box,border-box]',
-        'transition-all duration-300 ease-out',
-        'hover:translate-y-[-4px] hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.4)]',
+        'rounded-2xl',
+        // Glass card styling
+        'bg-white/[0.02] backdrop-blur-xl',
+        'border border-white/10 hover:border-white/15',
+        'shadow-card hover:shadow-card-hover',
+        'transition-all duration-150 ease-out',
         className
       )}
     >
+      {/* Noise Texture */}
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none mix-blend-overlay" />
+
+      {/* Top Highlight */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-100" />
+
       {/* Background texture image (boathouse photo) */}
       {backgroundImage && (
         <div
-          className="absolute inset-0 z-[-2] bg-cover bg-center opacity-[0.08] grayscale contrast-[1.2] mix-blend-luminosity transition-opacity duration-400 group-hover:opacity-[0.12]"
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-[0.08] grayscale contrast-[1.2] mix-blend-luminosity transition-opacity duration-100 group-hover:opacity-[0.12]"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
       )}
 
       {/* Spotlight effect */}
       <div
-        className="pointer-events-none absolute inset-0 z-[-1] transition-opacity duration-500"
+        className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-100"
         style={{
           opacity,
           background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 60%)`,
         }}
       />
 
-      {children}
+      {/* Content */}
+      <div className="relative z-10">{children}</div>
     </motion.div>
   );
 }

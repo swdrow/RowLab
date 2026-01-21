@@ -21,9 +21,11 @@ import {
 
 // Precision Instrument Components
 import { HeroCockpitCard, LineupPreview } from '../components/landing/HeroCockpitCard';
+import { AuroraBackground, FieldLines, OrganicBlob } from '../components/Generative';
 import { DataStreamTicker } from '../components/landing/DataStreamTicker';
 import { SpotlightBentoCard, BentoGrid, bentoSpans } from '../components/landing/SpotlightBentoCard';
 import { DisplayXL, DisplayLG, DisplayMD, BodyLG, MonoLabel } from '../components/ui/Typography';
+import SpotlightCard from '../components/ui/SpotlightCard';
 
 /**
  * RowLab Landing Page - Precision Instrument Design
@@ -33,25 +35,26 @@ import { DisplayXL, DisplayLG, DisplayMD, BodyLG, MonoLabel } from '../component
 
 // ============================================
 // ANIMATION VARIANTS - Precision Instrument Timing
+// NO spring/bounce - pure ease-out for "wired to data" feel
 // ============================================
-const springConfig = [0.34, 1.56, 0.64, 1]; // Underdamped spring
+const precisionEase = [0, 0, 0.2, 1]; // ease-out - instant start, smooth stop
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: springConfig } },
+  hidden: { opacity: 0, y: 8 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: precisionEase } },
 };
 
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.04, delayChildren: 0.05 },
   },
 };
 
 const scaleIn = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: springConfig } },
+  hidden: { opacity: 0, scale: 0.98 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.15, ease: precisionEase } },
 };
 
 // ============================================
@@ -63,19 +66,21 @@ const HeroSection = () => {
       {/* Background - App Store spotlight effect */}
       <div className="absolute inset-0 bg-void-deep" />
 
-      {/* Top-down ambient lighting */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] opacity-50"
-        style={{
-          background: 'radial-gradient(ellipse at center top, rgba(0, 229, 153, 0.15) 0%, rgba(124, 58, 237, 0.08) 40%, transparent 70%)',
-        }}
+      {/* Generative Aurora Background */}
+      <AuroraBackground
+        color1="#0070F3"
+        color2="#7C3AED"
+        color3="#06B6D4"
+        intensity={0.18}
+        speed={0.8}
+        className="z-0"
       />
 
-      {/* Secondary glow */}
+      {/* Secondary glow (kept for depth) */}
       <div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] opacity-30"
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] opacity-20"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(0, 229, 153, 0.2) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at center, rgba(0, 112, 243, 0.15) 0%, transparent 60%)',
         }}
       />
 
@@ -84,20 +89,17 @@ const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.2, ease: precisionEase }}
           className="flex justify-center mb-10"
         >
           <div
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl
               bg-void-surface/60 backdrop-blur-xl
-              border border-transparent
-              [background-image:linear-gradient(rgba(18,18,20,0.8),rgba(18,18,20,0.8)),linear-gradient(to_right,rgba(255,255,255,0.1),rgba(255,255,255,0.05))]
-              [background-origin:padding-box,border-box]
-              [background-clip:padding-box,border-box]"
+              border border-white/10"
           >
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blade-green opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blade-green shadow-glow-green"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blade-blue opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blade-blue shadow-[0_0_10px_rgba(0,112,243,0.5)]"></span>
             </span>
             <MonoLabel color="muted">THE COACHING PLATFORM FOR ROWING</MonoLabel>
           </div>
@@ -105,24 +107,24 @@ const HeroSection = () => {
 
         {/* Headline - Editorial serif */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: springConfig }}
+          transition={{ duration: 0.2, delay: 0.05, ease: precisionEase }}
           className="text-center mb-6"
         >
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-[72px] font-semibold leading-[1.1] tracking-[-0.03em] text-text-primary">
+          <h1 className="font-display text-5xl sm:text-6xl lg:text-[72px] font-semibold leading-[1.1] tracking-[-0.02em] text-text-primary">
             Stop guessing.
           </h1>
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-[72px] font-semibold leading-[1.1] tracking-[-0.03em] text-blade-green text-glow-green">
+          <h1 className="font-display text-5xl sm:text-6xl lg:text-[72px] font-semibold leading-[1.1] tracking-[-0.02em] text-blade-blue">
             Start winning.
           </h1>
         </motion.div>
 
         {/* Subhead */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15, ease: springConfig }}
+          transition={{ duration: 0.2, delay: 0.1, ease: precisionEase }}
           className="text-center font-body text-lg leading-relaxed text-text-secondary max-w-2xl mx-auto mb-10"
         >
           RowLab combines erg data, seat racing results, and visual lineup building
@@ -131,31 +133,32 @@ const HeroSection = () => {
 
         {/* CTAs - Glow buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: springConfig }}
+          transition={{ duration: 0.2, delay: 0.15, ease: precisionEase }}
           className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
         >
           <Link
             to="/register"
-            className="group relative inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full
-              bg-blade-green text-void-deep font-medium text-sm
-              hover:shadow-glow-green transition-all duration-300 hover:scale-[1.02]
-              active:scale-[0.98]"
+            className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl
+              bg-gradient-to-b from-blade-blue to-blade-blue/90
+              text-void-deep font-medium text-sm
+              shadow-[0_0_20px_-5px_rgba(0,112,243,0.4)]
+              hover:shadow-[0_0_30px_-5px_rgba(0,112,243,0.5)]
+              hover:translate-y-[-1px] active:translate-y-0
+              transition-all duration-150"
           >
             Get Started Free
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <Link
             to="/app"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full
-              bg-white/[0.06] backdrop-blur-xl
-              border border-transparent
-              [background-image:linear-gradient(rgba(18,18,20,0.9),rgba(18,18,20,0.9)),linear-gradient(to_bottom,rgba(255,255,255,0.15),rgba(255,255,255,0))]
-              [background-origin:padding-box,border-box]
-              [background-clip:padding-box,border-box]
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl
+              bg-white/[0.04] backdrop-blur-xl
+              border border-white/10
               text-text-primary font-medium text-sm
-              hover:bg-white/[0.1] transition-all duration-200"
+              hover:bg-white/[0.08] hover:border-white/20
+              transition-all duration-200"
           >
             Try Demo
           </Link>
@@ -163,9 +166,9 @@ const HeroSection = () => {
 
         {/* Hero Visual - 3D Cockpit Card */}
         <motion.div
-          initial={{ opacity: 0, y: 40, rotateX: 10 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.2, ease: precisionEase }}
           className="flex justify-center"
           style={{ perspective: 1200 }}
         >
@@ -178,16 +181,11 @@ const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
+          transition={{ delay: 0.3, duration: 0.2, ease: precisionEase }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
           <MonoLabel color="muted">SCROLL</MonoLabel>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <ChevronDown className="w-4 h-4 text-text-muted" />
-          </motion.div>
+          <ChevronDown className="w-4 h-4 text-text-muted" />
         </motion.div>
       </div>
     </section>
@@ -195,7 +193,7 @@ const HeroSection = () => {
 };
 
 // ============================================
-// HOW IT WORKS SECTION
+// HOW IT WORKS SECTION - Enhanced with visuals
 // ============================================
 const HowItWorksSection = () => {
   const steps = [
@@ -204,30 +202,94 @@ const HowItWorksSection = () => {
       title: 'Import Your Roster',
       description: 'Add athletes manually or import from spreadsheets. Track erg scores, side preferences, and weight.',
       icon: Users,
+      visual: (
+        <div className="flex gap-1 mb-3">
+          {['Thompson', 'Garcia', 'Chen'].map((name, i) => (
+            <div key={i} className="flex items-center gap-1 px-2 py-1 rounded bg-void-surface/50 border border-white/[0.06] text-[9px]">
+              <div className={`w-1.5 h-1.5 rounded-full ${i % 2 === 0 ? 'bg-port' : 'bg-starboard'}`} />
+              <span className="text-text-muted">{name}</span>
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
       num: '02',
       title: 'Run Seat Races',
       description: 'Log piece times and let RowLab calculate margins automatically. See who moves the boat.',
       icon: Target,
+      visual: (
+        <div className="font-mono text-[10px] space-y-1 mb-3">
+          <div className="flex justify-between px-2 py-1 rounded bg-void-surface/50 border border-white/[0.06]">
+            <span className="text-text-muted">P1:</span>
+            <span className="text-blade-blue">A +2.3s</span>
+          </div>
+          <div className="flex justify-between px-2 py-1 rounded bg-blade-blue/10 border border-blade-blue/20">
+            <span className="text-text-muted">Margin:</span>
+            <span className="text-blade-blue font-semibold">A wins</span>
+          </div>
+        </div>
+      ),
     },
     {
       num: '03',
       title: 'Build Lineups',
       description: 'Drag athletes into boats with our visual builder. Port and starboard are color-coded.',
       icon: Layers,
+      visual: (
+        <div className="flex items-center gap-0.5 mb-3">
+          <div className="w-4 h-5 rounded-sm bg-coxswain/20 border border-coxswain/30" />
+          {[8,7,6,5,4,3,2,1].map((n, i) => (
+            <div key={n} className={`w-4 h-5 rounded-sm border ${
+              i % 2 === 0 ? 'bg-port/15 border-port/30' : 'bg-starboard/15 border-starboard/30'
+            }`} />
+          ))}
+        </div>
+      ),
     },
     {
       num: '04',
       title: 'Analyze & Iterate',
       description: 'Track performance over time. Compare lineups. Make data-driven adjustments.',
       icon: BarChart3,
+      visual: (
+        <div className="h-8 flex items-end gap-0.5 mb-3">
+          {[55, 48, 52, 45, 42, 38, 35].map((h, i) => (
+            <div
+              key={i}
+              className="flex-1 bg-blade-blue/40 rounded-t transition-all"
+              style={{ height: `${h}%` }}
+            />
+          ))}
+        </div>
+      ),
     },
   ];
 
   return (
-    <section className="py-20 px-6 bg-bg-base relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-green/5 rounded-full blur-3xl" />
+    <section className="relative py-24 px-6 overflow-hidden">
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <img
+          src="/images/landing/boathouse-sunset.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-[0.06] grayscale contrast-[1.2]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-void-deep via-void-deep/97 to-void-deep" />
+      </div>
+
+      {/* Generative field lines - subtle data flow */}
+      <FieldLines
+        count={4}
+        color="rgba(0, 112, 243, 0.04)"
+        duration={16}
+        direction="horizontal"
+        className="absolute inset-0 z-[1]"
+      />
+
+      {/* Accent glows */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blade-blue/6 rounded-full blur-[100px]" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-coxswain-violet/5 rounded-full blur-[80px]" />
 
       <div className="relative max-w-5xl mx-auto">
         <motion.div
@@ -237,33 +299,50 @@ const HowItWorksSection = () => {
           variants={fadeInUp}
           className="text-center mb-16"
         >
-          <p className="text-accent-green text-sm font-medium uppercase tracking-wider mb-3">How It Works</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary mb-4 tracking-tight">
-            From spreadsheets to speed in minutes.
+          <MonoLabel color="green" className="mb-4 block">HOW IT WORKS</MonoLabel>
+          <h2 className="font-display text-4xl sm:text-5xl font-semibold text-text-primary mb-5 tracking-[-0.02em]">
+            From spreadsheets to{' '}
+            <span className="text-blade-blue">speed</span>
+            {' '}in minutes.
           </h2>
-          <p className="text-text-secondary text-lg max-w-xl mx-auto">
+          <p className="font-body text-lg text-text-secondary max-w-xl mx-auto">
             No complex setup. No training required. Just import your athletes and start building faster boats.
           </p>
         </motion.div>
+
+        {/* Connection line */}
+        <div className="hidden md:block absolute top-[280px] left-1/2 -translate-x-1/2 w-[80%] h-px bg-white/[0.08]" />
 
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={staggerContainer}
-          className="grid md:grid-cols-4 gap-6"
+          className="grid md:grid-cols-4 gap-5"
         >
           {steps.map((step, index) => (
-            <motion.div key={index} variants={fadeInUp}>
-              <SpotlightCard className="h-full bg-bg-surface border border-border-default rounded-xl p-5 hover:border-border-strong transition-colors">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-accent-green/10 border border-accent-green/20 flex items-center justify-center">
-                    <step.icon className="w-5 h-5 text-accent-green" />
-                  </div>
-                  <span className="text-xs font-mono text-text-muted">{step.num}</span>
+            <motion.div key={index} variants={fadeInUp} className="relative">
+              {/* Step number badge - positioned above card */}
+              <div className="absolute -top-3 left-5 z-10">
+                <div className="w-7 h-7 rounded-lg bg-blade-blue flex items-center justify-center shadow-glow-green">
+                  <span className="font-mono text-xs font-bold text-void-deep">{step.num}</span>
                 </div>
-                <h3 className="text-base font-semibold text-text-primary mb-2">{step.title}</h3>
-                <p className="text-sm text-text-secondary leading-relaxed">{step.description}</p>
+              </div>
+
+              <SpotlightCard
+                className="h-full bg-void-surface/60 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 pt-8"
+                spotlightColor="rgba(0, 112, 243, 0.08)"
+              >
+                {/* Visual artifact */}
+                {step.visual}
+
+                {/* Icon */}
+                <div className="w-10 h-10 rounded-xl bg-blade-blue/10 border border-blade-blue/20 flex items-center justify-center mb-3">
+                  <step.icon className="w-5 h-5 text-blade-blue" />
+                </div>
+
+                <h3 className="font-display text-base font-semibold text-text-primary mb-2">{step.title}</h3>
+                <p className="font-body text-sm text-text-secondary leading-relaxed">{step.description}</p>
               </SpotlightCard>
             </motion.div>
           ))}
@@ -307,6 +386,134 @@ const IntegrationBar = () => (
 );
 
 // ============================================
+// COMPARISON SECTION - RowLab vs Spreadsheets
+// ============================================
+const ComparisonSection = () => {
+  const comparisons = [
+    {
+      category: 'Lineup Building',
+      old: 'Copy-paste names into cells, manually track sides',
+      new: 'Drag-and-drop with instant port/starboard visualization',
+      icon: Layers,
+    },
+    {
+      category: 'Seat Racing',
+      old: 'Complex formulas, manual calculations, errors',
+      new: 'Enter times, get instant accurate margins',
+      icon: Target,
+    },
+    {
+      category: 'Erg Tracking',
+      old: 'Multiple sheets, inconsistent formats, lost data',
+      new: 'One source of truth with Concept2 import',
+      icon: Activity,
+    },
+    {
+      category: 'Selection Day',
+      old: 'Scramble through tabs, outdated versions',
+      new: 'Real-time updates, instant PDF exports',
+      icon: Clock,
+    },
+  ];
+
+  return (
+    <section className="relative py-24 px-6 overflow-hidden">
+      {/* Background image with overlay - new rowing photo */}
+      <div className="absolute inset-0">
+        <img
+          src="/images/landing/eight-skyline.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-[0.08] grayscale contrast-[1.2]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-void-deep via-void-deep/95 to-void-deep" />
+      </div>
+
+      {/* Generative organic blob for depth */}
+      <OrganicBlob
+        color="rgba(239, 68, 68, 0.08)"
+        size={500}
+        duration={15}
+        blur={120}
+        opacity={0.3}
+        className="left-0 top-1/4"
+      />
+
+      {/* Accent glows */}
+      <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-blade-blue/6 rounded-full blur-[100px]" />
+      <div className="absolute bottom-1/3 left-0 w-[400px] h-[400px] bg-port/8 rounded-full blur-[100px]" />
+
+      <div className="relative max-w-5xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+          className="text-center mb-14"
+        >
+          <MonoLabel color="green" className="mb-4 block">THE DIFFERENCE</MonoLabel>
+          <h2 className="font-display text-4xl sm:text-5xl font-semibold text-text-primary mb-5 tracking-[-0.02em]">
+            Leave the spreadsheet{' '}
+            <span className="text-port" style={{ textShadow: '0 0 30px rgba(239, 68, 68, 0.3)' }}>
+              chaos
+            </span>
+            {' '}behind.
+          </h2>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="space-y-4"
+        >
+          {comparisons.map((item, index) => (
+            <motion.div key={index} variants={fadeInUp}>
+              <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-void-surface/40 backdrop-blur-xl">
+                {/* Inner highlight */}
+                <div className="absolute inset-x-0 top-0 h-px bg-white/10" />
+
+                <div className="grid md:grid-cols-[200px_1fr_1fr] items-stretch">
+                  {/* Category */}
+                  <div className="flex items-center gap-3 p-5 border-b md:border-b-0 md:border-r border-white/[0.06] bg-void-surface/30">
+                    <div className="w-10 h-10 rounded-xl bg-blade-blue/10 border border-blade-blue/20 flex items-center justify-center">
+                      <item.icon className="w-5 h-5 text-blade-blue" />
+                    </div>
+                    <span className="font-display text-sm font-semibold text-text-primary">{item.category}</span>
+                  </div>
+
+                  {/* Old way */}
+                  <div className="p-5 border-b md:border-b-0 md:border-r border-white/[0.06] bg-port/[0.02]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-5 h-5 rounded-full bg-port/20 flex items-center justify-center">
+                        <span className="text-port text-xs">✕</span>
+                      </div>
+                      <MonoLabel color="muted">SPREADSHEET</MonoLabel>
+                    </div>
+                    <p className="font-body text-sm text-text-secondary">{item.old}</p>
+                  </div>
+
+                  {/* New way */}
+                  <div className="p-5 bg-blade-blue/[0.02]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-5 h-5 rounded-full bg-blade-blue/20 flex items-center justify-center">
+                        <Check className="w-3 h-3 text-blade-blue" />
+                      </div>
+                      <MonoLabel color="green">ROWLAB</MonoLabel>
+                    </div>
+                    <p className="font-body text-sm text-text-primary">{item.new}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// ============================================
 // FEATURE VISUAL ARTIFACTS
 // ============================================
 
@@ -330,10 +537,10 @@ const LineupArtifact = () => (
 const ErgArtifact = () => (
   <div className="font-mono text-xs space-y-1 mb-4 bg-bg-base/50 rounded p-2 border border-border-subtle">
     <div className="flex justify-between text-text-muted">
-      <span>500m</span><span className="text-accent-green">1:42.3</span>
+      <span>500m</span><span className="text-success">1:42.3</span>
     </div>
     <div className="flex justify-between text-text-muted">
-      <span>1000m</span><span className="text-accent-green">1:43.1</span>
+      <span>1000m</span><span className="text-success">1:43.1</span>
     </div>
     <div className="flex justify-between text-text-muted">
       <span>1500m</span><span className="text-warning">1:44.8</span>
@@ -357,7 +564,7 @@ const SeatRaceArtifact = () => (
     </div>
     <div className="flex items-center gap-2 pt-1 border-t border-border-subtle">
       <span className="text-text-muted w-16">Margin:</span>
-      <span className="text-accent-green font-medium">A +0.5s</span>
+      <span className="text-success font-medium">A +0.5s</span>
     </div>
   </div>
 );
@@ -368,7 +575,7 @@ const TrendArtifact = () => (
     {[65, 58, 62, 55, 50, 48, 45].map((h, i) => (
       <div
         key={i}
-        className="flex-1 bg-accent-green/30 rounded-t"
+        className="flex-1 bg-success/30 rounded-t"
         style={{ height: `${h}%` }}
       />
     ))}
@@ -383,9 +590,28 @@ const TrendArtifact = () => (
 const FeaturesSection = () => {
   return (
     <section className="py-28 px-6 bg-void-deep relative overflow-hidden">
+      {/* Crew action background - subtle imagery */}
+      <div className="absolute inset-0 pointer-events-none">
+        <img
+          src="/images/landing/crew-on-water.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-[0.04] grayscale"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-void-deep via-void-deep/98 to-void-deep" />
+      </div>
+
+      {/* Generative field lines - flowing data aesthetic */}
+      <FieldLines
+        count={5}
+        color="rgba(124, 58, 237, 0.035)"
+        duration={14}
+        direction="horizontal"
+        className="absolute inset-0 z-[1]"
+      />
+
       {/* Subtle background accents */}
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-coxswain-violet/10 rounded-full blur-[100px] -translate-x-1/2" />
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blade-green/5 rounded-full blur-[100px] translate-x-1/2" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blade-blue/5 rounded-full blur-[100px] translate-x-1/2" />
 
       <div className="relative max-w-6xl mx-auto">
         {/* Header */}
@@ -399,7 +625,7 @@ const FeaturesSection = () => {
           <MonoLabel color="green" className="mb-4 block">FEATURES</MonoLabel>
           <h2 className="font-display text-4xl sm:text-5xl lg:text-[56px] font-semibold text-text-primary mb-5 tracking-[-0.02em]">
             Everything you need to{' '}
-            <span className="text-blade-green text-glow-green">engineer speed.</span>
+            <span className="text-blade-blue">engineer speed.</span>
           </h2>
           <p className="font-body text-lg text-text-secondary max-w-xl mx-auto">
             Purpose-built tools for coaches who demand excellence.
@@ -418,11 +644,11 @@ const FeaturesSection = () => {
           >
             <SpotlightBentoCard
               className="h-full"
-              spotlightColor="rgba(0, 229, 153, 0.1)"
+              spotlightColor="rgba(0, 112, 243, 0.1)"
               backgroundImage="/images/landing/boathouse-oars.jpg"
             >
               <MonoLabel color="green" className="mb-3">LINEUP BUILDER</MonoLabel>
-              <h3 className="font-display text-2xl font-semibold text-text-primary mb-3 tracking-tight">
+              <h3 className="font-display text-2xl font-semibold text-text-primary mb-3 tracking-[-0.02em]">
                 Visual Lineup Builder
               </h3>
               <p className="font-body text-[15px] text-text-secondary leading-relaxed mb-6 max-w-md">
@@ -441,9 +667,13 @@ const FeaturesSection = () => {
             variants={fadeInUp}
             className={bentoSpans.mediumTop}
           >
-            <SpotlightBentoCard className="h-full" spotlightColor="rgba(124, 58, 237, 0.08)">
+            <SpotlightBentoCard
+              className="h-full"
+              spotlightColor="rgba(124, 58, 237, 0.08)"
+              backgroundImage="/images/landing/boathouse-sunset.jpg"
+            >
               <MonoLabel color="violet" className="mb-3">ERG TRACKING</MonoLabel>
-              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-tight">
+              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-[-0.02em]">
                 Erg Data Tracking
               </h3>
               <p className="font-body text-sm text-text-secondary leading-relaxed mb-4">
@@ -461,9 +691,9 @@ const FeaturesSection = () => {
             variants={fadeInUp}
             className={bentoSpans.mediumBottom}
           >
-            <SpotlightBentoCard className="h-full" spotlightColor="rgba(0, 229, 153, 0.08)">
+            <SpotlightBentoCard className="h-full" spotlightColor="rgba(0, 112, 243, 0.08)">
               <MonoLabel color="green" className="mb-3">SEAT RACING</MonoLabel>
-              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-tight">
+              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-[-0.02em]">
                 Seat Racing Calculator
               </h3>
               <p className="font-body text-sm text-text-secondary leading-relaxed mb-4">
@@ -481,9 +711,13 @@ const FeaturesSection = () => {
             variants={fadeInUp}
             className={bentoSpans.wide}
           >
-            <SpotlightBentoCard className="h-full" spotlightColor="rgba(124, 58, 237, 0.08)">
+            <SpotlightBentoCard
+              className="h-full"
+              spotlightColor="rgba(124, 58, 237, 0.08)"
+              backgroundImage="/images/landing/team-carrying-shell.jpg"
+            >
               <MonoLabel color="violet" className="mb-3">ANALYTICS</MonoLabel>
-              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-tight">
+              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-[-0.02em]">
                 Performance Analytics
               </h3>
               <p className="font-body text-sm text-text-secondary leading-relaxed mb-4">
@@ -503,11 +737,11 @@ const FeaturesSection = () => {
           >
             <SpotlightBentoCard
               className="h-full"
-              spotlightColor="rgba(0, 229, 153, 0.08)"
+              spotlightColor="rgba(0, 112, 243, 0.08)"
               backgroundImage="/images/landing/boathouse-sunset.jpg"
             >
               <MonoLabel color="green" className="mb-3">FLEET</MonoLabel>
-              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-tight">
+              <h3 className="font-display text-xl font-semibold text-text-primary mb-2 tracking-[-0.02em]">
                 Multi-Boat Management
               </h3>
               <p className="font-body text-sm text-text-secondary leading-relaxed">
@@ -522,33 +756,60 @@ const FeaturesSection = () => {
 };
 
 // ============================================
-// CAPABILITIES SECTION - Precision Instrument
+// CAPABILITIES SECTION - Precision Instrument (Enhanced)
 // ============================================
 const CapabilitiesSection = () => {
   const capabilities = [
-    { value: 'Unlimited', label: 'Athletes per team', icon: Users },
+    { value: 'Unlimited', label: 'Athletes per team', icon: Users, highlight: true },
     { value: 'All tests', label: '2k, 6k, 30min supported', icon: Timer },
     { value: 'Any boat', label: '1x to 8+ configurations', icon: Layers },
     { value: 'Open', label: 'Source available', icon: Shield },
+    { value: 'Instant', label: 'Margin calculations', icon: Zap, highlight: true },
+    { value: 'PDF', label: 'Export lineups', icon: Activity },
   ];
 
   return (
-    <section className="py-16 px-6 bg-void-surface/50 border-y border-white/[0.04]">
-      <div className="max-w-4xl mx-auto">
+    <section className="relative py-20 px-6 overflow-hidden">
+      {/* Background with subtle texture */}
+      <div className="absolute inset-0 bg-void-surface/30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blade-blue/[0.02] via-transparent to-coxswain-violet/[0.02]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-white/[0.06]" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.06]" />
+
+      <div className="relative max-w-5xl mx-auto">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={staggerContainer}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
         >
           {capabilities.map((cap, index) => (
-            <motion.div key={index} variants={fadeInUp} className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-void-elevated border border-white/[0.08] mb-4 shadow-inner-highlight">
-                <cap.icon className="w-5 h-5 text-blade-green" />
+            <motion.div
+              key={index}
+              variants={fadeInUp}
+              className="relative group text-center"
+            >
+              {/* Hover glow effect */}
+              <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 ${
+                cap.highlight ? 'bg-blade-blue/5' : 'bg-white/[0.02]'
+              }`} />
+
+              <div className="relative p-4">
+                <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 transition-all duration-150 group-hover:scale-110 ${
+                  cap.highlight
+                    ? 'bg-blade-blue/15 border border-blade-blue/30 shadow-[0_0_20px_rgba(0,112,243,0.15)]'
+                    : 'bg-void-elevated border border-white/[0.08]'
+                }`}>
+                  <cap.icon className={`w-6 h-6 ${cap.highlight ? 'text-blade-blue' : 'text-text-secondary'}`} />
+                </div>
+                <p className={`font-mono text-2xl font-bold mb-1.5 tabular-nums ${
+                  cap.highlight ? 'text-blade-blue' : 'text-text-primary'
+                }`}>
+                  {cap.value}
+                </p>
+                <p className="font-body text-xs text-text-muted leading-tight">{cap.label}</p>
               </div>
-              <p className="font-mono text-xl font-semibold text-text-primary mb-1 tabular-nums">{cap.value}</p>
-              <p className="font-body text-xs text-text-muted">{cap.label}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -581,7 +842,7 @@ const MiniAppPreview = () => {
     <div className="flex h-full bg-bg-base">
       {/* Mini sidebar */}
       <div className="w-12 bg-bg-surface border-r border-border-subtle flex flex-col items-center py-3 gap-3">
-        <div className="w-7 h-7 rounded-lg bg-accent-green flex items-center justify-center">
+        <div className="w-7 h-7 rounded-lg bg-success flex items-center justify-center">
           <Layers className="w-3.5 h-3.5 text-bg-base" />
         </div>
         <div className="w-7 h-7 rounded-lg bg-bg-highlight flex items-center justify-center">
@@ -615,7 +876,7 @@ const MiniAppPreview = () => {
         <div className="flex-1 p-3">
           <div className="flex items-center justify-between mb-3">
             <div className="text-[10px] font-medium text-text-muted uppercase tracking-wide">Lineups</div>
-            <div className="text-[9px] text-accent-green">+ New Boat</div>
+            <div className="text-[9px] text-success">+ New Boat</div>
           </div>
 
           {/* Boat cards */}
@@ -624,7 +885,7 @@ const MiniAppPreview = () => {
               <div key={i} className={`p-2 rounded-lg border ${i === 0 ? 'bg-bg-elevated border-border-strong' : 'bg-bg-surface border-border-subtle'}`}>
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[10px] font-medium text-text-primary">{boat.name}</span>
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded ${boat.complete ? 'bg-accent-green/10 text-accent-green' : 'bg-warning/10 text-warning'}`}>
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded ${boat.complete ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
                     {boat.status}
                   </span>
                 </div>
@@ -647,8 +908,23 @@ const MiniAppPreview = () => {
 };
 
 const ProductShowcase = () => (
-  <section className="py-24 px-6 bg-bg-base relative overflow-hidden">
-    <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" style={{ backgroundSize: '64px 64px' }} />
+  <section className="relative py-28 px-6 overflow-hidden">
+    {/* Background with subtle grid */}
+    <div className="absolute inset-0 bg-void-deep" />
+    <div
+      className="absolute inset-0 opacity-[0.03]"
+      style={{
+        backgroundImage: `
+          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+        `,
+        backgroundSize: '64px 64px',
+      }}
+    />
+
+    {/* Accent glows */}
+    <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-blade-blue/6 rounded-full blur-[100px] -translate-y-1/2" />
+    <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-coxswain-violet/8 rounded-full blur-[80px] -translate-y-1/2" />
 
     <div className="relative max-w-5xl mx-auto">
       <motion.div
@@ -656,13 +932,15 @@ const ProductShowcase = () => (
         whileInView="visible"
         viewport={{ once: true }}
         variants={fadeInUp}
-        className="text-center mb-12"
+        className="text-center mb-14"
       >
-        <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary mb-4 tracking-tight">
-          See your entire roster at a glance.
+        <MonoLabel color="green" className="mb-4 block">PRODUCT PREVIEW</MonoLabel>
+        <h2 className="font-display text-4xl sm:text-5xl font-semibold text-text-primary mb-5 tracking-[-0.02em]">
+          See your entire roster{' '}
+          <span className="text-blade-blue">at a glance.</span>
         </h2>
-        <p className="text-text-secondary text-lg">
-          Build lineups in seconds, not hours.
+        <p className="font-body text-lg text-text-secondary max-w-lg mx-auto">
+          Build lineups in seconds, not hours. Our visual interface makes selection intuitive.
         </p>
       </motion.div>
 
@@ -674,12 +952,12 @@ const ProductShowcase = () => (
         variants={scaleIn}
         className="relative max-w-4xl mx-auto"
       >
-        <div className="absolute -inset-8 bg-accent-green/5 rounded-3xl blur-3xl" />
+        <div className="absolute -inset-8 bg-success/5 rounded-3xl blur-3xl" />
         <div className="absolute -inset-4 bg-atmosphere-water/10 rounded-2xl blur-2xl" />
 
         <SpotlightCard className="relative bg-bg-elevated border border-border-default rounded-2xl overflow-hidden shadow-2xl shadow-black/40">
           {/* Inner light */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-px bg-white/10" />
 
           {/* Browser chrome */}
           <div className="bg-bg-base border-b border-border-default px-4 py-2.5 flex items-center gap-2">
@@ -742,6 +1020,135 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => (
   </motion.div>
 );
 
+// ============================================
+// ROADMAP SECTION - What's Coming Next
+// ============================================
+const RoadmapSection = () => {
+  const roadmapItems = [
+    {
+      status: 'live',
+      title: 'Visual Lineup Builder',
+      description: 'Drag-and-drop athletes into boats with instant port/starboard visualization.',
+      icon: Layers,
+    },
+    {
+      status: 'live',
+      title: 'Seat Racing Calculator',
+      description: 'Automatic margin calculations from your piece times. No more spreadsheet formulas.',
+      icon: Target,
+    },
+    {
+      status: 'live',
+      title: 'Erg Data Tracking',
+      description: 'Import from Concept2 or enter manually. Track 2k, 6k, and custom tests.',
+      icon: Activity,
+    },
+    {
+      status: 'coming',
+      title: 'Race Prediction Engine',
+      description: 'AI-powered speed predictions based on crew composition and historical data.',
+      icon: Zap,
+    },
+    {
+      status: 'coming',
+      title: 'Team Communication',
+      description: 'Built-in announcements and notifications to keep your athletes informed.',
+      icon: Users,
+    },
+    {
+      status: 'planned',
+      title: 'Telemetry Integration',
+      description: 'Connect with SpeedCoach, NK, and other real-time data sources.',
+      icon: BarChart3,
+    },
+  ];
+
+  const statusColors = {
+    live: { bg: 'bg-blade-blue/15', border: 'border-blade-blue/30', text: 'text-blade-blue', label: 'LIVE' },
+    coming: { bg: 'bg-coxswain-violet/15', border: 'border-coxswain-violet/30', text: 'text-coxswain-violet', label: 'COMING SOON' },
+    planned: { bg: 'bg-warning/15', border: 'border-warning/30', text: 'text-warning', label: 'PLANNED' },
+  };
+
+  return (
+    <section className="relative py-20 px-6 overflow-hidden">
+      {/* Subtle divider */}
+      <div className="absolute top-0 inset-x-0 h-px bg-white/[0.06]" />
+
+      {/* Accent glows */}
+      <div className="absolute top-1/4 left-0 w-[400px] h-[400px] bg-coxswain-violet/6 rounded-full blur-[100px]" />
+      <div className="absolute bottom-1/4 right-0 w-[350px] h-[350px] bg-blade-blue/5 rounded-full blur-[80px]" />
+
+      <div className="relative max-w-5xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+          className="text-center mb-12"
+        >
+          <MonoLabel color="violet" className="mb-4 block">ROADMAP</MonoLabel>
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-text-primary mb-4 tracking-[-0.02em]">
+            Built for today,{' '}
+            <span className="text-coxswain-violet" style={{ textShadow: '0 0 30px rgba(124, 58, 237, 0.4)' }}>
+              evolving for tomorrow.
+            </span>
+          </h2>
+          <p className="font-body text-base text-text-secondary max-w-lg mx-auto">
+            We're constantly shipping new features based on what coaches actually need.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          {roadmapItems.map((item, index) => {
+            const status = statusColors[item.status];
+            return (
+              <motion.div key={index} variants={fadeInUp}>
+                <SpotlightCard
+                  className="h-full bg-void-surface/40 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5"
+                  spotlightColor={item.status === 'live' ? 'rgba(0, 112, 243, 0.08)' : 'rgba(124, 58, 237, 0.08)'}
+                >
+                  {/* Status badge */}
+                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${status.bg} border ${status.border} mb-4`}>
+                    {item.status === 'live' && (
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${status.bg} opacity-75`}></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blade-blue"></span>
+                      </span>
+                    )}
+                    <span className={`font-mono text-[9px] tracking-wider uppercase ${status.text}`}>
+                      {status.label}
+                    </span>
+                  </div>
+
+                  {/* Icon and title */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className={`w-9 h-9 rounded-lg ${status.bg} border ${status.border} flex items-center justify-center flex-shrink-0`}>
+                      <item.icon className={`w-4 h-4 ${status.text}`} />
+                    </div>
+                    <h3 className="font-display text-base font-semibold text-text-primary leading-tight pt-1">
+                      {item.title}
+                    </h3>
+                  </div>
+
+                  <p className="font-body text-sm text-text-secondary leading-relaxed">
+                    {item.description}
+                  </p>
+                </SpotlightCard>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -773,8 +1180,13 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-24 px-6 bg-bg-base relative overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-atmosphere-water/10 rounded-full blur-3xl" />
+    <section className="relative py-24 px-6 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-void-deep" />
+
+      {/* Accent glows */}
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blade-blue/5 rounded-full blur-[100px]" />
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-coxswain-violet/6 rounded-full blur-[80px]" />
 
       <div className="relative max-w-3xl mx-auto">
         <motion.div
@@ -782,11 +1194,12 @@ const FAQSection = () => {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeInUp}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
-          <p className="text-accent-green text-sm font-medium uppercase tracking-wider mb-3">FAQ</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary mb-4 tracking-tight">
-            Common questions
+          <MonoLabel color="green" className="mb-4 block">FAQ</MonoLabel>
+          <h2 className="font-display text-4xl sm:text-5xl font-semibold text-text-primary mb-5 tracking-[-0.02em]">
+            Common{' '}
+            <span className="text-blade-blue">questions</span>
           </h2>
         </motion.div>
 
@@ -814,7 +1227,7 @@ const FAQSection = () => {
 };
 
 // ============================================
-// BUILT FOR COACHES SECTION
+// BUILT FOR COACHES SECTION - Enhanced
 // ============================================
 const BuiltForCoachesSection = () => {
   const benefits = [
@@ -822,32 +1235,59 @@ const BuiltForCoachesSection = () => {
       icon: Clock,
       title: 'Save Hours Every Week',
       description: 'Stop wrestling with spreadsheets. Build and adjust lineups in minutes, not hours.',
+      stat: '10x',
+      statLabel: 'faster lineup creation',
     },
     {
       icon: Target,
       title: 'Make Better Decisions',
       description: 'Let data guide your selections. Seat racing results and erg trends at your fingertips.',
+      stat: '100%',
+      statLabel: 'calculation accuracy',
     },
     {
       icon: Zap,
       title: 'Move Fast on Race Day',
       description: 'Scratch an athlete? Swap seats in seconds. Print updated lineups instantly.',
+      stat: '<30s',
+      statLabel: 'to adjust a lineup',
     },
   ];
 
   return (
-    <section className="py-24 px-6 bg-void-surface/50 border-y border-white/[0.04]">
-      <div className="max-w-5xl mx-auto">
+    <section className="relative py-28 px-6 overflow-hidden">
+      {/* Background with boathouse image */}
+      <div className="absolute inset-0">
+        <img
+          src="/images/landing/boathouse-sky.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-[0.06] grayscale contrast-[1.2]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-void-deep via-void-deep/95 to-void-deep/90" />
+      </div>
+
+      {/* Gradient accents */}
+      <div className="absolute top-0 left-1/4 w-[600px] h-[400px] bg-coxswain-violet/8 rounded-full blur-[100px]" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[350px] bg-blade-blue/6 rounded-full blur-[80px]" />
+
+      {/* Top and bottom borders */}
+      <div className="absolute inset-x-0 top-0 h-px bg-white/[0.08]" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.08]" />
+
+      <div className="relative max-w-5xl mx-auto">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeInUp}
-          className="text-center mb-14"
+          className="text-center mb-16"
         >
           <MonoLabel color="violet" className="mb-4 block">WHY ROWLAB</MonoLabel>
           <h2 className="font-display text-4xl sm:text-5xl font-semibold text-text-primary mb-5 tracking-[-0.02em]">
-            Built by coaches, for coaches.
+            Built by coaches,{' '}
+            <span className="text-coxswain-violet" style={{ textShadow: '0 0 30px rgba(124, 58, 237, 0.4)' }}>
+              for coaches.
+            </span>
           </h2>
           <p className="font-body text-lg text-text-secondary max-w-xl mx-auto">
             We've been in the launch. We know the chaos of selection week.
@@ -860,15 +1300,33 @@ const BuiltForCoachesSection = () => {
           whileInView="visible"
           viewport={{ once: true }}
           variants={staggerContainer}
-          className="grid md:grid-cols-3 gap-8"
+          className="grid md:grid-cols-3 gap-6"
         >
           {benefits.map((benefit, index) => (
-            <motion.div key={index} variants={fadeInUp} className="text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blade-green/10 border border-blade-green/20 mb-5 shadow-inner-highlight">
-                <benefit.icon className="w-6 h-6 text-blade-green" />
-              </div>
-              <h3 className="font-display text-xl font-semibold text-text-primary mb-2">{benefit.title}</h3>
-              <p className="font-body text-sm text-text-secondary leading-relaxed">{benefit.description}</p>
+            <motion.div key={index} variants={fadeInUp}>
+              <SpotlightCard
+                className="h-full bg-void-surface/50 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 text-center"
+                spotlightColor="rgba(124, 58, 237, 0.08)"
+              >
+                {/* Icon */}
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-coxswain-violet/15 border border-coxswain-violet/25 mb-5">
+                  <benefit.icon className="w-6 h-6 text-coxswain-violet" />
+                </div>
+
+                {/* Stat */}
+                <div className="mb-4">
+                  <p className="font-mono text-4xl font-bold text-blade-blue mb-1">
+                    {benefit.stat}
+                  </p>
+                  <p className="font-mono text-[10px] tracking-wider uppercase text-text-muted">
+                    {benefit.statLabel}
+                  </p>
+                </div>
+
+                {/* Title and description */}
+                <h3 className="font-display text-lg font-semibold text-text-primary mb-2">{benefit.title}</h3>
+                <p className="font-body text-sm text-text-secondary leading-relaxed">{benefit.description}</p>
+              </SpotlightCard>
             </motion.div>
           ))}
         </motion.div>
@@ -882,26 +1340,26 @@ const BuiltForCoachesSection = () => {
 // ============================================
 const PricingCard = ({ name, price, period, description, features, popular, cta }) => (
   <div
-    className={`relative overflow-hidden rounded-2xl transition-all duration-300
+    className={`relative overflow-hidden rounded-2xl transition-all duration-150
       ${popular
         ? `border border-transparent shadow-glow-green
-           [background-image:linear-gradient(#121214,#121214),linear-gradient(to_bottom,rgba(0,229,153,0.4),rgba(0,229,153,0.1))]
+           [background-image:linear-gradient(#121214,#121214),linear-gradient(to_bottom,rgba(0,112,243,0.4),rgba(0,112,243,0.1))]
            [background-origin:padding-box,border-box]
            [background-clip:padding-box,border-box]`
         : `border border-transparent
            [background-image:linear-gradient(#0c0c0e,#0c0c0e),linear-gradient(to_bottom,rgba(255,255,255,0.12),rgba(255,255,255,0))]
            [background-origin:padding-box,border-box]
            [background-clip:padding-box,border-box]
-           hover:shadow-[0_0_40px_-10px_rgba(0,229,153,0.2)]`
+           hover:shadow-[0_0_40px_-10px_rgba(0,112,243,0.2)]`
       }
       hover:-translate-y-1`}
   >
     {/* Inner highlight */}
-    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+    <div className="absolute inset-x-0 top-0 h-px bg-white/20" />
 
     {popular && (
       <div className="absolute -top-px left-1/2 -translate-x-1/2">
-        <div className="px-4 py-1.5 rounded-b-lg bg-blade-green text-void-deep text-xs font-semibold shadow-glow-green">
+        <div className="px-4 py-1.5 rounded-b-lg bg-blade-blue text-void-deep text-xs font-semibold shadow-glow-green">
           Popular
         </div>
       </div>
@@ -913,7 +1371,7 @@ const PricingCard = ({ name, price, period, description, features, popular, cta 
         <p className="font-body text-sm text-text-muted">{description}</p>
       </div>
       <div className="mb-8">
-        <span className={`font-display text-5xl font-semibold ${popular ? 'text-blade-green text-glow-green' : 'text-text-primary'}`}>
+        <span className={`font-mono text-5xl font-semibold tabular-nums ${popular ? 'text-blade-blue' : 'text-text-primary'}`}>
           {price}
         </span>
         {period && <span className="font-body text-text-muted text-sm ml-2">{period}</span>}
@@ -922,9 +1380,9 @@ const PricingCard = ({ name, price, period, description, features, popular, cta 
         {features.map((feature, i) => (
           <li key={i} className="flex items-start gap-3 font-body text-sm text-text-secondary">
             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-              popular ? 'bg-blade-green/20' : 'bg-white/[0.08]'
+              popular ? 'bg-blade-blue/20' : 'bg-white/[0.08]'
             }`}>
-              <Check className={`w-3 h-3 ${popular ? 'text-blade-green' : 'text-text-secondary'}`} />
+              <Check className={`w-3 h-3 ${popular ? 'text-blade-blue' : 'text-text-secondary'}`} />
             </div>
             <span>{feature}</span>
           </li>
@@ -934,7 +1392,7 @@ const PricingCard = ({ name, price, period, description, features, popular, cta 
         to="/register"
         className={`block w-full text-center py-3.5 rounded-xl font-medium transition-all duration-200 ${
           popular
-            ? 'bg-blade-green text-void-deep hover:shadow-glow-green hover:scale-[1.02] active:scale-[0.98]'
+            ? 'bg-blade-blue text-void-deep hover:shadow-glow-green hover:scale-[1.02] active:scale-[0.98]'
             : `bg-white/[0.06] border border-transparent text-text-primary
                [background-image:linear-gradient(rgba(255,255,255,0.06),rgba(255,255,255,0.06)),linear-gradient(to_bottom,rgba(255,255,255,0.15),rgba(255,255,255,0))]
                [background-origin:padding-box,border-box]
@@ -1010,7 +1468,7 @@ const PricingSection = () => {
           variants={fadeInUp}
           className="text-center mb-16"
         >
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary mb-4 tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary mb-4 tracking-[-0.02em]">
             Simple pricing for every program.
           </h2>
           <p className="text-text-secondary text-lg">
@@ -1051,8 +1509,26 @@ const FinalCTA = () => (
       <div className="absolute inset-0 bg-gradient-to-t from-void-deep via-void-deep/95 to-void-deep/80" />
     </div>
 
+    {/* Generative organic blobs - living atmosphere */}
+    <OrganicBlob
+      color="rgba(0, 112, 243, 0.12)"
+      size={450}
+      duration={14}
+      blur={100}
+      opacity={0.4}
+      className="left-1/4 top-1/3"
+    />
+    <OrganicBlob
+      color="rgba(124, 58, 237, 0.1)"
+      size={400}
+      duration={18}
+      blur={90}
+      opacity={0.35}
+      className="right-1/4 bottom-1/3"
+    />
+
     {/* Dual-tone ambient lighting */}
-    <div className="absolute top-1/3 left-1/4 w-[600px] h-[400px] bg-blade-green/10 rounded-full blur-[100px]" />
+    <div className="absolute top-1/3 left-1/4 w-[600px] h-[400px] bg-blade-blue/10 rounded-full blur-[100px]" />
     <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[350px] bg-coxswain-violet/15 rounded-full blur-[100px]" />
 
     <motion.div
@@ -1065,7 +1541,7 @@ const FinalCTA = () => (
       <MonoLabel color="green" className="mb-6 block">GET STARTED</MonoLabel>
       <h2 className="font-display text-4xl sm:text-5xl lg:text-[56px] font-semibold text-text-primary mb-6 tracking-[-0.02em]">
         Your next{' '}
-        <span className="text-blade-green text-glow-green">fast lineup</span>
+        <span className="text-blade-blue">fast lineup</span>
         {' '}is waiting.
       </h2>
       <p className="font-body text-lg text-text-secondary mb-12 max-w-lg mx-auto">
@@ -1076,8 +1552,8 @@ const FinalCTA = () => (
         <Link
           to="/register"
           className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full
-            bg-blade-green text-void-deep font-semibold text-lg
-            hover:shadow-glow-green-lg transition-all duration-300
+            bg-blade-blue text-void-deep font-semibold text-lg
+            hover:shadow-glow-green-lg transition-all duration-150
             hover:scale-[1.02] active:scale-[0.98]"
         >
           Create Free Account
@@ -1109,7 +1585,7 @@ const Footer = () => (
         {/* Logo & Tagline */}
         <div className="md:col-span-1">
           <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-blade-green flex items-center justify-center shadow-glow-green">
+            <div className="w-10 h-10 rounded-xl bg-blade-blue flex items-center justify-center shadow-glow-green">
               <Layers className="w-5 h-5 text-void-deep" />
             </div>
             <span className="font-display text-xl font-semibold text-text-primary">RowLab</span>
@@ -1123,17 +1599,17 @@ const Footer = () => (
         <div>
           <MonoLabel color="muted" className="mb-5 block">PRODUCT</MonoLabel>
           <ul className="space-y-3">
-            <li><Link to="/app" className="font-body text-sm text-text-secondary hover:text-blade-green transition-colors">Features</Link></li>
-            <li><a href="#pricing" className="font-body text-sm text-text-secondary hover:text-blade-green transition-colors">Pricing</a></li>
-            <li><Link to="/app" className="font-body text-sm text-text-secondary hover:text-blade-green transition-colors">Demo</Link></li>
+            <li><Link to="/app" className="font-body text-sm text-text-secondary hover:text-blade-blue transition-colors">Features</Link></li>
+            <li><a href="#pricing" className="font-body text-sm text-text-secondary hover:text-blade-blue transition-colors">Pricing</a></li>
+            <li><Link to="/app" className="font-body text-sm text-text-secondary hover:text-blade-blue transition-colors">Demo</Link></li>
           </ul>
         </div>
 
         <div>
           <MonoLabel color="muted" className="mb-5 block">RESOURCES</MonoLabel>
           <ul className="space-y-3">
-            <li><a href="https://github.com/swdrow/RowLab" className="font-body text-sm text-text-secondary hover:text-blade-green transition-colors">Documentation</a></li>
-            <li><a href="https://github.com/swdrow/RowLab/releases" className="font-body text-sm text-text-secondary hover:text-blade-green transition-colors">Changelog</a></li>
+            <li><a href="https://github.com/swdrow/RowLab" className="font-body text-sm text-text-secondary hover:text-blade-blue transition-colors">Documentation</a></li>
+            <li><a href="https://github.com/swdrow/RowLab/releases" className="font-body text-sm text-text-secondary hover:text-blade-blue transition-colors">Changelog</a></li>
           </ul>
         </div>
 
@@ -1141,13 +1617,13 @@ const Footer = () => (
           <MonoLabel color="muted" className="mb-5 block">CONNECT</MonoLabel>
           <ul className="space-y-3">
             <li>
-              <a href="https://github.com/swdrow/RowLab" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-text-secondary hover:text-blade-green transition-colors flex items-center gap-2">
+              <a href="https://github.com/swdrow/RowLab" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-text-secondary hover:text-blade-blue transition-colors flex items-center gap-2">
                 <Github className="w-4 h-4" />
                 GitHub
               </a>
             </li>
             <li>
-              <a href="https://www.linkedin.com/in/samwduncan" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-text-secondary hover:text-blade-green transition-colors flex items-center gap-2">
+              <a href="https://www.linkedin.com/in/samwduncan" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-text-secondary hover:text-blade-blue transition-colors flex items-center gap-2">
                 <Linkedin className="w-4 h-4" />
                 LinkedIn
               </a>
@@ -1183,10 +1659,10 @@ const Navigation = () => {
 
   return (
     <motion.nav
-      initial={{ y: -20, opacity: 0 }}
+      initial={{ y: -10, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: springConfig }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      transition={{ duration: 0.15, ease: precisionEase }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
         scrolled
           ? `bg-void-deep/80 backdrop-blur-xl saturate-[180%]
              border-b border-transparent
@@ -1201,7 +1677,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-blade-green flex items-center justify-center group-hover:shadow-glow-green transition-shadow duration-300">
+            <div className="w-9 h-9 rounded-xl bg-blade-blue flex items-center justify-center group-hover:shadow-glow-green transition-shadow duration-150">
               <Layers className="w-5 h-5 text-void-deep" />
             </div>
             <span className="font-display text-lg font-semibold text-text-primary">RowLab</span>
@@ -1221,7 +1697,7 @@ const Navigation = () => {
                   {...(item.to ? { to: item.to } : { href: item.href })}
                   className="relative px-4 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors
                     after:content-[''] after:absolute after:bottom-1 after:left-4 after:right-4
-                    after:h-[1px] after:bg-blade-green after:scale-x-0 after:opacity-0
+                    after:h-[1px] after:bg-blade-blue after:scale-x-0 after:opacity-0
                     after:transition-all after:duration-200
                     hover:after:scale-x-100 hover:after:opacity-100"
                 >
@@ -1235,15 +1711,15 @@ const Navigation = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/login"
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors hidden sm:block px-3 py-2"
+              className="text-sm text-text-secondary hover:text-text-primary transition-colors px-3 py-2"
             >
-              Log in
+              Sign in
             </Link>
             <Link
               to="/register"
               className="group inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full
-                bg-blade-green text-void-deep text-sm font-medium
-                hover:shadow-glow-green transition-all duration-300
+                bg-blade-blue text-void-deep text-sm font-medium
+                hover:shadow-glow-green transition-all duration-150
                 hover:scale-[1.02] active:scale-[0.98]"
             >
               Get Started
@@ -1272,8 +1748,10 @@ const LandingPage = () => {
           <FeaturesSection />
         </div>
         <CapabilitiesSection />
+        <ComparisonSection />
         <ProductShowcase />
         <BuiltForCoachesSection />
+        <RoadmapSection />
         <div id="pricing">
           <PricingSection />
         </div>

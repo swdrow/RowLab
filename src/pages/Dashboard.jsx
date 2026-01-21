@@ -1,102 +1,182 @@
-import React, { useRef, useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Users,
-  Ship,
   ArrowRight,
   BarChart3,
   Dumbbell,
   Anchor,
-  TrendingUp,
-  Clock,
+  LayoutGrid,
+  Activity,
+  Calendar,
+  Trophy,
+  ChevronDown,
+  Plus,
+  Play,
 } from 'lucide-react';
+import { PageContainer } from '../components/Layout';
 import useLineupStore from '../store/lineupStore';
 import useAuthStore from '../store/authStore';
+import {
+  TeamSummary,
+  LiveWorkoutDashboard,
+  RankingsTable,
+  LineupCards,
+  AthleteQuickView,
+  WorkoutConfigurator,
+  CalendarWidget,
+  ManualEntryModal,
+} from '../components/Dashboard';
 
-// ============================================
-// SPOTLIGHT CARD - Precision Instrument hover effect
-// ============================================
-const SpotlightCard = ({ children, className = '', spotlightColor = 'rgba(0, 229, 153, 0.08)' }) => {
-  const divRef = useRef(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+/**
+ * Coach Dashboard - Customizable tiles with dashboard presets
+ *
+ * Presets per design document:
+ * - Daily Overview: Team Summary, Schedule, Quick Actions
+ * - Erg Test Day: Live Workout, Rankings, Athlete Quick-View
+ * - Race Week: Lineup Cards, Rankings, Team Summary
+ * - Training Review: Team Training Volume, Rankings, Athlete Quick-View
+ */
 
-  const handleMouseMove = (e) => {
-    if (!divRef.current) return;
-    const rect = divRef.current.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  return (
-    <div
-      ref={divRef}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setOpacity(1)}
-      onMouseLeave={() => setOpacity(0)}
-      className={`relative overflow-hidden ${className}`}
-    >
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500"
-        style={{
-          opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
-        }}
-      />
-      {/* Inner top light - gradient stroke effect */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      {children}
-    </div>
-  );
-};
-
-// ============================================
-// VISUAL ARTIFACTS - Mini data visualizations
-// ============================================
-const MiniBoatDiagram = () => (
-  <div className="flex items-center gap-0.5">
-    <div className="w-3 h-4 rounded-sm bg-coxswain-violet/20 border border-coxswain-violet/30" />
-    {[8,7,6,5,4,3,2,1].map((n, i) => (
-      <div key={n} className={`w-3 h-4 rounded-sm border ${
-        i % 2 === 0 ? 'bg-danger-red/15 border-danger-red/30' : 'bg-blade-green/15 border-blade-green/30'
-      }`} />
-    ))}
-  </div>
-);
-
-const MiniTrendChart = ({ values = [65, 58, 55, 50, 48, 45] }) => (
-  <div className="h-6 flex items-end gap-0.5">
-    {values.map((h, i) => (
-      <div
-        key={i}
-        className="flex-1 bg-blade-green/30 rounded-t min-w-[3px]"
-        style={{ height: `${h}%` }}
-      />
-    ))}
-  </div>
-);
-
-const MiniSplitDisplay = () => (
-  <div className="font-mono text-[10px] text-text-muted space-y-0.5">
-    <div className="flex justify-between gap-2">
-      <span>500m</span>
-      <span className="text-blade-green">1:42</span>
-    </div>
-    <div className="flex justify-between gap-2">
-      <span>Avg</span>
-      <span className="text-text-primary">1:44</span>
-    </div>
-  </div>
-);
+// Dashboard presets configuration
+const DASHBOARD_PRESETS = [
+  {
+    id: 'daily',
+    name: 'Daily Overview',
+    description: 'Morning check-in view',
+    icon: LayoutGrid,
+    tiles: ['summary', 'calendar', 'quickActions'],
+  },
+  {
+    id: 'ergTest',
+    name: 'Erg Test Day',
+    description: 'Test administration',
+    icon: Activity,
+    tiles: ['liveWorkout', 'rankings', 'athleteQuickView'],
+  },
+  {
+    id: 'raceWeek',
+    name: 'Race Week',
+    description: 'Competition prep',
+    icon: Trophy,
+    tiles: ['lineups', 'rankings', 'summary'],
+  },
+  {
+    id: 'training',
+    name: 'Training Review',
+    description: 'Post-practice analysis',
+    icon: BarChart3,
+    tiles: ['rankings', 'summary', 'athleteQuickView'],
+  },
+];
 
 function Dashboard() {
-  const { athletes, activeBoats, boatConfigs, shells } = useLineupStore();
-  const { user } = useAuthStore();
+  const { athletes, activeBoats } = useLineupStore();
+  const { user, accessToken, activeTeamRole } = useAuthStore();
 
-  const assignedAthletes = activeBoats.reduce((count, boat) => {
-    return count + boat.seats.filter(s => s.athlete).length + (boat.coxswain ? 1 : 0);
-  }, 0);
+  // Role check - only coaches and owners can create/edit
+  const isCoachOrOwner = ['OWNER', 'COACH'].includes(activeTeamRole);
 
+  // Dashboard state
+  const [activePreset, setActivePreset] = useState('daily');
+  const [showPresetMenu, setShowPresetMenu] = useState(false);
+  const [selectedAthlete, setSelectedAthlete] = useState(null);
+
+  // Workout state
+  const [showWorkoutConfigurator, setShowWorkoutConfigurator] = useState(false);
+  const [activeWorkout, setActiveWorkout] = useState(null);
+  const [workoutData, setWorkoutData] = useState({});
+  const [isPolling, setIsPolling] = useState(false);
+
+  // Manual entry modal state
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [manualEntryTarget, setManualEntryTarget] = useState({ athleteId: null, pieceIndex: null });
+
+  // Calendar events state
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(false);
+
+  // Load calendar events on mount
+  useEffect(() => {
+    if (accessToken) {
+      loadCalendarEvents();
+    }
+  }, [accessToken]);
+
+  // Load calendar events from API
+  const loadCalendarEvents = async () => {
+    try {
+      setLoadingEvents(true);
+      const res = await fetch('/api/v1/calendar/events', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCalendarEvents(data.data?.events || []);
+      }
+    } catch (err) {
+      console.error('Failed to load calendar events:', err);
+    } finally {
+      setLoadingEvents(false);
+    }
+  };
+
+  // Calculate stats
+  const stats = useMemo(() => {
+    const assignedAthletes = activeBoats.reduce((count, boat) => {
+      return count + boat.seats.filter(s => s.athlete).length + (boat.coxswain ? 1 : 0);
+    }, 0);
+
+    const todayEvents = calendarEvents.filter(e => {
+      const eventDate = new Date(e.date);
+      const today = new Date();
+      return eventDate.toDateString() === today.toDateString();
+    });
+
+    return {
+      totalAthletes: athletes.length,
+      activeAthletes: assignedAthletes,
+      boatsConfigured: activeBoats.length,
+      workoutsToday: todayEvents.length,
+      pendingErgData: 0, // Would come from API
+    };
+  }, [athletes, activeBoats, calendarEvents]);
+
+  // Transform athletes for rankings
+  const rankingsData = useMemo(() => {
+    return athletes.map(a => ({
+      id: a.id,
+      name: `${a.firstName} ${a.lastName}`,
+      firstName: a.firstName,
+      lastName: a.lastName,
+      side: a.side,
+      elo: a.eloRating || 1500,
+      time2k: a.best2kSeconds,
+      time6k: a.best6kSeconds,
+      trend: 'stable',
+      combinedScore: a.combinedScore || 0,
+    }));
+  }, [athletes]);
+
+  // Transform lineups
+  const lineupsData = useMemo(() => {
+    return activeBoats.map(boat => ({
+      id: boat.id,
+      name: boat.name || `Boat ${boat.id}`,
+      boatType: boat.boatType || '8+',
+      seats: boat.seats,
+      coxswain: boat.coxswain,
+      notes: boat.notes,
+      versions: boat.versions || [{ number: 1, date: new Date().toISOString() }],
+      currentVersion: boat.currentVersion || 1,
+    }));
+  }, [activeBoats]);
+
+  // Current preset config
+  const currentPreset = DASHBOARD_PRESETS.find(p => p.id === activePreset) || DASHBOARD_PRESETS[0];
+
+  // Get greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good morning';
@@ -104,239 +184,477 @@ function Dashboard() {
     return 'Good evening';
   };
 
-  // Stats with visual artifacts
-  const stats = [
-    {
-      label: 'Athletes',
-      value: athletes.length,
-      icon: Users,
-      to: '/app/athletes',
-      artifact: <MiniTrendChart values={[40, 45, 52, 50, 53]} />,
-    },
-    {
-      label: 'Active Boats',
-      value: activeBoats.length,
-      icon: Ship,
-      to: '/app/lineup',
-      artifact: <MiniBoatDiagram />,
-    },
-    {
-      label: 'Assigned',
-      value: assignedAthletes,
-      icon: Anchor,
-      artifact: null,
-    },
-    {
-      label: 'Shells',
-      value: shells.length,
-      icon: Ship,
-      artifact: null,
-    },
+  // Quick actions for daily overview - filtered by role
+  const allQuickActions = [
+    { label: 'Build Lineup', desc: 'Create boat assignments', icon: Anchor, to: '/app/lineup', roles: ['OWNER', 'COACH'] },
+    { label: 'Athletes', desc: 'Manage your roster', icon: Users, to: '/app/athletes', roles: ['OWNER', 'COACH'] },
+    { label: 'Erg Data', desc: 'View erg results', icon: Dumbbell, to: '/app/erg', roles: ['OWNER', 'COACH', 'ATHLETE'] },
+    { label: 'Analytics', desc: 'Performance insights', icon: BarChart3, to: '/app/analytics', roles: ['OWNER', 'COACH', 'ATHLETE'] },
   ];
 
-  const quickActions = [
-    { label: 'Build Lineup', desc: 'Create boat assignments', icon: Anchor, to: '/app/lineup' },
-    { label: 'Athletes', desc: 'Manage your roster', icon: Users, to: '/app/athletes' },
-    { label: 'Erg Data', desc: 'View erg results', icon: Dumbbell, to: '/app/erg' },
-    { label: 'Analytics', desc: 'Performance insights', icon: BarChart3, to: '/app/analytics' },
-  ];
+  // Filter actions based on user's role
+  const quickActions = allQuickActions.filter(action =>
+    !action.roles || (activeTeamRole && action.roles.includes(activeTeamRole))
+  );
+
+  // Handle athlete click from rankings
+  const handleAthleteClick = (athlete) => {
+    setSelectedAthlete({
+      ...athlete,
+      recentWorkouts: [], // Would come from API
+    });
+  };
+
+  // Handle workout start
+  const handleStartWorkout = (config) => {
+    setActiveWorkout({
+      ...config,
+      startTime: new Date(),
+    });
+    setShowWorkoutConfigurator(false);
+    // Switch to erg test day preset to show live workout
+    setActivePreset('ergTest');
+  };
+
+  // Handle workout schedule
+  const handleScheduleWorkout = async (config) => {
+    try {
+      await fetch('/api/v1/calendar/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          type: 'erg-pieces',
+          title: config.name,
+          date: config.scheduledDate,
+          notes: config.notes,
+          workoutConfig: config,
+        }),
+      });
+      loadCalendarEvents();
+    } catch (err) {
+      console.error('Failed to schedule workout:', err);
+    }
+  };
+
+  // Handle calendar event creation
+  const handleEventCreate = async (event) => {
+    try {
+      const res = await fetch('/api/v1/calendar/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          title: event.title,
+          eventType: event.type || 'erg-pieces',
+          date: event.date?.toISOString() || new Date().toISOString(),
+          startTime: event.time || null,
+          notes: event.notes || null,
+          visibility: event.visibility || 'all',
+        }),
+      });
+      if (res.ok) {
+        loadCalendarEvents();
+      }
+    } catch (err) {
+      console.error('Failed to create event:', err);
+    }
+  };
+
+  // Handle calendar event edit
+  const handleEventEdit = async (event) => {
+    try {
+      await fetch(`/api/v1/calendar/events/${event.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          title: event.title,
+          eventType: event.type || event.eventType,
+          date: event.date instanceof Date ? event.date.toISOString() : event.date,
+          startTime: event.time || event.startTime || null,
+          notes: event.notes || null,
+          visibility: event.visibility || 'all',
+        }),
+      });
+      loadCalendarEvents();
+    } catch (err) {
+      console.error('Failed to edit event:', err);
+    }
+  };
+
+  // Handle calendar event delete
+  const handleEventDelete = async (eventId) => {
+    try {
+      await fetch(`/api/v1/calendar/events/${eventId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      loadCalendarEvents();
+    } catch (err) {
+      console.error('Failed to delete event:', err);
+    }
+  };
+
+  // Handle manual entry save
+  const handleManualEntrySave = (data) => {
+    const { athleteId, pieceIndex } = manualEntryTarget;
+    if (!athleteId) return;
+
+    setWorkoutData(prev => {
+      const athleteData = prev[athleteId] || { pieces: [], status: 'manual' };
+      const newPieces = [...athleteData.pieces];
+
+      // Ensure array has enough slots
+      while (newPieces.length <= pieceIndex) {
+        newPieces.push(null);
+      }
+
+      // Set the piece data
+      newPieces[pieceIndex] = {
+        time: data.time,
+        split: data.split,
+        strokeRate: data.strokeRate,
+        watts: data.watts,
+        distance: data.distance,
+      };
+
+      return {
+        ...prev,
+        [athleteId]: {
+          ...athleteData,
+          pieces: newPieces,
+        },
+      };
+    });
+
+    setShowManualEntry(false);
+    setManualEntryTarget({ athleteId: null, pieceIndex: null });
+  };
+
+  // Handle export workout data
+  const handleExportWorkoutData = () => {
+    if (!athletes.length || !Object.keys(workoutData).length) return;
+
+    // Build CSV content
+    const headers = ['Athlete', 'Piece', 'Time', 'Split', 'S/M', 'Watts', 'Distance'];
+    const rows = [];
+
+    athletes.forEach(athlete => {
+      const data = workoutData[athlete.id];
+      if (!data?.pieces?.length) return;
+
+      data.pieces.forEach((piece, i) => {
+        if (!piece) return;
+        rows.push([
+          `${athlete.firstName} ${athlete.lastName}`,
+          i + 1,
+          piece.time ? formatTimeForExport(piece.time) : '',
+          piece.split ? formatTimeForExport(piece.split) : '',
+          piece.strokeRate || '',
+          piece.watts || '',
+          piece.distance || '',
+        ]);
+      });
+    });
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `workout-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Format time for export (M:SS.T)
+  const formatTimeForExport = (seconds) => {
+    if (!seconds) return '';
+    const mins = Math.floor(seconds / 60);
+    const secs = (seconds % 60).toFixed(1);
+    return `${mins}:${secs.padStart(4, '0')}`;
+  };
+
+  // Render tile based on type
+  const renderTile = (tileId) => {
+    switch (tileId) {
+      case 'summary':
+        return (
+          <TeamSummary
+            key="summary"
+            totalAthletes={stats.totalAthletes}
+            activeAthletes={stats.activeAthletes}
+            boatsConfigured={stats.boatsConfigured}
+            workoutsToday={stats.workoutsToday}
+            pendingErgData={stats.pendingErgData}
+          />
+        );
+
+      case 'calendar':
+        return (
+          <CalendarWidget
+            key="calendar"
+            events={calendarEvents}
+            canCreate={isCoachOrOwner}
+            canEdit={isCoachOrOwner}
+            canDelete={isCoachOrOwner}
+            canSetVisibility={isCoachOrOwner}
+            onEventCreate={isCoachOrOwner ? handleEventCreate : null}
+            onEventEdit={isCoachOrOwner ? handleEventEdit : null}
+            onEventDelete={isCoachOrOwner ? handleEventDelete : null}
+            view="week"
+          />
+        );
+
+      case 'quickActions':
+        return (
+          <div key="quickActions" className="rounded-xl bg-void-elevated border border-white/[0.06]">
+            <div className="flex items-center justify-between p-5 border-b border-white/[0.04]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blade-blue/10 border border-blade-blue/20 flex items-center justify-center">
+                  <ArrowRight size={20} className="text-blade-blue" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-text-primary">Quick Actions</h3>
+                  <p className="text-xs text-text-muted">Common tasks</p>
+                </div>
+              </div>
+              {isCoachOrOwner && (
+                <button
+                  onClick={() => setShowWorkoutConfigurator(true)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blade-blue text-void-deep text-xs font-medium hover:shadow-[0_0_15px_rgba(0,112,243,0.3)] transition-all"
+                >
+                  <Play size={14} />
+                  Start Workout
+                </button>
+              )}
+            </div>
+            <div className="p-4 grid grid-cols-2 gap-3">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <Link
+                    key={action.label}
+                    to={action.to}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-void-surface/50 border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.02] transition-all group"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-blade-blue/10 border border-blade-blue/20 flex items-center justify-center group-hover:bg-blade-blue group-hover:border-blade-blue transition-all">
+                      <Icon size={18} className="text-blade-blue group-hover:text-void-deep transition-colors" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-text-primary">{action.label}</div>
+                      <div className="text-[10px] text-text-muted truncate">{action.desc}</div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+
+      case 'liveWorkout':
+        return (
+          <div key="liveWorkout" className="space-y-4">
+            {/* Workout header with start button */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-display font-semibold text-text-primary">
+                  {activeWorkout ? activeWorkout.name : 'Live Workout'}
+                </h2>
+                {activeWorkout && (
+                  <p className="text-xs text-text-muted">
+                    Started {new Date(activeWorkout.startTime).toLocaleTimeString()}
+                  </p>
+                )}
+              </div>
+              {!activeWorkout && isCoachOrOwner && (
+                <button
+                  onClick={() => setShowWorkoutConfigurator(true)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blade-blue text-void-deep font-medium text-sm hover:shadow-[0_0_20px_rgba(0,112,243,0.4)] transition-all"
+                >
+                  <Plus size={16} />
+                  Configure Workout
+                </button>
+              )}
+            </div>
+            <LiveWorkoutDashboard
+              athletes={athletes.slice(0, 12)}
+              workoutData={workoutData}
+              activeWorkout={activeWorkout}
+              onConfigureWorkout={() => setShowWorkoutConfigurator(true)}
+              isPolling={isPolling}
+              onManualEntry={(athleteId, pieceIndex) => {
+                setManualEntryTarget({ athleteId, pieceIndex });
+                setShowManualEntry(true);
+              }}
+              onExportData={handleExportWorkoutData}
+              canConfigure={isCoachOrOwner}
+              canExport={isCoachOrOwner}
+              canManualEntry={isCoachOrOwner}
+              canAddAthlete={isCoachOrOwner}
+            />
+          </div>
+        );
+
+      case 'rankings':
+        return (
+          <RankingsTable
+            key="rankings"
+            athletes={rankingsData}
+            onAthleteClick={handleAthleteClick}
+          />
+        );
+
+      case 'lineups':
+        return (
+          <LineupCards
+            key="lineups"
+            lineups={lineupsData}
+          />
+        );
+
+      case 'athleteQuickView':
+        return selectedAthlete ? (
+          <AthleteQuickView
+            key="athleteQuickView"
+            athlete={selectedAthlete}
+            onClose={() => setSelectedAthlete(null)}
+            onViewProfile={(id) => window.location.href = `/app/athletes/${id}`}
+          />
+        ) : (
+          <div key="athleteQuickView" className="rounded-xl bg-void-elevated border border-white/[0.06] p-8 text-center">
+            <Users size={32} className="mx-auto mb-3 text-text-muted/50" />
+            <p className="text-sm text-text-muted">Select an athlete to view details</p>
+            <p className="text-xs text-text-muted/60 mt-1">Click on a name in the rankings table</p>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="relative p-4 sm:p-6 max-w-5xl mx-auto">
-      {/* Background atmosphere - void glow */}
-      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-blade-green/5 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Greeting */}
+    <PageContainer maxWidth="xl" className="relative py-4 sm:py-6">
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative mb-8"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
       >
-        <h1 className="text-2xl sm:text-3xl font-display font-bold text-text-primary mb-1 tracking-tight">
-          {getGreeting()}{user?.name ? `, ${user.name}` : ''}
-        </h1>
-        <p className="text-sm sm:text-base text-text-secondary">
-          Here's your team overview.
-        </p>
-      </motion.div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-text-primary tracking-[-0.02em]">
+            {getGreeting()}{user?.name ? `, ${user.name}` : ''}
+          </h1>
+          <p className="text-sm text-text-secondary mt-1">
+            {currentPreset.description}
+          </p>
+        </div>
 
-      {/* Stats with Spotlight Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
-        {stats.map((stat, i) => {
-          const Icon = stat.icon;
-          const content = (
+        {/* Preset selector */}
+        <div className="relative">
+          <button
+            onClick={() => setShowPresetMenu(!showPresetMenu)}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-void-elevated border border-white/[0.06] hover:border-white/10 transition-all"
+          >
+            <currentPreset.icon size={18} className="text-blade-blue" />
+            <span className="text-sm text-text-primary">{currentPreset.name}</span>
+            <ChevronDown
+              size={16}
+              className={`text-text-muted transition-transform ${showPresetMenu ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {showPresetMenu && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
+              className="absolute right-0 top-full mt-2 w-56 py-2 rounded-xl bg-void-elevated border border-white/10 shadow-2xl z-20"
             >
-              <SpotlightCard
-                className={`
-                  h-full rounded-xl
-                  bg-void-surface/80 backdrop-blur-sm
-                  border border-transparent
-                  [background-image:linear-gradient(rgba(12,12,14,0.9),rgba(12,12,14,0.9)),linear-gradient(to_bottom,rgba(255,255,255,0.08),rgba(255,255,255,0.02))]
-                  [background-origin:padding-box,border-box]
-                  [background-clip:padding-box,border-box]
-                  hover:translate-y-[-2px]
-                  hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.4)]
-                  transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]
-                `}
-              >
-                <div className="relative p-4 sm:p-5">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-xl bg-blade-green/10 border border-blade-green/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,229,153,0.15)]">
-                      <Icon size={20} className="text-blade-green" />
-                    </div>
-                    {stat.artifact && (
-                      <div className="opacity-60">
-                        {stat.artifact}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-3xl sm:text-4xl font-display font-bold text-text-primary mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-text-muted">{stat.label}</div>
-                </div>
-              </SpotlightCard>
-            </motion.div>
-          );
-          return stat.to ? <Link key={stat.label} to={stat.to} className="block">{content}</Link> : <div key={stat.label}>{content}</div>;
-        })}
-      </div>
-
-      {/* Quick Actions with Spotlight */}
-      <div className="mb-8">
-        <h2 className="text-lg font-display font-semibold text-text-primary mb-4">Quick Actions</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {quickActions.map((action, i) => {
-            const Icon = action.icon;
-            return (
-              <Link key={action.label} to={action.to}>
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.05 }}
-                >
-                  <SpotlightCard
+              {DASHBOARD_PRESETS.map((preset) => {
+                const Icon = preset.icon;
+                const isActive = preset.id === activePreset;
+                return (
+                  <button
+                    key={preset.id}
+                    onClick={() => {
+                      setActivePreset(preset.id);
+                      setShowPresetMenu(false);
+                    }}
                     className={`
-                      rounded-xl group
-                      bg-void-surface/80 backdrop-blur-sm
-                      border border-transparent
-                      [background-image:linear-gradient(rgba(12,12,14,0.9),rgba(12,12,14,0.9)),linear-gradient(to_bottom,rgba(255,255,255,0.06),rgba(255,255,255,0.01))]
-                      [background-origin:padding-box,border-box]
-                      [background-clip:padding-box,border-box]
-                      hover:[background-image:linear-gradient(rgba(12,12,14,0.9),rgba(12,12,14,0.9)),linear-gradient(to_bottom,rgba(255,255,255,0.1),rgba(255,255,255,0.03))]
-                      transition-all duration-300
+                      w-full flex items-center gap-3 px-4 py-2.5 text-left
+                      transition-all
+                      ${isActive
+                        ? 'bg-blade-blue/10 text-blade-blue'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.04]'
+                      }
                     `}
                   >
-                    <div className="p-4 flex items-center gap-4">
-                      <div className="w-11 h-11 rounded-xl bg-blade-green/10 border border-blade-green/20 flex items-center justify-center group-hover:bg-blade-green group-hover:border-blade-green group-hover:shadow-[0_0_20px_rgba(0,229,153,0.4)] transition-all duration-300 flex-shrink-0">
-                        <Icon size={20} className="text-blade-green group-hover:text-void-deep transition-colors" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-text-primary">{action.label}</div>
-                        <div className="text-sm text-text-muted truncate">{action.desc}</div>
-                      </div>
-                      <ArrowRight size={18} className="text-text-muted group-hover:text-blade-green group-hover:translate-x-1 transition-all flex-shrink-0" />
+                    <Icon size={16} />
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">{preset.name}</div>
+                      <div className="text-[10px] text-text-muted">{preset.description}</div>
                     </div>
-                  </SpotlightCard>
-                </motion.div>
-              </Link>
-            );
-          })}
+                  </button>
+                );
+              })}
+            </motion.div>
+          )}
         </div>
+      </motion.div>
+
+      {/* Dashboard tiles grid */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {currentPreset.tiles.map((tileId, index) => (
+          <motion.div
+            key={tileId}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className={
+              // Make certain tiles span full width
+              (tileId === 'liveWorkout' || tileId === 'rankings' || tileId === 'calendar') ? 'lg:col-span-2' : ''
+            }
+          >
+            {renderTile(tileId)}
+          </motion.div>
+        ))}
       </div>
 
-      {/* Team Summary with Visual Elements */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        <SpotlightCard
-          className={`
-            rounded-xl
-            bg-void-surface/80 backdrop-blur-sm
-            border border-transparent
-            [background-image:linear-gradient(rgba(12,12,14,0.9),rgba(12,12,14,0.9)),linear-gradient(to_bottom,rgba(255,255,255,0.06),rgba(255,255,255,0.01))]
-            [background-origin:padding-box,border-box]
-            [background-clip:padding-box,border-box]
-          `}
-        >
-          <div className="p-5 sm:p-6">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-void-elevated border border-white/[0.06] flex items-center justify-center">
-                <Users size={20} className="text-text-secondary" />
-              </div>
-              <h2 className="text-lg font-display font-semibold text-text-primary">Team Composition</h2>
-            </div>
+      {/* Workout Configurator Modal */}
+      <WorkoutConfigurator
+        isOpen={showWorkoutConfigurator}
+        onClose={() => setShowWorkoutConfigurator(false)}
+        onStartWorkout={handleStartWorkout}
+        onScheduleWorkout={handleScheduleWorkout}
+      />
 
-            {/* Visual boat diagram showing team composition */}
-            <div className="mb-6 p-4 rounded-xl bg-void-deep/50 border border-white/[0.04]">
-              <div className="flex items-center justify-center gap-1 mb-3">
-                <div className="w-6 h-8 rounded bg-coxswain-violet/20 border border-coxswain-violet/40 flex items-center justify-center">
-                  <span className="text-[9px] font-bold text-coxswain-violet">C</span>
-                </div>
-                {[8,7,6,5,4,3,2,1].map((n, i) => (
-                  <div key={n} className={`w-6 h-8 rounded border flex items-center justify-center ${
-                    i % 2 === 0
-                      ? 'bg-danger-red/15 border-danger-red/40'
-                      : 'bg-blade-green/15 border-blade-green/40'
-                  }`}>
-                    <span className={`text-[9px] font-bold ${i % 2 === 0 ? 'text-danger-red' : 'text-blade-green'}`}>
-                      {n}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex justify-center gap-6 text-xs text-text-muted">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-sm bg-danger-red/30 border border-danger-red/50" />
-                  <span>Port</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-sm bg-blade-green/30 border border-blade-green/50" />
-                  <span>Starboard</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-sm bg-coxswain-violet/30 border border-coxswain-violet/50" />
-                  <span>Cox</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="text-center p-3 rounded-xl bg-danger-red/5 border border-danger-red/10">
-                <div className="text-2xl font-display font-bold text-danger-red">
-                  {athletes.filter(a => a.side === 'P' || a.side === 'B').length}
-                </div>
-                <div className="text-xs text-text-muted">Port Rowers</div>
-              </div>
-              <div className="text-center p-3 rounded-xl bg-blade-green/5 border border-blade-green/10">
-                <div className="text-2xl font-display font-bold text-blade-green">
-                  {athletes.filter(a => a.side === 'S' || a.side === 'B').length}
-                </div>
-                <div className="text-xs text-text-muted">Starboard</div>
-              </div>
-              <div className="text-center p-3 rounded-xl bg-coxswain-violet/5 border border-coxswain-violet/10">
-                <div className="text-2xl font-display font-bold text-coxswain-violet">
-                  {athletes.filter(a => a.side === 'Cox').length}
-                </div>
-                <div className="text-xs text-text-muted">Coxswains</div>
-              </div>
-              <div className="text-center p-3 rounded-xl bg-void-elevated border border-white/[0.06]">
-                <div className="text-2xl font-display font-bold text-text-primary">
-                  {shells.length}
-                </div>
-                <div className="text-xs text-text-muted">Shells</div>
-              </div>
-            </div>
-          </div>
-        </SpotlightCard>
-      </motion.div>
-    </div>
+      {/* Manual Entry Modal */}
+      <ManualEntryModal
+        isOpen={showManualEntry}
+        onClose={() => {
+          setShowManualEntry(false);
+          setManualEntryTarget({ athleteId: null, pieceIndex: null });
+        }}
+        onSave={handleManualEntrySave}
+        athleteName={
+          manualEntryTarget.athleteId
+            ? (() => {
+                const athlete = athletes.find(a => a.id === manualEntryTarget.athleteId);
+                return athlete ? `${athlete.firstName} ${athlete.lastName}` : 'Unknown';
+              })()
+            : ''
+        }
+        pieceNumber={manualEntryTarget.pieceIndex != null ? manualEntryTarget.pieceIndex + 1 : 1}
+      />
+    </PageContainer>
   );
 }
 

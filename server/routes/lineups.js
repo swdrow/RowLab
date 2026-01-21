@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../utils/logger.js';
 import prisma from '../db/connection.js';
 import { verifyToken } from '../middleware/auth.js';
 
@@ -24,7 +25,7 @@ router.get('/', verifyToken, async (req, res) => {
 
     res.json({ lineups });
   } catch (err) {
-    console.error('Get lineups error:', err);
+    logger.error('Get lineups error', { error: err.message });
     res.status(500).json({ error: 'Failed to fetch lineups' });
   }
 });
@@ -55,7 +56,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 
     res.json(lineup);
   } catch (err) {
-    console.error('Get lineup error:', err);
+    logger.error('Get lineup error', { error: err.message });
     res.status(500).json({ error: 'Failed to fetch lineup' });
   }
 });
@@ -116,7 +117,7 @@ router.post('/', verifyToken, async (req, res) => {
 
     res.status(201).json({ lineup });
   } catch (err) {
-    console.error('Create lineup error:', err);
+    logger.error('Create lineup error', { error: err.message });
     res.status(500).json({ error: 'Failed to create lineup' });
   }
 });
@@ -190,7 +191,7 @@ router.put('/:id', verifyToken, async (req, res) => {
 
     res.json({ lineup });
   } catch (err) {
-    console.error('Update lineup error:', err);
+    logger.error('Update lineup error', { error: err.message });
     res.status(500).json({ error: 'Failed to update lineup' });
   }
 });
@@ -221,7 +222,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
 
     res.json({ message: 'Lineup deleted' });
   } catch (err) {
-    console.error('Delete lineup error:', err);
+    logger.error('Delete lineup error', { error: err.message });
     res.status(500).json({ error: 'Failed to delete lineup' });
   }
 });

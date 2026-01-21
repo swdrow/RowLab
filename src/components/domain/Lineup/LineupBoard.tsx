@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   DndContext,
@@ -10,10 +10,12 @@ import {
   DragEndEvent,
   DragStartEvent,
 } from '@dnd-kit/core';
-import { Plus, X, Users, Ship } from 'lucide-react';
+import { Plus, X, Users, Anchor, Boat } from '@phosphor-icons/react';
 import BoatColumn from '../Boat/BoatColumn';
 import AthleteBankPanel from '../Athlete/AthleteBankPanel';
 import useLineupStore from '../../../store/lineupStore';
+import SpotlightCard from '../../ui/SpotlightCard';
+import { OrganicBlob } from '../../Generative';
 
 interface Athlete {
   id: string;
@@ -104,15 +106,26 @@ export default function LineupBoard() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full relative">
+        {/* Background atmosphere */}
+        <div className="fixed top-0 right-0 w-[500px] h-[500px] opacity-[0.03]" style={{ backgroundColor: 'var(--accent-green)' }}>
+          <div className="w-full h-full rounded-full blur-3xl" style={{ backgroundColor: 'inherit' }} />
+        </div>
+
         {/* Actions Bar */}
-        <div className="flex items-center justify-between gap-3 p-3 border-b border-[var(--border)]">
+        <div className="flex items-center justify-between gap-3 p-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            {activeBoats.length > 0 && (
-              <span className="text-sm text-[var(--text-secondary)]">
-                {filledSeats}/{totalSeats} seats filled
-              </span>
-            )}
+            <div className="w-9 h-9 rounded-xl bg-[var(--accent-green)]/10 border border-[var(--accent-green)]/20 flex items-center justify-center">
+              <Anchor size={18} className="text-[var(--accent-green)]" />
+            </div>
+            <div>
+              <h1 className="font-display font-semibold text-[var(--text-primary)] tracking-[-0.02em]">Lineup Builder</h1>
+              {activeBoats.length > 0 && (
+                <span className="text-xs text-[var(--text-muted)] font-mono tabular-nums">
+                  <span className="text-[var(--accent-green)] font-medium">{filledSeats}</span>/{totalSeats} seats filled
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -137,24 +150,35 @@ export default function LineupBoard() {
           <AnimatePresence mode="popLayout">
             {activeBoats.length === 0 ? (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="empty-state flex-1"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex-1 flex items-center justify-center p-8 relative"
               >
-                <div className="empty-state-icon">
-                  <Ship size={48} />
+                {/* Organic blob background for empty state */}
+                <OrganicBlob
+                  color="rgba(0, 112, 243, 0.15)"
+                  size={350}
+                  duration={12}
+                  blur={80}
+                  opacity={0.4}
+                  className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                />
+                <div className="text-center max-w-md relative z-10">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--border-subtle)] flex items-center justify-center">
+                    <Boat size={40} className="text-[var(--text-muted)]" />
+                  </div>
+                  <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-2 tracking-[-0.02em]">No boats yet</h2>
+                  <p className="text-[var(--text-secondary)] mb-6">
+                    Add a boat to start building your lineup
+                  </p>
+                  <button
+                    onClick={() => setShowBoatPicker(true)}
+                    className="btn btn-primary"
+                  >
+                    <Plus size={16} />
+                    Add Boat
+                  </button>
                 </div>
-                <h2 className="empty-state-title">No boats yet</h2>
-                <p className="empty-state-text">
-                  Add a boat to start building your lineup
-                </p>
-                <button
-                  onClick={() => setShowBoatPicker(true)}
-                  className="btn btn-primary"
-                >
-                  <Plus size={16} />
-                  Add Boat
-                </button>
               </motion.div>
             ) : (
               <>
@@ -192,35 +216,65 @@ export default function LineupBoard() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 modal-backdrop z-50"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
                 onClick={() => setShowBoatPicker(false)}
               />
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm modal p-6 z-50"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="fixed inset-x-4 bottom-4 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-sm z-[60]"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold">Add Boat</h2>
-                  <button
-                    onClick={() => setShowBoatPicker(false)}
-                    className="btn-icon"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {['8+', '4+', '4x', '4-', '2x', '2-', '1x'].map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => handleAddBoat(type)}
-                      className="btn btn-secondary py-3 text-base"
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
+                <SpotlightCard className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-2xl shadow-2xl">
+                  <div className="p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-[var(--accent-green)]/10 border border-[var(--accent-green)]/20 flex items-center justify-center">
+                          <Boat size={18} className="text-[var(--accent-green)]" />
+                        </div>
+                        <h2 className="text-lg font-display font-semibold text-[var(--text-primary)] tracking-[-0.02em]">Add Boat</h2>
+                      </div>
+                      <button
+                        onClick={() => setShowBoatPicker(false)}
+                        className="w-8 h-8 rounded-lg bg-[var(--bg-elevated)] hover:bg-[var(--bg-input)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+
+                    {/* Sweeping Boats */}
+                    <div className="mb-3">
+                      <h3 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">Sweeping</h3>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['8+', '8-', '4+', '4-', '2+', '2-'].map((type) => (
+                          <button
+                            key={type}
+                            onClick={() => handleAddBoat(type)}
+                            className="py-2.5 px-3 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-subtle)] hover:border-[var(--accent-green)]/40 hover:bg-[var(--accent-green)]/5 text-[var(--text-primary)] font-display font-semibold text-base transition-all duration-200"
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Sculling Boats */}
+                    <div>
+                      <h3 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">Sculling</h3>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['8x', '4x+', '4x', '2x', '1x'].map((type) => (
+                          <button
+                            key={type}
+                            onClick={() => handleAddBoat(type)}
+                            className="py-2.5 px-3 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-subtle)] hover:border-[var(--accent-green)]/40 hover:bg-[var(--accent-green)]/5 text-[var(--text-primary)] font-display font-semibold text-base transition-all duration-200"
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </SpotlightCard>
               </motion.div>
             </>
           )}

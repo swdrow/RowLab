@@ -7,7 +7,7 @@ const DisplayXL = forwardRef(function DisplayXL({ className, children, ...props 
     <h1
       ref={ref}
       className={clsx(
-        'font-display text-[72px] font-semibold leading-[1.1] tracking-[-0.03em] text-text-primary',
+        'font-display text-[72px] font-semibold leading-[1.1] tracking-[-0.02em] text-text-primary',
         className
       )}
       {...props}
@@ -91,7 +91,7 @@ const MonoStat = forwardRef(function MonoStat({ className, glow, children, ...pr
       ref={ref}
       className={clsx(
         'font-mono text-2xl font-semibold tracking-[-0.02em] tabular-nums text-text-primary',
-        glow && 'text-blade-green text-glow-green',
+        glow && 'text-blade-blue',
         className
       )}
       {...props}
@@ -104,7 +104,7 @@ const MonoStat = forwardRef(function MonoStat({ className, glow, children, ...pr
 const MonoLabel = forwardRef(function MonoLabel({ className, color = 'muted', children, ...props }, ref) {
   const colorStyles = {
     muted: 'text-text-muted',
-    green: 'text-blade-green',
+    green: 'text-blade-blue',
     violet: 'text-coxswain-violet',
   };
 
@@ -112,7 +112,7 @@ const MonoLabel = forwardRef(function MonoLabel({ className, color = 'muted', ch
     <span
       ref={ref}
       className={clsx(
-        'font-mono text-[11px] font-medium tracking-[0.08em] uppercase',
+        'font-mono text-[11px] font-medium tracking-widest uppercase',
         colorStyles[color],
         className
       )}

@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
+import FocusLock from 'react-focus-lock';
 
 /**
  * GlassModal - Liquid Glass Modal Component
@@ -32,6 +33,8 @@ const GlassModal = ({
   className = '',
   children,
 }) => {
+  // Note: Focus restoration is handled automatically by FocusLock with returnFocus prop
+
   // Handle escape key
   useEffect(() => {
     if (!isOpen || !closeOnEscape) return;
@@ -70,38 +73,47 @@ const GlassModal = ({
     full: 'max-w-7xl mx-4',
   };
 
-  const modalContent = (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
-      onClick={closeOnBackdrop ? onClose : undefined}
-    >
-      {/* Backdrop - ultra blurred glass */}
-      <div className="absolute inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-xl" />
+  // Generate unique ID for aria-labelledby (stable across renders)
+  const baseId = useId();
+  const titleId = title ? `modal-title-${baseId}` : undefined;
 
-      {/* Modal content */}
+  const modalContent = (
+    <FocusLock returnFocus>
       <div
-        className={`
-          relative w-full ${sizes[size]}
-          glass-strong
-          backdrop-blur-2xl
-          rounded-2xl
-          shadow-floating
-          border border-white/20 dark:border-white/10
-          overflow-hidden
-          animate-scale-in
-          ${className}
-        `}
-        onClick={(e) => e.stopPropagation()}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+        onClick={closeOnBackdrop ? onClose : undefined}
+        role="presentation"
       >
+        {/* Backdrop - ultra blurred glass */}
+        <div className="absolute inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-xl" />
+
+        {/* Modal content */}
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          className={`
+            relative w-full ${sizes[size]}
+            glass-strong
+            backdrop-blur-2xl
+            rounded-2xl
+            shadow-floating
+            border border-white/20 dark:border-white/10
+            overflow-hidden
+            animate-scale-in
+            ${className}
+          `}
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Top edge highlight (glass realism) */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-white/10" />
 
         {/* Header */}
         {(title || showCloseButton) && (
           <div className="relative px-6 py-4 border-b border-white/10 dark:border-white/5">
             <div className="flex items-center justify-between">
               {title && (
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 id={titleId} className="text-xl font-semibold text-gray-900 dark:text-white">
                   {title}
                 </h2>
               )}
@@ -113,7 +125,7 @@ const GlassModal = ({
                     text-gray-500 dark:text-gray-400
                     hover:bg-white/10 dark:hover:bg-white/5
                     transition-colors duration-200
-                    focus:outline-none focus:ring-2 focus:ring-blue-500
+                    focus:outline-none focus:ring-2 focus:ring-white/30
                   "
                   aria-label="Close modal"
                 >
@@ -142,9 +154,10 @@ const GlassModal = ({
         </div>
 
         {/* Bottom edge glow (subtle) */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/10" />
       </div>
     </div>
+    </FocusLock>
   );
 
   // Render modal in portal

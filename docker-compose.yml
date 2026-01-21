@@ -1,0 +1,119 @@
+# RowLab Docker Compose Configuration
+# For local development and self-hosted deployments
+
+version: '3.8'
+
+services:
+  # ====================
+  # Application
+  # ====================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rowlab-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3002}:3002"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=3002
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-rowlab_secret}@db:5432/${POSTGRES_DB:-rowlab}
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-change_me_in_production}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-change_me_in_production_refresh}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - APP_URL=${APP_URL:-http://localhost:3002}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - rowlab-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ====================
+  # PostgreSQL Database
+  # ====================
+  db:
+    image: postgres:15-alpine
+    container_name: rowlab-db
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-rowlab}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-rowlab_secret}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - rowlab-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-rowlab}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ====================
+  # Redis Cache
+  # ====================
+  redis:
+    image: redis:7-alpine
+    container_name: rowlab-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - rowlab-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ====================
+  # Database Migrations (one-time)
+  # ====================
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rowlab-migrate
+    command: npx prisma migrate deploy
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-rowlab_secret}@db:5432/${POSTGRES_DB:-rowlab}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - rowlab-network
+    profiles:
+      - migrate
+
+# ====================
+# Networks
+# ====================
+networks:
+  rowlab-network:
+    driver: bridge
+
+# ====================
+# Volumes
+# ====================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

@@ -106,7 +106,7 @@ const AssignmentControls = () => {
   return (
     <>
       <div className="glass-card rounded-2xl p-6 animate-fade-in sticky top-24">
-        <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple bg-clip-text text-transparent mb-4">Lineup Manager</h2>
+        <h2 className="text-xl font-bold text-text-primary mb-4">Lineup Manager</h2>
 
         {/* Lineup Name */}
         <div className="mb-4">
@@ -118,7 +118,7 @@ const AssignmentControls = () => {
             value={lineupName}
             onChange={(e) => setLineupName(e.target.value)}
             placeholder="e.g., Practice 2025-10-19"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-accent-blue focus:border-transparent text-sm bg-white dark:bg-dark-elevated text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+            className="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 text-sm bg-void-elevated text-text-primary placeholder-text-muted transition-all"
           />
         </div>
 
@@ -126,7 +126,7 @@ const AssignmentControls = () => {
         <div className="mb-4">
           <button
             onClick={() => setShowBoatModal(true)}
-            className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-accent-blue dark:to-accent-purple text-white rounded-lg hover:shadow-lg transition-all duration-200 font-medium hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full px-4 py-3 bg-blade-blue text-white rounded-lg hover:shadow-lg hover:shadow-glow-blue transition-all duration-150 font-medium hover:scale-[1.02] active:scale-[0.98]"
           >
             + Add Boat to Lineup
           </button>
@@ -136,24 +136,24 @@ const AssignmentControls = () => {
         <div className="mb-6">
           <button
             onClick={() => setShowSavedLineups(true)}
-            className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:border-blue-500 dark:hover:border-accent-blue hover:text-blue-600 dark:hover:text-accent-blue transition-all duration-200 font-medium"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg hover:border-white/30 hover:bg-white/5 transition-all duration-200 font-medium"
           >
             Load Saved Lineup
           </button>
         </div>
 
-        {/* Selection Status */}
+        {/* Selection Status - Blue IS a signal here (active selection state) */}
         {selectedAthlete && (
-          <div className="mb-4 p-3 bg-blue-500/10 dark:bg-accent-blue/20 border border-blue-200 dark:border-accent-blue/30 rounded-lg backdrop-blur-sm">
-            <div className="text-sm font-semibold text-blue-900 dark:text-accent-blue mb-1">
+          <div className="mb-4 p-3 bg-blade-blue/10 border border-blade-blue/30 rounded-lg backdrop-blur-sm">
+            <div className="text-sm font-semibold text-blade-blue mb-1">
               Athlete Selected
             </div>
-            <div className="text-sm text-blue-700 dark:text-blue-300">
+            <div className="text-sm text-blade-blue/80">
               {selectedAthlete.lastName} {selectedAthlete.firstName}
             </div>
             <button
               onClick={clearAthleteSelection}
-              className="mt-2 text-xs text-blue-600 dark:text-accent-blue hover:text-blue-800 dark:hover:text-blue-400 underline"
+              className="mt-2 text-xs text-blade-blue hover:text-blade-blue/80 underline"
             >
               Clear selection
             </button>
@@ -204,7 +204,7 @@ const AssignmentControls = () => {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-3 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-all text-sm font-medium hover:scale-105 active:scale-95 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-all text-sm font-medium hover:scale-105 active:scale-95 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSaving ? 'Saving...' : (isAuthenticated ? 'Save to Database' : 'Save Locally')}
               </button>
@@ -216,7 +216,7 @@ const AssignmentControls = () => {
               </button>
               <button
                 onClick={handleExport}
-                className="px-3 py-2 bg-purple-600 dark:bg-accent-purple text-white rounded-lg hover:bg-purple-700 dark:hover:bg-purple-500 transition-all text-sm font-medium hover:scale-105 active:scale-95 hover:shadow-lg"
+                className="px-3 py-2 bg-coxswain-violet text-white rounded-lg hover:bg-coxswain-violet/90 transition-all text-sm font-medium hover:scale-105 active:scale-95 hover:shadow-lg"
               >
                 Export JSON
               </button>
@@ -230,7 +230,7 @@ const AssignmentControls = () => {
           <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             <div>Active boats: {activeBoats.length}</div>
             {!isAuthenticated && (
-              <div className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+              <div className="text-xs text-text-muted mt-2">
                 Sign in to save lineups to the database
               </div>
             )}

@@ -1,10 +1,21 @@
 import { forwardRef } from 'react';
 import { clsx } from 'clsx';
 
+/**
+ * Card - Precision Instrument Card Component
+ *
+ * Follows the glass card primitive pattern with:
+ * - Multi-layer shadow (shadow-card)
+ * - Noise texture overlay at 3% opacity
+ * - Top gradient highlight on hover
+ * - Smooth rounded corners (rounded-2xl)
+ */
+
 const Card = forwardRef(function Card(
   {
     variant = 'glass',
     padding = 'md',
+    interactive = false,
     className,
     children,
     ...props
@@ -18,68 +29,89 @@ const Card = forwardRef(function Card(
     lg: 'p-8',
   };
 
+  // Base glass card styles following the design standard
+  const baseGlassStyles = `
+    relative overflow-hidden
+    bg-white/[0.02]
+    backdrop-blur-xl
+    border border-white/10
+    rounded-2xl
+    shadow-card
+    group
+    transition-all duration-150
+    hover:shadow-card-hover hover:border-white/15
+  `;
+
   const variantStyles = {
-    glass: `
-      bg-void-elevated
-      border border-transparent rounded-2xl
-      backdrop-blur-[20px] saturate-[180%]
-      shadow-inner-highlight
-      [background-image:linear-gradient(#121214,#121214),linear-gradient(to_bottom,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.04)_50%,rgba(255,255,255,0)_100%)]
-      [background-origin:padding-box,border-box]
-      [background-clip:padding-box,border-box]
-      transition-all duration-200
-      hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_0_30px_-10px_rgba(0,229,153,0.3)]
-      hover:-translate-y-0.5
+    glass: baseGlassStyles,
+    elevated: `
+      ${baseGlassStyles}
+      bg-white/[0.03]
+    `,
+    subtle: `
+      ${baseGlassStyles}
+      bg-white/[0.01]
+      shadow-none hover:shadow-card
     `,
     solid: `
+      relative overflow-hidden
       bg-void-elevated
-      border border-white/[0.08] rounded-xl
-      shadow-inner-highlight
+      border border-white/[0.08]
+      rounded-2xl
+      shadow-card
+      group
+      transition-all duration-150
+      hover:shadow-card-hover hover:border-white/12
     `,
     inset: `
+      relative overflow-hidden
       bg-void-surface
-      border border-white/[0.04] rounded-lg
+      border border-white/[0.04]
+      rounded-xl
       shadow-inset-depth
+      group
     `,
     interactive: `
-      bg-void-elevated
-      border border-transparent rounded-2xl
-      backdrop-blur-[20px]
-      [background-image:linear-gradient(#121214,#121214),linear-gradient(to_bottom,rgba(255,255,255,0.12),rgba(255,255,255,0))]
-      [background-origin:padding-box,border-box]
-      [background-clip:padding-box,border-box]
+      ${baseGlassStyles}
       cursor-pointer
-      transition-all duration-200
-      hover:shadow-[0_0_40px_-10px_rgba(0,229,153,0.4)]
-      hover:-translate-y-1
-    `,
-    // Legacy compatibility
-    default: `
-      bg-void-elevated
-      border border-white/[0.08] rounded-xl
-      shadow-inner-highlight
-    `,
-    elevated: `
-      bg-void-elevated
-      border border-white/[0.08] rounded-xl
-      shadow-lg
     `,
     ghost: `
-      bg-transparent border border-transparent
+      relative overflow-hidden
+      bg-transparent
+      border border-transparent
+      rounded-2xl
+      group
+      transition-all duration-150
+      hover:bg-white/[0.02] hover:border-white/10
     `,
+    // Legacy compatibility
+    default: baseGlassStyles,
   };
+
+  const interactiveStyles = interactive
+    ? 'cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-transform duration-150'
+    : '';
 
   return (
     <div
       ref={ref}
       className={clsx(
-        paddingStyles[padding],
         variantStyles[variant],
+        interactiveStyles,
         className
       )}
       {...props}
     >
-      {children}
+      {/* Noise Texture */}
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none mix-blend-overlay" />
+
+      {/* Top Highlight (Linear Style) - appears on hover */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-100" />
+
+      {/* Content */}
+      <div className={clsx('relative z-10', paddingStyles[padding])}>
+        {children}
+      </div>
     </div>
   );
 });
@@ -99,7 +131,7 @@ const CardTitle = forwardRef(function CardTitle({ className, ...props }, ref) {
     <h3
       ref={ref}
       className={clsx(
-        'font-display text-xl font-semibold text-text-primary tracking-tight',
+        'font-display text-xl font-semibold text-text-primary tracking-[-0.02em]',
         className
       )}
       {...props}

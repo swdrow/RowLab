@@ -1,53 +1,92 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import {
-  Home,
+  House,
+  Boat,
   Users,
-  Anchor,
-  BarChart3,
-  Dumbbell,
-  Settings,
-  Shield,
+  Timer,
+  ChartLine,
+  Sparkle,
   Megaphone,
-  Sparkles,
   CreditCard,
-  Layers,
+  Gear,
   Sun,
   Moon,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+  CaretLeft,
+  CaretRight,
+  ShieldCheck,
+  User as UserIcon,
+  ArrowsLeftRight,
+  Microphone,
+} from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import useAuthStore from '../../../store/authStore';
 
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
   onSettingsClick?: () => void;
+  isAdmin?: boolean;
 }
 
+// Section color themes for visual variety
+const sectionColors = {
+  main: {
+    active: 'text-blade-blue',
+    border: 'border-blade-blue',
+    bg: 'bg-blade-blue/10',
+  },
+  analytics: {
+    active: 'text-spectrum-cyan',
+    border: 'border-spectrum-cyan',
+    bg: 'bg-spectrum-cyan/10',
+  },
+  management: {
+    active: 'text-spectrum-violet',
+    border: 'border-spectrum-violet',
+    bg: 'bg-spectrum-violet/10',
+  },
+};
+
 // Navigation sections for better organization
-const mainNavItems = [
-  { label: 'Dashboard', icon: Home, path: '/app', end: true },
-  { label: 'Lineup', icon: Anchor, path: '/app/lineup', end: false },
+// Coach/Owner main navigation
+const coachMainNavItems = [
+  { label: 'Dashboard', icon: House, path: '/app', end: true },
+  { label: 'Lineup', icon: Boat, path: '/app/lineup', end: false },
+  { label: 'Coxswain', icon: Microphone, path: '/app/coxswain', end: false },
   { label: 'Athletes', icon: Users, path: '/app/athletes', end: false },
-  { label: 'Erg Data', icon: Dumbbell, path: '/app/erg', end: false },
+  { label: 'Erg Data', icon: Timer, path: '/app/erg', end: false },
+];
+
+// Athlete main navigation (simplified)
+const athleteMainNavItems = [
+  { label: 'My Dashboard', icon: UserIcon, path: '/app/athlete-dashboard', end: true },
+  { label: 'Erg Data', icon: Timer, path: '/app/erg', end: false },
 ];
 
 const analyticsNavItems = [
-  { label: 'Analytics', icon: BarChart3, path: '/app/analytics', end: false },
-  { label: 'Advanced', icon: Sparkles, path: '/app/advanced', end: false },
+  { label: 'Analytics', icon: ChartLine, path: '/app/analytics', end: false },
+  { label: 'Advanced', icon: Sparkle, path: '/app/advanced', end: false },
 ];
 
 const managementNavItems = [
   { label: 'Communication', icon: Megaphone, path: '/app/communication', end: false },
-  { label: 'Billing', icon: CreditCard, path: '/app/billing', end: false },
-  { label: 'Settings', icon: Settings, path: '/app/settings', end: false },
+  { label: 'Settings', icon: Gear, path: '/app/settings', end: false },
 ];
 
-export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: SidebarProps) {
+export default function Sidebar({ isOpen = true, onClose, onSettingsClick, isAdmin = false }: SidebarProps) {
   const location = useLocation();
   const [isDark, setIsDark] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [viewAsAthlete, setViewAsAthlete] = useState(false);
+
+  // Get user role from auth store
+  const { activeTeamRole } = useAuthStore();
+  const isAthlete = activeTeamRole === 'ATHLETE';
+  const isCoachOrOwner = activeTeamRole === 'OWNER' || activeTeamRole === 'COACH';
+
+  // Determine which navigation items to show
+  const mainNavItems = isAthlete || viewAsAthlete ? athleteMainNavItems : coachMainNavItems;
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -98,7 +137,7 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
     );
   }, []);
 
-  const renderNavItems = (items: typeof mainNavItems) => (
+  const renderNavItems = (items: typeof mainNavItems, colorScheme: typeof sectionColors.main) => (
     <>
       {items.map((item) => {
         const Icon = item.icon;
@@ -110,8 +149,8 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
             className={({ isActive }) =>
               `group relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
                 isActive
-                  ? 'bg-blade-green/10 text-blade-green border border-blade-green/20 shadow-[0_0_15px_rgba(0,229,153,0.15)]'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-void-elevated/50 border border-transparent'
+                  ? `bg-white/[0.06] ${colorScheme.active} border-l-2 ${colorScheme.border} border-t-0 border-r-0 border-b-0`
+                  : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.04] border-l-2 border-transparent'
               } ${isCollapsed ? 'justify-center px-2.5' : ''}`
             }
             onClick={onClose}
@@ -122,7 +161,7 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
                 <Icon
                   size={18}
                   className={`flex-shrink-0 transition-all duration-200 ${
-                    isActive ? 'text-blade-green' : 'group-hover:text-text-primary'
+                    isActive ? colorScheme.active : 'group-hover:text-text-primary'
                   }`}
                 />
                 <AnimatePresence>
@@ -132,21 +171,13 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
                       animate={{ opacity: 1, width: 'auto' }}
                       exit={{ opacity: 0, width: 0 }}
                       className={`text-sm font-medium whitespace-nowrap overflow-hidden ${
-                        isActive ? 'text-blade-green' : ''
+                        isActive ? colorScheme.active : ''
                       }`}
                     >
                       {item.label}
                     </motion.span>
                   )}
                 </AnimatePresence>
-                {/* Active indicator line */}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-blade-green rounded-full shadow-[0_0_8px_rgba(0,229,153,0.6)]"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
               </>
             )}
           </NavLink>
@@ -162,24 +193,21 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
         ${isCollapsed ? 'w-[68px]' : 'w-[240px]'}
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0
-        transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+        transition-all duration-150 ease-out
 
         /* Glass morphism background */
-        bg-void-surface/95 backdrop-blur-2xl saturate-[200%]
+        bg-void-surface/80 backdrop-blur-xl saturate-[180%]
 
-        /* Gradient stroke border on right edge */
-        border-r border-transparent
-        [background-image:linear-gradient(rgba(12,12,14,0.95),rgba(12,12,14,0.95)),linear-gradient(to_bottom,rgba(255,255,255,0.08),rgba(255,255,255,0.02))]
-        [background-origin:padding-box,border-box]
-        [background-clip:padding-box,border-box]
+        /* Border on right edge */
+        border-r border-white/[0.06]
 
         flex flex-col
       `}
     >
       {/* Header */}
-      <div className={`px-4 py-5 border-b border-white/[0.04] flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
-        <div className="w-9 h-9 rounded-xl bg-blade-green/20 border border-blade-green/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,229,153,0.2)]">
-          <Layers size={18} className="text-blade-green" />
+      <div className={`px-4 py-5 border-b border-white/[0.06] flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
+        <div className="w-9 h-9 rounded-xl bg-blade-blue/20 border border-blade-blue/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,112,243,0.2)]">
+          <Boat size={18} className="text-blade-blue" />
         </div>
         <AnimatePresence>
           {!isCollapsed && (
@@ -187,7 +215,7 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="font-display text-lg font-semibold text-text-primary tracking-tight"
+              className="font-display text-lg font-semibold text-text-primary tracking-[-0.02em]"
             >
               RowLab
             </motion.span>
@@ -200,42 +228,75 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
         {/* Main Section */}
         <div className="space-y-1.5">
           {!isCollapsed && (
-            <div className="px-3 mb-2 font-mono text-[10px] font-medium tracking-[0.1em] uppercase text-text-muted">
-              Main
+            <div className="px-3 mb-2 font-mono text-[10px] font-medium tracking-widest uppercase text-blade-blue/60">
+              {isAthlete || viewAsAthlete ? 'Personal' : 'Main'}
             </div>
           )}
-          {renderNavItems(mainNavItems)}
+          {renderNavItems(mainNavItems, sectionColors.main)}
         </div>
 
-        {/* Analytics Section */}
-        <div className="space-y-1.5">
-          {!isCollapsed && (
-            <div className="px-3 mb-2 font-mono text-[10px] font-medium tracking-[0.1em] uppercase text-text-muted">
-              Analytics
-            </div>
-          )}
-          {renderNavItems(analyticsNavItems)}
-        </div>
+        {/* Analytics Section - Hide for athletes unless in view-as-athlete mode */}
+        {(!isAthlete || (isCoachOrOwner && viewAsAthlete)) && (
+          <div className="space-y-1.5">
+            {!isCollapsed && (
+              <div className="px-3 mb-2 font-mono text-[10px] font-medium tracking-widest uppercase text-spectrum-cyan/60">
+                Analytics
+              </div>
+            )}
+            {renderNavItems(analyticsNavItems, sectionColors.analytics)}
+          </div>
+        )}
 
-        {/* Management Section */}
-        <div className="space-y-1.5">
-          {!isCollapsed && (
-            <div className="px-3 mb-2 font-mono text-[10px] font-medium tracking-[0.1em] uppercase text-text-muted">
-              Management
-            </div>
-          )}
-          {renderNavItems(managementNavItems)}
-        </div>
+        {/* Management Section - Hide for athletes unless in view-as-athlete mode */}
+        {(!isAthlete || (isCoachOrOwner && viewAsAthlete)) && (
+          <div className="space-y-1.5">
+            {!isCollapsed && (
+              <div className="px-3 mb-2 font-mono text-[10px] font-medium tracking-widest uppercase text-spectrum-violet/60">
+                Management
+              </div>
+            )}
+            {renderNavItems(managementNavItems, sectionColors.management)}
+          </div>
+        )}
       </nav>
 
       {/* Footer */}
-      <div className="px-3 py-4 border-t border-white/[0.04] space-y-1.5">
+      <div className="px-3 py-4 border-t border-white/[0.06] space-y-1.5">
+        {/* View as Athlete Toggle - only for coaches/owners */}
+        {isCoachOrOwner && (
+          <button
+            className={`
+              group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
+              ${viewAsAthlete ? 'text-blade-blue bg-blade-blue/10 border-l-2 border-blade-blue' : 'text-text-secondary hover:text-text-primary border-l-2 border-transparent'}
+              hover:bg-white/[0.04]
+              transition-all duration-200
+              ${isCollapsed ? 'justify-center px-2.5' : ''}
+            `}
+            onClick={() => setViewAsAthlete(!viewAsAthlete)}
+            title={isCollapsed ? (viewAsAthlete ? 'Coach View' : 'Athlete View') : undefined}
+          >
+            <ArrowsLeftRight size={18} />
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  className="text-sm font-medium whitespace-nowrap overflow-hidden"
+                >
+                  {viewAsAthlete ? 'Coach View' : 'Athlete View'}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        )}
+
         {/* Theme Toggle */}
         <button
           className={`
             group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
             text-text-secondary hover:text-text-primary
-            hover:bg-void-elevated/50 border border-transparent
+            hover:bg-white/[0.04] border-l-2 border-transparent
             transition-all duration-200
             ${isCollapsed ? 'justify-center px-2.5' : ''}
           `}
@@ -257,46 +318,48 @@ export default function Sidebar({ isOpen = true, onClose, onSettingsClick }: Sid
           </AnimatePresence>
         </button>
 
-        {/* Admin Panel */}
-        <button
-          className={`
-            group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
-            text-coxswain-violet hover:text-coxswain-violet
-            hover:bg-coxswain-violet/10 border border-transparent hover:border-coxswain-violet/20
-            transition-all duration-200
-            ${isCollapsed ? 'justify-center px-2.5' : ''}
-          `}
-          onClick={onSettingsClick}
-          title={isCollapsed ? 'Admin Panel' : undefined}
-        >
-          <Shield size={18} />
-          <AnimatePresence>
-            {!isCollapsed && (
-              <motion.span
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 'auto' }}
-                exit={{ opacity: 0, width: 0 }}
-                className="text-sm font-medium whitespace-nowrap overflow-hidden"
-              >
-                Admin Panel
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </button>
+        {/* Admin Panel - only visible for admin users */}
+        {isAdmin && (
+          <button
+            className={`
+              group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
+              text-coxswain-violet hover:text-coxswain-violet
+              hover:bg-coxswain-violet/10 border-l-2 border-transparent hover:border-coxswain-violet/40
+              transition-all duration-200
+              ${isCollapsed ? 'justify-center px-2.5' : ''}
+            `}
+            onClick={onSettingsClick}
+            title={isCollapsed ? 'Admin Panel' : undefined}
+          >
+            <ShieldCheck size={18} />
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  className="text-sm font-medium whitespace-nowrap overflow-hidden"
+                >
+                  Admin Panel
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        )}
 
         {/* Collapse Toggle (desktop only) */}
         <button
           className={`
             hidden md:flex group w-full items-center gap-3 px-3 py-2.5 rounded-xl
             text-text-muted hover:text-text-secondary
-            hover:bg-void-elevated/30 border border-transparent
+            hover:bg-white/[0.04] border-l-2 border-transparent
             transition-all duration-200
             ${isCollapsed ? 'justify-center px-2.5' : ''}
           `}
           onClick={toggleCollapse}
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          {isCollapsed ? <CaretRight size={18} /> : <CaretLeft size={18} />}
           <AnimatePresence>
             {!isCollapsed && (
               <motion.span
