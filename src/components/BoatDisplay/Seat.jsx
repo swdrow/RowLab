@@ -35,8 +35,8 @@ const Seat = ({ boatId, seat, onSeatClick }) => {
         w-24 h-32 rounded-xl border-2 cursor-pointer
         transition-all duration-200 backdrop-blur-sm
         ${seat.athlete
-          ? 'border-white/30 bg-white dark:bg-void-card/90'
-          : 'border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-void-elevated/50'
+          ? 'border-white/30 bg-void-card/90'
+          : 'border-white/10 bg-void-elevated/50'
         }
         ${isOver ? 'ring-4 ring-blade-blue scale-105 shadow-xl' : ''}
         ${isSelected ? 'ring-4 ring-yellow-400 dark:ring-yellow-500 shadow-xl' : ''}
@@ -60,7 +60,7 @@ const Seat = ({ boatId, seat, onSeatClick }) => {
             <img
               src={headshotMap.get(seat.athlete.id) || '/images/placeholder-avatar.svg'}
               alt={seat.athlete.lastName}
-              className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 shadow-md"
+              className="w-16 h-16 rounded-full object-cover border-2 border-white/10 shadow-md"
             />
             {/* Country flag in bottom right */}
             {seat.athlete.country && (
@@ -74,12 +74,12 @@ const Seat = ({ boatId, seat, onSeatClick }) => {
               />
             )}
           </div>
-          <div className="text-xs font-semibold text-center leading-tight text-gray-900 dark:text-gray-100">
+          <div className="text-xs font-semibold text-center leading-tight text-text-primary">
             {seat.athlete.lastName}
           </div>
         </div>
       ) : (
-        <div className="text-gray-400 dark:text-gray-500 text-2xl">+</div>
+        <div className="text-text-muted text-2xl">+</div>
       )}
     </div>
   );

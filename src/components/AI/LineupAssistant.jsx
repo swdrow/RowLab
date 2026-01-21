@@ -42,12 +42,12 @@ const Message = ({ message, isUser, isStreaming }) => (
       flex-1 px-4 py-3 rounded-xl text-sm leading-relaxed
       ${isUser
         ? 'bg-blade-blue text-white'
-        : 'bg-white/10 text-gray-200'
+        : 'bg-white/10 text-text-primary'
       }
     `}>
       {message}
       {isStreaming && (
-        <span className="inline-block w-2 h-4 ml-1 bg-purple-400 animate-pulse rounded-sm" />
+        <span className="inline-block w-2 h-4 ml-1 bg-coxswain-violet animate-pulse rounded-sm" />
       )}
     </div>
   </motion.div>
@@ -57,7 +57,7 @@ const Message = ({ message, isUser, isStreaming }) => (
 const StatusBadge = ({ status, checking }) => {
   if (checking) {
     return (
-      <div className="flex items-center gap-1.5 text-xs text-gray-400">
+      <div className="flex items-center gap-1.5 text-xs text-text-muted">
         <Loader2 className="w-3 h-3 animate-spin" />
         <span>Checking...</span>
       </div>
@@ -212,7 +212,7 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
         <div className="p-6 text-center">
           <WifiOff className="w-12 h-12 mx-auto mb-3 text-gray-500" />
           <h3 className="text-white font-medium mb-2">AI Disabled</h3>
-          <p className="text-gray-400 text-sm">
+          <p className="text-text-muted text-sm">
             The AI assistant is currently disabled. Enable it in the Admin Panel to use this feature.
           </p>
         </div>
@@ -267,8 +267,8 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
           <div className="h-80 overflow-y-auto p-4 space-y-4">
             {messages.length === 0 && !streamingText && (
               <div className="text-center py-8">
-                <Bot className="w-12 h-12 mx-auto mb-3 text-gray-500" />
-                <p className="text-gray-400 text-sm mb-4">
+                <Bot className="w-12 h-12 mx-auto mb-3 text-text-muted" />
+                <p className="text-text-muted text-sm mb-4">
                   {aiStatus?.available
                     ? 'Ask me about lineups, roster balance, or seat assignments'
                     : 'AI is offline. Start Ollama to enable the assistant.'}
@@ -279,7 +279,7 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
                       <button
                         key={i}
                         onClick={() => handleSuggestionClick(prompt.text)}
-                        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-gray-300 transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-text-secondary transition-colors"
                       >
                         {prompt.icon} {prompt.text}
                       </button>
@@ -306,7 +306,7 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
             )}
 
             {isLoading && !streamingText && (
-              <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <div className="flex items-center gap-2 text-text-muted text-sm">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Thinking...</span>
               </div>
@@ -328,7 +328,7 @@ const LineupAssistant = ({ isOpen, onClose, isMinimized, onToggleMinimize }) => 
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={aiStatus?.available ? "Ask about lineups..." : "AI offline"}
                 disabled={!aiStatus?.available || isLoading}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:border-purple-500/50 outline-none text-white placeholder-gray-500 text-sm disabled:opacity-50"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:border-coxswain-violet/50 outline-none text-white placeholder-text-muted text-sm disabled:opacity-50"
               />
               <button
                 type="submit"

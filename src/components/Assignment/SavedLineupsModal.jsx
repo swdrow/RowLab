@@ -107,7 +107,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
       <div className="relative glass-card rounded-2xl p-6 w-full max-w-2xl mx-4 animate-slide-up max-h-[80vh] overflow-hidden flex flex-col">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -116,16 +116,16 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
 
         <div className="text-center mb-6">
           <div className="text-4xl mb-2">📋</div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+          <h2 className="text-2xl font-bold text-text-primary">
             Saved Lineups
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-text-secondary mt-1">
             {isAuthenticated ? 'Your saved lineups from the database' : 'Lineups saved in your browser'}
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm">
+          <div className="mb-4 p-3 bg-danger-red/10 text-danger-red rounded-lg text-sm border border-danger-red/20">
             {error}
           </div>
         )}
@@ -139,7 +139,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
               </svg>
             </div>
           ) : lineups.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <div className="text-center py-12 text-text-secondary">
               <div className="text-5xl mb-3">📭</div>
               <p>No saved lineups yet</p>
               <p className="text-sm mt-2">
@@ -153,28 +153,28 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
               {lineups.map((lineup) => (
                 <div
                   key={lineup.id}
-                  className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-white/10 hover:border-white/20 transition-all"
+                  className="p-4 bg-void-elevated/50 rounded-xl border border-white/10 hover:border-white/20 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-gray-800 dark:text-gray-200">
+                        <span className="font-semibold text-text-primary">
                           {lineup.name}
                         </span>
                         {lineup.isLocal && (
-                          <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded-full">
+                          <span className="px-2 py-0.5 bg-white/10 text-text-muted text-xs rounded-full">
                             Local
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-text-secondary">
                         {lineup.boats?.length || lineup.assignments?.length || 0} boat(s)
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                      <p className="text-xs text-text-muted mt-1">
                         {formatDate(lineup.createdAt || lineup.timestamp)}
                       </p>
                       {lineup.notes && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 italic">
+                        <p className="text-sm text-text-muted mt-2 italic">
                           "{lineup.notes}"
                         </p>
                       )}
@@ -196,7 +196,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
                           </button>
                           <button
                             onClick={() => setDeleteConfirm(null)}
-                            className="px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all"
+                            className="px-3 py-1.5 bg-white/10 hover:bg-white/15 text-white text-sm font-medium rounded-lg transition-all border border-white/10"
                           >
                             Cancel
                           </button>
