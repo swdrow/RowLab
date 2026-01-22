@@ -609,6 +609,35 @@ function SettingsPage() {
     }
   };
 
+  // Sync Concept2 workouts
+  const handleSyncConcept2 = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_URL}/concept2/sync/me`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        credentials: 'include',
+      });
+
+      const data = await handleApiResponse(res, 'Failed to sync Concept2 workouts');
+
+      if (data.success) {
+        // Refresh status to update lastSyncedAt
+        await fetchC2Status();
+        // Show success message
+        alert(`Synced ${data.data?.newWorkouts || 0} new workouts from Concept2!`);
+      }
+    } catch (err) {
+      console.error('Sync Concept2 error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch Strava connection status
   const fetchStravaStatus = async () => {
     try {
@@ -1198,23 +1227,34 @@ function SettingsPage() {
                       )}
                     </div>
                   </div>
-                  {integrations.concept2Connected ? (
-                    <button
-                      onClick={handleDisconnectConcept2}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-red/10 border border-danger-red/20 text-danger-red hover:bg-danger-red/20 transition-all"
-                    >
-                      <XCircle className="w-4 h-4" />
-                      Disconnect
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleConnectConcept2}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blade-blue text-void-deep border border-blade-blue hover:shadow-[0_0_15px_rgba(0,112,243,0.3)] transition-all"
-                    >
-                      <Plug className="w-4 h-4" />
-                      Connect
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {integrations.concept2Connected && (
+                      <button
+                        onClick={handleSyncConcept2}
+                        disabled={loading}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-void-elevated/50 border border-white/[0.06] text-text-secondary hover:bg-void-elevated hover:border-white/10 transition-all disabled:opacity-50"
+                      >
+                        {loading ? 'Syncing...' : 'Sync Now'}
+                      </button>
+                    )}
+                    {integrations.concept2Connected ? (
+                      <button
+                        onClick={handleDisconnectConcept2}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-red/10 border border-danger-red/20 text-danger-red hover:bg-danger-red/20 transition-all"
+                      >
+                        <XCircle className="w-4 h-4" />
+                        Disconnect
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleConnectConcept2}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blade-blue text-void-deep border border-blade-blue hover:shadow-[0_0_15px_rgba(0,112,243,0.3)] transition-all"
+                      >
+                        <Plug className="w-4 h-4" />
+                        Connect
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <p className="text-sm text-text-muted">
                   Connect your Concept2 Logbook to automatically import erg test results into RowLab.
