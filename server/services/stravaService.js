@@ -6,7 +6,7 @@
  */
 
 import crypto from 'crypto';
-import { prisma } from '../db.js';
+import { prisma } from '../db/connection.js';
 
 // Strava API endpoints
 const STRAVA_API_URL = 'https://www.strava.com/api/v3';
