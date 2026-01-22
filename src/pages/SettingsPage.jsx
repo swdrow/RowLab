@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import SpotlightCard from '../components/ui/SpotlightCard';
 import { importFitFiles, formatDuration, formatDistance, formatWorkoutType } from '../services/fitImportService';
+import { getC2SyncConfig, updateC2SyncConfig, syncC2ToStrava } from '../services/stravaService';
 
 // Animation variants
 const fadeInUp = {
@@ -285,6 +286,17 @@ function SettingsPage() {
   // FIT Import state
   const [fitImporting, setFitImporting] = useState(false);
   const [fitResults, setFitResults] = useState(null);
+
+  // C2 to Strava sync state
+  const [c2SyncConfig, setC2SyncConfig] = useState({
+    enabled: false,
+    types: {},
+    availableTypes: {},
+    hasWriteScope: false,
+    lastSyncedAt: null,
+  });
+  const [c2SyncLoading, setC2SyncLoading] = useState(false);
+  const [c2SyncResult, setC2SyncResult] = useState(null);
 
   // Check if user is team owner
   const isOwner = activeTeamRole === 'OWNER';
@@ -606,9 +618,63 @@ function SettingsPage() {
           stravaLastSynced: data.data.lastSyncedAt,
           stravaSyncEnabled: data.data.syncEnabled,
         }));
+
+        // If connected, also fetch C2 sync config
+        if (data.data.connected) {
+          fetchC2SyncConfig();
+        }
       }
     } catch (err) {
       console.error('Fetch Strava status error:', err);
+    }
+  };
+
+  // Fetch C2 to Strava sync configuration
+  const fetchC2SyncConfig = async () => {
+    try {
+      const config = await getC2SyncConfig();
+      setC2SyncConfig(config);
+    } catch (err) {
+      console.error('Fetch C2 sync config error:', err);
+    }
+  };
+
+  // Update C2 to Strava sync toggle
+  const handleC2SyncToggle = async (enabled) => {
+    try {
+      const config = await updateC2SyncConfig({ enabled });
+      setC2SyncConfig(config);
+    } catch (err) {
+      console.error('Update C2 sync toggle error:', err);
+      setError(err.message);
+    }
+  };
+
+  // Update C2 to Strava sync type toggle
+  const handleC2SyncTypeToggle = async (type, enabled) => {
+    try {
+      const newTypes = { ...c2SyncConfig.types, [type]: enabled };
+      const config = await updateC2SyncConfig({ types: newTypes });
+      setC2SyncConfig(config);
+    } catch (err) {
+      console.error('Update C2 sync type error:', err);
+      setError(err.message);
+    }
+  };
+
+  // Trigger C2 to Strava sync
+  const handleC2ToStravaSync = async () => {
+    setC2SyncLoading(true);
+    setC2SyncResult(null);
+    setError(null);
+    try {
+      const result = await syncC2ToStrava();
+      setC2SyncResult(result);
+    } catch (err) {
+      console.error('C2 to Strava sync error:', err);
+      setError(err.message);
+    } finally {
+      setC2SyncLoading(false);
     }
   };
 
@@ -1219,6 +1285,123 @@ function SettingsPage() {
                 </p>
               </div>
             </SettingsSection>
+
+            {/* C2 to Strava Sync - only show if both are connected */}
+            {integrations.concept2Connected && integrations.stravaConnected && (
+              <SettingsSection title="Concept2 → Strava Sync" icon={Upload} accentColor="blue">
+                <div className="space-y-4">
+                  {/* Write permission warning */}
+                  {!c2SyncConfig.hasWriteScope && (
+                    <div className="flex items-start gap-3 p-4 rounded-xl bg-warning-orange/10 border border-warning-orange/20">
+                      <AlertTriangle className="w-5 h-5 text-warning-orange flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-warning-orange">Strava Write Permission Required</p>
+                        <p className="text-xs text-text-muted mt-1">
+                          To upload workouts to Strava, please disconnect and reconnect Strava to grant upload permission.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Master toggle */}
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04]">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-blade-blue/20 border border-blade-blue/30 flex items-center justify-center">
+                        <span className="text-xl">🔄</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-text-primary">Auto-Upload to Strava</h4>
+                        <p className="text-sm text-text-muted">Post Concept2 workouts to your Strava feed</p>
+                      </div>
+                    </div>
+                    <Toggle
+                      enabled={c2SyncConfig.enabled}
+                      onChange={handleC2SyncToggle}
+                      disabled={!c2SyncConfig.hasWriteScope}
+                    />
+                  </div>
+
+                  {/* Activity type toggles */}
+                  {c2SyncConfig.enabled && c2SyncConfig.hasWriteScope && (
+                    <div className="p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04]">
+                      <h4 className="text-sm font-medium text-text-primary mb-3">Activity Types to Sync</h4>
+                      <div className="space-y-3">
+                        {Object.entries(c2SyncConfig.availableTypes || {}).map(([type, info]) => (
+                          <div key={type} className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <span className="text-sm text-text-secondary">{info.label}</span>
+                              <span className="text-xs text-text-muted">→ {info.stravaType}</span>
+                            </div>
+                            <Toggle
+                              enabled={c2SyncConfig.types?.[type] || false}
+                              onChange={(enabled) => handleC2SyncTypeToggle(type, enabled)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Manual sync button */}
+                  {c2SyncConfig.enabled && c2SyncConfig.hasWriteScope && (
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04]">
+                      <div>
+                        <p className="text-sm text-text-secondary">Sync unsent workouts now</p>
+                        {c2SyncConfig.lastSyncedAt && (
+                          <p className="text-xs text-text-muted mt-1">
+                            Last sync: {new Date(c2SyncConfig.lastSyncedAt).toLocaleDateString()} at{' '}
+                            {new Date(c2SyncConfig.lastSyncedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={handleC2ToStravaSync}
+                        disabled={c2SyncLoading}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blade-blue text-void-deep border border-blade-blue hover:shadow-[0_0_15px_rgba(0,112,243,0.3)] transition-all disabled:opacity-50"
+                      >
+                        {c2SyncLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Syncing...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4" />
+                            Sync to Strava
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Sync results */}
+                  {c2SyncResult && (
+                    <div className="p-4 rounded-xl bg-void-elevated/30 border border-white/[0.04]">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle2 className="w-5 h-5 text-success-green" />
+                        <span className="font-medium text-text-primary">
+                          Uploaded {c2SyncResult.synced} workout{c2SyncResult.synced !== 1 ? 's' : ''} to Strava
+                        </span>
+                      </div>
+                      {c2SyncResult.skipped > 0 && (
+                        <p className="text-xs text-text-muted">
+                          {c2SyncResult.skipped} skipped (disabled type or already uploaded)
+                        </p>
+                      )}
+                      {c2SyncResult.failed > 0 && (
+                        <p className="text-xs text-danger-red">
+                          {c2SyncResult.failed} failed to upload
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <p className="text-sm text-text-muted">
+                    Automatically post your Concept2 erg workouts to Strava. Choose which activity types to sync.
+                  </p>
+                </div>
+              </SettingsSection>
+            )}
 
             <SettingsSection title="Coming Soon" icon={Plug} accentColor="violet">
               <div className="space-y-3">

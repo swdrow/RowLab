@@ -160,6 +160,88 @@ router.get('/activities', authenticate, async (req, res) => {
 });
 
 // ============================================
+// C2 to Strava Sync
+// ============================================
+
+/**
+ * GET /api/v1/strava/c2-sync/config
+ * Get C2 to Strava sync configuration
+ */
+router.get('/c2-sync/config', authenticate, async (req, res) => {
+  try {
+    const config = await stravaService.getC2SyncConfig(req.user.id);
+
+    res.json({
+      success: true,
+      data: {
+        ...config,
+        availableTypes: stravaService.C2_WORKOUT_TYPES,
+      },
+    });
+  } catch (error) {
+    console.error('Failed to get C2 sync config:', error);
+    res.status(500).json({
+      success: false,
+      error: { code: 'CONFIG_FAILED', message: error.message },
+    });
+  }
+});
+
+/**
+ * PATCH /api/v1/strava/c2-sync/config
+ * Update C2 to Strava sync configuration
+ */
+router.patch('/c2-sync/config', authenticate, async (req, res) => {
+  try {
+    const { enabled, types } = req.body;
+
+    const config = await stravaService.updateC2SyncConfig(req.user.id, {
+      enabled,
+      types,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        ...config,
+        availableTypes: stravaService.C2_WORKOUT_TYPES,
+      },
+    });
+  } catch (error) {
+    console.error('Failed to update C2 sync config:', error);
+    res.status(500).json({
+      success: false,
+      error: { code: 'UPDATE_FAILED', message: error.message },
+    });
+  }
+});
+
+/**
+ * POST /api/v1/strava/c2-sync/trigger
+ * Manually trigger C2 to Strava sync
+ */
+router.post('/c2-sync/trigger', authenticate, async (req, res) => {
+  try {
+    const { after } = req.body;
+
+    const result = await stravaService.syncC2ToStrava(req.user.id, {
+      after: after ? new Date(after) : undefined,
+    });
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error('C2 to Strava sync failed:', error);
+    res.status(400).json({
+      success: false,
+      error: { code: 'SYNC_FAILED', message: error.message },
+    });
+  }
+});
+
+// ============================================
 // Disconnect
 // ============================================
 

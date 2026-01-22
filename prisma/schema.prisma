@@ -178,10 +178,15 @@ model StravaAuth {
   refreshToken   String   @db.Text // OAuth refresh token (encrypted)
   tokenExpiresAt DateTime
   lastSyncedAt   DateTime?
-  syncEnabled    Boolean  @default(true) // Auto-sync
+  syncEnabled    Boolean  @default(true) // Auto-sync from Strava to RowLab
   scope          String?  // OAuth scopes granted
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  // C2 to Strava sync settings
+  c2ToStravaEnabled  Boolean @default(false)  // Master toggle for C2→Strava uploads
+  c2ToStravaTypes    Json    @default("{}") // Activity types to sync: {"rower": true, "bikeerg": false, ...}
+  lastC2SyncedAt     DateTime? // Last C2→Strava sync timestamp
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

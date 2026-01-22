@@ -114,6 +114,71 @@ export async function disconnect() {
 }
 
 /**
+ * Get C2 to Strava sync configuration
+ */
+export async function getC2SyncConfig() {
+  const token = localStorage.getItem('accessToken');
+  const response = await fetch(`${API_URL}/strava/c2-sync/config`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to get C2 sync config');
+  }
+
+  const data = await response.json();
+  return data.data;
+}
+
+/**
+ * Update C2 to Strava sync configuration
+ */
+export async function updateC2SyncConfig(config) {
+  const token = localStorage.getItem('accessToken');
+  const response = await fetch(`${API_URL}/strava/c2-sync/config`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(config),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to update config');
+  }
+
+  const data = await response.json();
+  return data.data;
+}
+
+/**
+ * Trigger C2 to Strava sync
+ */
+export async function syncC2ToStrava(options = {}) {
+  const token = localStorage.getItem('accessToken');
+  const response = await fetch(`${API_URL}/strava/c2-sync/trigger`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(options),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Sync failed');
+  }
+
+  const data = await response.json();
+  return data.data;
+}
+
+/**
  * Open OAuth popup for Strava connection
  */
 export function openOAuthPopup(onSuccess, onError) {
@@ -175,4 +240,8 @@ export default {
   fetchActivities,
   disconnect,
   openOAuthPopup,
+  // C2 to Strava sync
+  getC2SyncConfig,
+  updateC2SyncConfig,
+  syncC2ToStrava,
 };
