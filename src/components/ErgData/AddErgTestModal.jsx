@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useAuthStore from '../../store/authStore';
+import { handleApiResponse } from '@utils/api';
 
 /**
  * Modal for adding a new erg test
@@ -52,8 +53,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await handleApiResponse(res, 'Failed to add erg test');
 
       // Reset form
       setFormData({

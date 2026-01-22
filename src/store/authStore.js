@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { handleApiResponse } from '@utils/api';
 
 const API_URL = '/api/v1';
 
@@ -42,11 +43,7 @@ const useAuthStore = create(
             body: JSON.stringify({ email, password, name }),
           });
 
-          const data = await res.json();
-
-          if (!res.ok) {
-            throw new Error(data.error?.message || 'Registration failed');
-          }
+          const data = await handleApiResponse(res, 'Registration failed');
 
           set({ isLoading: false });
           return { success: true, user: data.data.user };
@@ -70,11 +67,7 @@ const useAuthStore = create(
             body: JSON.stringify({ email, password }),
           });
 
-          const data = await res.json();
-
-          if (!res.ok) {
-            throw new Error(data.error?.message || 'Login failed');
-          }
+          const data = await handleApiResponse(res, 'Login failed');
 
           const { user, teams, activeTeamId, accessToken } = data.data;
           const activeTeam = teams.find((t) => t.id === activeTeamId);
@@ -235,11 +228,7 @@ const useAuthStore = create(
             body: JSON.stringify({ teamId }),
           });
 
-          const data = await res.json();
-
-          if (!res.ok) {
-            throw new Error(data.error?.message || 'Failed to switch team');
-          }
+          const data = await handleApiResponse(res, 'Failed to switch team');
 
           const { accessToken: newAccessToken, team } = data.data;
 
@@ -277,11 +266,7 @@ const useAuthStore = create(
             body: JSON.stringify({ name, isPublic }),
           });
 
-          const data = await res.json();
-
-          if (!res.ok) {
-            throw new Error(data.error?.message || 'Failed to create team');
-          }
+          const data = await handleApiResponse(res, 'Failed to create team');
 
           const newTeam = data.data.team;
 
@@ -326,11 +311,7 @@ const useAuthStore = create(
             },
           });
 
-          const data = await res.json();
-
-          if (!res.ok) {
-            throw new Error(data.error?.message || 'Failed to join team');
-          }
+          const data = await handleApiResponse(res, 'Failed to join team');
 
           const newTeam = data.data.team;
 

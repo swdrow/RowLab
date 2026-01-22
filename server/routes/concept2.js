@@ -175,6 +175,32 @@ router.get('/callback', async (req, res) => {
 });
 
 /**
+ * GET /api/v1/concept2/status/me
+ * Get current user's Concept2 connection status
+ * Used by Settings page to check/display connection status
+ * NOTE: Must be declared BEFORE /status/:athleteId to avoid route collision
+ */
+router.get(
+  '/status/me',
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const status = await getMyC2Status(req.user.id);
+      res.json({
+        success: true,
+        data: status,
+      });
+    } catch (error) {
+      logger.error('Get my C2 status error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to get status' },
+      });
+    }
+  }
+);
+
+/**
  * GET /api/v1/concept2/status/:athleteId
  * Get connection status for an athlete
  */
@@ -196,6 +222,45 @@ router.get(
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to get status' },
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/v1/concept2/sync/me
+ * Sync current user's Concept2 workouts
+ * Athletes can sync their own data
+ * NOTE: Must be declared BEFORE /sync/:athleteId to avoid route collision
+ */
+router.post(
+  '/sync/me',
+  authenticateToken,
+  teamIsolation,
+  async (req, res) => {
+    try {
+      const result = await syncUserWorkouts(req.user.id, req.user.activeTeamId);
+      res.json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      if (error.message === 'No Concept2 connection') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_CONNECTED', message: error.message },
+        });
+      }
+      if (error.message === 'No athlete profile linked to this user') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NO_ATHLETE_PROFILE', message: error.message },
+        });
+      }
+      logger.error('Sync my workouts error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to sync workouts' },
       });
     }
   }
@@ -233,6 +298,37 @@ router.post(
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to sync workouts' },
+      });
+    }
+  }
+);
+
+/**
+ * DELETE /api/v1/concept2/disconnect/me
+ * Disconnect current user's Concept2 account
+ * NOTE: Must be declared BEFORE /disconnect/:athleteId to avoid route collision
+ */
+router.delete(
+  '/disconnect/me',
+  authenticateToken,
+  async (req, res) => {
+    try {
+      await disconnectMyC2(req.user.id);
+      res.json({
+        success: true,
+        data: { message: 'Concept2 disconnected' },
+      });
+    } catch (error) {
+      if (error.message === 'No Concept2 connection') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_CONNECTED', message: error.message },
+        });
+      }
+      logger.error('Disconnect my C2 error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to disconnect' },
       });
     }
   }
@@ -366,99 +462,6 @@ router.post(
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to initiate connection' },
-      });
-    }
-  }
-);
-
-/**
- * GET /api/v1/concept2/status/me
- * Get current user's Concept2 connection status
- * Used by Settings page to check/display connection status
- */
-router.get(
-  '/status/me',
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const status = await getMyC2Status(req.user.id);
-      res.json({
-        success: true,
-        data: status,
-      });
-    } catch (error) {
-      logger.error('Get my C2 status error:', { error: error.message, stack: error.stack });
-      res.status(500).json({
-        success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to get status' },
-      });
-    }
-  }
-);
-
-/**
- * POST /api/v1/concept2/sync/me
- * Sync current user's Concept2 workouts
- * Athletes can sync their own data
- */
-router.post(
-  '/sync/me',
-  authenticateToken,
-  teamIsolation,
-  async (req, res) => {
-    try {
-      const result = await syncUserWorkouts(req.user.id, req.user.activeTeamId);
-      res.json({
-        success: true,
-        data: result,
-      });
-    } catch (error) {
-      if (error.message === 'No Concept2 connection') {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_CONNECTED', message: error.message },
-        });
-      }
-      if (error.message === 'No athlete profile linked to this user') {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NO_ATHLETE_PROFILE', message: error.message },
-        });
-      }
-      logger.error('Sync my workouts error:', { error: error.message, stack: error.stack });
-      res.status(500).json({
-        success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to sync workouts' },
-      });
-    }
-  }
-);
-
-/**
- * DELETE /api/v1/concept2/disconnect/me
- * Disconnect current user's Concept2 account
- */
-router.delete(
-  '/disconnect/me',
-  authenticateToken,
-  async (req, res) => {
-    try {
-      await disconnectMyC2(req.user.id);
-      res.json({
-        success: true,
-        data: { message: 'Concept2 disconnected' },
-      });
-    } catch (error) {
-      if (error.message === 'No Concept2 connection') {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_CONNECTED', message: error.message },
-        });
-      }
-      logger.error('Disconnect my C2 error:', { error: error.message, stack: error.stack });
-      res.status(500).json({
-        success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to disconnect' },
       });
     }
   }

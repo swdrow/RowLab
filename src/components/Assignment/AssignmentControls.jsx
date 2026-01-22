@@ -4,6 +4,7 @@ import useAuthStore from '../../store/authStore';
 import BoatSelectionModal from './BoatSelectionModal';
 import SavedLineupsModal from './SavedLineupsModal';
 import PDFExportModal from '../Export/PDFExportModal';
+import { handleApiResponse } from '@utils/api';
 
 /**
  * Control panel for boat workspace
@@ -78,8 +79,7 @@ const AssignmentControls = () => {
           }),
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        const data = await handleApiResponse(res, 'Failed to save lineup');
 
         setSaveMessage({ type: 'success', text: `Saved to database` });
       } else {

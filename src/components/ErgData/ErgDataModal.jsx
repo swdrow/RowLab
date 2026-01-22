@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useAuthStore from '../../store/authStore';
 import AddErgTestModal from './AddErgTestModal';
+import { handleApiResponse } from '@utils/api';
 
 /**
  * Modal for viewing and managing athlete erg test history
@@ -25,8 +26,7 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
 
     try {
       const res = await fetch(`/api/erg-tests?athleteId=${athlete.id}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await handleApiResponse(res, 'Failed to fetch erg tests');
       setTests(data.tests || []);
     } catch (err) {
       setError(err.message);

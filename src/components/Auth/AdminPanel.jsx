@@ -23,6 +23,7 @@ import {
 import useAuthStore from '../../store/authStore';
 import useSettingsStore from '../../store/settingsStore';
 import { checkAIStatus, setPreferredModel } from '../../services/aiService';
+import { handleApiResponse } from '@utils/api';
 
 /**
  * Admin Panel Component
@@ -109,8 +110,7 @@ function AdminPanel({ isOpen, onClose }) {
           setApplications([]);
           return;
         }
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || 'Failed to load applications');
+        const data = await handleApiResponse(res, 'Failed to load applications');
         setApplications(data.data?.applications || data.applications || []);
       } else if (activeTab === 'users') {
         const res = await fetch('/api/v1/auth/users', {
@@ -121,8 +121,7 @@ function AdminPanel({ isOpen, onClose }) {
           setUsers([]);
           return;
         }
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || 'Failed to load users');
+        const data = await handleApiResponse(res, 'Failed to load users');
         setUsers(data.data?.users || data.users || []);
       }
     } catch (err) {
