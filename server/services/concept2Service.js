@@ -499,15 +499,46 @@ export async function syncUserWorkouts(userId, teamId) {
   }
 
   // Find athlete record for this user in the team
-  const athlete = await prisma.athlete.findFirst({
+  let athlete = await prisma.athlete.findFirst({
     where: {
       userId,
       teamId,
     },
   });
 
+  // Auto-create athlete profile if user doesn't have one
+  // This allows coaches who are also athletes to sync their own data
+  if (athlete && !athlete.concept2UserId && auth.c2UserId) {
+    // Link existing athlete to C2 account
+    athlete = await prisma.athlete.update({
+      where: { id: athlete.id },
+      data: { concept2UserId: auth.c2UserId },
+    });
+    logger.info('Linked C2 account to existing athlete', { athleteId: athlete.id, c2UserId: auth.c2UserId });
+  }
+
   if (!athlete) {
-    throw new Error('No athlete profile linked to this user');
+    logger.info('Creating athlete profile for user', { userId, teamId });
+
+    // Parse name from user's email or use defaults
+    const user = auth.user;
+    const nameParts = user.email.split('@')[0].split(/[._-]/);
+    const firstName = nameParts[0] ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1) : 'User';
+    const lastName = nameParts[1] ? nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1) : user.email.split('@')[0];
+
+    athlete = await prisma.athlete.create({
+      data: {
+        teamId,
+        userId,
+        firstName,
+        lastName,
+        email: user.email,
+        isManaged: false, // User-linked, not coach-managed
+        concept2UserId: auth.c2UserId,
+      },
+    });
+
+    logger.info('Created athlete profile', { athleteId: athlete.id, userId });
   }
 
   // Get valid access token
