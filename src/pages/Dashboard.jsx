@@ -610,22 +610,26 @@ function Dashboard() {
         </div>
       </motion.div>
 
-      {/* Dashboard tiles grid */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {currentPreset.tiles.map((tileId, index) => (
-          <motion.div
-            key={tileId}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className={
-              // Make certain tiles span full width
-              (tileId === 'liveWorkout' || tileId === 'rankings' || tileId === 'calendar') ? 'lg:col-span-2' : ''
-            }
-          >
-            {renderTile(tileId)}
-          </motion.div>
-        ))}
+      {/* Dashboard tiles grid - grid-flow-dense fills gaps when col-span-2 items shift rows */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 auto-rows-min lg:grid-flow-dense">
+        {currentPreset.tiles.map((tileId, index) => {
+          // Determine which tiles should span full width
+          const isFullWidth = tileId === 'liveWorkout' || tileId === 'rankings' || tileId === 'calendar';
+          // Determine which tiles should be half width on large screens
+          const isHalfWidth = tileId === 'summary' || tileId === 'quickActions' || tileId === 'athleteQuickView';
+
+          return (
+            <motion.div
+              key={tileId}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={isFullWidth ? 'lg:col-span-2' : ''}
+            >
+              {renderTile(tileId)}
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Workout Configurator Modal */}

@@ -17,6 +17,7 @@ import {
   User as UserIcon,
   ArrowsLeftRight,
   Microphone,
+  Notebook,
 } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,6 +57,7 @@ const coachMainNavItems = [
   { label: 'Coxswain', icon: Microphone, path: '/app/coxswain', end: false },
   { label: 'Athletes', icon: Users, path: '/app/athletes', end: false },
   { label: 'Erg Data', icon: Timer, path: '/app/erg', end: false },
+  { label: 'Training Plans', icon: Notebook, path: '/app/training-plans', end: false },
 ];
 
 // Athlete main navigation (simplified)

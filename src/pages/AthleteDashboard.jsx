@@ -44,7 +44,8 @@ const navItems = [
 
 function AthleteDashboard() {
   const { id: routeAthleteId } = useParams(); // Get athlete ID from URL if present
-  const { user, authenticatedFetch } = useAuth();
+  const { user, authenticatedFetch, activeTeamRole } = useAuth();
+  const canManageAthletes = ['OWNER', 'COACH'].includes(activeTeamRole);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [athleteData, setAthleteData] = useState(null);
@@ -244,15 +245,34 @@ function AthleteDashboard() {
     return (
       <div className="min-h-screen bg-void-deep flex items-center justify-center p-6">
         <div className="max-w-md w-full p-8 rounded-xl bg-void-elevated border border-white/[0.06] text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-danger-red/10 flex items-center justify-center">
-            <User size={32} className="text-danger-red" />
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blade-blue/10 flex items-center justify-center">
+            <User size={32} className="text-blade-blue" />
           </div>
           <h2 className="text-xl font-display font-semibold text-text-primary mb-2">
-            No Athlete Profile Found
+            No Athlete Profile
           </h2>
-          <p className="text-text-secondary">
-            {error || "Your account is not linked to an athlete profile. Please contact your coach."}
+          <p className="text-text-secondary mb-6">
+            {error?.toLowerCase().includes('no athlete profile') || error?.toLowerCase().includes('not found')
+              ? "You don't have an athlete profile linked to your account yet. If you're a coach who also rows, you can create an athlete profile from the Athletes page."
+              : error || "Your account is not linked to an athlete profile."}
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            {canManageAthletes && (
+              <Link
+                to="/app/athletes"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blade-blue text-void-deep font-medium text-sm hover:shadow-[0_0_20px_rgba(0,112,243,0.4)] transition-all"
+              >
+                <User size={16} />
+                Go to Athletes
+              </Link>
+            )}
+            <Link
+              to="/app"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-void-surface border border-white/[0.06] text-text-secondary text-sm hover:text-text-primary hover:border-white/10 transition-all"
+            >
+              Back to Dashboard
+            </Link>
+          </div>
         </div>
       </div>
     );

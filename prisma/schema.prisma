@@ -32,6 +32,8 @@ model User {
   concept2Auth  Concept2Auth?
   stravaAuth    StravaAuth?
   boatSessions  BoatSession[]
+  createdPlans  TrainingPlan[]     @relation("PlanCreator")
+  assignedPlans WorkoutAssignment[] @relation("PlanAssigner")
 
   @@map("users")
 }
@@ -64,6 +66,7 @@ model Team {
   subscription       Subscription?
   calendarEvents     CalendarEvent[]
   waterSessions      WaterSession[]
+  trainingPlans      TrainingPlan[]
 
   @@map("teams")
 }
@@ -77,6 +80,8 @@ model TeamMember {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  workoutAssignments WorkoutAssignment[]
+  workoutCompletions WorkoutCompletion[]
 
   @@unique([userId, teamId])
   @@map("team_members")
@@ -240,9 +245,10 @@ model Workout {
   rawData          Json?
   createdAt        DateTime @default(now())
 
-  athlete   Athlete?          @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  team      Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  telemetry WorkoutTelemetry?
+  athlete     Athlete?            @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  team        Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  telemetry   WorkoutTelemetry?
+  completions WorkoutCompletion[]
 
   @@index([teamId])
   @@index([athleteId])
@@ -702,4 +708,95 @@ model UserSettings {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_settings")
+}
+
+// ============================================
+// TRAINING PLANS: Periodized programs
+// ============================================
+
+model TrainingPlan {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  teamId      String
+  createdBy   String
+  startDate   DateTime?
+  endDate     DateTime?
+  phase       String?   // Base, Build, Peak, Taper
+  isTemplate  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  team        Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  creator     User                @relation("PlanCreator", fields: [createdBy], references: [id])
+  workouts    PlannedWorkout[]
+  assignments WorkoutAssignment[]
+
+  @@index([teamId])
+  @@index([createdBy])
+  @@map("training_plans")
+}
+
+model PlannedWorkout {
+  id              String    @id @default(uuid())
+  planId          String
+  name            String
+  type            String    // erg, row, cross_train
+  description     String?
+  scheduledDate   DateTime?
+  dayOfWeek       Int?      // 0-6 for recurring
+  weekNumber      Int?      // For periodization
+  duration        Int?      // seconds
+  distance        Int?      // meters
+  targetPace      Float?    // seconds per 500m
+  targetHeartRate Int?
+  intensity       String?   // easy, moderate, hard, max
+  recurrenceRule  Json?     // For recurring workouts
+  order           Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  plan        TrainingPlan        @relation(fields: [planId], references: [id], onDelete: Cascade)
+  completions WorkoutCompletion[]
+
+  @@index([planId])
+  @@index([scheduledDate])
+  @@map("planned_workouts")
+}
+
+model WorkoutAssignment {
+  id         String    @id @default(uuid())
+  planId     String
+  athleteId  String
+  assignedBy String
+  assignedAt DateTime  @default(now())
+  startDate  DateTime
+  endDate    DateTime?
+  status     String    @default("active") // active, completed, cancelled
+
+  plan     TrainingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  athlete  TeamMember   @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  assigner User         @relation("PlanAssigner", fields: [assignedBy], references: [id])
+
+  @@unique([planId, athleteId])
+  @@index([athleteId])
+  @@map("workout_assignments")
+}
+
+model WorkoutCompletion {
+  id               String   @id @default(uuid())
+  plannedWorkoutId String
+  athleteId        String
+  workoutId        String?  // Link to actual Workout record
+  completedAt      DateTime @default(now())
+  compliance       Float?   // 0-1, how well targets were met
+  notes            String?
+
+  plannedWorkout PlannedWorkout @relation(fields: [plannedWorkoutId], references: [id], onDelete: Cascade)
+  athlete        TeamMember     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  workout        Workout?       @relation(fields: [workoutId], references: [id])
+
+  @@unique([plannedWorkoutId, athleteId])
+  @@index([athleteId])
+  @@map("workout_completions")
 }

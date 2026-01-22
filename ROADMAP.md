@@ -126,14 +126,20 @@ Mobile: [🏠] [⚓] [👥] [···]  ← Bottom Dock
 
 Files migrated include: BoatDisplay, Seat, CoxswainSeat, PerformanceModal, PDFExportModal, ErgDataModal, ShellManagementModal, LineupToolbar, AthleteBank, BoatSelectionModal, SavedLineupsModal, LineupAssistant, BoatViewPage, AssignmentControls, BoatVisualizer, Boat3DViewer, PerformanceChart, GlassModal, GlassButton, GlassInput, GlassBadge, GlassContainer, AuthButton, App.jsx, and more.
 
-### Phase 6: Training Plans (Weeks 11-12)
+### ✅ Phase 6: Training Plans (Weeks 11-12)
+
+**Status**: Completed January 22, 2026
 
 | Feature | Status | Effort |
 |---------|--------|--------|
-| Plan builder calendar | 🔲 Pending | Large |
-| Workout assignments | 🔲 Pending | Medium |
-| Training load charts | 🔲 Pending | Medium |
-| Periodization templates | 🔲 Pending | Small |
+| Plan builder calendar | ✅ Complete | Large |
+| Workout assignments | ✅ Complete | Medium |
+| Training load charts | ✅ Complete | Medium |
+| Periodization templates | ✅ Complete | Small |
+
+*Database: TrainingPlan, PlannedWorkout, WorkoutAssignment, WorkoutCompletion models*
+*Components: TrainingPlanPage, PlanBuilderCalendar, PlannedWorkoutModal, AthleteAssignmentPanel, TrainingLoadChart, PeriodizationTemplateModal*
+*API: Full REST CRUD for plans, workouts, assignments, compliance tracking, and TSS calculation*
 
 ---
 

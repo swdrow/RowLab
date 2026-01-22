@@ -16,6 +16,7 @@ const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const SeatRacingPage = lazy(() => import('./pages/SeatRacingPage'));
 const RacingPage = lazy(() => import('./pages/RacingPage'));
+const TrainingPlanPage = lazy(() => import('./pages/TrainingPlanPage'));
 const CommunicationPage = lazy(() => import('./pages/CommunicationPage'));
 const AdvancedPage = lazy(() => import('./pages/AdvancedPage'));
 const BillingPage = lazy(() => import('./pages/BillingPage'));
@@ -208,6 +209,14 @@ function App() {
                 element={
                   <Suspense fallback={<LoadingFallback variant="component" />}>
                     <SeatRacingPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="training-plans"
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" />}>
+                    <TrainingPlanPage />
                   </Suspense>
                 }
               />
