@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAuthStore from '../../store/authStore';
+import { handleApiResponse } from '@utils/api';
 
 /**
  * Modal for viewing and loading saved lineups
@@ -29,8 +30,7 @@ function SavedLineupsModal({ isOpen, onClose, onLoad }) {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        const data = await handleApiResponse(res, 'Failed to load lineups');
         setLineups(data.data?.lineups || data.lineups || []);
       } else {
         // Fetch from localStorage

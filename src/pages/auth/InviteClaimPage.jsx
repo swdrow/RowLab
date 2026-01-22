@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Layers, AlertCircle, CheckCircle, XCircle, Loader2, Users } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import SpotlightCard from '../../components/ui/SpotlightCard';
+import { handleApiResponse } from '@utils/api';
 
 const API_URL = '/api/v1';
 
@@ -23,11 +24,7 @@ export default function InviteClaimPage() {
     async function validateInvitation() {
       try {
         const res = await fetch(`${API_URL}/invites/validate/${token}`);
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error?.message || 'Invalid invitation');
-        }
+        const data = await handleApiResponse(res, 'Invalid invitation');
 
         setInvitation(data.data.invitation);
       } catch (err) {
@@ -59,11 +56,7 @@ export default function InviteClaimPage() {
         method: 'POST',
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to claim invitation');
-      }
+      const data = await handleApiResponse(res, 'Failed to claim invitation');
 
       setSuccess(true);
 

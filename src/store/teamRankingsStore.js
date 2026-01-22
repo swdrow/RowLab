@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { handleApiResponse } from '@utils/api';
 
 // Helper to extract error message from various error formats
 const getErrorMessage = (error, fallback = 'An error occurred') => {
@@ -28,12 +29,7 @@ const useTeamRankingsStore = create((set) => ({
         },
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(getErrorMessage(data.error, 'Request failed'));
-      }
-
-      const data = await res.json();
+      const data = await handleApiResponse(res, 'Failed to fetch boat classes');
       set({ boatClasses: data.data.boatClasses, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -49,8 +45,7 @@ const useTeamRankingsStore = create((set) => ({
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(getErrorMessage(data.error, 'Request failed'));
+      const data = await handleApiResponse(res, 'Failed to fetch rankings');
       set({ rankings: data.data.rankings, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });

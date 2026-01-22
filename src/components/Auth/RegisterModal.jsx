@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { handleApiResponse } from '@utils/api';
 
 /**
  * Register Modal Component
@@ -55,11 +56,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Registration failed');
-      }
+      const data = await handleApiResponse(res, 'Registration failed');
 
       setSuccess(true);
     } catch (err) {

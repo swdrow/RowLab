@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import { useSubscriptionStore } from '../store/subscriptionStore';
 import { PageContainer } from '../components/Layout';
+import { handleApiResponse } from '@utils/api';
 import {
   User,
   Camera,
@@ -336,12 +337,16 @@ function SettingsPage() {
       // Verify origin matches our app
       if (event.origin !== window.location.origin) return;
 
-      const { type, username, error: oauthError } = event.data || {};
+      const { type, success, username, error: oauthError } = event.data || {};
+      console.log('Received OAuth message:', event.data);
 
-      if (type === 'c2_oauth_success') {
+      // Handle both message formats (backend popup and frontend callback)
+      if (type === 'c2_oauth_success' || (type === 'concept2-oauth-complete' && success)) {
         // Refresh C2 status after successful connection
+        console.log('C2 OAuth success, refreshing status...');
         fetchC2Status();
-      } else if (type === 'c2_oauth_error') {
+      } else if (type === 'c2_oauth_error' || (type === 'concept2-oauth-complete' && !success)) {
+        console.error('C2 OAuth error:', oauthError);
         setError(oauthError || 'Failed to connect Concept2');
       } else if (type === 'strava_oauth_success') {
         fetchStravaStatus();
@@ -381,11 +386,7 @@ function SettingsPage() {
         credentials: 'include',
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to load settings');
-      }
+      const data = await handleApiResponse(res, 'Failed to load settings');
 
       const settings = data.data;
 
@@ -462,11 +463,7 @@ function SettingsPage() {
         body: JSON.stringify(updates),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to save settings');
-      }
+      const data = await handleApiResponse(res, 'Failed to save settings');
 
       setSaving(false);
       setSaved(true);
@@ -515,9 +512,10 @@ function SettingsPage() {
         credentials: 'include',
       });
 
-      const data = await res.json();
+      const data = await handleApiResponse(res, 'Failed to fetch Concept2 status');
 
-      if (res.ok && data.success) {
+      if (data.success) {
+        console.log('C2 status response:', data.data);
         setIntegrations(prev => ({
           ...prev,
           concept2Connected: data.data.connected,
@@ -544,11 +542,19 @@ function SettingsPage() {
         credentials: 'include',
       });
 
-      const data = await res.json();
-
+      // Check response before parsing JSON
       if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to get authorization URL');
+        // Try to get error message from response
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const errorData = await res.json();
+          throw new Error(errorData.error?.message || `Request failed: ${res.status}`);
+        } else {
+          throw new Error(`Request failed: ${res.status} ${res.statusText}`);
+        }
       }
+
+      const data = await res.json();
 
       // Open OAuth URL in sized popup window (not new tab)
       const width = 600;
@@ -577,11 +583,18 @@ function SettingsPage() {
         credentials: 'include',
       });
 
-      const data = await res.json();
-
+      // Check response before parsing JSON
       if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to disconnect Concept2');
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const errorData = await res.json();
+          throw new Error(errorData.error?.message || `Request failed: ${res.status}`);
+        } else {
+          throw new Error(`Request failed: ${res.status} ${res.statusText}`);
+        }
       }
+
+      const data = await res.json();
 
       setIntegrations(prev => ({
         ...prev,
@@ -608,7 +621,7 @@ function SettingsPage() {
         credentials: 'include',
       });
 
-      const data = await res.json();
+      const data = await handleApiResponse(res, 'Failed to fetch Strava status');
 
       if (res.ok && data.success) {
         setIntegrations(prev => ({
@@ -689,11 +702,7 @@ function SettingsPage() {
         credentials: 'include',
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to get authorization URL');
-      }
+      const data = await handleApiResponse(res, 'Failed to get authorization URL');
 
       // Open OAuth URL in sized popup window
       const width = 600;
@@ -722,11 +731,7 @@ function SettingsPage() {
         credentials: 'include',
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to disconnect Strava');
-      }
+      const data = await handleApiResponse(res, 'Failed to disconnect Strava');
 
       setIntegrations(prev => ({
         ...prev,
@@ -753,11 +758,7 @@ function SettingsPage() {
         body: JSON.stringify({}),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || 'Sync failed');
-      }
+      const data = await handleApiResponse(res, 'Sync failed');
 
       // Refresh status after sync
       await fetchStravaStatus();
@@ -833,11 +834,7 @@ function SettingsPage() {
         body: JSON.stringify({ visibility: newVisibility }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || 'Failed to save team settings');
-      }
+      const data = await handleApiResponse(res, 'Failed to save team settings');
 
       setTeamSettingsSaved(true);
       setTimeout(() => setTeamSettingsSaved(false), 2000);

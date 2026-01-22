@@ -68,15 +68,37 @@ export default function Concept2CallbackPage() {
               notifyAndClose(false, errMsg);
             }
           } else {
-            // Non-redirect response - check JSON
-            const data = await res.json();
-            if (data.success) {
+            // Non-redirect response - check content type
+            const contentType = res.headers.get('content-type') || '';
+
+            if (res.ok && contentType.includes('text/html')) {
+              // Backend returned HTML popup script - this means success
+              // The HTML contains postMessage to notify opener
               setStatus('success');
               notifyAndClose(true);
+            } else if (contentType.includes('application/json')) {
+              // JSON response - parse and check
+              const data = await res.json();
+              if (data.success) {
+                setStatus('success');
+                notifyAndClose(true);
+              } else {
+                setStatus('error');
+                setErrorMessage(data.error?.message || 'Connection failed');
+                notifyAndClose(false, data.error?.message);
+              }
             } else {
-              setStatus('error');
-              setErrorMessage(data.error?.message || 'Connection failed');
-              notifyAndClose(false, data.error?.message);
+              // Unknown content type - try to parse as text for error message
+              const text = await res.text();
+              if (res.ok) {
+                // 200 OK with non-JSON/HTML - assume success
+                setStatus('success');
+                notifyAndClose(true);
+              } else {
+                setStatus('error');
+                setErrorMessage(text.slice(0, 100) || 'Connection failed');
+                notifyAndClose(false, 'Connection failed');
+              }
             }
           }
         } catch (err) {

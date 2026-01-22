@@ -1,388 +1,517 @@
 # Contributing to RowLab
 
-Thank you for your interest in contributing to RowLab! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to RowLab! We welcome contributions from the community and are grateful for your support in making RowLab better for coaches and athletes worldwide.
 
 ## Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
 - [Getting Started](#getting-started)
+- [How to Contribute](#how-to-contribute)
+  - [Reporting Bugs](#reporting-bugs)
+  - [Suggesting Features](#suggesting-features)
+  - [Contributing Code](#contributing-code)
 - [Development Setup](#development-setup)
-- [Project Architecture](#project-architecture)
 - [Coding Standards](#coding-standards)
-- [Making Changes](#making-changes)
+- [Testing Requirements](#testing-requirements)
 - [Pull Request Process](#pull-request-process)
-- [Issue Guidelines](#issue-guidelines)
-
----
+- [Commit Message Guidelines](#commit-message-guidelines)
+- [Community](#community)
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inclusive experience for everyone. Please:
-
-- Be respectful and inclusive
-- Focus on constructive feedback
-- Help others learn and grow
-- Keep discussions professional
-
----
+This project adheres to a Code of Conduct that all contributors are expected to follow. Please be respectful, inclusive, and considerate in all interactions. We are committed to providing a welcoming and harassment-free experience for everyone.
 
 ## Getting Started
 
-### Prerequisites
+Before you begin:
 
-- **Node.js** 18+ (check with `node --version`)
-- **npm** 9+ (check with `npm --version`)
-- **PostgreSQL** 14+ (or Docker)
-- **Git** for version control
+- Ensure you have [Node.js 18+](https://nodejs.org/) installed
+- Familiarize yourself with [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), and [Express.js](https://expressjs.com/)
+- Read through the [README](README.md) to understand the project's purpose and architecture
+- Check the [existing issues](https://github.com/swdrow/RowLab/issues) to see if your contribution is already being discussed
 
-### Fork and Clone
+## How to Contribute
 
-```bash
-# Fork the repository on GitHub, then:
-git clone https://github.com/YOUR_USERNAME/RowLab.git
-cd RowLab
-git remote add upstream https://github.com/swdrow/RowLab.git
-```
+### Reporting Bugs
 
----
+If you find a bug in RowLab, please help us fix it by submitting a detailed bug report.
+
+**Before submitting a bug report:**
+
+- Check the [existing issues](https://github.com/swdrow/RowLab/issues) to ensure the bug hasn't been reported already
+- Verify you're using the latest version of RowLab
+- Collect information about your environment (OS, Node version, browser version)
+
+**How to submit a bug report:**
+
+1. Click "New Issue" in the [GitHub Issues](https://github.com/swdrow/RowLab/issues) tab
+2. Select the "Bug Report" template
+3. Fill out all sections of the template with as much detail as possible
+4. Include:
+   - A clear, descriptive title
+   - Steps to reproduce the issue
+   - Expected vs. actual behavior
+   - Screenshots or error messages
+   - Your environment details
+
+### Suggesting Features
+
+We love hearing ideas for new features and improvements!
+
+**Before suggesting a feature:**
+
+- Check [existing issues](https://github.com/swdrow/RowLab/issues) and the [roadmap](ROADMAP.md) to see if it's already planned
+- Consider whether the feature aligns with RowLab's core mission of data-driven lineup optimization
+
+**How to suggest a feature:**
+
+1. Click "New Issue" in the [GitHub Issues](https://github.com/swdrow/RowLab/issues) tab
+2. Select the "Feature Request" template
+3. Provide:
+   - A clear, descriptive title
+   - The problem your feature would solve
+   - A detailed description of the proposed solution
+   - Any alternative solutions you've considered
+   - Mockups or examples (if applicable)
+
+### Contributing Code
+
+We welcome code contributions! Whether it's fixing a bug, implementing a feature, or improving documentation, your help is appreciated.
+
+**Types of contributions we're looking for:**
+
+- Bug fixes
+- Feature implementations (check the roadmap or open issues)
+- Performance improvements
+- Documentation improvements
+- Test coverage improvements
+- UI/UX enhancements
 
 ## Development Setup
 
-### 1. Install Dependencies
+### Prerequisites
+
+- **Node.js** 18 or higher
+- **PostgreSQL** 14 or higher (or use Docker)
+- **Git** for version control
+- **Ollama** (optional, for AI features)
+
+### Setup Steps
+
+1. **Fork the repository** on GitHub
+
+2. **Clone your fork** locally:
+
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/RowLab.git
+   cd RowLab
+   ```
+
+3. **Add the upstream remote:**
+
+   ```bash
+   git remote add upstream https://github.com/swdrow/RowLab.git
+   ```
+
+4. **Install dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+5. **Set up environment variables:**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit `.env` and configure:
+   - `DATABASE_URL` - PostgreSQL connection string
+   - `JWT_SECRET` - Random secret for JWT tokens
+   - `JWT_REFRESH_SECRET` - Random secret for refresh tokens
+   - Optional: Ollama, Stripe, Concept2 credentials
+
+6. **Set up the database:**
+
+   ```bash
+   # Run migrations
+   npx prisma migrate deploy
+   npx prisma generate
+
+   # Seed test data (optional)
+   npm run db:seed
+   ```
+
+7. **Start the development servers:**
+
+   ```bash
+   npm run dev:full
+   ```
+
+   This starts both the frontend (port 3001) and backend (port 8000).
+
+8. **Verify the setup:**
+
+   Open [http://localhost:3001](http://localhost:3001) in your browser.
+
+### Development Scripts
 
 ```bash
-npm install
+# Development
+npm run dev          # Frontend only (Vite dev server)
+npm run server       # Backend only (Express API)
+npm run dev:full     # Both frontend and backend
+npm run dev:tmux     # Persistent tmux session
+
+# Database
+npm run db:migrate   # Run new migrations
+npm run db:seed      # Seed test data
+npm run db:reset     # Reset database and reseed
+npm run db:studio    # Open Prisma Studio GUI
+
+# Code Quality
+npm run lint         # Run ESLint
+npm run lint:fix     # Auto-fix ESLint issues
+npm run format       # Format code with Prettier
+npm run format:check # Check formatting without changes
+npm run typecheck    # TypeScript type checking
+npm run validate     # Run typecheck + lint + tests
+
+# Testing
+npm test             # Run tests in watch mode
+npm run test:run     # Run tests once
+npm run test:coverage # Generate coverage report
+npm run test:ui      # Open Vitest UI
+
+# Production
+npm run build        # Build for production
+npm start            # Run production server
 ```
-
-### 2. Set Up Environment
-
-```bash
-cp .env.example .env
-# Edit .env with your local settings
-```
-
-Required variables:
-```bash
-DATABASE_URL=postgresql://user:pass@localhost:5432/rowlab_dev
-JWT_SECRET=dev-secret-key
-JWT_REFRESH_SECRET=dev-refresh-secret
-```
-
-### 3. Set Up Database
-
-```bash
-# Start PostgreSQL (if using Docker)
-docker run -d --name rowlab-postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=rowlab_dev \
-  -p 5432:5432 postgres:14
-
-# Run migrations
-npx prisma migrate dev
-
-# (Optional) Seed test data
-npm run db:seed
-```
-
-### 4. Start Development Servers
-
-```bash
-npm run dev:full
-```
-
-This starts:
-- Frontend at http://localhost:3001
-- Backend at http://localhost:3002
-
-### 5. Verify Setup
-
-- Visit http://localhost:3001
-- Create a test account
-- Try the lineup builder
-
----
-
-## Project Architecture
-
-### Directory Structure
-
-```
-RowLab/
-├── src/                    # React frontend
-│   ├── components/
-│   │   ├── ui/            # Base design system components
-│   │   ├── domain/        # Domain-specific components
-│   │   └── compound/      # Composite components
-│   ├── pages/             # Route pages (one per route)
-│   ├── store/             # Zustand state stores
-│   ├── theme/             # Design tokens and theme config
-│   └── utils/             # Utility functions
-├── server/                 # Express backend
-│   ├── routes/            # API route handlers
-│   ├── services/          # Business logic layer
-│   ├── middleware/        # Express middleware
-│   └── utils/             # Server utilities
-├── prisma/                 # Database
-│   ├── schema.prisma      # Model definitions
-│   └── migrations/        # Migration history
-├── docs/                   # Documentation
-└── public/                 # Static assets
-```
-
-### Key Patterns
-
-**Frontend:**
-- React 18 with functional components and hooks
-- Zustand for state management (one store per domain)
-- TailwindCSS for styling
-- @dnd-kit for drag-and-drop
-
-**Backend:**
-- Express.js with modular route files
-- Service layer pattern (routes → services → database)
-- Prisma ORM for database access
-- JWT authentication with refresh tokens
-
-**Database:**
-- PostgreSQL with Prisma
-- Multi-tenant architecture (teamId foreign keys)
-- Soft deletes where appropriate
-
----
 
 ## Coding Standards
 
-### TypeScript/JavaScript
+RowLab follows strict coding standards to maintain code quality and consistency.
 
-- Use TypeScript for new components (gradual migration)
-- Prefer functional components with hooks
-- Use named exports for components
-- Destructure props at function signature
+### TypeScript
 
-```typescript
-// Good
-export function AthleteCard({ athlete, onSelect }: AthleteCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-  // ...
-}
+- Use TypeScript for all new code (`.ts` or `.tsx` files)
+- Define types explicitly, avoid `any` where possible
+- Use interfaces for object shapes, types for unions/intersections
+- Leverage Prisma types for database models
 
-// Avoid
-export default function AthleteCard(props) {
-  const isHovered = props.isHovered;
-  // ...
-}
-```
+### Code Style
 
-### React Best Practices
+We use **Prettier** and **ESLint** to enforce consistent code style.
 
-- Use `useMemo` and `useCallback` for expensive operations
-- Avoid inline object/array creation in JSX
-- Keep components focused (single responsibility)
-- Extract reusable logic into custom hooks
+**Prettier Configuration:**
 
-```typescript
-// Good - memoized callback
-const handleClick = useCallback((id: string) => {
-  onSelect(id);
-}, [onSelect]);
+- Semi-colons: Yes
+- Single quotes: Yes
+- Tab width: 2 spaces
+- Trailing commas: ES5
+- Print width: 100 characters
+- See [.prettierrc](.prettierrc) for full config
 
-// Avoid - creates new function each render
-<Button onClick={() => onSelect(id)} />
-```
+**ESLint Rules:**
 
-### Styling
+- Extends: `eslint:recommended`, `@typescript-eslint/recommended`, `react/recommended`, `prettier`
+- React hooks rules enforced
+- No console.log (use console.warn or console.error)
+- No unused variables (except prefixed with `_`)
+- See [.eslintrc.cjs](.eslintrc.cjs) for full config
 
-- Use Tailwind utility classes
-- Follow the Precision Instrument design system
-- Use design tokens from `src/theme/`
-- Avoid inline styles except for dynamic values
-
-```tsx
-// Good - Tailwind classes
-<div className="bg-void-deep text-text-primary p-4 rounded-lg">
-
-// Avoid - inline styles
-<div style={{ backgroundColor: '#08080A', color: '#F4F4F5' }}>
-```
-
-### API Routes
-
-- Use consistent response format
-- Validate input with express-validator
-- Handle errors with try/catch
-- Log errors with Winston
-
-```javascript
-// Good
-router.post('/athletes', authenticate, async (req, res) => {
-  try {
-    const athlete = await athleteService.create(req.body, req.user.teamId);
-    res.status(201).json({ success: true, data: athlete });
-  } catch (error) {
-    logger.error('Failed to create athlete', { error, userId: req.user.id });
-    res.status(500).json({ success: false, error: 'Failed to create athlete' });
-  }
-});
-```
-
-### Database
-
-- Use Prisma for all database operations
-- Include proper indexes for query performance
-- Validate teamId on all queries (multi-tenant security)
-- Use transactions for multi-step operations
-
-```javascript
-// Good - team isolation
-const athletes = await prisma.athlete.findMany({
-  where: { teamId: req.user.teamId },  // Always filter by team
-});
-
-// Avoid - no team isolation (security risk!)
-const athletes = await prisma.athlete.findMany();
-```
-
----
-
-## Making Changes
-
-### Branch Naming
-
-Use descriptive branch names:
-
-```
-feature/add-lineup-export      # New feature
-fix/athlete-search-crash       # Bug fix
-docs/api-reference             # Documentation
-refactor/extract-boat-config   # Code refactoring
-```
-
-### Commit Messages
-
-Follow conventional commit format:
-
-```
-type(scope): description
-
-[optional body]
-```
-
-Types:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `refactor`: Code refactoring
-- `test`: Adding tests
-- `chore`: Maintenance
-
-Examples:
-```
-feat(lineup): add CSV export functionality
-fix(auth): handle expired refresh tokens correctly
-docs(api): document athlete endpoints
-refactor(store): extract common fetch logic
-```
-
-### Testing
-
-Before submitting:
+**Before committing:**
 
 ```bash
-# Run linter
-npm run lint
-
-# Run type checking
-npm run typecheck
-
-# Run tests
-npm test
-
-# Build to verify no errors
-npm run build
+npm run format       # Auto-format your code
+npm run lint:fix     # Auto-fix linting issues
+npm run typecheck    # Verify TypeScript types
 ```
 
----
+### File Naming Conventions
+
+- **Components:** PascalCase (e.g., `LineupBoard.tsx`, `AthleteCard.tsx`)
+- **Utilities:** camelCase (e.g., `formatTime.ts`, `apiClient.ts`)
+- **Types:** PascalCase (e.g., `Athlete.ts`, `LineupTypes.ts`)
+- **Tests:** Same as file being tested with `.test.ts` or `.spec.ts` suffix
+
+### Component Structure
+
+Follow this structure for React components:
+
+```tsx
+// 1. Imports (React, types, external libraries, internal components)
+import { useState } from 'react';
+import type { Athlete } from '../types/Athlete';
+import { Button } from './ui/Button';
+
+// 2. Type definitions
+interface AthleteCardProps {
+  athlete: Athlete;
+  onSelect: (id: string) => void;
+}
+
+// 3. Component
+export function AthleteCard({ athlete, onSelect }: AthleteCardProps) {
+  // Hooks
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Event handlers
+  const handleClick = () => {
+    onSelect(athlete.id);
+  };
+
+  // Render
+  return (
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+    >
+      {athlete.name}
+    </div>
+  );
+}
+```
+
+### Design System
+
+RowLab uses a custom "Precision Instrument" design system:
+
+- Use existing components from `src/components/ui/` where possible
+- Follow the color palette defined in `src/theme/`
+- Maintain the dark theme aesthetic (void-deep backgrounds)
+- Use blade blue (#0070F3) for primary actions
+- Follow port/starboard color semantics (red/green)
+
+### API Design
+
+- Follow RESTful conventions
+- Use proper HTTP status codes
+- Return consistent error formats
+- Validate input with express-validator
+- Use Zod for runtime type validation where appropriate
+
+## Testing Requirements
+
+All new features and bug fixes should include tests.
+
+### Test Coverage
+
+- **Minimum requirement:** 80% coverage for new code
+- Focus on testing business logic and edge cases
+- Test user interactions and component rendering
+- Mock external dependencies (database, APIs)
+
+### Testing Tools
+
+- **Vitest:** Test runner and assertion library
+- **@testing-library/react:** Component testing utilities
+- **@testing-library/user-event:** Simulating user interactions
+
+### Writing Tests
+
+```typescript
+// Example: Component test
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { AthleteCard } from './AthleteCard';
+
+describe('AthleteCard', () => {
+  it('should call onSelect when clicked', async () => {
+    const onSelect = vi.fn();
+    const athlete = { id: '1', name: 'John Doe', side: 'port' };
+
+    render(<AthleteCard athlete={athlete} onSelect={onSelect} />);
+
+    await userEvent.click(screen.getByText('John Doe'));
+
+    expect(onSelect).toHaveBeenCalledWith('1');
+  });
+});
+```
+
+### Running Tests
+
+```bash
+npm test              # Watch mode (recommended during development)
+npm run test:run      # Run once
+npm run test:coverage # Check coverage
+npm run test:ui       # Visual test UI
+```
 
 ## Pull Request Process
 
-### 1. Prepare Your Changes
+### Before Submitting a PR
 
-- Ensure all tests pass
-- Update documentation if needed
-- Add tests for new functionality
-- Follow coding standards
+1. **Create a feature branch:**
 
-### 2. Create Pull Request
+   ```bash
+   git checkout -b feature/your-feature-name
+   # or
+   git checkout -b fix/bug-description
+   ```
 
-- Fill out the PR template completely
-- Link related issues
-- Add screenshots for UI changes
-- Request review from maintainers
+2. **Make your changes:**
 
-### 3. PR Template
+   - Write clean, well-documented code
+   - Follow coding standards
+   - Add tests for new functionality
+   - Update documentation if needed
 
-```markdown
-## Summary
-Brief description of changes
+3. **Run the validation suite:**
 
-## Changes
-- List of specific changes
+   ```bash
+   npm run validate
+   ```
 
-## Testing
-- How to test the changes
-- Test cases covered
+   This runs type checking, linting, and tests. All must pass.
 
-## Screenshots
-(if applicable)
+4. **Commit your changes** (see [Commit Message Guidelines](#commit-message-guidelines))
 
-## Related Issues
-Closes #123
+5. **Sync with upstream:**
+
+   ```bash
+   git fetch upstream
+   git rebase upstream/master
+   ```
+
+6. **Push to your fork:**
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+### Submitting the PR
+
+1. Go to the [RowLab repository](https://github.com/swdrow/RowLab) on GitHub
+2. Click "New Pull Request"
+3. Select your fork and branch
+4. Fill out the PR template completely:
+   - Describe what changes you made and why
+   - Link related issues (e.g., "Closes #123")
+   - Describe how you tested the changes
+   - Add screenshots for UI changes
+   - Note any breaking changes
+
+### PR Review Process
+
+- A maintainer will review your PR within 3-5 business days
+- Address any requested changes promptly
+- Keep the PR focused on a single feature or fix
+- Be responsive to feedback and questions
+- Once approved, a maintainer will merge your PR
+
+### PR Checklist
+
+Before submitting, ensure:
+
+- [ ] Code follows the style guidelines
+- [ ] Tests pass (`npm run test:run`)
+- [ ] Linting passes (`npm run lint`)
+- [ ] TypeScript compiles (`npm run typecheck`)
+- [ ] New features include tests
+- [ ] Documentation is updated
+- [ ] Commit messages follow conventions
+- [ ] PR description is complete
+
+## Commit Message Guidelines
+
+RowLab uses [Conventional Commits](https://www.conventionalcommits.org/) for clear, semantic commit history.
+
+### Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
 ```
 
-### 4. Review Process
+### Types
 
-- Maintainers will review within 3-5 business days
-- Address feedback promptly
-- Keep PR focused and small when possible
-- Squash commits before merge
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, no logic change)
+- `refactor`: Code refactoring (no feature change or bug fix)
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks (dependencies, build config)
+- `ci`: CI/CD changes
+
+### Scopes (optional)
+
+Use scopes to indicate which part of the codebase is affected:
+
+- `lineup`: Lineup builder features
+- `athletes`: Athlete management
+- `ergs`: Erg score tracking
+- `seat-racing`: Seat racing system
+- `analytics`: Performance analytics
+- `api`: Backend API
+- `ui`: UI components
+- `db`: Database schema/migrations
+- `auth`: Authentication
+
+### Examples
+
+```bash
+# Feature
+git commit -m "feat(lineup): add ability to swap athletes between seats"
+
+# Bug fix
+git commit -m "fix(ergs): correct 2k time calculation for sub-6 minute scores"
+
+# Documentation
+git commit -m "docs: add deployment instructions for Docker"
+
+# Refactoring
+git commit -m "refactor(api): simplify athlete query logic"
+
+# With body
+git commit -m "feat(seat-racing): implement Elo rating algorithm
+
+- Add EloService for rating calculations
+- Update seat race results to compute new ratings
+- Display rating changes in UI with delta indicators"
+
+# Breaking change
+git commit -m "feat(api): change lineup endpoint response format
+
+BREAKING CHANGE: lineup endpoint now returns nested boat objects instead of flat structure"
+```
+
+### Best Practices
+
+- Use imperative mood ("add feature" not "added feature")
+- Keep the subject line under 72 characters
+- Capitalize the subject line
+- Don't end the subject with a period
+- Use the body to explain *what* and *why*, not *how*
+- Reference issues in the footer (e.g., "Closes #123")
+
+## Community
+
+### Getting Help
+
+- **Documentation:** Check [docs/](docs/) for detailed guides
+- **Issues:** Search [existing issues](https://github.com/swdrow/RowLab/issues) or open a new one
+- **Discussions:** Use GitHub Discussions for questions and ideas
+
+### Recognition
+
+All contributors will be:
+
+- Listed in the project's contributors list
+- Acknowledged in release notes for significant contributions
+- Welcomed as part of the RowLab community
+
+### License
+
+By contributing to RowLab, you agree that your contributions will be licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-## Issue Guidelines
-
-### Bug Reports
-
-Include:
-- **Description**: What went wrong?
-- **Steps to reproduce**: How to trigger the bug
-- **Expected behavior**: What should happen
-- **Actual behavior**: What actually happens
-- **Environment**: Browser, OS, Node version
-- **Screenshots/logs**: If applicable
-
-### Feature Requests
-
-Include:
-- **Problem statement**: What problem does this solve?
-- **Proposed solution**: How should it work?
-- **Alternatives considered**: Other approaches
-- **Use case**: Who benefits and how?
-
-### Good First Issues
-
-Look for issues labeled `good first issue` for beginner-friendly tasks. These typically:
-- Have clear requirements
-- Touch limited code areas
-- Include guidance in comments
-
----
-
-## Questions?
-
-- Check existing [documentation](docs/)
-- Search [existing issues](https://github.com/swdrow/RowLab/issues)
-- Open a [discussion](https://github.com/swdrow/RowLab/discussions)
-
----
-
-Thank you for contributing to RowLab!
+**Thank you for contributing to RowLab!** Your efforts help coaches and athletes achieve better results through data-driven decisions.
