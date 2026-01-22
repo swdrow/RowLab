@@ -6,7 +6,7 @@
  */
 
 import { Router } from 'express';
-import { authenticate, optionalAuth } from '../middleware/auth.js';
+import { authenticateToken as authenticate, optionalAuth } from '../middleware/auth.js';
 import stravaService from '../services/stravaService.js';
 
 const router = Router();
