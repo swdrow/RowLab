@@ -37,11 +37,8 @@ export default function V2Layout() {
               <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <div className="flex items-center gap-3">
                   <h1 className="text-xl font-display text-txt-primary">
-                    RowLab V2
+                    RowLab
                   </h1>
-                  <span className="px-2 py-0.5 text-xs font-medium bg-interactive-primary/20 text-interactive-primary rounded">
-                    BETA
-                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <VersionToggle currentVersion="v2" />
