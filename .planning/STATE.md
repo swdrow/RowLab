@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v1.0 — Full UX Redesign
-**Phase:** 5 (The Flip) — IN PROGRESS
-**Status:** Phase 5 plan 4 complete (2/3 plans) — Analytics tracking and user preferences ready
-**Last activity:** 2026-01-23 — Completed route analytics tracking (05-04)
+**Phase:** 5 (The Flip) — COMPLETE
+**Status:** Phase 5 complete (3/3 plans) — Version switching UI ready
+**Last activity:** 2026-01-23 — Completed version toggle UI (05-03)
 
 ## Project Reference
 
@@ -22,9 +22,9 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | 2 | Foundation | ● Complete | 4/4 |
 | 3 | Vertical Slice | ● Complete | 7/7 |
 | 4 | Migration Loop | ● Complete | 12/12 |
-| 5 | The Flip | ◐ In Progress | 2/3 |
+| 5 | The Flip | ● Complete | 3/3 |
 
-Progress: ███████████ ~97%
+Progress: ████████████ 100%
 
 ## Quick Context
 
@@ -104,11 +104,10 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | Plan | Description | Status |
 |------|-------------|--------|
 | 05-01 | User preference store (userPreferenceStore, useVersionRedirect) | ● Complete |
-| 05-04 | Route analytics tracking (useRouteAnalytics, usage stats) | ● Complete |
-| 05-02 | Flip mechanics (FLIP date, route switch, toggle UI) | ○ Pending |
-| 05-03 | V1 integration (legacy banner, opt-out UI) | ○ Pending |
+| 05-02 | Route flip (V2 to /app, V1 to /legacy) | ● Complete |
+| 05-03 | Version toggle UI (VersionToggle, VersionRedirectGuard) | ● Complete |
 
-**Commits:** 6 commits (5 task + 1 deviation fix)
+**Commits:** 13 commits (12 task + 1 deviation fix)
 
 ## Accumulated Decisions
 
@@ -198,15 +197,18 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 05-01 | Exclude auth routes from redirect logic | Prevents login loops when switching versions |
 | 05-01 | Use replace: true for version redirects | Avoids polluting browser history with redirect entries |
 | 05-01 | @v2 path alias in both Vite and tsconfig.json | Ensures TypeScript module resolution matches Vite bundler |
-| 05-04 | Track at layout level, not route level | Layout component receives all route changes via useLocation, simpler than per-route tracking |
-| 05-04 | 100 event cap in localStorage | Prevents localStorage bloat while maintaining sufficient sample size for V1/V2 usage stats |
-| 05-04 | Timestamp in ISO format | Enables future time-based analysis (hourly/daily patterns) |
-| 05-04 | localStorage over backend API | Faster implementation, no backend changes needed, sufficient for FLIP decision metrics
+| 05-02 | V2 at /app as default authenticated experience | V2 is production-ready and should be the primary user entry point after login |
+| 05-02 | Preserve V1 at /legacy with full functionality | Users may need V1 features not yet migrated to V2 |
+| 05-02 | LandingPage links remain pointing to /app | Landing page should drive users to V2 (the new default) |
+| 05-02 | /beta/* redirect to /app for bookmark compatibility | Existing bookmarks to /beta/* from Phase 4 testing should not break |
+| 05-03 | Dual styling approach for V1 vs V2 contexts | V2 uses design tokens, V1 uses legacy classes - single component works in both environments |
+| 05-03 | Wrapper component pattern for useVersionRedirect | Separates hook logic from layout structure for clean integration and testability |
+| 05-03 | Navigate with replace: true for version switches | Avoids polluting browser history - back button returns to previous page, not previous version |
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 23:43 UTC
-**Stopped at:** Completed 05-04-PLAN.md (Route Analytics Tracking) - Phase 5 in progress
+**Last session:** 2026-01-23 23:47 UTC
+**Stopped at:** Completed 05-03-PLAN.md (Version Toggle UI) - Phase 5 complete
 **Resume file:** None
 
 ## Known Limitations
@@ -215,13 +217,12 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 ## Next Action
 
-**Phase 5 in progress** — Analytics and preferences ready:
+**Phase 5 COMPLETE** — All flip mechanics delivered:
 - ✓ User preference store with localStorage (05-01)
-- ✓ Route analytics tracking (05-04)
-- ○ Flip mechanics (05-02) — Route switch, FLIP date, toggle UI
-- ○ V1 integration (05-03) — Legacy banner, opt-out UI
+- ✓ Route flip: V2 to /app, V1 to /legacy (05-02)
+- ✓ Version toggle UI: VersionToggle, VersionRedirectGuard (05-03)
 
-Next: Execute **05-02-PLAN.md** or **05-03-PLAN.md** (no dependencies between them).
+**All milestone 1.0 phases complete.** Ready for production deployment.
 
 ---
-*Last updated: 2026-01-23 — Phase 5 in progress (2/3 plans)*
+*Last updated: 2026-01-23 — Phase 5 complete (3/3 plans)*
