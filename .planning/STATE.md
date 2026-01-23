@@ -4,8 +4,8 @@
 
 **Milestone:** v1.0 — Full UX Redesign
 **Phase:** 2 (Foundation) — IN PROGRESS
-**Status:** Plan 02-03 complete
-**Last activity:** 2026-01-23 — Completed 02-03-PLAN.md (WorkspaceSidebar Component)
+**Status:** Plan 02-04 complete
+**Last activity:** 2026-01-23 — Completed 02-04-PLAN.md (Shell Layout Integration)
 
 ## Project Reference
 
@@ -19,12 +19,12 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
 | 1 | Clean Room Setup | ● Complete | 4/4 |
-| 2 | Foundation | ◐ In progress | 3/? |
+| 2 | Foundation | ◐ In progress | 4/? |
 | 3 | Vertical Slice | ○ Pending | — |
 | 4 | Migration Loop | ○ Pending | — |
 | 5 | The Flip | ○ Pending | — |
 
-Progress: ███░░░░░░░ ~28%
+Progress: ████░░░░░░ ~32%
 
 ## Quick Context
 
@@ -55,8 +55,9 @@ Progress: ███░░░░░░░ ~28%
 | 02-01 | Context store, theme hook, shared stores | ● Complete |
 | 02-02 | ContextRail component | ● Complete |
 | 02-03 | WorkspaceSidebar component | ● Complete |
+| 02-04 | Shell layout integration, keyboard navigation, theme toggle | ● Complete |
 
-**Commits:** 5 task commits
+**Commits:** 9 task commits + 1 metadata commit
 
 ## Accumulated Decisions
 
@@ -82,19 +83,23 @@ Progress: ███░░░░░░░ ~28%
 | 02-02 | Use inline SVG icons (Lucide-style) for rail | Avoids icon library dependency, keeps bundle small |
 | 02-02 | 64px rail width (w-16) | Comfortable click targets meeting WCAG requirements |
 | 02-02 | layoutId="activeContext" for indicator animation | Framer Motion shared element transition pattern |
-| 02-03 | Use Lucide React icons with string-to-component mapping | contextStore uses string icon names for flexibility, ICON_MAP bridges to components |
-| 02-03 | Navigation items from contextStore CONTEXT_CONFIGS | Consume existing navigation config rather than duplicating |
-| 02-03 | V2 design tokens for all sidebar styling | Active state uses bg-action-primary, inactive uses text-text-secondary with hover states |
+| 02-04 | Convert useTheme to Zustand for shared state | useState created independent instances; Zustand ensures all V2 components share theme state |
+| 02-04 | CSS Grid layout with fixed sidebar widths (rail 64px, sidebar 256px) | Precise layout control, stable across all pages |
+| 02-04 | Keyboard shortcuts Ctrl/Cmd+1/2/3 for context switching | Power-user rapid context switching without UI interaction |
+| 02-04 | Focus management: move to first sidebar item on context switch | Accessibility requirement for keyboard-only users |
+| 02-04 | Scope theme CSS selectors to .v2[data-theme="..."] | data-theme on .v2 div not :root; selectors must match for cascade |
+| 02-04 | V1 store access via Context providers (AuthStoreContext, SettingsStoreContext) | V2 components access V1 Zustand stores without cross-contamination |
+| 02-04 | Defer light/field theme visual rendering to post-Phase 5 | Dark theme works; light/field have CSS cascade issues; low priority vs. feature development |
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 14:02 UTC
-**Stopped at:** Completed 02-03-PLAN.md (WorkspaceSidebar Component)
+**Last session:** 2026-01-23 14:32 UTC
+**Stopped at:** Completed 02-04-PLAN.md (Shell Layout Integration) with checkpoint approval
 **Resume file:** None
 
 ## Next Action
 
-Continue Phase 2 with next plan (shell layout components)
+Continue Phase 2 with next plan (feature development or next shell plan)
 
 ---
-*Last updated: 2026-01-23 — Phase 2 Plan 03 complete*
+*Last updated: 2026-01-23 — Phase 2 Plan 04 complete*
