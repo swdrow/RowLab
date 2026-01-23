@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v1.0 — Full UX Redesign
-**Phase:** 3 (Vertical Slice) — IN PROGRESS
-**Status:** Phase 3 plan 03 of 04 complete
-**Last activity:** 2026-01-23 — Completed 03-03-PLAN.md (Unified Activity Feed API)
+**Phase:** 3 (Vertical Slice) — COMPLETE
+**Status:** Phase 3 complete (4/4 plans)
+**Last activity:** 2026-01-23 — Completed 03-04-PLAN.md (TanStack Query Hooks)
 
 ## Project Reference
 
@@ -20,11 +20,11 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 |-------|------|--------|-------|
 | 1 | Clean Room Setup | ● Complete | 4/4 |
 | 2 | Foundation | ● Complete | 4/4 |
-| 3 | Vertical Slice | ◐ In Progress | 3/4 |
+| 3 | Vertical Slice | ● Complete | 4/4 |
 | 4 | Migration Loop | ○ Pending | — |
 | 5 | The Flip | ○ Pending | — |
 
-Progress: ██████░░░░ ~60%
+Progress: ████████░░ ~80%
 
 ## Quick Context
 
@@ -66,11 +66,11 @@ Progress: ██████░░░░ ~60%
 | 03-01 | TanStack Query setup | ● Complete |
 | 03-02 | Dashboard preferences API endpoints | ● Complete |
 | 03-03 | Unified activity feed API | ● Complete |
-| 03-04 | Personal dashboard UI | ○ Pending |
+| 03-04 | TanStack Query hooks (data layer) | ● Complete |
 
-**Commits (so far):** 8 task commits
+**Commits:** 11 task commits
 
-Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contributed 3 commits
+Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contributed 3 commits, 03-04 contributed 3 commits
 
 ## Accumulated Decisions
 
@@ -117,11 +117,15 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 03-03 | Activity type normalization (erg/row → rowing) | Ensures consistent matching across different activity type labels |
 | 03-03 | User-scoped endpoint (not team-isolated) | Activities are personal data (C2 logbook, Strava sync), not team-specific |
 | 03-03 | Fetch 2x limit to account for deduplication | Fetches more activities before dedup to ensure enough results after filtering; caps at 100 |
+| 03-04 | Sort excludeSources array for stable queryKey | Prevents refetch when same sources in different order |
+| 03-04 | Export formatting helpers from hooks | Colocate view logic with data fetching (getActivityTypeName, formatDuration, formatDistance) |
+| 03-04 | Different staleTimes for preferences vs activities | 10min for preferences (change infrequently), 5min for activities (external sync) |
+| 03-04 | Helper methods on hook return object | setPinnedModules and toggleSourceVisibility encapsulate mutation logic |
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 16:33 UTC
-**Stopped at:** Completed 03-03-PLAN.md (Unified Activity Feed API)
+**Last session:** 2026-01-23 16:48 UTC
+**Stopped at:** Completed 03-04-PLAN.md (TanStack Query Hooks) - Phase 3 complete
 **Resume file:** None
 
 ## Known Limitations
@@ -130,7 +134,7 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 ## Next Action
 
-Continue Phase 3: Execute plan 03-04 (Personal Dashboard UI) with `/gsd:execute-phase 3 04`
+Phase 3 complete! Ready for Phase 4 (Migration Loop) or continue building on vertical slice foundation.
 
 ---
-*Last updated: 2026-01-23 — Phase 3 in progress (3/4 plans complete)*
+*Last updated: 2026-01-23 — Phase 3 complete (4/4 plans)*
