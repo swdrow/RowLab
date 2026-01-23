@@ -80,6 +80,18 @@ Plans:
 
 **Requirements:** DASH-01 through DASH-08, MODEL-07, API-03, API-04, API-06, API-08, API-09
 
+**Plans:** 8 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Install TanStack Query v5 and QueryClientProvider setup
+- [ ] 03-02-PLAN.md — Dashboard preferences API (GET/PUT /api/v1/dashboard-preferences)
+- [ ] 03-03-PLAN.md — Activity feed API with deduplication service
+- [ ] 03-04-PLAN.md — TanStack Query hooks (useDashboardPrefs, useActivityFeed)
+- [ ] 03-05-PLAN.md — Adaptive headline hook and HeadlineWidget component
+- [ ] 03-06-PLAN.md — ActivityCard and UnifiedActivityFeed components
+- [ ] 03-07-PLAN.md — DashboardGrid with bento layout and MeDashboard page
+- [ ] 03-08-PLAN.md — Human verification checkpoint
+
 **Success Criteria:**
 - Dashboard shows personalized headline
 - C2 and Strava data display correctly
@@ -136,7 +148,7 @@ Plans:
 |-------|------|--------------|-------|--------|
 | 1 | Clean Room Setup | 14 | 4 | ● Complete |
 | 2 | Foundation | 8 | 4 | ● Complete |
-| 3 | Vertical Slice | 14 | — | ○ Pending |
+| 3 | Vertical Slice | 14 | 8 | ○ Pending |
 | 4 | Migration Loop | 11 | — | ○ Pending |
 | 5 | The Flip | 5 | — | ○ Pending |
 
@@ -159,4 +171,4 @@ Backend APIs are scheduled to complete before frontend features need them.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 after Phase 2 planning*
+*Last updated: 2026-01-23 after Phase 3 planning*
