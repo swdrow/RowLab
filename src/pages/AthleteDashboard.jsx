@@ -259,7 +259,7 @@ function AthleteDashboard() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             {canManageAthletes && (
               <Link
-                to="/app/athletes"
+                to="/legacy/athletes"
                 className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blade-blue text-void-deep font-medium text-sm hover:shadow-[0_0_20px_rgba(0,112,243,0.4)] transition-all"
               >
                 <User size={16} />
@@ -267,7 +267,7 @@ function AthleteDashboard() {
               </Link>
             )}
             <Link
-              to="/app"
+              to="/legacy"
               className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-void-surface border border-white/[0.06] text-text-secondary text-sm hover:text-text-primary hover:border-white/10 transition-all"
             >
               Back to Dashboard
@@ -361,7 +361,7 @@ function AthleteDashboard() {
         {isCoachView && (
           <div className="p-4 border-t border-white/[0.04]">
             <Link
-              to="/app/athletes"
+              to="/legacy/athletes"
               className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-void-surface border border-white/[0.06] text-text-secondary text-xs hover:text-text-primary hover:bg-white/[0.04] transition-all"
             >
               <ArrowLeft size={14} />
@@ -400,7 +400,7 @@ function AthleteDashboard() {
             )}
             {isCoachView && (
               <Link
-                to="/app/athletes"
+                to="/legacy/athletes"
                 className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-void-surface border border-white/[0.06] text-text-secondary"
               >
                 <ArrowLeft size={18} />
