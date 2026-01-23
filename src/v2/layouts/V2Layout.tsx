@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useTheme } from '@v2/hooks/useTheme';
+import { useRouteAnalytics } from '@v2/hooks/useRouteAnalytics';
 import { AuthStoreContext, SettingsStoreContext } from '@v2/hooks/useSharedStores';
 import { ThemeToggle } from '@v2/components/shell/ThemeToggle';
 import { queryClient } from '../queryClient';
@@ -13,6 +14,9 @@ import '@v2/styles/v2.css';
 export default function V2Layout() {
   const { theme } = useTheme();
   const initialize = useAuthStore((state) => state.initialize);
+
+  // Track V2 route views
+  useRouteAnalytics('v2');
 
   // Initialize auth on mount (handles token refresh if needed)
   useEffect(() => {
