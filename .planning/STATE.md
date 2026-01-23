@@ -5,7 +5,7 @@
 **Milestone:** v1.0 — Full UX Redesign
 **Phase:** 1 (Clean Room Setup)
 **Status:** In progress
-**Last activity:** 2026-01-23 — Completed 01-02-PLAN.md
+**Last activity:** 2026-01-23 — Completed 01-03-PLAN.md
 
 ## Project Reference
 
@@ -18,13 +18,13 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 1 | Clean Room Setup | ◐ In progress | 2/? |
+| 1 | Clean Room Setup | ◐ In progress | 3/4 |
 | 2 | Foundation | ○ Pending | — |
 | 3 | Vertical Slice | ○ Pending | — |
 | 4 | Migration Loop | ○ Pending | — |
 | 5 | The Flip | ○ Pending | — |
 
-Progress: ██░░░░░░░░ ~20%
+Progress: ███░░░░░░░ ~30%
 
 ## Quick Context
 
@@ -48,16 +48,19 @@ Progress: ██░░░░░░░░ ~20%
 | 01-02 | JSON storage for default schedules | Flexible weekly patterns without separate table per day |
 | 01-02 | Activity deduplication at database level | Unique constraint on (source, sourceId) prevents sync duplicates |
 | 01-02 | Morning/evening availability granularity | Matches rowing practice scheduling (AM and PM sessions) |
+| 01-03 | Theme defaults to dark (no data-theme attribute) | Cleaner markup; only light/field themes set data-theme |
+| 01-03 | V2Layout wraps all /beta routes | Provides .v2 class for CSS isolation |
+| 01-03 | Use @v2 path alias for V2 lazy imports | Consistent import pattern, works with Vite alias config |
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 01:48:00 UTC
-**Stopped at:** Completed 01-02-PLAN.md
+**Last session:** 2026-01-23 01:57:20 UTC
+**Stopped at:** Completed 01-03-PLAN.md
 **Resume file:** None
 
 ## Next Action
 
-Continue Phase 1 execution or plan next task.
+Continue Phase 1 with 01-04-PLAN.md (Component Library Bootstrap) or complete phase.
 
 ---
-*Last updated: 2026-01-23 — Completed 01-02-PLAN.md*
+*Last updated: 2026-01-23 — Completed 01-03-PLAN.md*
