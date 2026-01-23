@@ -14,6 +14,7 @@ import LineupAssistant, { AIAssistantButton } from '../components/AI/LineupAssis
 import { Sidebar } from '../components/compound/Sidebar';
 import { TopNav, MobileDock, Breadcrumbs, WorkspaceSwitcher, CommandPalette, CollaborationPresence } from '../components/Layout';
 import { useCollaboration } from '../hooks/useCollaboration';
+import { useRouteAnalytics } from '../v2/hooks/useRouteAnalytics';
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -27,6 +28,9 @@ function AppLayout() {
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [aiMinimized, setAiMinimized] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
+
+  // Track V1 route views
+  useRouteAnalytics('v1');
 
   const {
     setAthletes,
