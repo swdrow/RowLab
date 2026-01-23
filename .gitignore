@@ -115,3 +115,10 @@ blob-report/
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# ===========================================
+# GIT WORKTREES
+# ===========================================
+
+# Development worktrees (isolated workspaces)
+.worktrees/
