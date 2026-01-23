@@ -117,9 +117,10 @@
 
 /* ========================================
    LIGHT THEME OVERRIDE
+   Scoped to .v2 for CSS isolation
    ======================================== */
 
-[data-theme="light"] {
+.v2[data-theme="light"] {
   /* Background Tokens */
   --color-bg-base: var(--palette-neutral-50);
   --color-bg-surface: var(--palette-neutral-100);
@@ -162,10 +163,10 @@
 
 /* ========================================
    FIELD THEME OVERRIDE
-   High-contrast outdoor mode
+   High-contrast outdoor mode - scoped to .v2
    ======================================== */
 
-[data-theme="field"] {
+.v2[data-theme="field"] {
   /* Background Tokens - Higher contrast */
   --color-bg-base: #000000;
   --color-bg-surface: #1a1a1a;
