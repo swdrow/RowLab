@@ -118,6 +118,21 @@ Plans:
 
 **Requirements:** COACH-01 through COACH-07, API-01, API-02, API-05, API-07
 
+**Plans:** 11 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Install npm packages (react-hook-form, resolvers, md-editor)
+- [ ] 04-02-PLAN.md — Whiteboard API endpoints (CRUD + latest)
+- [ ] 04-03-PLAN.md — OarSet API endpoints (CRUD)
+- [ ] 04-04-PLAN.md — Availability API endpoints (team view, athlete edit)
+- [ ] 04-05-PLAN.md — TanStack Query hooks (useWhiteboard, useShells, useOarSets)
+- [ ] 04-06-PLAN.md — Availability hooks (useTeamAvailability, useAthleteAvailability)
+- [ ] 04-07-PLAN.md — Whiteboard components (WhiteboardView, WhiteboardEditor)
+- [ ] 04-08-PLAN.md — Fleet components (tables, forms, CrudModal)
+- [ ] 04-09-PLAN.md — Availability components (AvailabilityGrid, AvailabilityEditor)
+- [ ] 04-10-PLAN.md — Coach pages (CoachWhiteboard, CoachFleet, CoachAvailability)
+- [ ] 04-11-PLAN.md — Human verification checkpoint
+
 **Success Criteria:**
 - Coach can post daily whiteboard
 - Fleet inventory manageable
@@ -151,11 +166,11 @@ Plans:
 
 | Phase | Name | Requirements | Plans | Status |
 |-------|------|--------------|-------|--------|
-| 1 | Clean Room Setup | 14 | 4 | ● Complete |
-| 2 | Foundation | 8 | 4 | ● Complete |
-| 3 | Vertical Slice | 14 | 8 | ○ Pending |
-| 4 | Migration Loop | 11 | — | ○ Pending |
-| 5 | The Flip | 5 | — | ○ Pending |
+| 1 | Clean Room Setup | 14 | 4 | Complete |
+| 2 | Foundation | 8 | 4 | Complete |
+| 3 | Vertical Slice | 14 | 8 | Complete |
+| 4 | Migration Loop | 11 | 11 | Pending |
+| 5 | The Flip | 5 | — | Pending |
 
 **Total:** 45 requirements across 5 phases
 
@@ -176,4 +191,4 @@ Backend APIs are scheduled to complete before frontend features need them.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 after Phase 3 planning*
+*Last updated: 2026-01-23 after Phase 4 planning*
