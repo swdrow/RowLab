@@ -140,6 +140,8 @@ model Athlete {
   lastName        String
   email           String?  // For invites
   side            String?  // Port, Starboard, Both, Cox
+  canScull        Boolean  @default(false)
+  canCox          Boolean  @default(false)
   isManaged       Boolean  @default(true)
   concept2UserId  String?
   weightKg        Decimal? @db.Decimal(5, 2)
