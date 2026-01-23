@@ -6,6 +6,7 @@ import { useTheme } from '@v2/hooks/useTheme';
 import { useRouteAnalytics } from '@v2/hooks/useRouteAnalytics';
 import { AuthStoreContext, SettingsStoreContext } from '@v2/hooks/useSharedStores';
 import { ThemeToggle } from '@v2/components/shell/ThemeToggle';
+import { VersionToggle } from '@v2/components/shell/VersionToggle';
 import { queryClient } from '../queryClient';
 import useAuthStore from '../../store/authStore';
 import useSettingsStore from '../../store/settingsStore';
@@ -42,7 +43,10 @@ export default function V2Layout() {
                     BETA
                   </span>
                 </div>
-                <ThemeToggle />
+                <div className="flex items-center gap-2">
+                  <VersionToggle currentVersion="v2" />
+                  <ThemeToggle />
+                </div>
               </div>
             </header>
             <main className="min-h-[calc(100vh-57px)]">
