@@ -4,8 +4,8 @@
 
 **Milestone:** v1.0 — Full UX Redesign
 **Phase:** 4 (Migration Loop) — IN PROGRESS
-**Status:** Phase 4 in progress (3/12 plans)
-**Last activity:** 2026-01-23 — Completed 04-03-PLAN.md (OarSet API endpoints)
+**Status:** Phase 4 in progress (4/12 plans)
+**Last activity:** 2026-01-23 — Completed 04-02-PLAN.md (Whiteboard API)
 
 ## Project Reference
 
@@ -21,10 +21,10 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | 1 | Clean Room Setup | ● Complete | 4/4 |
 | 2 | Foundation | ● Complete | 4/4 |
 | 3 | Vertical Slice | ● Complete | 7/7 |
-| 4 | Migration Loop | ◐ In Progress | 3/12 |
+| 4 | Migration Loop | ◐ In Progress | 4/12 |
 | 5 | The Flip | ○ Pending | — |
 
-Progress: █████████░ ~88%
+Progress: █████████░ ~89%
 
 ## Quick Context
 
@@ -85,20 +85,13 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 | Plan | Description | Status |
 |------|-------------|--------|
-| 04-01 | Phase 4 npm dependencies (react-hook-form, @hookform/resolvers, @uiw/react-md-editor) | ● Complete |
-| 04-02 | Whiteboard schema and API | ○ Pending |
-| 04-03 | Whiteboard CRUD hooks | ○ Pending |
-| 04-04 | Whiteboard list view | ○ Pending |
-| 04-05 | Whiteboard detail view | ○ Pending |
-| 04-06 | Coach availability schema and API | ○ Pending |
-| 04-07 | Coach availability hooks | ○ Pending |
-| 04-08 | Coach availability UI | ○ Pending |
-| 04-09 | Athlete biometrics schema and API | ○ Pending |
-| 04-10 | Athlete biometrics hooks | ○ Pending |
-| 04-11 | Athlete biometrics entry form | ○ Pending |
-| 04-12 | Athlete biometrics display | ○ Pending |
+| 04-01 | Phase 4 npm dependencies | ● Complete |
+| 04-02 | Whiteboard API (REST endpoints, service layer) | ● Complete |
+| 04-03 | OarSet API (REST endpoints, service layer) | ● Complete |
+| 04-04 | Availability API (REST endpoints, service layer) | ● Complete |
+| 04-05+ | TBD | ○ Pending |
 
-**Commits:** 1 task commit
+**Commits:** 8 task commits across 4 plans
 
 ## Accumulated Decisions
 
@@ -161,11 +154,14 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 03-07 | 8px activation constraint for drag | Prevents accidental drags when clicking widget contents |
 | 03-07 | Placeholder widgets for future integrations | c2-logbook, strava-feed, quick-stats show "coming soon" messages |
 | 04-01 | Phase-level dependency installation | Install all phase dependencies upfront before feature work |
+| 04-02 | Upsert pattern for whiteboard POST | Single atomic operation for create-or-update by team+date eliminates race conditions |
+| 04-02 | Team isolation via middleware on all whiteboard endpoints | Ensures queries scoped to activeTeamId for security |
+| 04-02 | COACH/OWNER-only mutations for whiteboards | Athletes have read-only access, only coaches can create/edit/delete |
 
 ## Session Continuity
 
 **Last session:** 2026-01-23 19:19 UTC
-**Stopped at:** Completed 04-03-PLAN.md (OarSet API endpoints) - Phase 4 in progress
+**Stopped at:** Completed 04-02-PLAN.md (Whiteboard API) - Phase 4 in progress
 **Resume file:** None
 
 ## Known Limitations
@@ -174,12 +170,13 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 ## Next Action
 
-Phase 4 in progress! Dependencies installed, ready for coach feature development:
-- Whiteboard system (plans 04-02 through 04-05)
-- Coach availability tracking (plans 04-06 through 04-08)
-- Athlete biometrics entry (plans 04-09 through 04-12)
+Phase 4 in progress! Backend API foundation complete:
+- ✓ Dependencies installed (04-01)
+- ✓ Whiteboard API (04-02)
+- ✓ OarSet API (04-03)
+- ✓ Availability API (04-04)
 
-**Next plan:** 04-02 (Whiteboard schema and API)
+Ready for frontend integration and additional coach features.
 
 ---
-*Last updated: 2026-01-23 — Phase 4 started (1/12 plans)*
+*Last updated: 2026-01-23 — Phase 4 in progress (4/12 plans)*
