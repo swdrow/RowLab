@@ -4,7 +4,7 @@ import { prisma } from '../db/connection.js';
  * Create a new athlete (managed by coach)
  */
 export async function createAthlete(teamId, data) {
-  const { firstName, lastName, email, side, weightKg, heightCm } = data;
+  const { firstName, lastName, email, side, canScull, canCox, weightKg, heightCm } = data;
 
   // Check for duplicate name in team
   const existing = await prisma.athlete.findUnique({
@@ -24,6 +24,8 @@ export async function createAthlete(teamId, data) {
       lastName,
       email: email || null,
       side: side || null,
+      canScull: canScull ?? false,
+      canCox: canCox ?? false,
       weightKg: weightKg || null,
       heightCm: heightCm || null,
       isManaged: true,
@@ -129,6 +131,8 @@ export async function updateAthlete(athleteId, teamId, updates) {
     'lastName',
     'email',
     'side',
+    'canScull',
+    'canCox',
     'weightKg',
     'heightCm',
     'concept2UserId',
@@ -314,6 +318,8 @@ function formatAthlete(athlete, includeStats = false) {
     fullName: `${athlete.firstName} ${athlete.lastName}`,
     email: athlete.email,
     side: athlete.side,
+    canScull: athlete.canScull ?? false,
+    canCox: athlete.canCox ?? false,
     isManaged: athlete.isManaged,
     isLinked: !!athlete.userId,
     weightKg: athlete.weightKg ? Number(athlete.weightKg) : null,

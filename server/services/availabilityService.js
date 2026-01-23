@@ -20,6 +20,9 @@ export async function getTeamAvailability(teamId, { startDate, endDate }) {
       id: true,
       firstName: true,
       lastName: true,
+      side: true,
+      canScull: true,
+      canCox: true,
     },
     orderBy: [
       { lastName: 'asc' },
@@ -80,6 +83,9 @@ export async function getTeamAvailability(teamId, { startDate, endDate }) {
     return {
       athleteId: athlete.id,
       athleteName: `${athlete.firstName} ${athlete.lastName}`,
+      side: athlete.side,
+      canScull: athlete.canScull,
+      canCox: athlete.canCox,
       dates,
     };
   });
