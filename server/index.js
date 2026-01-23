@@ -38,6 +38,7 @@ import healthRoutes from './routes/health.js';
 import backgroundSyncRoutes from './routes/backgroundSync.js';
 import trainingPlanRoutes from './routes/trainingPlans.js';
 import dashboardPreferencesRoutes from './routes/dashboardPreferences.js';
+import activitiesRoutes from './routes/activities.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
@@ -114,6 +115,7 @@ app.use('/api/v1/admin/sync', apiLimiter, backgroundSyncRoutes);
 app.use('/api/v1/ai', apiLimiter, aiRoutes);
 app.use('/api/v1/training-plans', apiLimiter, trainingPlanRoutes);
 app.use('/api/v1/dashboard-preferences', apiLimiter, dashboardPreferencesRoutes);
+app.use('/api/v1/activities', apiLimiter, activitiesRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
