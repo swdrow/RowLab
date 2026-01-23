@@ -49,6 +49,14 @@ Plans:
 
 **Requirements:** SETUP-04, SETUP-05, SHELL-01 through SHELL-06
 
+**Plans:** 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Context store, theme hook, shared stores (foundations)
+- [ ] 02-02-PLAN.md — ContextRail component (workspace switching)
+- [ ] 02-03-PLAN.md — WorkspaceSidebar component (context-aware navigation)
+- [ ] 02-04-PLAN.md — ShellLayout integration + keyboard navigation
+
 **Success Criteria:**
 - Shell renders with rail + sidebar + content areas
 - Context switching between Me/Coach/Admin works
@@ -127,7 +135,7 @@ Plans:
 | Phase | Name | Requirements | Plans | Status |
 |-------|------|--------------|-------|--------|
 | 1 | Clean Room Setup | 14 | 4 | ● Complete |
-| 2 | Foundation | 8 | — | ○ Pending |
+| 2 | Foundation | 8 | 4 | ○ Planned |
 | 3 | Vertical Slice | 14 | — | ○ Pending |
 | 4 | Migration Loop | 11 | — | ○ Pending |
 | 5 | The Flip | 5 | — | ○ Pending |
@@ -151,4 +159,4 @@ Backend APIs are scheduled to complete before frontend features need them.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 after Phase 1 planning*
+*Last updated: 2026-01-23 after Phase 2 planning*
