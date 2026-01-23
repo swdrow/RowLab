@@ -24,9 +24,9 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
     icon: 'users',
     shortcut: '⌘2',
     navItems: [
-      { to: '/beta/athletes', label: 'Athletes', icon: 'users' },
-      { to: '/beta/plans', label: 'Training Plans', icon: 'calendar' },
-      { to: '/beta/lineups', label: 'Lineups', icon: 'boat' },
+      { to: '/beta/coach/whiteboard', label: 'Whiteboard', icon: 'clipboard' },
+      { to: '/beta/coach/fleet', label: 'Fleet', icon: 'boat' },
+      { to: '/beta/coach/availability', label: 'Availability', icon: 'calendar' },
     ],
   },
   {

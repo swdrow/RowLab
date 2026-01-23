@@ -1,23 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../utils/api';
+import useAuthStore from '../../store/authStore';
 import type { Shell, ApiResponse } from '../types/coach';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 /**
  * Fetch all shells for current team
  */
 async function fetchShells(): Promise<Shell[]> {
-  const response = await axios.get<ApiResponse<Shell[]>>(
-    `${API_URL}/api/v1/shells`,
-    { withCredentials: true }
-  );
+  const response = await api.get<ApiResponse<{ shells: Shell[] }>>('/api/v1/shells');
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to fetch shells');
   }
 
-  return response.data.data;
+  return response.data.data.shells;
 }
 
 /**
@@ -26,11 +22,7 @@ async function fetchShells(): Promise<Shell[]> {
 async function createShell(
   data: Omit<Shell, 'id' | 'teamId'>
 ): Promise<Shell> {
-  const response = await axios.post<ApiResponse<Shell>>(
-    `${API_URL}/api/v1/shells`,
-    data,
-    { withCredentials: true }
-  );
+  const response = await api.post<ApiResponse<Shell>>('/api/v1/shells', data);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to create shell');
@@ -45,11 +37,7 @@ async function createShell(
 async function updateShell(
   data: Shell
 ): Promise<Shell> {
-  const response = await axios.put<ApiResponse<Shell>>(
-    `${API_URL}/api/v1/shells/${data.id}`,
-    data,
-    { withCredentials: true }
-  );
+  const response = await api.put<ApiResponse<Shell>>(`/api/v1/shells/${data.id}`, data);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to update shell');
@@ -62,10 +50,7 @@ async function updateShell(
  * Delete a shell
  */
 async function deleteShell(id: string): Promise<void> {
-  const response = await axios.delete<ApiResponse<void>>(
-    `${API_URL}/api/v1/shells/${id}`,
-    { withCredentials: true }
-  );
+  const response = await api.delete<ApiResponse<void>>(`/api/v1/shells/${id}`);
 
   if (!response.data.success) {
     throw new Error(response.data.error?.message || 'Failed to delete shell');
@@ -77,10 +62,13 @@ async function deleteShell(id: string): Promise<void> {
  */
 export function useShells() {
   const queryClient = useQueryClient();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
 
   const query = useQuery({
     queryKey: ['shells'],
     queryFn: fetchShells,
+    enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes - equipment doesn't change often
   });
 

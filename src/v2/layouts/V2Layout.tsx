@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -11,6 +12,12 @@ import '@v2/styles/v2.css';
 
 export default function V2Layout() {
   const { theme } = useTheme();
+  const initialize = useAuthStore((state) => state.initialize);
+
+  // Initialize auth on mount (handles token refresh if needed)
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   return (
     <QueryClientProvider client={queryClient}>

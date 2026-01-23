@@ -32,8 +32,9 @@ export default function CoachAvailability() {
 
   // Auth
   const authStore = useV2Auth();
+  const activeTeamRole = authStore((state) => state.activeTeamRole);
   const user = authStore((state) => state.user);
-  const isCoach = user?.activeTeamRole === 'COACH' || user?.activeTeamRole === 'OWNER';
+  const isCoach = activeTeamRole === 'COACH' || activeTeamRole === 'OWNER';
 
   // Navigation
   const goToPreviousWeek = () => {

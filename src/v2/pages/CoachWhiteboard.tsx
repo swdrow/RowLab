@@ -9,8 +9,8 @@ export default function CoachWhiteboard() {
 
   // Get user role from auth store
   const authStore = useV2Auth();
-  const user = authStore((state) => state.user);
-  const canEdit = user?.activeTeamRole === 'COACH' || user?.activeTeamRole === 'OWNER';
+  const activeTeamRole = authStore((state) => state.activeTeamRole);
+  const canEdit = activeTeamRole === 'COACH' || activeTeamRole === 'OWNER';
 
   const handleSave = (content: string) => {
     const today = new Date().toISOString().split('T')[0];

@@ -1,23 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../utils/api';
+import useAuthStore from '../../store/authStore';
 import type { OarSet, ApiResponse } from '../types/coach';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 /**
  * Fetch all oar sets for current team
  */
 async function fetchOarSets(): Promise<OarSet[]> {
-  const response = await axios.get<ApiResponse<OarSet[]>>(
-    `${API_URL}/api/v1/oar-sets`,
-    { withCredentials: true }
-  );
+  const response = await api.get<ApiResponse<{ oarSets: OarSet[] }>>('/api/v1/oar-sets');
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to fetch oar sets');
   }
 
-  return response.data.data;
+  return response.data.data.oarSets;
 }
 
 /**
@@ -26,11 +22,7 @@ async function fetchOarSets(): Promise<OarSet[]> {
 async function createOarSet(
   data: Omit<OarSet, 'id' | 'teamId'>
 ): Promise<OarSet> {
-  const response = await axios.post<ApiResponse<OarSet>>(
-    `${API_URL}/api/v1/oar-sets`,
-    data,
-    { withCredentials: true }
-  );
+  const response = await api.post<ApiResponse<OarSet>>('/api/v1/oar-sets', data);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to create oar set');
@@ -45,11 +37,7 @@ async function createOarSet(
 async function updateOarSet(
   data: OarSet
 ): Promise<OarSet> {
-  const response = await axios.put<ApiResponse<OarSet>>(
-    `${API_URL}/api/v1/oar-sets/${data.id}`,
-    data,
-    { withCredentials: true }
-  );
+  const response = await api.put<ApiResponse<OarSet>>(`/api/v1/oar-sets/${data.id}`, data);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to update oar set');
@@ -62,10 +50,7 @@ async function updateOarSet(
  * Delete an oar set
  */
 async function deleteOarSet(id: string): Promise<void> {
-  const response = await axios.delete<ApiResponse<void>>(
-    `${API_URL}/api/v1/oar-sets/${id}`,
-    { withCredentials: true }
-  );
+  const response = await api.delete<ApiResponse<void>>(`/api/v1/oar-sets/${id}`);
 
   if (!response.data.success) {
     throw new Error(response.data.error?.message || 'Failed to delete oar set');
@@ -77,10 +62,13 @@ async function deleteOarSet(id: string): Promise<void> {
  */
 export function useOarSets() {
   const queryClient = useQueryClient();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
 
   const query = useQuery({
     queryKey: ['oar-sets'],
     queryFn: fetchOarSets,
+    enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes - equipment doesn't change often
   });
 

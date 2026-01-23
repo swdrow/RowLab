@@ -25,8 +25,8 @@ export default function CoachFleet() {
 
   // Auth
   const authStore = useV2Auth();
-  const user = authStore((state) => state.user);
-  const canEdit = user?.activeTeamRole === 'COACH' || user?.activeTeamRole === 'OWNER';
+  const activeTeamRole = authStore((state) => state.activeTeamRole);
+  const canEdit = activeTeamRole === 'COACH' || activeTeamRole === 'OWNER';
 
   // Shell handlers
   const handleShellSubmit = (data: any) => {

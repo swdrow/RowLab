@@ -1,8 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../utils/api';
+import useAuthStore from '../../store/authStore';
 import type { AthleteAvailability, AvailabilityDay, ApiResponse } from '../types/coach';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Format date for query key stability
 function formatDate(date: Date): string {
@@ -11,19 +10,22 @@ function formatDate(date: Date): string {
 
 /**
  * Fetch team-wide availability for date range
+ * Waits for auth to be initialized before fetching
  */
 export function useTeamAvailability(startDate: Date, endDate: Date) {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
+
   return useQuery({
     queryKey: ['availability', 'team', formatDate(startDate), formatDate(endDate)],
     queryFn: async () => {
-      const response = await axios.get<ApiResponse<{ availability: AthleteAvailability[] }>>(
-        `${API_URL}/api/v1/availability/team`,
+      const response = await api.get<ApiResponse<{ availability: AthleteAvailability[] }>>(
+        '/api/v1/availability/team',
         {
           params: {
             startDate: formatDate(startDate),
             endDate: formatDate(endDate),
           },
-          withCredentials: true,
         }
       );
       if (!response.data.success) {
@@ -31,26 +33,31 @@ export function useTeamAvailability(startDate: Date, endDate: Date) {
       }
       return response.data.data?.availability || [];
     },
+    // Only fetch when auth is initialized and user is authenticated
+    enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
 /**
  * Fetch single athlete's availability
+ * Waits for auth to be initialized before fetching
  */
 export function useAthleteAvailability(athleteId: string | undefined, startDate: Date, endDate: Date) {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
+
   return useQuery({
     queryKey: ['availability', 'athlete', athleteId, formatDate(startDate), formatDate(endDate)],
     queryFn: async () => {
       if (!athleteId) return [];
-      const response = await axios.get<ApiResponse<{ availability: AvailabilityDay[] }>>(
-        `${API_URL}/api/v1/availability/${athleteId}`,
+      const response = await api.get<ApiResponse<{ availability: AvailabilityDay[] }>>(
+        `/api/v1/availability/${athleteId}`,
         {
           params: {
             startDate: formatDate(startDate),
             endDate: formatDate(endDate),
           },
-          withCredentials: true,
         }
       );
       if (!response.data.success) {
@@ -58,7 +65,7 @@ export function useAthleteAvailability(athleteId: string | undefined, startDate:
       }
       return response.data.data?.availability || [];
     },
-    enabled: !!athleteId,
+    enabled: !!athleteId && isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -71,10 +78,9 @@ export function useUpdateAvailability() {
 
   return useMutation({
     mutationFn: async ({ athleteId, availability }: { athleteId: string; availability: AvailabilityDay[] }) => {
-      const response = await axios.put<ApiResponse<{ availability: AvailabilityDay[] }>>(
-        `${API_URL}/api/v1/availability/${athleteId}`,
-        { availability },
-        { withCredentials: true }
+      const response = await api.put<ApiResponse<{ availability: AvailabilityDay[] }>>(
+        `/api/v1/availability/${athleteId}`,
+        { availability }
       );
       if (!response.data.success) {
         throw new Error(response.data.error?.message || 'Failed to update availability');
