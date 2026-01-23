@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
 import { AvailabilityCell } from './AvailabilityCell';
 import type { AthleteAvailability, AvailabilitySlot } from '../../types/coach';
 
 interface AvailabilityGridProps {
-  athletes: AthleteAvailability[];
-  dates: Date[];
-  onCellClick?: (athleteId: string, date: Date) => void;
+  data: AthleteAvailability[];
+  startDate: Date;
+  numDays: number;
+  onAthleteClick?: (athleteId: string) => void;
 }
 
 /**
@@ -50,11 +52,22 @@ function BiometricBadge({ label }: { label: string }) {
  * - Dynamic columns based on date range
  * - Color-coded cells via AvailabilityCell
  */
-export function AvailabilityGrid({ athletes, dates, onCellClick }: AvailabilityGridProps) {
+export function AvailabilityGrid({ data, startDate, numDays, onAthleteClick }: AvailabilityGridProps) {
+  // Generate dates array from startDate and numDays
+  const dates = useMemo(() => {
+    const result: Date[] = [];
+    for (let i = 0; i < numDays; i++) {
+      const date = new Date(startDate);
+      date.setDate(date.getDate() + i);
+      result.push(date);
+    }
+    return result;
+  }, [startDate, numDays]);
+
   // Helper to get slot for a specific date
   const getSlot = (athlete: AthleteAvailability, date: Date): { morning: AvailabilitySlot; evening: AvailabilitySlot } => {
     const dateStr = date.toISOString().split('T')[0];
-    const dayData = athlete.dates.find(d => d.date === dateStr);
+    const dayData = athlete.dates?.find(d => d.date === dateStr);
     return {
       morning: dayData?.morningSlot || 'NOT_SET',
       evening: dayData?.eveningSlot || 'NOT_SET',
@@ -83,12 +96,13 @@ export function AvailabilityGrid({ athletes, dates, onCellClick }: AvailabilityG
         ))}
 
         {/* Athlete rows */}
-        {athletes.map((athlete) => (
+        {data.map((athlete) => (
           <>
             {/* Athlete name + biometrics (sticky column) */}
             <div
               key={`${athlete.athleteId}-name`}
-              className="sticky left-0 bg-bg-surface p-2 border-b border-border-subtle flex items-center gap-2 z-10"
+              className="sticky left-0 bg-bg-surface p-2 border-b border-border-subtle flex items-center gap-2 z-10 cursor-pointer hover:bg-bg-hover"
+              onClick={() => onAthleteClick?.(athlete.athleteId)}
             >
               <span className="text-text-primary font-medium truncate">{athlete.athleteName}</span>
               <div className="flex items-center gap-1">
@@ -109,7 +123,6 @@ export function AvailabilityGrid({ athletes, dates, onCellClick }: AvailabilityG
                   <AvailabilityCell
                     morningSlot={slots.morning}
                     eveningSlot={slots.evening}
-                    onClick={() => onCellClick?.(athlete.athleteId, date)}
                   />
                 </div>
               );

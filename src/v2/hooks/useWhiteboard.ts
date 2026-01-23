@@ -1,27 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '../utils/api';
+import useAuthStore from '../../store/authStore';
 import type { Whiteboard, ApiResponse } from '../types/coach';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 /**
  * Fetch latest whiteboard for current team
  */
 async function fetchWhiteboard(): Promise<Whiteboard | null> {
-  const response = await axios.get<ApiResponse<Whiteboard>>(
-    `${API_URL}/api/v1/whiteboards/latest`,
-    { withCredentials: true }
-  );
+  try {
+    const response = await api.get<ApiResponse<Whiteboard>>('/api/v1/whiteboards/latest');
 
-  if (!response.data.success) {
-    // 404 is expected if no whiteboard exists yet
-    if (response.status === 404) {
+    if (!response.data.success) {
       return null;
     }
-    throw new Error(response.data.error?.message || 'Failed to fetch whiteboard');
-  }
 
-  return response.data.data || null;
+    return response.data.data || null;
+  } catch (error: any) {
+    // 404 is expected if no whiteboard exists yet
+    if (error.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 /**
@@ -30,11 +30,7 @@ async function fetchWhiteboard(): Promise<Whiteboard | null> {
 async function saveWhiteboard(
   data: Pick<Whiteboard, 'date' | 'content'>
 ): Promise<Whiteboard> {
-  const response = await axios.post<ApiResponse<Whiteboard>>(
-    `${API_URL}/api/v1/whiteboards`,
-    data,
-    { withCredentials: true }
-  );
+  const response = await api.post<ApiResponse<Whiteboard>>('/api/v1/whiteboards', data);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to save whiteboard');
@@ -47,10 +43,7 @@ async function saveWhiteboard(
  * Delete whiteboard
  */
 async function deleteWhiteboard(id: string): Promise<void> {
-  const response = await axios.delete<ApiResponse<void>>(
-    `${API_URL}/api/v1/whiteboards/${id}`,
-    { withCredentials: true }
-  );
+  const response = await api.delete<ApiResponse<void>>(`/api/v1/whiteboards/${id}`);
 
   if (!response.data.success) {
     throw new Error(response.data.error?.message || 'Failed to delete whiteboard');
@@ -62,10 +55,13 @@ async function deleteWhiteboard(id: string): Promise<void> {
  */
 export function useWhiteboard() {
   const queryClient = useQueryClient();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
 
   const query = useQuery({
     queryKey: ['whiteboard', 'latest'],
     queryFn: fetchWhiteboard,
+    enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes - whiteboards don't change often
   });
 
