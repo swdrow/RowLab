@@ -31,6 +31,10 @@ const InviteClaimPage = lazy(() => import('./pages/auth/InviteClaimPage'));
 // Integration callback pages
 const Concept2CallbackPage = lazy(() => import('./pages/Concept2CallbackPage'));
 
+// V2 routes (new) - using @v2 path alias
+const V2Layout = lazy(() => import('@v2/layouts/V2Layout'));
+const BetaHome = lazy(() => import('@v2/pages/BetaHome'));
+
 // Error Boundary for catching rendering errors
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -253,6 +257,18 @@ function App() {
                 element={
                   <Suspense fallback={<LoadingFallback variant="component" />}>
                     <CoxswainView />
+                  </Suspense>
+                }
+              />
+            </Route>
+
+            {/* V2 Beta routes - isolated under /beta */}
+            <Route path="/beta" element={<V2Layout />}>
+              <Route
+                index
+                element={
+                  <Suspense fallback={<LoadingFallback variant="component" message="Loading V2..." />}>
+                    <BetaHome />
                   </Suspense>
                 }
               />
