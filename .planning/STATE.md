@@ -4,8 +4,8 @@
 
 **Milestone:** v1.0 — Full UX Redesign
 **Phase:** 4 (Migration Loop) — IN PROGRESS
-**Status:** Phase 4 in progress (9/12 plans)
-**Last activity:** 2026-01-23 — Completed 04-09-PLAN.md (Availability UI Components)
+**Status:** Phase 4 in progress (10/12 plans)
+**Last activity:** 2026-01-23 — Completed 04-10-PLAN.md (Coach Pages)
 
 ## Project Reference
 
@@ -21,10 +21,10 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | 1 | Clean Room Setup | ● Complete | 4/4 |
 | 2 | Foundation | ● Complete | 4/4 |
 | 3 | Vertical Slice | ● Complete | 7/7 |
-| 4 | Migration Loop | ◐ In Progress | 9/12 |
+| 4 | Migration Loop | ◐ In Progress | 10/12 |
 | 5 | The Flip | ○ Pending | — |
 
-Progress: █████████░ ~89%
+Progress: █████████░ ~91%
 
 ## Quick Context
 
@@ -93,10 +93,11 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 04-07 | Whiteboard UI components (WhiteboardView, WhiteboardEditor) | ● Complete |
 | 04-08 | Fleet management UI (forms, tables, modal) | ● Complete |
 | 04-09 | Availability UI components (Grid, Cell, Editor) | ● Complete |
+| 04-10 | Coach pages (Whiteboard, Fleet, Availability) | ● Complete |
 | 04-12 | Athlete biometrics (schema, API, types) | ● Complete |
 | 04-05+ | TBD | ○ Pending |
 
-**Commits:** 20 task commits across 9 plans
+**Commits:** 23 task commits across 10 plans
 
 ## Accumulated Decisions
 
@@ -176,12 +177,16 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 04-08 | Role-based action visibility | Tables show edit/delete only when canEdit prop is true |
 | 04-09 | Biometrics badge design | Display as compact badges (P/S/B/C, Sc, Cx) next to athlete name for immediate visibility |
 | 04-09 | Sticky column width 200px | Accommodates name + 3 badges without truncation |
-| 04-09 | Slot selector UI with buttons | Button group (✓ ? ✗ —) instead of dropdown for faster interaction
+| 04-09 | Slot selector UI with buttons | Button group (✓ ? ✗ —) instead of dropdown for faster interaction |
+| 04-10 | Derive canEdit from auth store at page level | Pages determine permissions and pass to components as props |
+| 04-10 | Week navigation starts Monday | Availability grid uses Monday-start weeks with Sunday adjustment logic |
+| 04-10 | Permission-based athlete editing | Coaches can edit any athlete, athletes can only edit their own availability |
+| 04-10 | Page-level modal state management | Separate state for modal visibility and editing entity (editingShell, editingOarSet, editingAthlete)
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 19:51 UTC
-**Stopped at:** Completed 04-09-PLAN.md (Availability UI Components) - Phase 4 in progress
+**Last session:** 2026-01-23 20:01 UTC
+**Stopped at:** Completed 04-10-PLAN.md (Coach Pages) - Phase 4 in progress
 **Resume file:** None
 
 ## Known Limitations
@@ -190,7 +195,7 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 ## Next Action
 
-Phase 4 in progress! Backend API foundation complete, UI components built:
+Phase 4 in progress! Backend API foundation complete, UI components built, coach pages integrated:
 - ✓ Dependencies installed (04-01)
 - ✓ Whiteboard API (04-02)
 - ✓ OarSet API (04-03)
@@ -199,9 +204,10 @@ Phase 4 in progress! Backend API foundation complete, UI components built:
 - ✓ Whiteboard UI components (04-07)
 - ✓ Fleet management UI (04-08)
 - ✓ Availability UI components (04-09)
+- ✓ Coach pages (04-10)
 - ✓ Athlete biometrics (04-12)
 
-Ready for page integration and coach dashboard features.
+Coach context pages complete at /beta/coach/* routes! Ready for remaining Phase 4 plans.
 
 ---
-*Last updated: 2026-01-23 — Phase 4 in progress (9/12 plans)*
+*Last updated: 2026-01-23 — Phase 4 in progress (10/12 plans)*
