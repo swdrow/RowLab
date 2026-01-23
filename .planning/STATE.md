@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v1.0 — Full UX Redesign
-**Phase:** 3 (Vertical Slice) — COMPLETE
-**Status:** Phase 3 complete (7/7 plans)
-**Last activity:** 2026-01-23 — Completed 03-07-PLAN.md (Dashboard Page with Bento Grid)
+**Phase:** 4 (Migration Loop) — IN PROGRESS
+**Status:** Phase 4 in progress (1/12 plans)
+**Last activity:** 2026-01-23 — Completed 04-01-PLAN.md (Phase 4 npm dependencies)
 
 ## Project Reference
 
@@ -21,10 +21,10 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | 1 | Clean Room Setup | ● Complete | 4/4 |
 | 2 | Foundation | ● Complete | 4/4 |
 | 3 | Vertical Slice | ● Complete | 7/7 |
-| 4 | Migration Loop | ○ Pending | — |
+| 4 | Migration Loop | ◐ In Progress | 1/12 |
 | 5 | The Flip | ○ Pending | — |
 
-Progress: █████████░ ~85%
+Progress: █████████░ ~86%
 
 ## Quick Context
 
@@ -80,6 +80,25 @@ Progress: █████████░ ~85%
 - Fixed `card-bg` token to use elevated surface for proper contrast
 
 Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contributed 3 commits, 03-04 contributed 3 commits, 03-05 contributed 2 commits, 03-06 contributed 2 commits, 03-07 contributed 3 commits
+
+## Phase 4 Deliverables
+
+| Plan | Description | Status |
+|------|-------------|--------|
+| 04-01 | Phase 4 npm dependencies (react-hook-form, @hookform/resolvers, @uiw/react-md-editor) | ● Complete |
+| 04-02 | Whiteboard schema and API | ○ Pending |
+| 04-03 | Whiteboard CRUD hooks | ○ Pending |
+| 04-04 | Whiteboard list view | ○ Pending |
+| 04-05 | Whiteboard detail view | ○ Pending |
+| 04-06 | Coach availability schema and API | ○ Pending |
+| 04-07 | Coach availability hooks | ○ Pending |
+| 04-08 | Coach availability UI | ○ Pending |
+| 04-09 | Athlete biometrics schema and API | ○ Pending |
+| 04-10 | Athlete biometrics hooks | ○ Pending |
+| 04-11 | Athlete biometrics entry form | ○ Pending |
+| 04-12 | Athlete biometrics display | ○ Pending |
+
+**Commits:** 1 task commit
 
 ## Accumulated Decisions
 
@@ -141,11 +160,12 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 03-07 | Optimistic drag updates with server persistence | Local state updates immediately, then syncs to server via setPinnedModules |
 | 03-07 | 8px activation constraint for drag | Prevents accidental drags when clicking widget contents |
 | 03-07 | Placeholder widgets for future integrations | c2-logbook, strava-feed, quick-stats show "coming soon" messages |
+| 04-01 | Phase-level dependency installation | Install all phase dependencies upfront before feature work |
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 17:27 UTC
-**Stopped at:** Completed 03-07-PLAN.md (Dashboard Page with Bento Grid) - Phase 3 complete
+**Last session:** 2026-01-23 19:16 UTC
+**Stopped at:** Completed 04-01-PLAN.md (Phase 4 npm dependencies) - Phase 4 in progress
 **Resume file:** None
 
 ## Known Limitations
@@ -154,13 +174,12 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 ## Next Action
 
-Phase 3 complete! Ready for Phase 4 (Migration Loop) or continue building on vertical slice foundation.
+Phase 4 in progress! Dependencies installed, ready for coach feature development:
+- Whiteboard system (plans 04-02 through 04-05)
+- Coach availability tracking (plans 04-06 through 04-08)
+- Athlete biometrics entry (plans 04-09 through 04-12)
 
-The vertical slice is now complete with a fully functional personal dashboard at /beta/me featuring:
-- Adaptive headline based on user activity patterns
-- Unified activity feed from multiple sources
-- Drag-and-drop widget reordering with persistence
-- Responsive bento grid layout
+**Next plan:** 04-02 (Whiteboard schema and API)
 
 ---
-*Last updated: 2026-01-23 — Phase 3 complete (7/7 plans)*
+*Last updated: 2026-01-23 — Phase 4 started (1/12 plans)*
