@@ -146,13 +146,22 @@ Plans:
 **Goal:** Make V2 the default experience, V1 becomes legacy fallback.
 
 **Delivers:**
-- V2 at `/` (default)
+- V2 at `/app` (default authenticated entry)
 - V1 at `/legacy` (opt-in fallback)
 - Feature parity verification
 - Usage analytics (V1 vs V2)
 - User preference for legacy mode
 
 **Requirements:** FLIP-01 through FLIP-05
+
+**Plans:** 5 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — User preference store and redirect hook (legacy mode opt-in)
+- [ ] 05-02-PLAN.md — Route migration (V2 at /app, V1 at /legacy)
+- [ ] 05-03-PLAN.md — Version toggle component (switch between V1/V2)
+- [ ] 05-04-PLAN.md — Route analytics (V1 vs V2 usage tracking)
+- [ ] 05-05-PLAN.md — Feature parity checklist and verification checkpoint
 
 **Success Criteria:**
 - New users land on V2 by default
@@ -169,8 +178,8 @@ Plans:
 | 1 | Clean Room Setup | 14 | 4 | Complete |
 | 2 | Foundation | 8 | 4 | Complete |
 | 3 | Vertical Slice | 14 | 8 | Complete |
-| 4 | Migration Loop | 11 | 11 | Pending |
-| 5 | The Flip | 5 | — | Pending |
+| 4 | Migration Loop | 11 | 12 | Complete |
+| 5 | The Flip | 5 | 5 | Pending |
 
 **Total:** 45 requirements across 5 phases
 
@@ -191,4 +200,4 @@ Backend APIs are scheduled to complete before frontend features need them.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 after Phase 4 planning*
+*Last updated: 2026-01-23 after Phase 5 planning*
