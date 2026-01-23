@@ -1,0 +1,1 @@
+export { CrudModal } from './CrudModal';
