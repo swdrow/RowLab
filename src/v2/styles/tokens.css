@@ -90,9 +90,9 @@
      ======================================== */
 
   /* Card Component */
-  --color-card-bg: var(--color-bg-surface);
+  --color-card-bg: var(--color-bg-surface-elevated);
   --color-card-border: var(--color-border-subtle);
-  --color-card-hover: var(--color-bg-hover);
+  --color-card-hover: var(--color-bg-active);
 
   /* Button Component */
   --color-button-primary-bg: var(--color-interactive-primary);
@@ -148,9 +148,9 @@
   --color-interactive-disabled: var(--palette-neutral-300);
 
   /* Component Tokens */
-  --color-card-bg: var(--palette-neutral-100);
+  --color-card-bg: var(--palette-neutral-50);
   --color-card-border: var(--color-border-subtle);
-  --color-card-hover: var(--palette-neutral-200);
+  --color-card-hover: var(--palette-neutral-100);
 
   --color-button-secondary-bg: var(--palette-neutral-200);
   --color-button-secondary-hover: var(--palette-neutral-300);

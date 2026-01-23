@@ -38,7 +38,7 @@ function EmptyState() {
   return (
     <div className="rounded-lg bg-card-bg p-8 border border-card-border text-center">
       <svg
-        className="w-12 h-12 mx-auto mb-4 text-text-secondary"
+        className="w-12 h-12 mx-auto mb-4 text-txt-secondary"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -50,8 +50,8 @@ function EmptyState() {
           d="M13 10V3L4 14h7v7l9-11h-7z"
         />
       </svg>
-      <h3 className="text-text-primary font-medium mb-2">No activities yet</h3>
-      <p className="text-text-secondary text-sm">
+      <h3 className="text-txt-primary font-medium mb-2">No activities yet</h3>
+      <p className="text-txt-secondary text-sm">
         Your recent workouts from Concept2, Strava, and manual entries will appear here.
       </p>
     </div>
@@ -91,10 +91,10 @@ export function UnifiedActivityFeed() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-text-primary font-semibold text-lg">
+        <h2 className="text-txt-primary font-semibold text-lg">
           Recent Activities
           {!isLoading && activityCount > 0 && (
-            <span className="ml-2 text-text-secondary text-sm font-normal">
+            <span className="ml-2 text-txt-secondary text-sm font-normal">
               ({activityCount})
             </span>
           )}
@@ -128,10 +128,10 @@ export function UnifiedActivityFeed() {
               />
             </svg>
             <div className="flex-1 min-w-0">
-              <h3 className="text-text-primary font-medium mb-1">
+              <h3 className="text-txt-primary font-medium mb-1">
                 Failed to load activities
               </h3>
-              <p className="text-text-secondary text-sm mb-3">
+              <p className="text-txt-secondary text-sm mb-3">
                 {error instanceof Error ? error.message : 'An error occurred'}
               </p>
               <button

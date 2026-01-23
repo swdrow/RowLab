@@ -43,9 +43,9 @@ const WIDGET_CONFIGS: Record<WidgetId, WidgetConfig> = {
   // Placeholder widgets - will be implemented later
   'c2-logbook': {
     component: () => (
-      <div className="rounded-xl bg-surface-secondary p-6 h-full">
-        <h3 className="text-lg font-semibold text-text-primary mb-2">C2 Logbook</h3>
-        <p className="text-text-secondary text-sm">Concept2 integration coming soon.</p>
+      <div className="rounded-xl bg-card-bg p-6 h-full">
+        <h3 className="text-lg font-semibold text-txt-primary mb-2">C2 Logbook</h3>
+        <p className="text-txt-secondary text-sm">Concept2 integration coming soon.</p>
       </div>
     ),
     size: 'medium',
@@ -53,9 +53,9 @@ const WIDGET_CONFIGS: Record<WidgetId, WidgetConfig> = {
   },
   'strava-feed': {
     component: () => (
-      <div className="rounded-xl bg-surface-secondary p-6 h-full">
-        <h3 className="text-lg font-semibold text-text-primary mb-2">Strava</h3>
-        <p className="text-text-secondary text-sm">Strava integration coming soon.</p>
+      <div className="rounded-xl bg-card-bg p-6 h-full">
+        <h3 className="text-lg font-semibold text-txt-primary mb-2">Strava</h3>
+        <p className="text-txt-secondary text-sm">Strava integration coming soon.</p>
       </div>
     ),
     size: 'medium',
@@ -63,9 +63,9 @@ const WIDGET_CONFIGS: Record<WidgetId, WidgetConfig> = {
   },
   'quick-stats': {
     component: () => (
-      <div className="rounded-xl bg-surface-secondary p-6 h-full">
-        <h3 className="text-lg font-semibold text-text-primary mb-2">Quick Stats</h3>
-        <p className="text-text-secondary text-sm">Stats summary coming soon.</p>
+      <div className="rounded-xl bg-card-bg p-6 h-full">
+        <h3 className="text-lg font-semibold text-txt-primary mb-2">Quick Stats</h3>
+        <p className="text-txt-secondary text-sm">Stats summary coming soon.</p>
       </div>
     ),
     size: 'small',
@@ -139,11 +139,11 @@ export function DashboardGrid() {
   if (prefsLoading) {
     return (
       <div className="grid gap-4 animate-pulse">
-        <div className="h-32 bg-surface-secondary rounded-xl col-span-full" />
+        <div className="h-32 bg-card-bg rounded-xl col-span-full" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="h-64 bg-surface-secondary rounded-xl md:col-span-2 md:row-span-2" />
-          <div className="h-32 bg-surface-secondary rounded-xl" />
-          <div className="h-32 bg-surface-secondary rounded-xl" />
+          <div className="h-64 bg-card-bg rounded-xl md:col-span-2 md:row-span-2" />
+          <div className="h-32 bg-card-bg rounded-xl" />
+          <div className="h-32 bg-card-bg rounded-xl" />
         </div>
       </div>
     );

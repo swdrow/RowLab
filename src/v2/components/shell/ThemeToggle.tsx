@@ -30,11 +30,11 @@ export function ThemeToggle() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-text-muted">Theme:</span>
+      <span className="text-sm text-txt-muted">Theme:</span>
       <select
         value={displayValue}
         onChange={handleChange}
-        className="text-sm bg-bg-surface border border-border-default rounded px-2 py-1 text-text-primary"
+        className="text-sm bg-bg-surface border border-bdr-default rounded px-2 py-1 text-txt-primary"
         aria-label="Select theme"
       >
         <option value="system">

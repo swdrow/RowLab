@@ -54,7 +54,7 @@ export function WorkspaceSidebar() {
   return (
     <nav
       aria-label={`${activeContext} workspace navigation`}
-      className="workspace-sidebar flex flex-col gap-1 p-4 w-64 h-full bg-bg-surface border-r border-border-default"
+      className="workspace-sidebar flex flex-col gap-1 p-4 w-64 h-full bg-bg-surface border-r border-bdr-default"
     >
       {navItems.map((item) => {
         const isActive = location.pathname === item.to;
@@ -69,8 +69,8 @@ export function WorkspaceSidebar() {
               'flex items-center gap-3 px-3 py-2 rounded-lg',
               'transition-colors duration-150',
               isActive
-                ? 'bg-action-primary text-button-primary-text'
-                : 'text-text-secondary hover:bg-bg-hover hover:text-text-primary'
+                ? 'bg-interactive-primary text-button-primary-text'
+                : 'text-txt-secondary hover:bg-bg-hover hover:text-txt-primary'
             )}
           >
             {IconComponent && <IconComponent className="w-5 h-5" />}

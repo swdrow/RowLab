@@ -17,16 +17,17 @@ export default function V2Layout() {
       <AuthStoreContext.Provider value={useAuthStore}>
         <SettingsStoreContext.Provider value={useSettingsStore}>
           <div
-            className="v2 min-h-screen bg-bg-surface"
+            className="v2"
             data-theme={theme === 'dark' ? undefined : theme}
           >
-            <header className="bg-bg-elevated border-b border-border-default px-4 py-3">
+            <div className="min-h-screen bg-bg-surface">
+            <header className="bg-bg-surface-elevated border-b border-bdr-default px-4 py-3">
               <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <div className="flex items-center gap-3">
-                  <h1 className="text-xl font-display text-text-primary">
+                  <h1 className="text-xl font-display text-txt-primary">
                     RowLab V2
                   </h1>
-                  <span className="px-2 py-0.5 text-xs font-medium bg-action-primary/20 text-action-primary rounded">
+                  <span className="px-2 py-0.5 text-xs font-medium bg-interactive-primary/20 text-interactive-primary rounded">
                     BETA
                   </span>
                 </div>
@@ -36,6 +37,7 @@ export default function V2Layout() {
             <main className="min-h-[calc(100vh-57px)]">
               <Outlet />
             </main>
+            </div>
           </div>
           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
         </SettingsStoreContext.Provider>

@@ -99,7 +99,7 @@ export function ContextRail() {
 
   return (
     <nav
-      className="w-16 h-full bg-bg-surface-elevated border-r border-border-default flex flex-col items-center py-4 gap-2"
+      className="w-16 h-full bg-bg-surface-elevated border-r border-bdr-default flex flex-col items-center py-4 gap-2"
       aria-label="Workspace contexts"
     >
       {contexts.map((context) => {
@@ -112,13 +112,13 @@ export function ContextRail() {
             onClick={() => setActiveContext(context.id)}
             aria-label={context.ariaLabel}
             aria-current={isActive ? 'page' : undefined}
-            className="relative w-12 h-12 rounded-lg flex items-center justify-center hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-action-primary focus:ring-offset-2 focus:ring-offset-bg-surface-elevated"
+            className="relative w-12 h-12 rounded-lg flex items-center justify-center hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:ring-offset-2 focus:ring-offset-bg-surface-elevated"
           >
             {/* Active indicator background - animates between buttons */}
             {isActive && (
               <motion.div
                 layoutId="activeContext"
-                className="absolute inset-0 bg-action-primary/10 rounded-lg"
+                className="absolute inset-0 bg-interactive-primary/10 rounded-lg"
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
@@ -126,7 +126,7 @@ export function ContextRail() {
             {/* Icon - relative positioning to appear above indicator */}
             <Icon
               className={`relative w-6 h-6 transition-colors ${
-                isActive ? 'text-text-primary' : 'text-text-secondary'
+                isActive ? 'text-txt-primary' : 'text-txt-secondary'
               }`}
             />
           </button>

@@ -73,15 +73,15 @@ export function WidgetWrapper({
             {...listeners}
             className="
               absolute top-2 right-2 z-10
-              p-1.5 rounded-lg bg-surface-secondary/50
-              hover:bg-surface-secondary transition-colors
+              p-1.5 rounded-lg bg-card-bg/50
+              hover:bg-card-bg transition-colors
               cursor-grab active:cursor-grabbing
               opacity-0 group-hover:opacity-100
             "
             title="Drag to reorder"
           >
             <svg
-              className="w-4 h-4 text-text-tertiary"
+              className="w-4 h-4 text-txt-tertiary"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

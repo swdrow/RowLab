@@ -95,6 +95,90 @@ export default {
           'active': 'rgba(255, 255, 255, 0.15)',
           'accent': 'rgba(0, 112, 243, 0.4)',
         },
+
+        // ============================================
+        // V2 DESIGN TOKENS (CSS Variables from tokens.css)
+        // These use CSS custom properties scoped to .v2
+        // ============================================
+
+        // V2 Background tokens
+        'bg': {
+          'base': 'var(--color-bg-base)',
+          'surface': 'var(--color-bg-surface)',
+          'surface-elevated': 'var(--color-bg-surface-elevated)',
+          'overlay': 'var(--color-bg-overlay)',
+          'hover': 'var(--color-bg-hover)',
+          'active': 'var(--color-bg-active)',
+        },
+
+        // V2 Card tokens
+        'card': {
+          'bg': 'var(--color-card-bg)',
+          'border': 'var(--color-card-border)',
+          'hover': 'var(--color-card-hover)',
+        },
+
+        // V2 Button tokens
+        'button': {
+          'primary-bg': 'var(--color-button-primary-bg)',
+          'primary-hover': 'var(--color-button-primary-hover)',
+          'primary-text': 'var(--color-button-primary-text)',
+          'secondary-bg': 'var(--color-button-secondary-bg)',
+          'secondary-hover': 'var(--color-button-secondary-hover)',
+          'secondary-text': 'var(--color-button-secondary-text)',
+        },
+
+        // V2 Interactive tokens
+        'interactive': {
+          'primary': 'var(--color-interactive-primary)',
+          'hover': 'var(--color-interactive-hover)',
+          'active': 'var(--color-interactive-active)',
+          'disabled': 'var(--color-interactive-disabled)',
+        },
+
+        // V2 Input tokens
+        'input': {
+          'bg': 'var(--color-input-bg)',
+          'border': 'var(--color-input-border)',
+          'focus': 'var(--color-input-focus)',
+          'text': 'var(--color-input-text)',
+          'placeholder': 'var(--color-input-placeholder)',
+        },
+
+        // V2 Status tokens
+        'status': {
+          'success': 'var(--color-status-success)',
+          'warning': 'var(--color-status-warning)',
+          'error': 'var(--color-status-error)',
+          'info': 'var(--color-status-info)',
+        },
+
+        // V2 Field theme colors
+        'field': {
+          'sky': 'var(--color-field-sky)',
+          'grass': 'var(--color-field-grass)',
+          'weather': 'var(--color-field-weather)',
+        },
+
+        // V2 Text tokens (prefixed to avoid V1 conflict)
+        // Usage: text-txt-primary, text-txt-secondary, etc.
+        'txt': {
+          'primary': 'var(--color-text-primary)',
+          'secondary': 'var(--color-text-secondary)',
+          'tertiary': 'var(--color-text-tertiary)',
+          'muted': 'var(--color-text-muted)',
+          'inverse': 'var(--color-text-inverse)',
+          'brand': 'var(--color-text-brand)',
+        },
+
+        // V2 Border tokens (prefixed to avoid V1 conflict)
+        // Usage: border-bdr-default, border-bdr-subtle, etc.
+        'bdr': {
+          'default': 'var(--color-border-default)',
+          'subtle': 'var(--color-border-subtle)',
+          'strong': 'var(--color-border-strong)',
+          'brand': 'var(--color-border-brand)',
+        },
       },
 
       // Background gradients - Water/Dawn system

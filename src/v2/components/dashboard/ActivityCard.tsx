@@ -85,10 +85,10 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
           {/* Activity title */}
           <div className="min-w-0">
-            <h4 className="text-text-primary font-medium truncate">
+            <h4 className="text-txt-primary font-medium truncate">
               {activity.title || getActivityTypeName(activity.activityType)}
             </h4>
-            <p className="text-text-secondary text-sm">
+            <p className="text-txt-secondary text-sm">
               {formatActivityDate(activity.date)}
             </p>
           </div>
@@ -97,12 +97,12 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         {/* Core metrics (always visible) */}
         <div className="flex items-center gap-4 text-sm">
           {distance && (
-            <span className="text-text-primary font-medium">
+            <span className="text-txt-primary font-medium">
               {formatDistance(distance)}
             </span>
           )}
           {duration && (
-            <span className="text-text-secondary">
+            <span className="text-txt-secondary">
               {formatDuration(duration)}
             </span>
           )}
@@ -110,7 +110,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
           {/* Expand indicator */}
           <svg
             className={`
-              w-5 h-5 text-text-secondary transition-transform
+              w-5 h-5 text-txt-secondary transition-transform
               ${isExpanded ? 'rotate-180' : ''}
             `}
             fill="none"
@@ -129,7 +129,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
       {/* Duplicate indicator */}
       {activity.duplicates && activity.duplicates.length > 0 && (
-        <div className="mt-2 text-xs text-text-secondary">
+        <div className="mt-2 text-xs text-txt-secondary">
           Also tracked on:{' '}
           {activity.duplicates.map(d => SOURCE_STYLES[d.source].label).join(', ')}
         </div>
@@ -145,13 +145,13 @@ export function ActivityCard({ activity }: ActivityCardProps) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="mt-4 pt-4 border-t border-border-default">
+            <div className="mt-4 pt-4 border-t border-bdr-default">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                 {/* Pace / Split */}
                 {activity.data?.splitSeconds && (
                   <div>
-                    <dt className="text-text-secondary">Pace</dt>
-                    <dd className="text-text-primary font-medium">
+                    <dt className="text-txt-secondary">Pace</dt>
+                    <dd className="text-txt-primary font-medium">
                       {formatDuration(activity.data.splitSeconds)}/500m
                     </dd>
                   </div>
@@ -160,8 +160,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                 {/* Heart Rate */}
                 {activity.data?.avgHeartRate && (
                   <div>
-                    <dt className="text-text-secondary">Avg HR</dt>
-                    <dd className="text-text-primary font-medium">
+                    <dt className="text-txt-secondary">Avg HR</dt>
+                    <dd className="text-txt-primary font-medium">
                       {activity.data.avgHeartRate} bpm
                     </dd>
                   </div>
@@ -170,8 +170,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                 {/* Stroke Rate */}
                 {activity.data?.strokeRate && (
                   <div>
-                    <dt className="text-text-secondary">Stroke Rate</dt>
-                    <dd className="text-text-primary font-medium">
+                    <dt className="text-txt-secondary">Stroke Rate</dt>
+                    <dd className="text-txt-primary font-medium">
                       {activity.data.strokeRate} spm
                     </dd>
                   </div>
@@ -180,8 +180,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                 {/* Watts */}
                 {activity.data?.watts && (
                   <div>
-                    <dt className="text-text-secondary">Power</dt>
-                    <dd className="text-text-primary font-medium">
+                    <dt className="text-txt-secondary">Power</dt>
+                    <dd className="text-txt-primary font-medium">
                       {activity.data.watts}W
                     </dd>
                   </div>
@@ -190,8 +190,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                 {/* Calories */}
                 {activity.data?.calories && (
                   <div>
-                    <dt className="text-text-secondary">Calories</dt>
-                    <dd className="text-text-primary font-medium">
+                    <dt className="text-txt-secondary">Calories</dt>
+                    <dd className="text-txt-primary font-medium">
                       {activity.data.calories} kcal
                     </dd>
                   </div>
@@ -200,8 +200,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                 {/* Drag Factor */}
                 {activity.data?.dragFactor && (
                   <div>
-                    <dt className="text-text-secondary">Drag</dt>
-                    <dd className="text-text-primary font-medium">
+                    <dt className="text-txt-secondary">Drag</dt>
+                    <dd className="text-txt-primary font-medium">
                       {activity.data.dragFactor}
                     </dd>
                   </div>
@@ -210,7 +210,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
               {/* Description */}
               {activity.description && (
-                <p className="mt-4 text-text-secondary text-sm">
+                <p className="mt-4 text-txt-secondary text-sm">
                   {activity.description}
                 </p>
               )}
