@@ -152,10 +152,46 @@ model Athlete {
   athleteRatings      AthleteRating[]
   telemetryData       AthleteTelemetry[]
   seatRaceAssignments SeatRaceAssignment[]
+  availability        Availability[]
+  defaultSchedule     DefaultSchedule?
 
   @@unique([teamId, lastName, firstName])
   @@index([teamId])
   @@map("athletes")
+}
+
+// ============================================
+// AVAILABILITY: Athlete scheduling
+// ============================================
+
+model Availability {
+  id           String           @id @default(uuid())
+  athleteId    String
+  date         DateTime
+  morningSlot  AvailabilitySlot @default(NOT_SET)
+  eveningSlot  AvailabilitySlot @default(NOT_SET)
+  notes        String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([athleteId, date])
+  @@index([athleteId])
+  @@index([date])
+  @@map("availability")
+}
+
+model DefaultSchedule {
+  id        String   @id @default(uuid())
+  athleteId String   @unique
+  schedule  Json     // { monday: { morning: "AVAILABLE", evening: "UNAVAILABLE" }, ... }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@map("default_schedules")
 }
 
 model Concept2Auth {
