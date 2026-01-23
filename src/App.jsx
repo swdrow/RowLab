@@ -33,6 +33,7 @@ const Concept2CallbackPage = lazy(() => import('./pages/Concept2CallbackPage'));
 
 // V2 routes (new) - using @v2 path alias
 const V2Layout = lazy(() => import('@v2/layouts/V2Layout'));
+const ShellLayout = lazy(() => import('@v2/layouts/ShellLayout'));
 const BetaHome = lazy(() => import('@v2/pages/BetaHome'));
 
 // Error Boundary for catching rendering errors
@@ -264,14 +265,25 @@ function App() {
 
             {/* V2 Beta routes - isolated under /beta */}
             <Route path="/beta" element={<V2Layout />}>
+              {/* Routes with shell (rail + sidebar + content) */}
               <Route
-                index
                 element={
-                  <Suspense fallback={<LoadingFallback variant="component" message="Loading V2..." />}>
-                    <BetaHome />
+                  <Suspense fallback={<LoadingFallback variant="component" message="Loading shell..." />}>
+                    <ShellLayout />
                   </Suspense>
                 }
-              />
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense fallback={<LoadingFallback variant="component" message="Loading V2..." />}>
+                      <BetaHome />
+                    </Suspense>
+                  }
+                />
+              </Route>
+
+              {/* Routes without shell (future: onboarding, etc.) can go here */}
             </Route>
 
             {/* 404 fallback */}
