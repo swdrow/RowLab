@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v1.0 — Full UX Redesign
-**Phase:** 4 (Migration Loop) — COMPLETE
-**Status:** Phase 4 complete (12/12 plans) — Ready for Phase 5
-**Last activity:** 2026-01-23 — Verified coach features (04-11)
+**Phase:** 5 (The Flip) — IN PROGRESS
+**Status:** Phase 5 plan 1 complete (1/3 plans) — User preference foundation ready
+**Last activity:** 2026-01-23 — Completed user preference store (05-01)
 
 ## Project Reference
 
@@ -22,9 +22,9 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | 2 | Foundation | ● Complete | 4/4 |
 | 3 | Vertical Slice | ● Complete | 7/7 |
 | 4 | Migration Loop | ● Complete | 12/12 |
-| 5 | The Flip | ○ Pending | — |
+| 5 | The Flip | ◐ In Progress | 1/3 |
 
-Progress: ██████████ ~95%
+Progress: ███████████ ~96%
 
 ## Quick Context
 
@@ -98,6 +98,16 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 04-12 | Athlete biometrics (schema, API, types) | ● Complete |
 
 **Commits:** 24 task commits across 12 plans
+
+## Phase 5 Deliverables
+
+| Plan | Description | Status |
+|------|-------------|--------|
+| 05-01 | User preference store (userPreferenceStore, useVersionRedirect) | ● Complete |
+| 05-02 | Flip mechanics (FLIP date, route switch, toggle UI) | ○ Pending |
+| 05-03 | V1 integration (legacy banner, opt-out UI) | ○ Pending |
+
+**Commits:** 3 commits (2 task + 1 deviation fix)
 
 ## Accumulated Decisions
 
@@ -181,12 +191,17 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 04-10 | Derive canEdit from auth store at page level | Pages determine permissions and pass to components as props |
 | 04-10 | Week navigation starts Monday | Availability grid uses Monday-start weeks with Sunday adjustment logic |
 | 04-10 | Permission-based athlete editing | Coaches can edit any athlete, athletes can only edit their own availability |
-| 04-10 | Page-level modal state management | Separate state for modal visibility and editing entity (editingShell, editingOarSet, editingAthlete)
+| 04-10 | Page-level modal state management | Separate state for modal visibility and editing entity (editingShell, editingOarSet, editingAthlete) |
+| 05-01 | Default to V2 mode (useLegacyMode: false) | V2 is the primary experience; legacy mode is opt-in |
+| 05-01 | Manual localStorage over Zustand persist middleware | Simpler pattern matching research; direct control over storage key |
+| 05-01 | Exclude auth routes from redirect logic | Prevents login loops when switching versions |
+| 05-01 | Use replace: true for version redirects | Avoids polluting browser history with redirect entries |
+| 05-01 | @v2 path alias in both Vite and tsconfig.json | Ensures TypeScript module resolution matches Vite bundler
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 20:01 UTC
-**Stopped at:** Completed 04-10-PLAN.md (Coach Pages) - Phase 4 in progress
+**Last session:** 2026-01-23 23:39 UTC
+**Stopped at:** Completed 05-01-PLAN.md (User Preference Store) - Phase 5 in progress
 **Resume file:** None
 
 ## Known Limitations
@@ -195,20 +210,12 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 ## Next Action
 
-**Phase 4 complete!** All coach features verified working:
-- ✓ Dependencies installed (04-01)
-- ✓ Whiteboard API (04-02)
-- ✓ OarSet API (04-03)
-- ✓ Availability API (04-04)
-- ✓ Availability hooks (04-06)
-- ✓ Whiteboard UI components (04-07)
-- ✓ Fleet management UI (04-08)
-- ✓ Availability UI components (04-09)
-- ✓ Coach pages (04-10)
-- ✓ Human verification (04-11)
-- ✓ Athlete biometrics (04-12)
+**Phase 5 in progress** — User preference foundation complete:
+- ✓ User preference store with localStorage (05-01)
+- ○ Flip mechanics (05-02) — Route switch, FLIP date, toggle UI
+- ○ V1 integration (05-03) — Legacy banner, opt-out UI
 
-Ready for **Phase 5: The Flip** — Making V2 the default experience.
+Next: Execute **05-02-PLAN.md** to implement flip switch mechanics.
 
 ---
-*Last updated: 2026-01-23 — Phase 4 complete (12/12 plans)*
+*Last updated: 2026-01-23 — Phase 5 in progress (1/3 plans)*
