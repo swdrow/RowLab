@@ -1,0 +1,17 @@
+/**
+ * V2 Styles Entry Point
+ *
+ * This file is imported by V2Layout and provides:
+ * 1. Design tokens (CSS custom properties)
+ * 2. V2-scoped Tailwind utilities
+ *
+ * IMPORTANT: This file is only loaded within .v2 scope
+ * V1 styles remain completely isolated
+ */
+
+@import './tokens.css';
+
+/* V2-scoped Tailwind - loaded by V2Layout */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

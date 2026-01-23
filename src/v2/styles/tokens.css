@@ -1,0 +1,193 @@
+/**
+ * V2 Design Tokens - Three-Level Token System
+ *
+ * Level 1: Base Palette (raw color values)
+ * Level 2: Semantic Tokens (context-aware mappings)
+ * Level 3: Component Tokens (component-specific)
+ *
+ * Default theme: Dark
+ * Override themes: Light, Field
+ */
+
+:root {
+  /* ========================================
+     LEVEL 1: BASE PALETTE
+     Raw color values - never use directly
+     ======================================== */
+
+  /* Neutrals - Dark Theme Base */
+  --palette-neutral-950: #0a0a0a;
+  --palette-neutral-900: #171717;
+  --palette-neutral-800: #262626;
+  --palette-neutral-700: #404040;
+  --palette-neutral-600: #525252;
+  --palette-neutral-500: #737373;
+  --palette-neutral-400: #a3a3a3;
+  --palette-neutral-300: #d4d4d4;
+  --palette-neutral-200: #e5e5e5;
+  --palette-neutral-100: #f5f5f5;
+  --palette-neutral-50: #fafafa;
+
+  /* Brand Colors */
+  --palette-brand-red: #ef4444;
+  --palette-brand-blue: #3b82f6;
+  --palette-brand-green: #10b981;
+  --palette-brand-yellow: #f59e0b;
+
+  /* Accent Colors */
+  --palette-accent-purple: #a855f7;
+  --palette-accent-cyan: #06b6d4;
+  --palette-accent-orange: #f97316;
+
+  /* Status Colors */
+  --palette-status-success: #22c55e;
+  --palette-status-warning: #eab308;
+  --palette-status-error: #ef4444;
+  --palette-status-info: #3b82f6;
+
+  /* ========================================
+     LEVEL 2: SEMANTIC TOKENS
+     Context-aware color mappings
+     ======================================== */
+
+  /* Background Tokens */
+  --color-bg-base: var(--palette-neutral-950);
+  --color-bg-surface: var(--palette-neutral-900);
+  --color-bg-surface-elevated: var(--palette-neutral-800);
+  --color-bg-overlay: rgba(10, 10, 10, 0.8);
+  --color-bg-hover: var(--palette-neutral-800);
+  --color-bg-active: var(--palette-neutral-700);
+
+  /* Text Tokens */
+  --color-text-primary: var(--palette-neutral-50);
+  --color-text-secondary: var(--palette-neutral-400);
+  --color-text-tertiary: var(--palette-neutral-500);
+  --color-text-muted: var(--palette-neutral-600);
+  --color-text-inverse: var(--palette-neutral-950);
+  --color-text-brand: var(--palette-brand-blue);
+
+  /* Border Tokens */
+  --color-border-default: var(--palette-neutral-700);
+  --color-border-subtle: var(--palette-neutral-800);
+  --color-border-strong: var(--palette-neutral-600);
+  --color-border-brand: var(--palette-brand-blue);
+
+  /* Interactive Tokens */
+  --color-interactive-primary: var(--palette-brand-blue);
+  --color-interactive-hover: #2563eb;
+  --color-interactive-active: #1d4ed8;
+  --color-interactive-disabled: var(--palette-neutral-700);
+
+  /* Status Tokens */
+  --color-status-success: var(--palette-status-success);
+  --color-status-warning: var(--palette-status-warning);
+  --color-status-error: var(--palette-status-error);
+  --color-status-info: var(--palette-status-info);
+
+  /* ========================================
+     LEVEL 3: COMPONENT TOKENS
+     Component-specific mappings
+     ======================================== */
+
+  /* Card Component */
+  --color-card-bg: var(--color-bg-surface);
+  --color-card-border: var(--color-border-subtle);
+  --color-card-hover: var(--color-bg-hover);
+
+  /* Button Component */
+  --color-button-primary-bg: var(--color-interactive-primary);
+  --color-button-primary-hover: var(--color-interactive-hover);
+  --color-button-primary-text: var(--palette-neutral-50);
+  --color-button-secondary-bg: var(--palette-neutral-800);
+  --color-button-secondary-hover: var(--palette-neutral-700);
+  --color-button-secondary-text: var(--palette-neutral-200);
+
+  /* Input Component */
+  --color-input-bg: var(--palette-neutral-900);
+  --color-input-border: var(--color-border-default);
+  --color-input-focus: var(--color-border-brand);
+  --color-input-text: var(--color-text-primary);
+  --color-input-placeholder: var(--color-text-tertiary);
+
+  /* Field Conditions (Outdoor) */
+  --color-field-sky: #60a5fa;
+  --color-field-grass: #22c55e;
+  --color-field-weather: #f59e0b;
+}
+
+/* ========================================
+   LIGHT THEME OVERRIDE
+   ======================================== */
+
+[data-theme="light"] {
+  /* Background Tokens */
+  --color-bg-base: var(--palette-neutral-50);
+  --color-bg-surface: var(--palette-neutral-100);
+  --color-bg-surface-elevated: var(--palette-neutral-200);
+  --color-bg-overlay: rgba(250, 250, 250, 0.9);
+  --color-bg-hover: var(--palette-neutral-200);
+  --color-bg-active: var(--palette-neutral-300);
+
+  /* Text Tokens */
+  --color-text-primary: var(--palette-neutral-950);
+  --color-text-secondary: var(--palette-neutral-600);
+  --color-text-tertiary: var(--palette-neutral-500);
+  --color-text-muted: var(--palette-neutral-400);
+  --color-text-inverse: var(--palette-neutral-50);
+
+  /* Border Tokens */
+  --color-border-default: var(--palette-neutral-300);
+  --color-border-subtle: var(--palette-neutral-200);
+  --color-border-strong: var(--palette-neutral-400);
+
+  /* Interactive Tokens */
+  --color-interactive-primary: var(--palette-brand-blue);
+  --color-interactive-hover: #2563eb;
+  --color-interactive-active: #1d4ed8;
+  --color-interactive-disabled: var(--palette-neutral-300);
+
+  /* Component Tokens */
+  --color-card-bg: var(--palette-neutral-100);
+  --color-card-border: var(--color-border-subtle);
+  --color-card-hover: var(--palette-neutral-200);
+
+  --color-button-secondary-bg: var(--palette-neutral-200);
+  --color-button-secondary-hover: var(--palette-neutral-300);
+  --color-button-secondary-text: var(--palette-neutral-900);
+
+  --color-input-bg: var(--palette-neutral-50);
+  --color-input-border: var(--color-border-default);
+  --color-input-text: var(--color-text-primary);
+}
+
+/* ========================================
+   FIELD THEME OVERRIDE
+   High-contrast outdoor mode
+   ======================================== */
+
+[data-theme="field"] {
+  /* Background Tokens - Higher contrast */
+  --color-bg-base: #000000;
+  --color-bg-surface: #1a1a1a;
+  --color-bg-surface-elevated: #2d2d2d;
+  --color-bg-hover: #333333;
+  --color-bg-active: #404040;
+
+  /* Text Tokens - Stronger contrast */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e5e5e5;
+  --color-text-tertiary: #d4d4d4;
+
+  /* Border Tokens - More visible */
+  --color-border-default: #525252;
+  --color-border-subtle: #404040;
+  --color-border-strong: #737373;
+
+  /* Interactive Tokens - Brighter for outdoor visibility */
+  --color-interactive-primary: #60a5fa;
+  --color-interactive-hover: #3b82f6;
+  --color-interactive-active: #2563eb;
+
+  /* Field-specific colors */
+  --color-field-accent: var(--color-field-sky);
+}
