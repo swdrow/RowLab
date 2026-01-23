@@ -4,8 +4,8 @@
 
 **Milestone:** v1.0 — Full UX Redesign
 **Phase:** 4 (Migration Loop) — IN PROGRESS
-**Status:** Phase 4 in progress (7/12 plans)
-**Last activity:** 2026-01-23 — Completed 04-07-PLAN.md (Whiteboard UI Components)
+**Status:** Phase 4 in progress (8/12 plans)
+**Last activity:** 2026-01-23 — Completed 04-08-PLAN.md (Fleet Management UI Components)
 
 ## Project Reference
 
@@ -21,7 +21,7 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | 1 | Clean Room Setup | ● Complete | 4/4 |
 | 2 | Foundation | ● Complete | 4/4 |
 | 3 | Vertical Slice | ● Complete | 7/7 |
-| 4 | Migration Loop | ◐ In Progress | 7/12 |
+| 4 | Migration Loop | ◐ In Progress | 8/12 |
 | 5 | The Flip | ○ Pending | — |
 
 Progress: █████████░ ~89%
@@ -91,10 +91,11 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 04-04 | Availability API (REST endpoints, service layer) | ● Complete |
 | 04-06 | Availability hooks (TanStack Query data layer) | ● Complete |
 | 04-07 | Whiteboard UI components (WhiteboardView, WhiteboardEditor) | ● Complete |
+| 04-08 | Fleet management UI (forms, tables, modal) | ● Complete |
 | 04-12 | Athlete biometrics (schema, API, types) | ● Complete |
 | 04-05+ | TBD | ○ Pending |
 
-**Commits:** 15 task commits across 7 plans
+**Commits:** 18 task commits across 8 plans
 
 ## Accumulated Decisions
 
@@ -168,11 +169,15 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 04-07 | Use MDEditor.Markdown for rendering | Consistent with editing experience, requires data-color-mode wrapper |
 | 04-07 | Empty state with conditional CTA | Show create button only when canEdit=true (coach permission) |
 | 04-07 | Permission-based edit button | UI-level enforcement - API enforces COACH/OWNER role |
+| 04-08 | Used @headlessui/react Dialog for modal | Provides accessible modal with focus management and transitions |
+| 04-08 | Zod schemas match Prisma enums exactly | Ensures client-side validation matches server-side constraints |
+| 04-08 | Status badge color semantics | Green=available, blue=in-use, yellow=maintenance, gray=retired |
+| 04-08 | Role-based action visibility | Tables show edit/delete only when canEdit prop is true
 
 ## Session Continuity
 
-**Last session:** 2026-01-23 19:43 UTC
-**Stopped at:** Completed 04-07-PLAN.md (Whiteboard UI Components) - Phase 4 in progress
+**Last session:** 2026-01-23 19:49 UTC
+**Stopped at:** Completed 04-08-PLAN.md (Fleet Management UI Components) - Phase 4 in progress
 **Resume file:** None
 
 ## Known Limitations
@@ -188,9 +193,10 @@ Phase 4 in progress! Backend API foundation complete, UI components started:
 - ✓ Availability API (04-04)
 - ✓ Availability hooks (04-06)
 - ✓ Whiteboard UI components (04-07)
+- ✓ Fleet management UI (04-08)
 - ✓ Athlete biometrics (04-12)
 
-Ready for additional UI components and coach features.
+Ready for page integration and additional coach features.
 
 ---
-*Last updated: 2026-01-23 — Phase 4 in progress (6/12 plans)*
+*Last updated: 2026-01-23 — Phase 4 in progress (8/12 plans)*
