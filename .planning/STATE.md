@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v1.0 — Full UX Redesign
-**Phase:** 4 (Migration Loop) — IN PROGRESS
-**Status:** Phase 4 in progress (10/12 plans)
-**Last activity:** 2026-01-23 — Completed 04-10-PLAN.md (Coach Pages)
+**Phase:** 4 (Migration Loop) — COMPLETE
+**Status:** Phase 4 complete (12/12 plans) — Ready for Phase 5
+**Last activity:** 2026-01-23 — Verified coach features (04-11)
 
 ## Project Reference
 
@@ -21,10 +21,10 @@ See: .planning/PROJECT.md (updated 2026-01-23)
 | 1 | Clean Room Setup | ● Complete | 4/4 |
 | 2 | Foundation | ● Complete | 4/4 |
 | 3 | Vertical Slice | ● Complete | 7/7 |
-| 4 | Migration Loop | ◐ In Progress | 10/12 |
+| 4 | Migration Loop | ● Complete | 12/12 |
 | 5 | The Flip | ○ Pending | — |
 
-Progress: █████████░ ~91%
+Progress: ██████████ ~95%
 
 ## Quick Context
 
@@ -94,10 +94,10 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 | 04-08 | Fleet management UI (forms, tables, modal) | ● Complete |
 | 04-09 | Availability UI components (Grid, Cell, Editor) | ● Complete |
 | 04-10 | Coach pages (Whiteboard, Fleet, Availability) | ● Complete |
+| 04-11 | Human verification checkpoint | ● Complete |
 | 04-12 | Athlete biometrics (schema, API, types) | ● Complete |
-| 04-05+ | TBD | ○ Pending |
 
-**Commits:** 23 task commits across 10 plans
+**Commits:** 24 task commits across 12 plans
 
 ## Accumulated Decisions
 
@@ -195,7 +195,7 @@ Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contr
 
 ## Next Action
 
-Phase 4 in progress! Backend API foundation complete, UI components built, coach pages integrated:
+**Phase 4 complete!** All coach features verified working:
 - ✓ Dependencies installed (04-01)
 - ✓ Whiteboard API (04-02)
 - ✓ OarSet API (04-03)
@@ -205,9 +205,10 @@ Phase 4 in progress! Backend API foundation complete, UI components built, coach
 - ✓ Fleet management UI (04-08)
 - ✓ Availability UI components (04-09)
 - ✓ Coach pages (04-10)
+- ✓ Human verification (04-11)
 - ✓ Athlete biometrics (04-12)
 
-Coach context pages complete at /beta/coach/* routes! Ready for remaining Phase 4 plans.
+Ready for **Phase 5: The Flip** — Making V2 the default experience.
 
 ---
-*Last updated: 2026-01-23 — Phase 4 in progress (10/12 plans)*
+*Last updated: 2026-01-23 — Phase 4 complete (12/12 plans)*
