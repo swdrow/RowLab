@@ -111,6 +111,7 @@ export const aiChatLimiter = rateLimit({
     // Use user ID from JWT if available, otherwise IP
     return req.user?.id || req.ip;
   },
+  validate: { keyGeneratorIpFallback: false },
 });
 
 /**
