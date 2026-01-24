@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 6 (Athletes & Roster Management) — In Progress
-**Status:** Plan 06-04 complete (Athletes Page UI)
-**Last activity:** 2026-01-24 — Completed 06-04-PLAN.md
+**Status:** Plan 06-05 complete (CSV Import Wizard)
+**Last activity:** 2026-01-24 — Completed 06-05-PLAN.md
 
 ## Project Reference
 
@@ -107,11 +107,15 @@ Key architectural decisions carrying forward:
 | 06-04 | LocalStorage for view preference | Maintains user preference between sessions without requiring server state |
 | 06-04 | Slide-out panel for editing | Better spatial context than modal - user can see roster while editing |
 | 06-04 | Responsive grid layout (1-4 columns) | Optimizes space usage across all screen sizes while maintaining readability |
+| 06-05 | PapaParse for CSV parsing | Industry standard with worker thread support for large files, automatic type inference |
+| 06-05 | Fuzzy column matching | Normalize case/punctuation for auto-mapping common variations (first/fname/First Name all match) |
+| 06-05 | Partial import strategy | Allow importing valid rows while showing errors for invalid ones - doesn't block bulk import |
+| 06-05 | Worker threads at 500KB threshold | Prevents UI blocking during large CSV parsing (~5,000 rows with 10 columns) |
 
 ## Session Continuity
 
 **Last session:** 2026-01-24T16:09:52Z
-**Stopped at:** Completed 06-04-PLAN.md (Athletes Page UI)
+**Stopped at:** Completed 06-05-PLAN.md (CSV Import Wizard)
 **Resume file:** None — ready for next plan in Phase 6
 
 ## Known Limitations
@@ -131,4 +135,4 @@ Run `/gsd:plan-phase 6` to create executable plans for Athletes & Roster Managem
 - Table virtualization
 
 ---
-*Last updated: 2026-01-24 — Completed 06-04: Athletes Page UI*
+*Last updated: 2026-01-24 — Completed 06-05: CSV Import Wizard*
