@@ -174,19 +174,20 @@ export function useAuth() {
  */
 export function useRequireAuth() {
   const { isAuthenticated, isInitialized, isLoading } = useAuth();
+  const isInitializing = useAuthStore((s) => s.isInitializing);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (isInitialized && !isLoading && !isAuthenticated) {
+    if (isInitialized && !isLoading && !isInitializing && !isAuthenticated) {
       navigate('/login', {
         replace: true,
         state: { from: location },
       });
     }
-  }, [isAuthenticated, isInitialized, isLoading, navigate, location]);
+  }, [isAuthenticated, isInitialized, isInitializing, isLoading, navigate, location]);
 
-  return { isAuthenticated, isLoading: isLoading || !isInitialized };
+  return { isAuthenticated, isLoading: isLoading || !isInitialized || isInitializing };
 }
 
 /**

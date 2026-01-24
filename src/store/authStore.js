@@ -27,6 +27,7 @@ const useAuthStore = create(
       isLoading: false,
       error: null,
       isInitialized: false,
+      isInitializing: false, // Lock to prevent concurrent initialize() calls
 
       // ===== Auth Actions =====
 
@@ -342,16 +343,24 @@ const useAuthStore = create(
        * Initialize auth state on app load
        */
       initialize: async () => {
-        if (get().isInitialized) return;
+        // Prevent concurrent initialization calls
+        if (get().isInitialized || get().isInitializing) return;
 
-        // Try to refresh token to check if session is valid
-        const token = await get().refreshAccessToken();
+        set({ isInitializing: true });
 
-        if (token) {
-          await get().fetchCurrentUser();
-          set({ isAuthenticated: true, isInitialized: true });
-        } else {
-          set({ isInitialized: true });
+        try {
+          // Try to refresh token to check if session is valid
+          const token = await get().refreshAccessToken();
+
+          if (token) {
+            await get().fetchCurrentUser();
+            set({ isAuthenticated: true, isInitialized: true, isInitializing: false });
+          } else {
+            set({ isInitialized: true, isInitializing: false });
+          }
+        } catch (error) {
+          console.error('Auth initialization failed:', error);
+          set({ isInitialized: true, isInitializing: false });
         }
       },
 
