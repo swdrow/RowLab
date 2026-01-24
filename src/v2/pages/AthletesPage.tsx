@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAthletes } from '@v2/hooks/useAthletes';
+import useAuthStore from '../../store/authStore';
 import {
   ViewToggle,
   AthleteFilters,
@@ -34,8 +36,20 @@ export function AthletesPage() {
   const [selectedAthlete, setSelectedAthlete] = useState<Athlete | null>(null);
   const [isEditPanelOpen, setIsEditPanelOpen] = useState(false);
 
+  // Auth state
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isInitialized = useAuthStore((s) => s.isInitialized);
+  const navigate = useNavigate();
+
   // Fetch athletes with filters
   const { athletes, isLoading, updateAthlete, isUpdating } = useAthletes(filters);
+
+  // Redirect to login if not authenticated after initialization
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      navigate('/login', { replace: true });
+    }
+  }, [isInitialized, isAuthenticated, navigate]);
 
   // Persist view preference
   useEffect(() => {
