@@ -3,13 +3,21 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sessionCreateSchema, type SessionCreateInput } from '@/v2/types/seatRacing';
 import { useSessionWizard, WIZARD_STEPS } from '@/v2/hooks/useSessionWizard';
+import {
+  useCreateSession,
+  useAddPiece,
+  useAddBoat,
+  useSetAssignments,
+  useProcessSession,
+} from '@/v2/hooks/useSeatRaceSessions';
 import { StepIndicator } from './StepIndicator';
 import { SessionMetadataStep } from './SessionMetadataStep';
 import { PieceManagerStep } from './PieceManagerStep';
 import { AthleteAssignmentStep } from './AthleteAssignmentStep';
+import { ReviewStep } from './ReviewStep';
 
 export interface SessionWizardProps {
-  onComplete: (data: SessionCreateInput) => void | Promise<void>;
+  onComplete: (session: any) => void | Promise<void>;
   onCancel?: () => void;
   initialData?: Partial<SessionCreateInput>;
 }
@@ -49,6 +57,12 @@ function getStepFields(step: number): string[] {
  */
 export function SessionWizard({ onComplete, onCancel, initialData }: SessionWizardProps) {
   const wizard = useSessionWizard();
+  const createSessionMutation = useCreateSession();
+  const addPieceMutation = useAddPiece();
+  const addBoatMutation = useAddBoat();
+  const setAssignmentsMutation = useSetAssignments();
+  const processSessionMutation = useProcessSession();
+
   const methods = useForm<any>({
     // Note: Using 'any' here because the wizard form includes pieces/boats
     // which are not part of SessionCreateInput. The wizard transforms this
@@ -81,7 +95,57 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
   const handleSubmit = methods.handleSubmit(async (data) => {
     wizard.setIsSubmitting(true);
     try {
-      await onComplete(data);
+      // 1. Create session
+      const sessionResult = await createSessionMutation.createSessionAsync({
+        date: new Date(data.date).toISOString(),
+        boatClass: data.boatClass,
+        conditions: data.conditions,
+        location: data.location,
+        description: data.description,
+      });
+      const sessionId = sessionResult.id;
+
+      // 2. Add pieces with boats and assignments (hierarchical POST pattern)
+      for (const piece of data.pieces || []) {
+        const pieceResult = await addPieceMutation.addPieceAsync({
+          sessionId,
+          sequenceOrder: piece.sequenceOrder,
+          distanceMeters: piece.distanceMeters,
+          direction: piece.direction,
+          notes: piece.notes,
+        });
+        const pieceId = pieceResult.id;
+
+        // 3. Add boats for this piece
+        for (const boat of piece.boats || []) {
+          const boatResult = await addBoatMutation.addBoatAsync({
+            pieceId,
+            sessionId, // Required for query invalidation
+            name: boat.name,
+            finishTimeSeconds: boat.finishTimeSeconds,
+            handicapSeconds: boat.handicapSeconds || 0,
+          });
+          const boatId = boatResult.id;
+
+          // 4. Set assignments for this boat
+          if (boat.assignments && boat.assignments.length > 0) {
+            await setAssignmentsMutation.setAssignmentsAsync({
+              boatId,
+              sessionId, // Required for query invalidation
+              assignments: boat.assignments,
+            });
+          }
+        }
+      }
+
+      // 5. Process session to calculate ratings (SEAT-06)
+      await processSessionMutation.processSessionAsync({ sessionId });
+
+      // 6. Call completion callback with created session
+      await onComplete(sessionResult);
+    } catch (error) {
+      console.error('Failed to create session:', error);
+      // Error handling - mutations will show errors via their error states
     } finally {
       wizard.setIsSubmitting(false);
     }
@@ -92,10 +156,7 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
     <SessionMetadataStep key="metadata" />,
     <PieceManagerStep key="pieces" />,
     <AthleteAssignmentStep key="assignments" />,
-    <div key="review" className="text-center text-txt-secondary py-8">
-      <p className="text-lg">Step 4: Review & Submit</p>
-      <p className="text-sm mt-2">Coming in Plan 06</p>
-    </div>,
+    <ReviewStep key="review" />,
   ];
 
   return (
