@@ -3,16 +3,17 @@ import { useAthletes } from '@v2/hooks/useAthletes';
 import { useRequireAuth } from '../../hooks/useAuth';
 import { LineupWorkspace } from '@v2/components/lineup';
 import useLineupStore from '@/store/lineupStore';
-import { BOAT_CONFIGS } from '@/utils/boatConfig';
 
 /**
  * LineupBuilderPage - Main page for the V2 Lineup Builder
  *
  * Responsibilities:
  * - Loads athletes data on mount
- * - Initializes lineupStore with athletes and boat configs
+ * - Initializes lineupStore with athletes
  * - Renders LineupWorkspace component
  * - Shows loading state while data loads
+ *
+ * Note: Boat configs are loaded via API in AppLayout.jsx and already in lineupStore.
  *
  * Features available via LineupWorkspace:
  * - Drag-drop athlete assignment (desktop)
@@ -34,7 +35,6 @@ export function LineupBuilderPage() {
 
   // Store actions
   const setAthletes = useLineupStore((state) => state.setAthletes);
-  const setBoatConfigs = useLineupStore((state) => state.setBoatConfigs);
 
   // Initialize store with data when loaded
   useEffect(() => {
@@ -42,11 +42,6 @@ export function LineupBuilderPage() {
       setAthletes(allAthletes);
     }
   }, [allAthletes, setAthletes]);
-
-  // Initialize boat configs on mount
-  useEffect(() => {
-    setBoatConfigs(BOAT_CONFIGS);
-  }, [setBoatConfigs]);
 
   // Show loading while checking auth
   if (isAuthLoading) {

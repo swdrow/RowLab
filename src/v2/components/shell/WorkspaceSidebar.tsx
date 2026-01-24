@@ -36,6 +36,14 @@ function cn(...classes: (string | boolean | undefined)[]) {
 }
 
 /**
+ * WorkspaceSidebar Props
+ */
+interface WorkspaceSidebarProps {
+  /** Callback when a navigation item is clicked (used by mobile menu) */
+  onNavigate?: () => void;
+}
+
+/**
  * WorkspaceSidebar Component
  *
  * Context-aware navigation sidebar that displays different navigation items
@@ -46,8 +54,9 @@ function cn(...classes: (string | boolean | undefined)[]) {
  * - Highlights active route with V2 design tokens
  * - Accessible with proper ARIA labels and landmarks
  * - Keyboard navigable with native Link focus behavior
+ * - Supports onNavigate callback for mobile menu close
  */
-export function WorkspaceSidebar() {
+export function WorkspaceSidebar({ onNavigate }: WorkspaceSidebarProps = {}) {
   const { activeContext, getActiveConfig } = useContextStore();
   const location = useLocation();
 
@@ -68,6 +77,7 @@ export function WorkspaceSidebar() {
           <Link
             key={item.to}
             to={item.to}
+            onClick={onNavigate}
             aria-current={isActive ? 'page' : undefined}
             className={cn(
               'flex items-center gap-3 px-3 py-2 rounded-lg',
