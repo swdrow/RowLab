@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 6 (Athletes & Roster Management) — In Progress
-**Status:** Plan 06-03 complete (Athletes & Attendance data layer)
-**Last activity:** 2026-01-24 — Completed 06-03-PLAN.md
+**Status:** Plan 06-01 complete (Attendance backend)
+**Last activity:** 2026-01-24 — Completed 06-01-PLAN.md
 
 ## Project Reference
 
@@ -93,6 +93,10 @@ Key architectural decisions carrying forward:
 | 06-02 | VirtualTable uses TanStack Virtual + Table | Combines virtualization for performance with full table features (sorting, filtering) |
 | 06-02 | 20-item overscan for virtualization | Balances performance with smooth scrolling, prevents blank areas during fast scroll |
 | 06-02 | Generic TypeScript VirtualTable component | Enables reuse across athletes, erg data, and all future large tables |
+| 06-01 | Used db push instead of migration | Database had drift from migration history, db push syncs schema directly for development |
+| 06-01 | Status as string instead of Prisma enum | Provides flexibility for future status additions without schema migration |
+| 06-01 | Unique constraint on athleteId + date | Ensures one attendance record per athlete per day, upsert prevents duplicates |
+| 06-01 | Bulk operations with Prisma transactions | Ensures atomicity when recording attendance for multiple athletes |
 | 06-03 | Client-side filtering for athletes | Reduces API calls, improves UX responsiveness for small datasets (<200 athletes) |
 | 06-03 | Attendance map conversion for O(1) lookup | Eliminates O(n) find() calls when rendering roster with attendance status |
 | 06-03 | Separate hooks by access pattern | useAttendance (date), useAthleteAttendance (athlete), useAttendanceSummary (stats) |
@@ -102,8 +106,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T15:45:38Z
-**Stopped at:** Completed 06-03-PLAN.md (Athletes & Attendance data layer)
+**Last session:** 2026-01-24T15:48:57Z
+**Stopped at:** Completed 06-01-PLAN.md (Attendance backend)
 **Resume file:** None — ready for next plan in Phase 6
 
 ## Known Limitations
@@ -123,4 +127,4 @@ Run `/gsd:plan-phase 6` to create executable plans for Athletes & Roster Managem
 - Table virtualization
 
 ---
-*Last updated: 2026-01-24 — Completed 06-03: Athletes & Attendance data layer*
+*Last updated: 2026-01-24 — Completed 06-01: Attendance backend*
