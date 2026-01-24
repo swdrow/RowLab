@@ -24,9 +24,10 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
     icon: 'users',
     shortcut: '⌘2',
     navItems: [
-      { to: '/beta/coach/whiteboard', label: 'Whiteboard', icon: 'clipboard' },
-      { to: '/beta/coach/fleet', label: 'Fleet', icon: 'boat' },
-      { to: '/beta/coach/availability', label: 'Availability', icon: 'calendar' },
+      { to: '/app/coach/whiteboard', label: 'Whiteboard', icon: 'clipboard' },
+      { to: '/app/coach/fleet', label: 'Fleet', icon: 'boat' },
+      { to: '/app/coach/availability', label: 'Availability', icon: 'calendar' },
+      { to: '/app/coach/lineup-builder', label: 'Lineup Builder', icon: 'layout' },
     ],
   },
   {

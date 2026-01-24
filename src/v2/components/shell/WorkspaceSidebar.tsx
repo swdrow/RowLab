@@ -6,6 +6,8 @@ import {
   Users,
   Calendar,
   Settings,
+  LayoutGrid,
+  Clipboard,
 } from 'lucide-react';
 import { useContextStore } from '@v2/stores/contextStore';
 
@@ -22,6 +24,8 @@ const ICON_MAP = {
   settings: Settings,
   team: Users, // Using Users icon as placeholder for team
   boat: Activity, // Using Activity icon as placeholder for boat
+  layout: LayoutGrid, // Grid layout for lineup builder
+  clipboard: Clipboard, // Clipboard for whiteboard
 } as const;
 
 /**
