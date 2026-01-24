@@ -148,6 +148,11 @@ Key architectural decisions carrying forward:
 | 08-09 | No DndContext on mobile layout | Drag-drop conflicts with scroll on touch, tap-to-select is cleaner mobile UX |
 | 09-02 | Confidence opacity visualization: 0.3 base + confidence * 0.7 | Formula maps confidence score to bar opacity, providing visual indication of rating reliability without cluttering with badges |
 | 09-02 | Side badges use same colors as AthletesTable | Port=red, Starboard=green for visual consistency across V2 components |
+| 09-01 | Client-side filtering for ratings by side | API returns all ratings, client filters for Port/Starboard-specific rankings to reduce API surface area |
+| 09-01 | Rating history hook returns empty array for MVP | /api/v1/ratings/history endpoint doesn't exist yet, returns empty until Plan 09-08 if needed |
+| 09-01 | Confidence score maps to tier labels | getConfidenceLevel maps 0-1 score to UNRATED/PROVISIONAL/LOW/MEDIUM/HIGH for badge display |
+| 09-02 | Confidence opacity visualization: 0.3 base + confidence * 0.7 | Formula maps confidence score to bar opacity, providing visual indication of rating reliability without cluttering with badges |
+| 09-02 | Side badges use same colors as AthletesTable | Port=red, Starboard=green for visual consistency across V2 components |
 | 09-02 | Rating color scale from V1: blue >=1200, orange >=800 | Preserved V1 RankingsDisplay color scale for familiarity |
 | 09-02 | Top 3 rank highlighting with orange/bold | Emphasizes top performers in rankings table |
 | 09-02 | Relative date formatting for sessions | Shows "Today", "Yesterday", "N days ago" for dates within 7 days for better UX |
@@ -156,7 +161,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-24
-**Stopped at:** Completed 09-02-PLAN.md (Display Components)
+**Stopped at:** Completed 09-01-PLAN.md (Data Layer)
 **Resume file:** None — continuing Phase 9
 
 ## Known Limitations
