@@ -116,16 +116,48 @@
 }
 
 /* ========================================
-   LIGHT THEME OVERRIDE
-   Scoped to .v2 for CSS isolation
+   THEME: DARK (Default)
+   ======================================== */
+.v2[data-theme="dark"] {
+  /* Background Tokens */
+  --color-bg-base: var(--palette-neutral-950);
+  --color-bg-surface: var(--palette-neutral-900);
+  --color-bg-surface-elevated: var(--palette-neutral-800);
+  --color-bg-overlay: rgba(10, 10, 10, 0.8);
+  --color-bg-hover: var(--palette-neutral-800);
+  --color-bg-active: var(--palette-neutral-700);
+
+  /* Text Tokens */
+  --color-text-primary: var(--palette-neutral-50);
+  --color-text-secondary: var(--palette-neutral-400);
+  --color-text-tertiary: var(--palette-neutral-500);
+  --color-text-muted: var(--palette-neutral-600);
+  --color-text-inverse: var(--palette-neutral-950);
+  --color-text-brand: var(--palette-brand-blue);
+
+  /* Border Tokens */
+  --color-border-default: var(--palette-neutral-700);
+  --color-border-subtle: var(--palette-neutral-800);
+  --color-border-strong: var(--palette-neutral-600);
+  --color-border-brand: var(--palette-brand-blue);
+
+  /* Interactive Tokens */
+  --color-interactive-primary: var(--palette-brand-blue);
+  --color-interactive-hover: #2563eb;
+  --color-interactive-active: #1d4ed8;
+  --color-interactive-disabled: var(--palette-neutral-700);
+}
+
+/* ========================================
+   THEME: LIGHT
    ======================================== */
 
 .v2[data-theme="light"] {
   /* Background Tokens */
   --color-bg-base: var(--palette-neutral-50);
   --color-bg-surface: var(--palette-neutral-100);
-  --color-bg-surface-elevated: var(--palette-neutral-200);
-  --color-bg-overlay: rgba(250, 250, 250, 0.9);
+  --color-bg-surface-elevated: #ffffff;
+  --color-bg-overlay: rgba(255, 255, 255, 0.9);
   --color-bg-hover: var(--palette-neutral-200);
   --color-bg-active: var(--palette-neutral-300);
 
@@ -135,16 +167,18 @@
   --color-text-tertiary: var(--palette-neutral-500);
   --color-text-muted: var(--palette-neutral-400);
   --color-text-inverse: var(--palette-neutral-50);
+  --color-text-brand: #1d4ed8;
 
   /* Border Tokens */
   --color-border-default: var(--palette-neutral-300);
   --color-border-subtle: var(--palette-neutral-200);
   --color-border-strong: var(--palette-neutral-400);
+  --color-border-brand: #1d4ed8;
 
   /* Interactive Tokens */
   --color-interactive-primary: var(--palette-brand-blue);
-  --color-interactive-hover: #2563eb;
-  --color-interactive-active: #1d4ed8;
+  --color-interactive-hover: #1d4ed8;
+  --color-interactive-active: #1e40af;
   --color-interactive-disabled: var(--palette-neutral-300);
 
   /* Component Tokens */
@@ -162,33 +196,42 @@
 }
 
 /* ========================================
-   FIELD THEME OVERRIDE
-   High-contrast outdoor mode - scoped to .v2
+   THEME: FIELD (High Contrast Outdoor)
    ======================================== */
 
 .v2[data-theme="field"] {
-  /* Background Tokens - Higher contrast */
-  --color-bg-base: #000000;
-  --color-bg-surface: #1a1a1a;
-  --color-bg-surface-elevated: #2d2d2d;
-  --color-bg-hover: #333333;
-  --color-bg-active: #404040;
+  /* High contrast for outdoor visibility */
+  /* Background Tokens - high contrast yellows/ambers */
+  --color-bg-base: #fef3c7; /* amber-100 */
+  --color-bg-surface: #fffbeb; /* amber-50 */
+  --color-bg-surface-elevated: #ffffff;
+  --color-bg-overlay: rgba(255, 251, 235, 0.95);
+  --color-bg-hover: #fde68a; /* amber-200 */
+  --color-bg-active: #fcd34d; /* amber-300 */
 
-  /* Text Tokens - Stronger contrast */
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #e5e5e5;
-  --color-text-tertiary: #d4d4d4;
+  /* Text Tokens - dark for max contrast */
+  --color-text-primary: #1c1917; /* stone-900 */
+  --color-text-secondary: #44403c; /* stone-700 */
+  --color-text-tertiary: #57534e; /* stone-600 */
+  --color-text-muted: #78716c; /* stone-500 */
+  --color-text-inverse: #fafaf9; /* stone-50 */
+  --color-text-brand: #b45309; /* amber-700 */
 
-  /* Border Tokens - More visible */
-  --color-border-default: #525252;
-  --color-border-subtle: #404040;
-  --color-border-strong: #737373;
+  /* Border Tokens - visible borders */
+  --color-border-default: #d6d3d1; /* stone-300 */
+  --color-border-subtle: #e7e5e4; /* stone-200 */
+  --color-border-strong: #a8a29e; /* stone-400 */
+  --color-border-brand: #b45309; /* amber-700 */
 
-  /* Interactive Tokens - Brighter for outdoor visibility */
-  --color-interactive-primary: #60a5fa;
-  --color-interactive-hover: #3b82f6;
-  --color-interactive-active: #2563eb;
+  /* Interactive Tokens - high contrast */
+  --color-interactive-primary: #b45309; /* amber-700 */
+  --color-interactive-hover: #92400e; /* amber-800 */
+  --color-interactive-active: #78350f; /* amber-900 */
+  --color-interactive-disabled: #d6d3d1; /* stone-300 */
 
-  /* Field-specific colors */
-  --color-field-accent: var(--color-field-sky);
+  /* Status Colors - high contrast versions */
+  --color-status-success: #15803d; /* green-700 */
+  --color-status-warning: #a16207; /* yellow-700 */
+  --color-status-error: #b91c1c; /* red-700 */
+  --color-status-info: #1d4ed8; /* blue-700 */
 }
