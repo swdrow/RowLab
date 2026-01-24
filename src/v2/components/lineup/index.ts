@@ -14,6 +14,8 @@ export { LineupToolbar } from './LineupToolbar';
 export { BiometricsPanel } from './BiometricsPanel';
 export { ExportPDFButton } from './ExportPDFButton';
 export { PrintableLineup } from './PrintableLineup';
+export { VersionHistory } from './VersionHistory';
+export { SaveLineupDialog } from './SaveLineupDialog';
 
-// Future exports (plan 08-05+):
+// Future exports (plan 08-06+):
 // export { MarginVisualizer } from './MarginVisualizer';

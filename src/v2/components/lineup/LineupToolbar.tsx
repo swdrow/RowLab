@@ -146,7 +146,42 @@ export function LineupToolbar({ className = '' }: LineupToolbarProps) {
       {/* Export PDF Button */}
       <ExportPDFButton />
 
-      {/* Future buttons: Save, History dropdown (added in later plans) */}
+      {/* Separator */}
+      <div className="w-px h-8 bg-bdr-default mx-1" />
+
+      {/* Current lineup name */}
+      {lineupName && (
+        <div className="flex items-center gap-2 px-3 py-2 bg-bg-surface border border-bdr-default rounded-lg">
+          <span className="text-sm font-medium text-txt-primary truncate max-w-xs">
+            {lineupName}
+          </span>
+        </div>
+      )}
+
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Save button */}
+      <button
+        onClick={handleSaveClick}
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-accent-primary hover:bg-accent-hover text-white transition-all duration-150"
+        title="Save lineup"
+        aria-label="Save lineup"
+      >
+        <Save className="w-4 h-4" />
+        <span className="hidden md:inline">Save</span>
+      </button>
+
+      {/* Version history dropdown */}
+      <VersionHistory onSaveDialogOpen={handleSaveDialogOpen} />
+
+      {/* Save/Update dialog */}
+      <SaveLineupDialog
+        isOpen={isSaveDialogOpen}
+        onClose={handleSaveDialogClose}
+        existingLineup={lineupToUpdate}
+        onSuccess={handleSaveSuccess}
+      />
     </div>
   );
 }
