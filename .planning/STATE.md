@@ -162,6 +162,11 @@ Key architectural decisions carrying forward:
 | 09-03 | FormProvider context shares form state across wizard steps | All step components use useFormContext() to access shared form state, enabling navigation without losing data |
 | 09-03 | Responsive step indicator: full layout desktop, dots mobile | Desktop shows full horizontal layout with circles and labels, mobile (<640px) shows dots for space efficiency |
 | 09-03 | Navigation restricted to previously visited steps | canGoToStep() only allows clicking to steps <= maxStepReached, preventing skipping ahead without validation |
+| 09-04 | BoatTimeEntry accepts multiple time formats | Coaches can enter "1:32.5" (MM:SS.s), "1:32" (MM:SS), or "92.5" (seconds) - reduces data entry friction |
+| 09-04 | Nested useFieldArray for pieces.boats | react-hook-form useFieldArray supports nested arrays, provides proper form state management for complex structures |
+| 09-04 | Collapsible piece cards for UX scalability | Sessions with many pieces would create excessive scroll, collapse provides better management for 4+ pieces |
+| 09-04 | Default boat naming (A, B, C, D) for quick setup | Speeds up initial configuration, coaches typically use letter-based boat names during seat racing |
+| 09-04 | Monospace font for time inputs | Fixed-width font makes time values align visually, easier to compare finish times at a glance |
 | 09-05 | Athletes sorted by side preference match for each seat | Places matching athletes at top of dropdown for quick selection, reduces scrolling |
 | 09-05 | Switches auto-detected rather than manual entry | Reduces data entry burden - coaches just assign athletes and system figures out who swapped |
 | 09-05 | Partial lineups allowed - seats can remain empty | Seat races often test partial lineups, strict validation would block valid use cases |
