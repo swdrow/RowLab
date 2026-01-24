@@ -122,6 +122,11 @@ Key architectural decisions carrying forward:
 | 08-03 | Warning badges always visible (not hover-only) | Per CONTEXT.md: constant awareness required, no hover interaction needed |
 | 08-03 | Spring physics for all drag-drop animations | Spring physics feel more natural, velocity-aware, don't require precise timing curves |
 | 08-03 | Shared spring config (stiffness: 300, damping: 28) | Consistent animation feel across all drag-drop interactions throughout lineup builder |
+| 08-06 | jsPDF + html2canvas for client-side PDF | Keeps feature self-contained, works offline, faster than server-side Puppeteer |
+| 08-06 | Print layout uses inline styles, not Tailwind | html2canvas captures computed styles, inline styles ensure consistent rendering |
+| 08-06 | Off-screen rendering with position absolute | Classic off-screen pattern, doesn't affect viewport scroll, hidden from user |
+| 08-06 | US Letter format as default, A4 as option | US rowing programs use Letter, international programs use A4 |
+| 08-06 | Scale down to single page if content exceeds height | Simpler UX, most lineups fit on one page, multi-page adds complexity |
 | 08-07 | Exclude coxswains from erg averages | Coxswains don't row, so their erg times shouldn't affect boat performance metrics |
 | 08-07 | Parse 2k times from latestErgTest.time | Athletes have latestErgTest with testType and time in MM:SS.s format requiring parsing |
 | 08-07 | useMemo for biometrics calculation | Prevents recalculation during drag operations, only updates when activeBoats changes |
