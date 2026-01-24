@@ -71,6 +71,7 @@ model Team {
   waterSessions      WaterSession[]
   trainingPlans      TrainingPlan[]
   whiteboards        Whiteboard[]
+  attendance         Attendance[]
 
   @@map("teams")
 }
@@ -159,6 +160,7 @@ model Athlete {
   seatRaceAssignments SeatRaceAssignment[]
   availability        Availability[]
   defaultSchedule     DefaultSchedule?
+  attendance          Attendance[]
 
   @@unique([teamId, lastName, firstName])
   @@index([teamId])
@@ -197,6 +199,30 @@ model DefaultSchedule {
   athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
 
   @@map("default_schedules")
+}
+
+// ============================================
+// ATTENDANCE: Daily practice attendance tracking
+// ============================================
+
+model Attendance {
+  id         String   @id @default(uuid())
+  teamId     String
+  athleteId  String
+  date       DateTime @db.Date
+  status     String   // present, late, excused, unexcused
+  notes      String?
+  recordedBy String?  // userId who recorded
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([athleteId, date])
+  @@index([teamId, date])
+  @@index([athleteId])
+  @@map("attendance")
 }
 
 // ============================================
