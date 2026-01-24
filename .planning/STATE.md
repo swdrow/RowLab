@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 7 (Erg Data & Performance) — In Progress
-**Status:** Plan 07-01 complete (Erg Data Foundation)
-**Last activity:** 2026-01-24 — Completed 07-01-PLAN.md
+**Status:** Plan 07-03 complete (Erg History Visualization)
+**Last activity:** 2026-01-24 — Completed 07-03-PLAN.md
 
 ## Project Reference
 
@@ -33,7 +33,7 @@ v1.0 Progress: 100% Complete
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
 | 6 | Athletes & Roster | Complete | 6/6 |
-| 7 | Erg Data & Performance | In Progress | 1/? |
+| 7 | Erg Data & Performance | In Progress | 3/? |
 | 8 | Lineup Builder | Pending | —/— |
 | 9 | Seat Racing | Pending | —/— |
 | 10 | Training Plans & NCAA | Pending | —/— |
@@ -99,11 +99,15 @@ Key architectural decisions carrying forward:
 | 07-01 | Separate hooks by access pattern for erg data | useErgTests, useAthleteErgHistory, useErgLeaderboard provide clarity and prevent over-fetching |
 | 07-01 | C2 status staleTime 5 minutes | Connection status changes infrequently, reduces unnecessary API calls |
 | 07-01 | useTeamC2Statuses for bulk queries | Provided but UI should use individual queries to avoid N+1 at load time |
+| 07-03 | Chart Y-axis shows time with lower values at bottom | Standard axis convention more intuitive than inverted axis for time data |
+| 07-03 | Adaptive date formatting for chart X-axis | MMM DD for <90 days, MMM YYYY for longer ranges prevents label crowding |
+| 07-03 | Test type color consistency across UI | Rose/blue/green/amber used in badges, charts, and cards creates visual language |
+| 07-03 | Compact mode for visualization components | Enables embedding in athlete cards or panels without sacrificing functionality |
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T18:13:10Z
-**Stopped at:** Completed 07-01-PLAN.md (Erg Data Foundation)
+**Last session:** 2026-01-24T18:20:27Z
+**Stopped at:** Completed 07-03-PLAN.md (Erg History Visualization)
 **Resume file:** None — ready for next plan in Phase 7
 
 ## Known Limitations
@@ -116,11 +120,11 @@ Continue Phase 7 execution with next plan.
 
 **Phase 7 Scope:**
 - Erg test data layer (types, hooks) ✓
+- Erg history visualization (charts, personal bests) ✓
 - Erg test table with virtualization
 - Erg test detail/edit forms
 - Leaderboard views
-- Personal best tracking
 - Concept2 sync integration
 
 ---
-*Last updated: 2026-01-24 — Completed 07-01: Erg Data Foundation*
+*Last updated: 2026-01-24 — Completed 07-03: Erg History Visualization*
