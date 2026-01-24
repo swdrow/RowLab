@@ -1,29 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import useLineupStore from '@/store/lineupStore';
-import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
-import type { AthleteBankProps, Athlete } from '@v2/types/lineup';
-
-/**
- * Get side preference badge configuration
- */
-function getSideBadge(athlete: Athlete): { text: string; color: string } {
-  // Determine side preference based on athlete capabilities
-  const canPort = athlete.side === 'Port' || athlete.side === 'Both';
-  const canStarboard = athlete.side === 'Starboard' || athlete.side === 'Both';
-
-  if (athlete.side === 'Cox') {
-    return { text: 'Cox', color: 'bg-purple-500/10 text-purple-600' };
-  } else if (canPort && canStarboard) {
-    return { text: 'Both', color: 'bg-blue-500/10 text-blue-600' };
-  } else if (canPort) {
-    return { text: 'Port', color: 'bg-red-500/10 text-red-600' };
-  } else if (canStarboard) {
-    return { text: 'Starboard', color: 'bg-green-500/10 text-green-600' };
-  }
-
-  return { text: 'Unknown', color: 'bg-gray-500/10 text-gray-600' };
-}
+import { DraggableAthleteCard } from './DraggableAthleteCard';
+import type { AthleteBankProps } from '@v2/types/lineup';
 
 /**
  * AthleteBank - Left sidebar showing available (unassigned) athletes
@@ -41,7 +20,7 @@ function getSideBadge(athlete: Athlete): { text: string; color: string } {
  *
  * Per CONTEXT.md: "Athlete bank positioned in left sidebar - classic builder pattern"
  *
- * Note: Athletes are NOT draggable yet (drag setup in plan 08-02)
+ * Athletes are draggable using DraggableAthleteCard with source='bank'
  */
 export function AthleteBank({ className = '' }: AthleteBankProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -118,45 +97,13 @@ export function AthleteBank({ className = '' }: AthleteBankProps) {
           </div>
         ) : (
           <div className="p-2 space-y-1">
-            {filteredAthletes.map((athlete) => {
-              const sideBadge = getSideBadge(athlete);
-
-              return (
-                <div
-                  key={athlete.id}
-                  className="
-                    p-3 rounded-lg
-                    border border-transparent
-                    hover:border-bdr-default hover:bg-bg-hover
-                    transition-all cursor-pointer
-                  "
-                >
-                  {/* Athlete Info */}
-                  <div className="flex items-center gap-3">
-                    <AthleteAvatar
-                      firstName={athlete.firstName}
-                      lastName={athlete.lastName}
-                      size="sm"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-txt-primary truncate">
-                        {athlete.firstName} {athlete.lastName}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span
-                          className={`
-                            text-xs font-medium px-2 py-0.5 rounded-full
-                            ${sideBadge.color}
-                          `}
-                        >
-                          {sideBadge.text}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {filteredAthletes.map((athlete) => (
+              <DraggableAthleteCard
+                key={athlete.id}
+                athlete={athlete}
+                source={{ type: 'bank' }}
+              />
+            ))}
           </div>
         )}
       </div>

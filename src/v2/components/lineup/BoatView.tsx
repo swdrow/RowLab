@@ -1,158 +1,7 @@
 import { X } from 'lucide-react';
 import useLineupStore from '@/store/lineupStore';
-import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
-import type { BoatViewProps, SeatSlotData } from '@v2/types/lineup';
-
-/**
- * SeatSlot - Individual seat display component
- */
-interface SeatSlotProps {
-  boatId: string;
-  seat: SeatSlotData;
-  onRemoveAthlete?: () => void;
-}
-
-function SeatSlot({ boatId, seat, onRemoveAthlete }: SeatSlotProps) {
-  const isEmpty = !seat.athlete;
-
-  return (
-    <div
-      className={`
-        relative flex items-center gap-3 p-3 rounded-lg border transition-all
-        ${
-          isEmpty
-            ? 'border-dashed border-bdr-default bg-bg-base'
-            : 'border-bdr-default bg-bg-surface hover:border-interactive-primary/50'
-        }
-      `}
-    >
-      {/* Seat Number */}
-      <div className="flex-shrink-0 w-8 text-center">
-        <div className="text-sm font-semibold text-txt-primary">{seat.seatNumber}</div>
-      </div>
-
-      {/* Seat Content */}
-      <div className="flex-1 min-w-0">
-        {isEmpty ? (
-          <div className="text-sm text-txt-tertiary">Empty</div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <AthleteAvatar
-              firstName={seat.athlete.firstName}
-              lastName={seat.athlete.lastName}
-              size="sm"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-txt-primary truncate">
-                {seat.athlete.firstName} {seat.athlete.lastName}
-              </div>
-              <div className="text-xs text-txt-tertiary">{seat.side}</div>
-            </div>
-            {onRemoveAthlete && (
-              <button
-                onClick={onRemoveAthlete}
-                className="
-                  p-1 rounded opacity-0 group-hover:opacity-100
-                  hover:bg-bg-hover transition-opacity
-                "
-                title="Remove athlete"
-              >
-                <X size={14} className="text-txt-tertiary hover:text-txt-primary" />
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Side Indicator */}
-      <div className="flex-shrink-0 w-16 text-right">
-        <span
-          className={`
-            text-xs font-medium px-2 py-1 rounded-full
-            ${
-              seat.side === 'Port'
-                ? 'bg-red-500/10 text-red-600'
-                : 'bg-green-500/10 text-green-600'
-            }
-          `}
-        >
-          {seat.side}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-/**
- * CoxswainSlot - Coxswain position display component
- */
-interface CoxswainSlotProps {
-  boatId: string;
-  coxswain: SeatSlotData['athlete'];
-  onRemoveAthlete?: () => void;
-}
-
-function CoxswainSlot({ boatId, coxswain, onRemoveAthlete }: CoxswainSlotProps) {
-  const isEmpty = !coxswain;
-
-  return (
-    <div
-      className={`
-        relative flex items-center gap-3 p-3 rounded-lg border transition-all
-        ${
-          isEmpty
-            ? 'border-dashed border-bdr-default bg-bg-base'
-            : 'border-bdr-default bg-bg-surface hover:border-interactive-primary/50'
-        }
-      `}
-    >
-      {/* Cox Label */}
-      <div className="flex-shrink-0 w-8 text-center">
-        <div className="text-xs font-semibold text-purple-600">Cox</div>
-      </div>
-
-      {/* Cox Content */}
-      <div className="flex-1 min-w-0">
-        {isEmpty ? (
-          <div className="text-sm text-txt-tertiary">Empty</div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <AthleteAvatar
-              firstName={coxswain.firstName}
-              lastName={coxswain.lastName}
-              size="sm"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-txt-primary truncate">
-                {coxswain.firstName} {coxswain.lastName}
-              </div>
-              <div className="text-xs text-txt-tertiary">Coxswain</div>
-            </div>
-            {onRemoveAthlete && (
-              <button
-                onClick={onRemoveAthlete}
-                className="
-                  p-1 rounded opacity-0 group-hover:opacity-100
-                  hover:bg-bg-hover transition-opacity
-                "
-                title="Remove coxswain"
-              >
-                <X size={14} className="text-txt-tertiary hover:text-txt-primary" />
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Side Indicator (Coxswain) */}
-      <div className="flex-shrink-0 w-16 text-right">
-        <span className="text-xs font-medium px-2 py-1 rounded-full bg-purple-500/10 text-purple-600">
-          Cox
-        </span>
-      </div>
-    </div>
-  );
-}
+import { SeatSlot } from './SeatSlot';
+import type { BoatViewProps } from '@v2/types/lineup';
 
 /**
  * BoatView - Boat display with vertical seat arrangement
@@ -171,7 +20,7 @@ function CoxswainSlot({ boatId, coxswain, onRemoveAthlete }: CoxswainSlotProps) 
  *
  * Per CONTEXT.md: "Boat seats arranged vertically (bow at top, stern at bottom) - mirrors how lineups are written"
  *
- * Note: Seats are NOT droppable yet (drop setup in plan 08-02)
+ * Seats use SeatSlot component with drag-drop support
  */
 export function BoatView({ boat, className = '' }: BoatViewProps) {
   const removeFromSeat = useLineupStore((state) => state.removeFromSeat);
@@ -221,6 +70,7 @@ export function BoatView({ boat, className = '' }: BoatViewProps) {
             key={`${boat.id}-seat-${seat.seatNumber}`}
             boatId={boat.id}
             seat={seat}
+            isCoxswain={false}
             onRemoveAthlete={
               seat.athlete ? () => removeFromSeat(boat.id, seat.seatNumber) : undefined
             }
@@ -238,9 +88,10 @@ export function BoatView({ boat, className = '' }: BoatViewProps) {
       {/* Coxswain (if boat has coxswain) */}
       {boat.hasCoxswain && (
         <div className="pt-4 border-t border-bdr-subtle">
-          <CoxswainSlot
+          <SeatSlot
             boatId={boat.id}
-            coxswain={boat.coxswain}
+            seat={{ seatNumber: 0, side: 'Port', athlete: boat.coxswain }}
+            isCoxswain={true}
             onRemoveAthlete={boat.coxswain ? () => removeFromCoxswain(boat.id) : undefined}
           />
         </div>
