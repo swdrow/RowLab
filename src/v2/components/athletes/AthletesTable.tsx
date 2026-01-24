@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { VirtualTable } from '@v2/components/common/VirtualTable';
 import { AthleteAvatar } from './AthleteAvatar';
+import { getCountryFlag } from '@v2/utils/countryFlags';
 import type { Athlete } from '@v2/types/athletes';
 
 export interface AthletesTableProps {
@@ -83,8 +84,11 @@ export function AthletesTable({
               size="sm"
             />
             <div>
-              <div className="font-medium text-txt-primary">
-                {row.original.firstName} {row.original.lastName}
+              <div className="font-medium text-txt-primary flex items-center gap-2">
+                <span>{row.original.firstName} {row.original.lastName}</span>
+                {row.original.country && (
+                  <span title={row.original.country}>{getCountryFlag(row.original.country)}</span>
+                )}
               </div>
               {row.original.email && (
                 <div className="text-xs text-txt-tertiary">{row.original.email}</div>

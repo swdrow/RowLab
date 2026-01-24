@@ -324,6 +324,7 @@ function formatAthlete(athlete, includeStats = false) {
     isLinked: !!athlete.userId,
     weightKg: athlete.weightKg ? Number(athlete.weightKg) : null,
     heightCm: athlete.heightCm,
+    country: athlete.country,
     concept2UserId: athlete.concept2UserId,
     createdAt: athlete.createdAt,
     updatedAt: athlete.updatedAt,

@@ -19,6 +19,7 @@ export interface Athlete {
   concept2UserId: string | null;
   weightKg: number | null;
   heightCm: number | null;
+  country: string | null;
   createdAt: string;
   updatedAt: string;
 }
