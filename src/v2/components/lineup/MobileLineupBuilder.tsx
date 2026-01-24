@@ -46,8 +46,7 @@ export function MobileLineupBuilder() {
   const removeFromCoxswain = useLineupStore((state) => state.removeFromCoxswain);
   const undo = useLineupStore((state) => state.undo);
   const redo = useLineupStore((state) => state.redo);
-  const canUndo = useLineupStore((state) => state.canUndo);
-  const canRedo = useLineupStore((state) => state.canRedo);
+  const history = useLineupStore((state) => state._history);
   const getAvailableAthletes = useLineupStore((state) => state.getAvailableAthletes);
 
   const [selectedSeat, setSelectedSeat] = useState<SelectedSeat | null>(null);
@@ -210,7 +209,7 @@ export function MobileLineupBuilder() {
           <div className="flex items-center gap-2">
             <button
               onClick={undo}
-              disabled={!canUndo()}
+              disabled={!history?.canUndo}
               className="
                 p-2 rounded-lg transition-colors
                 disabled:opacity-40 disabled:cursor-not-allowed
@@ -223,7 +222,7 @@ export function MobileLineupBuilder() {
             </button>
             <button
               onClick={redo}
-              disabled={!canRedo()}
+              disabled={!history?.canRedo}
               className="
                 p-2 rounded-lg transition-colors
                 disabled:opacity-40 disabled:cursor-not-allowed

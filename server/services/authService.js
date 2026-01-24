@@ -33,16 +33,22 @@ export async function registerUser({ email, password, name }) {
 /**
  * Login user and generate tokens
  * Supports login with email (regular users) or username (admin accounts)
+ * Note: Both email and username are case-insensitive
  */
 export async function loginUser({ email, password }) {
   // Check if input looks like an email or username
   const isEmail = email && email.includes('@');
 
+  // Normalize input to lowercase for case-insensitive matching
+  const normalizedInput = email?.toLowerCase().trim();
+
   let user;
   if (isEmail) {
-    // Regular email login
-    user = await prisma.user.findUnique({
-      where: { email },
+    // Regular email login (case-insensitive)
+    user = await prisma.user.findFirst({
+      where: {
+        email: { equals: normalizedInput, mode: 'insensitive' }
+      },
       include: {
         memberships: {
           include: { team: true },
@@ -50,9 +56,11 @@ export async function loginUser({ email, password }) {
       },
     });
   } else {
-    // Username login (for admin accounts)
-    user = await prisma.user.findUnique({
-      where: { username: email }, // 'email' field contains username
+    // Username login (for admin accounts, case-insensitive)
+    user = await prisma.user.findFirst({
+      where: {
+        username: { equals: normalizedInput, mode: 'insensitive' }
+      },
       include: {
         memberships: {
           include: { team: true },
