@@ -249,7 +249,7 @@ Plans:
 
 ---
 
-### Phase 8: Lineup Builder
+### Phase 8: Lineup Builder (COMPLETE)
 
 **Goal:** Coach can build, manage, and export boat lineups with drag-drop interface and full history.
 
@@ -260,16 +260,16 @@ Plans:
 **Plans:** 10 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Lineup builder foundation (types, AthleteBank, BoatView components)
-- [ ] 08-02-PLAN.md — Drag-drop with auto-swap (DndContext, SeatSlot, DragOverlay)
-- [ ] 08-03-PLAN.md — Validation warnings and spring animations
-- [ ] 08-04-PLAN.md — Undo/redo UI and keyboard shortcuts
-- [ ] 08-05-PLAN.md — Version history and save/duplicate dialogs
-- [ ] 08-06-PLAN.md — PDF export (jsPDF + html2canvas)
-- [ ] 08-07-PLAN.md — Live biometrics panel
-- [ ] 08-08-PLAN.md — Boat margin visualizer with shell silhouettes
-- [ ] 08-09-PLAN.md — Mobile UI with tap-to-select workflow
-- [ ] 08-10-PLAN.md — Page integration and human verification
+- [x] 08-01-PLAN.md — Lineup builder foundation (types, AthleteBank, BoatView components)
+- [x] 08-02-PLAN.md — Drag-drop with auto-swap (DndContext, SeatSlot, DragOverlay)
+- [x] 08-03-PLAN.md — Validation warnings and spring animations
+- [x] 08-04-PLAN.md — Undo/redo UI and keyboard shortcuts
+- [x] 08-05-PLAN.md — Version history and save/duplicate dialogs
+- [x] 08-06-PLAN.md — PDF export (jsPDF + html2canvas)
+- [x] 08-07-PLAN.md — Live biometrics panel
+- [x] 08-08-PLAN.md — Boat margin visualizer with shell silhouettes
+- [x] 08-09-PLAN.md — Mobile UI with tap-to-select workflow
+- [x] 08-10-PLAN.md — Page integration and human verification
 
 **Delivers:**
 - Lineup builder with boat class selection (8+, 4+, 2x, etc.)
@@ -386,23 +386,28 @@ Plans:
 
 ### Phase 12: Settings & Polish
 
-**Goal:** Complete settings migration and ensure all components follow Precision Instrument design language.
+**Goal:** Complete settings migration, athlete photo uploads, and ensure all components follow Precision Instrument design language.
 
 **Dependencies:** Phases 6-11 (all features complete)
 
-**Requirements:** SET-01, SET-02, SET-03, SET-04
+**Requirements:** SET-01, SET-02, SET-03, SET-04, PHOTO-01, PHOTO-02, PHOTO-03
 
 **Delivers:**
 - Full settings page (migrated from V1)
 - Integration management (C2, Strava)
 - Billing management (Stripe)
 - Team member and role management
+- Athlete photo upload with face detection cropping
+- Automatic headshot standardization via AI cropping service
+- Profile photo fallback for non-headshot images
 
 **Success Criteria:**
 1. User can access complete settings page with all V1 settings functionality intact
 2. User can connect/disconnect integrations (Concept2, Strava) and see connection status
 3. Team owner can manage billing through Stripe integration
 4. Coach can manage team members, invite new members, and assign roles
+5. Coach can upload athlete photos; system auto-detects faces and crops to standardized headshot format
+6. Non-headshot photos (team photos, action shots) can be uploaded as profile photos without cropping
 
 ---
 
@@ -437,13 +442,13 @@ The following requirements apply across all v2.0 phases:
 |-------|------|--------------|-------|--------|
 | 6 | Athletes & Roster | 14 | 8 | Complete |
 | 7 | Erg Data & Performance | 9 | 6 | Complete |
-| 8 | Lineup Builder | 18 | 10 | Planned |
+| 8 | Lineup Builder | 18 | 10 | Complete |
 | 9 | Seat Racing | 10 | — | Pending |
 | 10 | Training Plans & NCAA | 15 | — | Pending |
 | 11 | Racing & Regattas | 15 | — | Pending |
-| 12 | Settings & Polish | 4 | — | Pending |
+| 12 | Settings & Polish | 7 | — | Pending |
 
-**v2.0 Total:** 85 requirements across 7 phases (84 unique + 1 ATT-04 linking)
+**v2.0 Total:** 88 requirements across 7 phases (87 unique + 1 ATT-04 linking)
 
 ---
 

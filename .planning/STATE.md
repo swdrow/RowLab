@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.0 — Core Migration
-**Phase:** 8 (Lineup Builder) — In Progress
-**Status:** Plan 08-09 complete
-**Last activity:** 2026-01-24 — Completed 08-09-PLAN.md
+**Phase:** 9 (Seat Racing) — Pending
+**Status:** Ready to start Phase 9
+**Last activity:** 2026-01-24 — Completed Phase 8 (Lineup Builder)
 
 ## Project Reference
 
@@ -34,13 +34,13 @@ v1.0 Progress: 100% Complete
 |-------|------|--------|-------|
 | 6 | Athletes & Roster | Complete | 6/6 |
 | 7 | Erg Data & Performance | Complete | 6/6 |
-| 8 | Lineup Builder | In Progress | 9/— |
+| 8 | Lineup Builder | Complete | 10/10 |
 | 9 | Seat Racing | Pending | —/— |
 | 10 | Training Plans & NCAA | Pending | —/— |
 | 11 | Racing & Regattas | Pending | —/— |
 | 12 | Settings & Polish | Pending | —/— |
 
-v2.0 Progress: ███░░░░░░░░░ 30%
+v2.0 Progress: ████░░░░░░░░ 43%
 
 ## Quick Context
 
@@ -149,9 +149,9 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T20:36:57Z
-**Stopped at:** Completed 08-09-PLAN.md (Mobile Lineup Builder)
-**Resume file:** None — ready for next plan
+**Last session:** 2026-01-24
+**Stopped at:** Phase 8 Complete, verified by user
+**Resume file:** None — ready for Phase 9
 
 ## Known Limitations
 
@@ -159,21 +159,21 @@ None - all v2.0 foundation issues resolved.
 
 ## Next Action
 
-Continue Phase 8 execution with remaining plans.
+Start Phase 9 (Seat Racing) - run `/gsd:plan-phase 9` to begin.
 
-**Phase 8 Scope:**
-- Lineup builder foundation (AthleteBank, BoatView, AddBoatButton) ✓
-- Drag-drop seat assignment ✓
-- Seat validation warnings ✓
-- Undo/redo UI controls ✓
-- Save/load lineups ✓
-- Version history ✓
-- Duplicate lineups ✓
-- Export as PDF ✓
-- Live biometrics display ✓
-- Boat margin visualizer ✓
-- Mobile lineup builder ✓
-- Multi-boat workspace (remaining)
+**Phase 9 Scope:**
+- Seat race session creation with metadata
+- Piece management (multiple boats per piece)
+- Time entry and athlete assignments
+- Switch recording between pieces
+- ELO-style ranking calculations
+- Confidence intervals on rankings
+- Sorted athlete rankings view
+- Optimal switch sequence generator
+
+**Phase 12 Addition:**
+- Athlete photo upload with AI face detection cropping
+- Integration with `/home/swd/face-detection-cropping` project
 
 ---
-*Last updated: 2026-01-24 — Completed 08-09: Mobile Lineup Builder*
+*Last updated: 2026-01-24 — Phase 8 Complete*
