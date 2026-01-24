@@ -178,8 +178,8 @@ export function parseTestType(value: string | number): TestType | null {
 
   const str = String(value).toLowerCase().replace(/[_\s]/g, '');
 
-  // Remove 'm' or 'meters' suffix
-  const normalized = str.replace(/meters?$/i, '');
+  // Remove 'm', 'meters', or 'meter' suffix
+  const normalized = str.replace(/m(eters?)?$/, '');
 
   // Test type mappings
   const typeMap: Record<string, TestType> = {
@@ -188,10 +188,8 @@ export function parseTestType(value: string | number): TestType | null {
     '6k': '6k',
     '6000': '6k',
     '30min': '30min',
-    '30m': '30min',
     '30': '30min',
     'thirty': '30min',
-    '500m': '500m',
     '500': '500m',
   };
 
