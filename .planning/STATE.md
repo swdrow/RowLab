@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 8 (Lineup Builder) — In Progress
-**Status:** Plan 08-04 complete
-**Last activity:** 2026-01-24 — Completed 08-04-PLAN.md
+**Status:** Plan 08-08 complete
+**Last activity:** 2026-01-24 — Completed 08-08-PLAN.md
 
 ## Project Reference
 
@@ -34,7 +34,7 @@ v1.0 Progress: 100% Complete
 |-------|------|--------|-------|
 | 6 | Athletes & Roster | Complete | 6/6 |
 | 7 | Erg Data & Performance | Complete | 6/6 |
-| 8 | Lineup Builder | In Progress | 4/— |
+| 8 | Lineup Builder | In Progress | 8/— |
 | 9 | Seat Racing | Pending | —/— |
 | 10 | Training Plans & NCAA | Pending | —/— |
 | 11 | Racing & Regattas | Pending | —/— |
@@ -138,11 +138,15 @@ Key architectural decisions carrying forward:
 | 08-07 | Parse 2k times from latestErgTest.time | Athletes have latestErgTest with testType and time in MM:SS.s format requiring parsing |
 | 08-07 | useMemo for biometrics calculation | Prevents recalculation during drag operations, only updates when activeBoats changes |
 | 08-07 | Position panel below toolbar, above boats | Horizontal strip layout - always visible, compact, doesn't require sidebar space |
+| 08-08 | SVG instead of PNG for shell silhouettes | Better scaling, smaller file size, easier to customize colors via CSS |
+| 08-08 | 10 units = 1 meter viewBox scaling | Consistent proportions across boat classes (8+ is 180 units, 1x is 82 units) |
+| 08-08 | Cap visual gap at 50% of container width | Prevents extreme margins from breaking layout while maintaining readability |
+| 08-08 | Use rowing-specific margin terminology | Dead heat, canvas, 1/4 length terms are standard rowing language coaches expect |
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T20:21:29Z
-**Stopped at:** Completed 08-04-PLAN.md (Undo/Redo UI Controls)
+**Last session:** 2026-01-24T20:34:13Z
+**Stopped at:** Completed 08-08-PLAN.md (Boat Margin Visualizer)
 **Resume file:** None — ready for next plan
 
 ## Known Limitations
@@ -163,8 +167,8 @@ Continue Phase 8 execution with remaining plans.
 - Duplicate lineups ✓
 - Export as PDF ✓
 - Live biometrics display ✓
-- Boat margin visualizer (remaining)
+- Boat margin visualizer ✓
 - Multi-boat workspace (remaining)
 
 ---
-*Last updated: 2026-01-24 — Completed 08-05: Lineup Versioning & Save/Duplicate*
+*Last updated: 2026-01-24 — Completed 08-08: Boat Margin Visualizer*
