@@ -5,6 +5,8 @@ import { sessionCreateSchema, type SessionCreateInput } from '@/v2/types/seatRac
 import { useSessionWizard, WIZARD_STEPS } from '@/v2/hooks/useSessionWizard';
 import { StepIndicator } from './StepIndicator';
 import { SessionMetadataStep } from './SessionMetadataStep';
+import { PieceManagerStep } from './PieceManagerStep';
+import { AthleteAssignmentStep } from './AthleteAssignmentStep';
 
 export interface SessionWizardProps {
   onComplete: (data: SessionCreateInput) => void | Promise<void>;
@@ -15,12 +17,12 @@ export interface SessionWizardProps {
 /**
  * Helper function to get fields to validate for each step
  */
-function getStepFields(step: number): (keyof SessionCreateInput)[] {
+function getStepFields(step: number): string[] {
   switch (step) {
     case 0: // Session metadata
       return ['date', 'boatClass'];
-    case 1: // Pieces (validated in Plan 04)
-      return [];
+    case 1: // Pieces
+      return ['pieces'];
     case 2: // Assignments (validated in Plan 05)
       return [];
     case 3: // Review (no validation)
@@ -47,14 +49,17 @@ function getStepFields(step: number): (keyof SessionCreateInput)[] {
  */
 export function SessionWizard({ onComplete, onCancel, initialData }: SessionWizardProps) {
   const wizard = useSessionWizard();
-  const methods = useForm<SessionCreateInput>({
-    resolver: zodResolver(sessionCreateSchema),
+  const methods = useForm<any>({
+    // Note: Using 'any' here because the wizard form includes pieces/boats
+    // which are not part of SessionCreateInput. The wizard transforms this
+    // into proper API calls in the onComplete handler.
     defaultValues: initialData || {
       date: new Date().toISOString().split('T')[0],
       boatClass: '',
       conditions: null,
       location: '',
       description: '',
+      pieces: [], // Empty array, user adds pieces in Step 2
     },
     mode: 'onChange', // Validate on change for step validation
   });
@@ -82,17 +87,11 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
     }
   });
 
-  // Step components (only Step 1 implemented in this plan)
+  // Step components
   const stepComponents = [
     <SessionMetadataStep key="metadata" />,
-    <div key="pieces" className="text-center text-txt-secondary py-8">
-      <p className="text-lg">Step 2: Add Pieces</p>
-      <p className="text-sm mt-2">Coming in Plan 04</p>
-    </div>,
-    <div key="assignments" className="text-center text-txt-secondary py-8">
-      <p className="text-lg">Step 3: Assign Athletes</p>
-      <p className="text-sm mt-2">Coming in Plan 05</p>
-    </div>,
+    <PieceManagerStep key="pieces" />,
+    <AthleteAssignmentStep key="assignments" />,
     <div key="review" className="text-center text-txt-secondary py-8">
       <p className="text-lg">Step 4: Review & Submit</p>
       <p className="text-sm mt-2">Coming in Plan 06</p>
