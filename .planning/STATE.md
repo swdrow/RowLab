@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 8 (Lineup Builder) — In Progress
-**Status:** Plan 08-05 complete
-**Last activity:** 2026-01-24 — Completed 08-05-PLAN.md
+**Status:** Plan 08-04 complete
+**Last activity:** 2026-01-24 — Completed 08-04-PLAN.md
 
 ## Project Reference
 
@@ -34,7 +34,7 @@ v1.0 Progress: 100% Complete
 |-------|------|--------|-------|
 | 6 | Athletes & Roster | Complete | 6/6 |
 | 7 | Erg Data & Performance | Complete | 6/6 |
-| 8 | Lineup Builder | In Progress | 7/— |
+| 8 | Lineup Builder | In Progress | 4/— |
 | 9 | Seat Racing | Pending | —/— |
 | 10 | Training Plans & NCAA | Pending | —/— |
 | 11 | Racing & Regattas | Pending | —/— |
@@ -122,6 +122,9 @@ Key architectural decisions carrying forward:
 | 08-03 | Warning badges always visible (not hover-only) | Per CONTEXT.md: constant awareness required, no hover interaction needed |
 | 08-03 | Spring physics for all drag-drop animations | Spring physics feel more natural, velocity-aware, don't require precise timing curves |
 | 08-03 | Shared spring config (stiffness: 300, damping: 28) | Consistent animation feel across all drag-drop interactions throughout lineup builder |
+| 08-04 | Support both Ctrl+Shift+Z and Ctrl+Y for redo | Cross-platform compatibility - Mac/Linux use Shift+Z, Windows users expect Ctrl+Y |
+| 08-04 | Show change count in undo/redo tooltips | Gives coach immediate awareness of how far back they can undo |
+| 08-04 | Responsive button text (hidden on mobile) | Mobile screens need compact toolbar, icons are self-explanatory with tooltips |
 | 08-05 | Use TanStack Query for all lineup API operations | Consistent with existing V2 patterns (useErgTests, useAthletes), automatic caching/invalidation |
 | 08-05 | Duplicate creates server-side copy via API | Ensures duplicate is persisted immediately and gets unique ID from database |
 | 08-05 | VersionHistory uses Headless UI Menu component | Consistent with other V2 dropdowns, accessibility built-in, keyboard navigation |
@@ -138,8 +141,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T20:26:01Z
-**Stopped at:** Completed 08-05-PLAN.md (Lineup Versioning & Save/Duplicate)
+**Last session:** 2026-01-24T20:21:29Z
+**Stopped at:** Completed 08-04-PLAN.md (Undo/Redo UI Controls)
 **Resume file:** None — ready for next plan
 
 ## Known Limitations
