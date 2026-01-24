@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 8 (Lineup Builder) — In Progress
-**Status:** Plan 08-07 complete
-**Last activity:** 2026-01-24 — Completed 08-07-PLAN.md
+**Status:** Plan 08-05 complete
+**Last activity:** 2026-01-24 — Completed 08-05-PLAN.md
 
 ## Project Reference
 
@@ -122,6 +122,10 @@ Key architectural decisions carrying forward:
 | 08-03 | Warning badges always visible (not hover-only) | Per CONTEXT.md: constant awareness required, no hover interaction needed |
 | 08-03 | Spring physics for all drag-drop animations | Spring physics feel more natural, velocity-aware, don't require precise timing curves |
 | 08-03 | Shared spring config (stiffness: 300, damping: 28) | Consistent animation feel across all drag-drop interactions throughout lineup builder |
+| 08-05 | Use TanStack Query for all lineup API operations | Consistent with existing V2 patterns (useErgTests, useAthletes), automatic caching/invalidation |
+| 08-05 | Duplicate creates server-side copy via API | Ensures duplicate is persisted immediately and gets unique ID from database |
+| 08-05 | VersionHistory uses Headless UI Menu component | Consistent with other V2 dropdowns, accessibility built-in, keyboard navigation |
+| 08-05 | Delete requires confirmation dialog | Destructive action needs clear UI feedback, separate dialog more visible than inline |
 | 08-06 | jsPDF + html2canvas for client-side PDF | Keeps feature self-contained, works offline, faster than server-side Puppeteer |
 | 08-06 | Print layout uses inline styles, not Tailwind | html2canvas captures computed styles, inline styles ensure consistent rendering |
 | 08-06 | Off-screen rendering with position absolute | Classic off-screen pattern, doesn't affect viewport scroll, hidden from user |
@@ -134,8 +138,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T20:16:48Z
-**Stopped at:** Completed 08-07-PLAN.md (Live Biometrics Display)
+**Last session:** 2026-01-24T20:26:01Z
+**Stopped at:** Completed 08-05-PLAN.md (Lineup Versioning & Save/Duplicate)
 **Resume file:** None — ready for next plan
 
 ## Known Limitations
@@ -152,12 +156,12 @@ Continue Phase 8 execution with remaining plans.
 - Seat validation warnings ✓
 - Undo/redo UI controls ✓
 - Save/load lineups ✓
+- Version history ✓
+- Duplicate lineups ✓
 - Export as PDF ✓
 - Live biometrics display ✓
-- Duplicate lineups (remaining)
-- Version history (remaining)
 - Boat margin visualizer (remaining)
 - Multi-boat workspace (remaining)
 
 ---
-*Last updated: 2026-01-24 — Completed 08-07: Live Biometrics Display*
+*Last updated: 2026-01-24 — Completed 08-05: Lineup Versioning & Save/Duplicate*
