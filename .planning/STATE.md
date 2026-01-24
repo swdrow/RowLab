@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 8 (Lineup Builder) — In Progress
-**Status:** Plan 08-03 complete
-**Last activity:** 2026-01-24 — Completed 08-03-PLAN.md
+**Status:** Plan 08-07 complete
+**Last activity:** 2026-01-24 — Completed 08-07-PLAN.md
 
 ## Project Reference
 
@@ -34,7 +34,7 @@ v1.0 Progress: 100% Complete
 |-------|------|--------|-------|
 | 6 | Athletes & Roster | Complete | 6/6 |
 | 7 | Erg Data & Performance | Complete | 6/6 |
-| 8 | Lineup Builder | In Progress | 3/— |
+| 8 | Lineup Builder | In Progress | 7/— |
 | 9 | Seat Racing | Pending | —/— |
 | 10 | Training Plans & NCAA | Pending | —/— |
 | 11 | Racing & Regattas | Pending | —/— |
@@ -122,12 +122,16 @@ Key architectural decisions carrying forward:
 | 08-03 | Warning badges always visible (not hover-only) | Per CONTEXT.md: constant awareness required, no hover interaction needed |
 | 08-03 | Spring physics for all drag-drop animations | Spring physics feel more natural, velocity-aware, don't require precise timing curves |
 | 08-03 | Shared spring config (stiffness: 300, damping: 28) | Consistent animation feel across all drag-drop interactions throughout lineup builder |
+| 08-07 | Exclude coxswains from erg averages | Coxswains don't row, so their erg times shouldn't affect boat performance metrics |
+| 08-07 | Parse 2k times from latestErgTest.time | Athletes have latestErgTest with testType and time in MM:SS.s format requiring parsing |
+| 08-07 | useMemo for biometrics calculation | Prevents recalculation during drag operations, only updates when activeBoats changes |
+| 08-07 | Position panel below toolbar, above boats | Horizontal strip layout - always visible, compact, doesn't require sidebar space |
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T20:06:42Z
-**Stopped at:** Completed 08-03-PLAN.md (Seat Validation Warnings & Spring Animations)
-**Resume file:** None — ready for Plan 08-04 (Undo/Redo UI Controls)
+**Last session:** 2026-01-24T20:16:48Z
+**Stopped at:** Completed 08-07-PLAN.md (Live Biometrics Display)
+**Resume file:** None — ready for next plan
 
 ## Known Limitations
 
@@ -135,20 +139,20 @@ None - all v2.0 foundation issues resolved.
 
 ## Next Action
 
-Continue Phase 8 execution with Plan 08-03 (Seat Validation Warnings).
+Continue Phase 8 execution with remaining plans.
 
 **Phase 8 Scope:**
 - Lineup builder foundation (AthleteBank, BoatView, AddBoatButton) ✓
 - Drag-drop seat assignment ✓
-- Seat validation warnings
-- Undo/redo UI controls
-- Save/load lineups
-- Duplicate lineups
-- Export as PDF
-- Live biometrics display
-- Version history
-- Boat margin visualizer
-- Multi-boat workspace
+- Seat validation warnings ✓
+- Undo/redo UI controls ✓
+- Save/load lineups ✓
+- Export as PDF ✓
+- Live biometrics display ✓
+- Duplicate lineups (remaining)
+- Version history (remaining)
+- Boat margin visualizer (remaining)
+- Multi-boat workspace (remaining)
 
 ---
-*Last updated: 2026-01-24 — Completed 08-02: Drag-Drop Seat Assignment*
+*Last updated: 2026-01-24 — Completed 08-07: Live Biometrics Display*
