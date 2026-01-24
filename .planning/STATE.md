@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.0 — Core Migration
-**Phase:** 9 (Seat Racing) — Pending
-**Status:** Ready to start Phase 9
-**Last activity:** 2026-01-24 — Completed Phase 8 (Lineup Builder)
+**Phase:** 9 (Seat Racing) — In Progress
+**Status:** Completed 09-01-PLAN.md (Data Layer)
+**Last activity:** 2026-01-24 — Completed 09-01-PLAN.md
 
 ## Project Reference
 
@@ -146,12 +146,18 @@ Key architectural decisions carrying forward:
 | 08-09 | Separate mobile components instead of CSS-only responsive | Per CONTEXT.md: full redesign for mobile, tap-to-select requires different interaction model |
 | 08-09 | Bottom sheet slides to 80% viewport height | Leaves space for user to see boat context while selecting, full-screen would hide what they're building |
 | 08-09 | No DndContext on mobile layout | Drag-drop conflicts with scroll on touch, tap-to-select is cleaner mobile UX |
+| 09-02 | Confidence opacity visualization: 0.3 base + confidence * 0.7 | Formula maps confidence score to bar opacity, providing visual indication of rating reliability without cluttering with badges |
+| 09-02 | Side badges use same colors as AthletesTable | Port=red, Starboard=green for visual consistency across V2 components |
+| 09-02 | Rating color scale from V1: blue >=1200, orange >=800 | Preserved V1 RankingsDisplay color scale for familiarity |
+| 09-02 | Top 3 rank highlighting with orange/bold | Emphasizes top performers in rankings table |
+| 09-02 | Relative date formatting for sessions | Shows "Today", "Yesterday", "N days ago" for dates within 7 days for better UX |
+| 09-02 | Delete confirmation dialog for sessions | Prevents accidental deletion of seat race sessions using Framer Motion modal |
 
 ## Session Continuity
 
 **Last session:** 2026-01-24
-**Stopped at:** Phase 8 Complete, verified by user
-**Resume file:** None — ready for Phase 9
+**Stopped at:** Completed 09-02-PLAN.md (Display Components)
+**Resume file:** None — continuing Phase 9
 
 ## Known Limitations
 
