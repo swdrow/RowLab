@@ -176,11 +176,14 @@ Key architectural decisions carrying forward:
 | 09-08 | Parameters route before :athleteId route | Prevents "parameters" from being treated as athleteId, avoids route conflicts |
 | 09-08 | ParametersPanel read-only for Phase 9 MVP | Editing adds complexity, viewing ratings is sufficient for MVP scope |
 | 09-08 | 1-hour stale time for parameters query | Rating parameters are system-level constants that rarely change |
+| 09-06 | Hierarchical POST pattern for session creation | API uses separate endpoints (session → pieces → boats → assignments) instead of nested POST |
+| 09-06 | Validation warnings don't block submission | Coach can submit with missing times/assignments - shown as orange warnings, not blocking errors |
+| 09-06 | onComplete receives created session object | Changed from form data to API response with session.id, enables navigation to detail view |
 
 ## Session Continuity
 
 **Last session:** 2026-01-24
-**Stopped at:** Completed 09-08-PLAN.md (Ratings API & Parameters UI)
+**Stopped at:** Completed 09-06-PLAN.md (Review & Submit Step)
 **Resume file:** None — continuing Phase 9
 
 ## Known Limitations

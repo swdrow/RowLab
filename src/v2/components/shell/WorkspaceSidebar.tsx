@@ -8,6 +8,7 @@ import {
   Settings,
   LayoutGrid,
   Clipboard,
+  Trophy,
 } from 'lucide-react';
 import { useContextStore } from '@v2/stores/contextStore';
 
@@ -26,6 +27,7 @@ const ICON_MAP = {
   boat: Activity, // Using Activity icon as placeholder for boat
   layout: LayoutGrid, // Grid layout for lineup builder
   clipboard: Clipboard, // Clipboard for whiteboard
+  trophy: Trophy, // Trophy for seat racing
 } as const;
 
 /**
