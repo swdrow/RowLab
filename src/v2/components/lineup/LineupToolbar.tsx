@@ -1,5 +1,10 @@
-import { Undo2, Redo2 } from 'lucide-react';
+import { useState } from 'react';
+import { Undo2, Redo2, Save } from 'lucide-react';
 import useLineupStore from '@/store/lineupStore';
+import { ExportPDFButton } from './ExportPDFButton';
+import { VersionHistory } from './VersionHistory';
+import { SaveLineupDialog } from './SaveLineupDialog';
+import type { Lineup } from '../../hooks/useLineups';
 
 /**
  * Props for LineupToolbar
@@ -9,25 +14,35 @@ interface LineupToolbarProps {
 }
 
 /**
- * LineupToolbar - Toolbar with undo/redo buttons and future action slots
+ * LineupToolbar - Toolbar with undo/redo, export PDF, save, and version history
  *
  * Features:
  * - Undo button: Disabled when !_history.canUndo, shows undo count in tooltip
  * - Redo button: Disabled when !_history.canRedo, shows redo count in tooltip
+ * - Export PDF button: Disabled when no boats, triggers print-ready PDF export
+ * - Save button: Opens SaveLineupDialog for creating/updating lineups
+ * - Version history dropdown: Load/duplicate/delete saved lineups
+ * - Shows current lineup name if loaded
  * - Tooltips include keyboard shortcuts (Ctrl+Z, Ctrl+Shift+Z)
  * - Horizontal button group with V2 design tokens
- * - Space reserved for future buttons (save, export - added in later plans)
+ *
+ * Layout: [Undo] [Redo] | [Export PDF] | [Current Name] | [Save] [History ▼]
  *
  * Per RESEARCH.md:
  * "Wire existing undoMiddleware to UI with keyboard shortcuts"
  *
  * Per CONTEXT.md:
  * "Undo/redo covers every action - each drag, swap, removal is individually undoable"
+ * "Version history accessed via dropdown menu - compact, keeps builder clean"
  */
 export function LineupToolbar({ className = '' }: LineupToolbarProps) {
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+  const [lineupToUpdate, setLineupToUpdate] = useState<Lineup | null>(null);
+
   const undo = useLineupStore((state) => state.undo);
   const redo = useLineupStore((state) => state.redo);
   const history = useLineupStore((state) => state._history);
+  const lineupName = useLineupStore((state) => state.lineupName);
 
   const handleUndo = () => {
     if (history.canUndo) {
@@ -39,6 +54,38 @@ export function LineupToolbar({ className = '' }: LineupToolbarProps) {
     if (history.canRedo) {
       redo();
     }
+  };
+
+  /**
+   * Open save dialog for new save
+   */
+  const handleSaveClick = () => {
+    setLineupToUpdate(null);
+    setIsSaveDialogOpen(true);
+  };
+
+  /**
+   * Open save dialog for updating specific lineup
+   */
+  const handleSaveDialogOpen = (lineup?: Lineup) => {
+    setLineupToUpdate(lineup || null);
+    setIsSaveDialogOpen(true);
+  };
+
+  /**
+   * Close save dialog
+   */
+  const handleSaveDialogClose = () => {
+    setIsSaveDialogOpen(false);
+    setLineupToUpdate(null);
+  };
+
+  /**
+   * After successful save, update displayed name
+   */
+  const handleSaveSuccess = (lineup: Lineup) => {
+    useLineupStore.getState().setLineupName(lineup.name);
+    useLineupStore.getState().setCurrentLineupId(lineup.id);
   };
 
   return (
@@ -93,7 +140,13 @@ export function LineupToolbar({ className = '' }: LineupToolbarProps) {
         <span className="hidden md:inline">Redo</span>
       </button>
 
-      {/* Future buttons will go here (save, export, etc.) */}
+      {/* Separator */}
+      <div className="w-px h-8 bg-bdr-default mx-1" />
+
+      {/* Export PDF Button */}
+      <ExportPDFButton />
+
+      {/* Future buttons: Save, History dropdown (added in later plans) */}
     </div>
   );
 }

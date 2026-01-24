@@ -12,6 +12,8 @@ export { DraggableAthleteCard } from './DraggableAthleteCard';
 export { SeatSlot } from './SeatSlot';
 export { LineupToolbar } from './LineupToolbar';
 export { BiometricsPanel } from './BiometricsPanel';
+export { ExportPDFButton } from './ExportPDFButton';
+export { PrintableLineup } from './PrintableLineup';
 
 // Future exports (plan 08-05+):
 // export { MarginVisualizer } from './MarginVisualizer';
