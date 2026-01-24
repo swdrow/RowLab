@@ -7,6 +7,9 @@ export { ViewToggle } from './ViewToggle';
 export { AttendanceTracker } from './AttendanceTracker';
 export { AttendanceHistory } from './AttendanceHistory';
 export { AttendanceSummary } from './AttendanceSummary';
+export { CSVImportModal } from './CSVImportModal';
+export { ColumnMapper } from './ColumnMapper';
+export { ImportPreview } from './ImportPreview';
 
 export type { AthleteAvatarProps } from './AthleteAvatar';
 export type { AthleteCardProps } from './AthleteCard';
