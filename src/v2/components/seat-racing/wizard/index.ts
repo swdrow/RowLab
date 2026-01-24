@@ -13,3 +13,7 @@ export { PieceManagerStep } from './PieceManagerStep';
 export { BoatTimeEntry } from './BoatTimeEntry';
 export { AthleteAssignmentStep } from './AthleteAssignmentStep';
 export { SeatSlotSelector } from './SeatSlotSelector';
+export { ReviewStep } from './ReviewStep';
+
+// Re-export wizard hooks and constants
+export { useSessionWizard, WIZARD_STEPS } from '@/v2/hooks/useSessionWizard';
