@@ -257,6 +257,20 @@ Plans:
 
 **Requirements:** LINE-01, LINE-02, LINE-03, LINE-04, LINE-05, LINE-06, LINE-07, LINE-08, LINE-09, LINE-10, LINE-11, LINE-12, MARG-01, MARG-02, MARG-03, MARG-04, MARG-05, DESIGN-05
 
+**Plans:** 10 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Lineup builder foundation (types, AthleteBank, BoatView components)
+- [ ] 08-02-PLAN.md — Drag-drop with auto-swap (DndContext, SeatSlot, DragOverlay)
+- [ ] 08-03-PLAN.md — Validation warnings and spring animations
+- [ ] 08-04-PLAN.md — Undo/redo UI and keyboard shortcuts
+- [ ] 08-05-PLAN.md — Version history and save/duplicate dialogs
+- [ ] 08-06-PLAN.md — PDF export (jsPDF + html2canvas)
+- [ ] 08-07-PLAN.md — Live biometrics panel
+- [ ] 08-08-PLAN.md — Boat margin visualizer with shell silhouettes
+- [ ] 08-09-PLAN.md — Mobile UI with tap-to-select workflow
+- [ ] 08-10-PLAN.md — Page integration and human verification
+
 **Delivers:**
 - Lineup builder with boat class selection (8+, 4+, 2x, etc.)
 - Drag-drop athletes from bank to seats
@@ -423,7 +437,7 @@ The following requirements apply across all v2.0 phases:
 |-------|------|--------------|-------|--------|
 | 6 | Athletes & Roster | 14 | 8 | Complete |
 | 7 | Erg Data & Performance | 9 | 6 | Complete |
-| 8 | Lineup Builder | 18 | — | Pending |
+| 8 | Lineup Builder | 18 | 10 | Planned |
 | 9 | Seat Racing | 10 | — | Pending |
 | 10 | Training Plans & NCAA | 15 | — | Pending |
 | 11 | Racing & Regattas | 15 | — | Pending |
