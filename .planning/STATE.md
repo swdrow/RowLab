@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 7 (Erg Data & Performance) — In Progress
-**Status:** Plan 07-02 complete (Erg Tests Table & CRUD)
-**Last activity:** 2026-01-24 — Completed 07-02-PLAN.md
+**Status:** Plan 07-05 complete (C2 Sync Status & Manual Sync UI)
+**Last activity:** 2026-01-24 — Completed 07-05-PLAN.md
 
 ## Project Reference
 
@@ -33,14 +33,14 @@ v1.0 Progress: 100% Complete
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
 | 6 | Athletes & Roster | Complete | 6/6 |
-| 7 | Erg Data & Performance | In Progress | 2/? |
+| 7 | Erg Data & Performance | In Progress | 5/? |
 | 8 | Lineup Builder | Pending | —/— |
 | 9 | Seat Racing | Pending | —/— |
 | 10 | Training Plans & NCAA | Pending | —/— |
 | 11 | Racing & Regattas | Pending | —/— |
 | 12 | Settings & Polish | Pending | —/— |
 
-v2.0 Progress: █░░░░░░░░░░░ 8%
+v2.0 Progress: ██░░░░░░░░░░ 11%
 
 ## Quick Context
 
@@ -103,11 +103,15 @@ Key architectural decisions carrying forward:
 | 07-02 | Auto-calculate watts from split (and vice versa) | Using standard erg formula (watts = 2.80 / pace^3) reduces manual calculation work |
 | 07-02 | Mobile card view below 768px | Responsive design essential for coaches using tablets on deck |
 | 07-02 | Test type color coding (2k=red, 6k=blue, etc) | Visual distinction helps coaches quickly identify test types in table |
+| 07-05 | 60-minute stale threshold for C2 sync | Balances alerting coaches to outdated data without excessive yellow badges during normal usage |
+| 07-05 | Custom relative time formatting | More readable than absolute timestamps, matches modern UI patterns (2m ago, 3h ago, etc) |
+| 07-05 | Team C2 status uses bulk query | useTeamC2Statuses prevents N+1 query problem when loading team overview |
+| 07-05 | Slide-out panel for C2 status | Non-modal allows viewing tests while checking status, matches Linear/GitHub patterns |
 
 ## Session Continuity
 
-**Last session:** 2026-01-24T18:22:58Z
-**Stopped at:** Completed 07-02-PLAN.md (Erg Tests Table & CRUD)
+**Last session:** 2026-01-24T18:37:42Z
+**Stopped at:** Completed 07-05-PLAN.md (C2 Sync Status & Manual Sync UI)
 **Resume file:** None — ready for next plan in Phase 7
 
 ## Known Limitations
@@ -127,4 +131,4 @@ Continue Phase 7 execution with next plan.
 - Concept2 sync integration
 
 ---
-*Last updated: 2026-01-24 — Completed 07-02: Erg Tests Table & CRUD*
+*Last updated: 2026-01-24 — Completed 07-05: C2 Sync Status & Manual Sync UI*
