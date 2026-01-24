@@ -13,3 +13,6 @@ export type { ConfidenceBadgeProps } from './ConfidenceBadge';
 export type { RankingsTableProps } from './RankingsTable';
 export type { RankingsChartProps } from './RankingsChart';
 export type { SessionListProps } from './SessionList';
+
+// Wizard components for session creation
+export * from './wizard';
