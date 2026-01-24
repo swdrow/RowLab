@@ -11,9 +11,12 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core';
 import useLineupStore from '@/store/lineupStore';
+import { useLineupKeyboard } from '@v2/hooks/useLineupKeyboard';
 import { AthleteBank } from './AthleteBank';
 import { BoatView } from './BoatView';
 import { AddBoatButton } from './AddBoatButton';
+import { LineupToolbar } from './LineupToolbar';
+import { BiometricsPanel } from './BiometricsPanel';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
 import type { Athlete } from '@v2/types/lineup';
 import type { AthleteSource } from './DraggableAthleteCard';
@@ -34,6 +37,7 @@ interface LineupWorkspaceProps {
  * - AUTO-SWAP logic: dropping on occupied seat exchanges positions
  * - Handles bank-to-seat, seat-to-seat, seat-to-bank operations
  * - State changes tracked by undo middleware in lineupStore
+ * - Undo/redo via toolbar buttons and keyboard shortcuts
  *
  * Auto-swap behavior per CONTEXT.md:
  * "Dropping on occupied seat triggers auto-swap - athletes exchange places automatically"
@@ -51,6 +55,9 @@ export function LineupWorkspace({ className = '' }: LineupWorkspaceProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeAthlete, setActiveAthlete] = useState<Athlete | null>(null);
   const [activeSource, setActiveSource] = useState<AthleteSource | null>(null);
+
+  // Enable keyboard shortcuts (Ctrl+Z, Ctrl+Shift+Z)
+  useLineupKeyboard();
 
   // Configure drag sensors
   const sensors = useSensors(
@@ -162,6 +169,18 @@ export function LineupWorkspace({ className = '' }: LineupWorkspaceProps) {
 
         {/* Main Workspace - Boats */}
         <div className="flex-1 overflow-y-auto p-6 bg-bg-base">
+          {/* Toolbar with undo/redo and future action buttons */}
+          <div className="mb-4">
+            <LineupToolbar />
+          </div>
+
+          {/* Biometrics Panel - Live stats for current lineup */}
+          {activeBoats.length > 0 && (
+            <div className="mb-4">
+              <BiometricsPanel />
+            </div>
+          )}
+
           {/* Add Boat Button */}
           <div className="mb-6">
             <AddBoatButton />

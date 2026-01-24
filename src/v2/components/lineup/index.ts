@@ -10,8 +10,8 @@ export { BoatView } from './BoatView';
 export { LineupWorkspace } from './LineupWorkspace';
 export { DraggableAthleteCard } from './DraggableAthleteCard';
 export { SeatSlot } from './SeatSlot';
+export { LineupToolbar } from './LineupToolbar';
+export { BiometricsPanel } from './BiometricsPanel';
 
-// Future exports (plan 08-03+):
-// export { LineupToolbar } from './LineupToolbar';
-// export { BiometricsPanel } from './BiometricsPanel';
+// Future exports (plan 08-05+):
 // export { MarginVisualizer } from './MarginVisualizer';
