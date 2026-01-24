@@ -51,29 +51,36 @@ export const isBoatComplete = (boat) => {
 
 /**
  * Validate if an athlete can row a specific seat (side matching)
- * @param {object} athlete - Athlete object with port/starboard capabilities
+ * @param {object} athlete - Athlete object with side preference (Port/Starboard/Both/Cox)
  * @param {object} seat - Seat object with side designation
  * @returns {object} { valid: boolean, warning: string }
  */
 export const validateSeatAssignment = (athlete, seat) => {
-  if (athlete.isCoxswain) {
+  // Coxswains can go anywhere (or in cox seat)
+  if (athlete.isCoxswain || athlete.canCox || athlete.side === 'Cox') {
     return { valid: true, warning: null };
   }
 
-  const side = seat.side.toLowerCase();
+  const seatSide = seat.side?.toLowerCase();
+  const athleteSide = athlete.side?.toLowerCase();
 
-  // Check if athlete has capability for this side
-  if (side === 'port' && !athlete.port) {
+  // If athlete has no side preference or can do "both", no warning
+  if (!athleteSide || athleteSide === 'both') {
+    return { valid: true, warning: null };
+  }
+
+  // Check for mismatch
+  if (seatSide === 'port' && athleteSide === 'starboard') {
     return {
       valid: true, // Allow assignment but warn
-      warning: 'Athlete typically rows Starboard, assigned to Port seat'
+      warning: 'Starboard-preference athlete assigned to Port seat'
     };
   }
 
-  if (side === 'starboard' && !athlete.starboard) {
+  if (seatSide === 'starboard' && athleteSide === 'port') {
     return {
       valid: true, // Allow assignment but warn
-      warning: 'Athlete typically rows Port, assigned to Starboard seat'
+      warning: 'Port-preference athlete assigned to Starboard seat'
     };
   }
 
