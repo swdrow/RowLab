@@ -187,14 +187,14 @@ Complete V1 to V2 feature migration with world-class UI following "Precision Ins
 **Plans:** 8 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Attendance schema and backend API
-- [ ] 06-02-PLAN.md — Install @tanstack/react-virtual and VirtualTable component
-- [ ] 06-03-PLAN.md — Athlete and Attendance types with TanStack Query hooks
-- [ ] 06-04-PLAN.md — Athletes page with grid/list views, search, filters, profile panel
-- [ ] 06-05-PLAN.md — CSV bulk import wizard modal
-- [ ] 06-06-PLAN.md — Attendance recording and history components
-- [ ] 06-07-PLAN.md — Light and field theme CSS fixes
-- [ ] 06-08-PLAN.md — Human verification checkpoint
+- [x] 06-01-PLAN.md — Attendance schema and backend API
+- [x] 06-02-PLAN.md — Install @tanstack/react-virtual and VirtualTable component
+- [x] 06-03-PLAN.md — Athlete and Attendance types with TanStack Query hooks
+- [x] 06-04-PLAN.md — Athletes page with grid/list views, search, filters, profile panel
+- [x] 06-05-PLAN.md — CSV bulk import wizard modal
+- [x] 06-06-PLAN.md — Attendance recording and history components
+- [x] 06-07-PLAN.md — Light and field theme CSS fixes
+- [x] 06-08-PLAN.md — Human verification checkpoint
 
 **Delivers:**
 - Athletes page with grid/list views
@@ -222,6 +222,16 @@ Plans:
 **Dependencies:** Phase 6 (athlete roster exists)
 
 **Requirements:** ERG-01, ERG-02, ERG-03, ERG-04, ERG-05, ERG-06, ERG-07, ERG-08, ERG-09
+
+**Plans:** 6 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Erg test types and TanStack Query hooks (data layer)
+- [ ] 07-02-PLAN.md — Erg tests page with table, filters, and CRUD forms
+- [ ] 07-03-PLAN.md — Athlete erg history with trend charts and personal bests
+- [ ] 07-04-PLAN.md — CSV bulk import wizard for erg tests
+- [ ] 07-05-PLAN.md — Concept2 sync status and manual sync components
+- [ ] 07-06-PLAN.md — Human verification checkpoint
 
 **Delivers:**
 - Team erg tests table (sortable, filterable)
@@ -411,8 +421,8 @@ The following requirements apply across all v2.0 phases:
 
 | Phase | Name | Requirements | Plans | Status |
 |-------|------|--------------|-------|--------|
-| 6 | Athletes & Roster | 14 | 8 | Pending |
-| 7 | Erg Data & Performance | 9 | — | Pending |
+| 6 | Athletes & Roster | 14 | 8 | Complete |
+| 7 | Erg Data & Performance | 9 | 6 | Pending |
 | 8 | Lineup Builder | 18 | — | Pending |
 | 9 | Seat Racing | 10 | — | Pending |
 | 10 | Training Plans & NCAA | 15 | — | Pending |
@@ -442,4 +452,4 @@ Phases with standard patterns (skip research):
 ---
 
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-24 — Milestone v2.0 roadmap added*
+*Last updated: 2026-01-24 — Phase 7 plans created*
