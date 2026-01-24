@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 9 (Seat Racing) — In Progress
-**Status:** Completed 09-01-PLAN.md (Data Layer)
-**Last activity:** 2026-01-24 — Completed 09-01-PLAN.md
+**Status:** Completed 09-03-PLAN.md (Session Creation Wizard)
+**Last activity:** 2026-01-24 — Completed 09-03-PLAN.md
 
 ## Project Reference
 
@@ -157,11 +157,16 @@ Key architectural decisions carrying forward:
 | 09-02 | Top 3 rank highlighting with orange/bold | Emphasizes top performers in rankings table |
 | 09-02 | Relative date formatting for sessions | Shows "Today", "Yesterday", "N days ago" for dates within 7 days for better UX |
 | 09-02 | Delete confirmation dialog for sessions | Prevents accidental deletion of seat race sessions using Framer Motion modal |
+| 09-03 | Wizard state hook independent of react-hook-form | useSessionWizard manages step navigation state separately from form state for reusability and separation of concerns |
+| 09-03 | Step-by-step validation using methods.trigger() | Validates only current step's required fields before advancing, provides immediate feedback without validating future steps |
+| 09-03 | FormProvider context shares form state across wizard steps | All step components use useFormContext() to access shared form state, enabling navigation without losing data |
+| 09-03 | Responsive step indicator: full layout desktop, dots mobile | Desktop shows full horizontal layout with circles and labels, mobile (<640px) shows dots for space efficiency |
+| 09-03 | Navigation restricted to previously visited steps | canGoToStep() only allows clicking to steps <= maxStepReached, preventing skipping ahead without validation |
 
 ## Session Continuity
 
 **Last session:** 2026-01-24
-**Stopped at:** Completed 09-01-PLAN.md (Data Layer)
+**Stopped at:** Completed 09-03-PLAN.md (Session Creation Wizard)
 **Resume file:** None — continuing Phase 9
 
 ## Known Limitations
