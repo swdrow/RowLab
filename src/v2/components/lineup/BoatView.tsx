@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import useLineupStore from '@/store/lineupStore';
 import { SeatSlot } from './SeatSlot';
@@ -56,34 +57,36 @@ export function BoatView({ boat, className = '' }: BoatViewProps) {
       </div>
 
       {/* Seats - Bow at Top */}
-      <div className="space-y-2">
-        {/* Label: Bow */}
-        <div className="px-4">
-          <span className="text-xs font-semibold text-txt-tertiary uppercase tracking-wider">
-            Bow
-          </span>
-        </div>
+      <AnimatePresence mode="popLayout">
+        <div className="space-y-2">
+          {/* Label: Bow */}
+          <div className="px-4">
+            <span className="text-xs font-semibold text-txt-tertiary uppercase tracking-wider">
+              Bow
+            </span>
+          </div>
 
-        {/* Seats (reversed to show bow at top) */}
-        {seatsTopToBottom.map((seat) => (
-          <SeatSlot
-            key={`${boat.id}-seat-${seat.seatNumber}`}
-            boatId={boat.id}
-            seat={seat}
-            isCoxswain={false}
-            onRemoveAthlete={
-              seat.athlete ? () => removeFromSeat(boat.id, seat.seatNumber) : undefined
-            }
-          />
-        ))}
+          {/* Seats (reversed to show bow at top) */}
+          {seatsTopToBottom.map((seat) => (
+            <SeatSlot
+              key={`${boat.id}-seat-${seat.seatNumber}`}
+              boatId={boat.id}
+              seat={seat}
+              isCoxswain={false}
+              onRemoveAthlete={
+                seat.athlete ? () => removeFromSeat(boat.id, seat.seatNumber) : undefined
+              }
+            />
+          ))}
 
-        {/* Label: Stroke */}
-        <div className="px-4 pt-2">
-          <span className="text-xs font-semibold text-txt-tertiary uppercase tracking-wider">
-            Stroke
-          </span>
+          {/* Label: Stroke */}
+          <div className="px-4 pt-2">
+            <span className="text-xs font-semibold text-txt-tertiary uppercase tracking-wider">
+              Stroke
+            </span>
+          </div>
         </div>
-      </div>
+      </AnimatePresence>
 
       {/* Coxswain (if boat has coxswain) */}
       {boat.hasCoxswain && (

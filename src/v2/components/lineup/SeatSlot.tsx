@@ -1,9 +1,21 @@
 import { useDroppable } from '@dnd-kit/core';
+import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { validateSeatAssignment } from '@/utils/boatConfig';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
 import { SeatWarningBadge } from './SeatWarningBadge';
 import type { SeatSlotData, SeatWarning } from '@v2/types/lineup';
+
+/**
+ * Spring physics configuration for smooth, natural animations
+ * Per RESEARCH.md: "Spring physics feel more natural, velocity-aware"
+ */
+const springConfig = {
+  type: 'spring' as const,
+  stiffness: 300,
+  damping: 28,
+  restDelta: 0.00001,
+};
 
 /**
  * Props for SeatSlot component
@@ -72,10 +84,14 @@ export function SeatSlot({ boatId, seat, isCoxswain = false, onRemoveAthlete }: 
   });
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
+      layout
+      transition={springConfig}
+      animate={{ scale: isOver ? 1.02 : 1 }}
+      whileHover={{ scale: isEmpty ? 1 : 1.01 }}
       className={`
-        group relative flex items-center gap-3 p-3 rounded-lg border transition-all
+        group relative flex items-center gap-3 p-3 rounded-lg border transition-colors
         ${
           isEmpty
             ? 'border-dashed border-bdr-default bg-bg-base'
@@ -160,7 +176,7 @@ export function SeatSlot({ boatId, seat, isCoxswain = false, onRemoveAthlete }: 
           </span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
