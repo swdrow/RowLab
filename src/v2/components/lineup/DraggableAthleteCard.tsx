@@ -1,7 +1,19 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import { motion } from 'framer-motion';
 import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
 import type { Athlete } from '@v2/types/lineup';
+
+/**
+ * Spring physics configuration for smooth, natural animations
+ * Per RESEARCH.md: "Spring physics feel more natural, velocity-aware"
+ */
+const springConfig = {
+  type: 'spring' as const,
+  stiffness: 300,
+  damping: 28,
+  restDelta: 0.00001,
+};
 
 /**
  * Source position for athlete being dragged
@@ -72,17 +84,21 @@ export function DraggableAthleteCard({ athlete, source, className = '' }: Dragga
     : undefined;
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
+      layout
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: isDragging ? 0.5 : 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      whileDrag={{ scale: 1.05 }}
+      transition={springConfig}
       className={`
         p-3 rounded-lg
         border border-transparent
         hover:border-bdr-default hover:bg-bg-hover
-        transition-all
-        ${isDragging ? 'opacity-50' : 'opacity-100'}
         ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}
         ${className}
       `}
@@ -110,7 +126,7 @@ export function DraggableAthleteCard({ athlete, source, className = '' }: Dragga
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
