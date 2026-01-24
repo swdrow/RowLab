@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -18,6 +18,7 @@ import { AddBoatButton } from './AddBoatButton';
 import { LineupToolbar } from './LineupToolbar';
 import { BiometricsPanel } from './BiometricsPanel';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
+import { MobileLineupBuilder } from './MobileLineupBuilder';
 import type { Athlete } from '@v2/types/lineup';
 import type { AthleteSource } from './DraggableAthleteCard';
 
@@ -29,9 +30,9 @@ interface LineupWorkspaceProps {
 }
 
 /**
- * LineupWorkspace - Main workspace container with drag-drop context
+ * LineupWorkspace - Main workspace container with responsive desktop/mobile layouts
  *
- * Features:
+ * Desktop Features (>768px):
  * - DndContext with sensors for mouse, touch, keyboard
  * - DragOverlay shows full athlete card at cursor during drag
  * - AUTO-SWAP logic: dropping on occupied seat exchanges positions
@@ -39,8 +40,17 @@ interface LineupWorkspaceProps {
  * - State changes tracked by undo middleware in lineupStore
  * - Undo/redo via toolbar buttons and keyboard shortcuts
  *
+ * Mobile Features (≤768px):
+ * - Tap-to-select workflow (no drag-drop)
+ * - Bottom sheet athlete selector
+ * - Full-width boat view (no sidebar)
+ * - Bottom action bar with undo/redo
+ *
  * Auto-swap behavior per CONTEXT.md:
  * "Dropping on occupied seat triggers auto-swap - athletes exchange places automatically"
+ *
+ * Responsive behavior per CONTEXT.md:
+ * "Full redesign for mobile - different UI entirely for small screens, not just responsive adjustments"
  *
  * Per RESEARCH.md:
  * "Track source position BEFORE state change to properly swap"
@@ -55,6 +65,16 @@ export function LineupWorkspace({ className = '' }: LineupWorkspaceProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeAthlete, setActiveAthlete] = useState<Athlete | null>(null);
   const [activeSource, setActiveSource] = useState<AthleteSource | null>(null);
+
+  // Mobile detection - 768px breakpoint
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Enable keyboard shortcuts (Ctrl+Z, Ctrl+Shift+Z)
   useLineupKeyboard();
@@ -161,6 +181,16 @@ export function LineupWorkspace({ className = '' }: LineupWorkspaceProps) {
     }
   }
 
+  // Mobile layout - no drag-drop context
+  if (isMobile) {
+    return (
+      <div className={`h-full ${className}`}>
+        <MobileLineupBuilder />
+      </div>
+    );
+  }
+
+  // Desktop layout - with drag-drop context
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className={`flex h-full ${className}`}>
