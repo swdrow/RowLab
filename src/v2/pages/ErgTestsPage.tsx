@@ -7,8 +7,9 @@ import {
   ErgTestFilters,
   ErgTestForm,
   ErgTestsTable,
+  TeamC2StatusList,
 } from '@v2/components/erg';
-import { Plus } from 'lucide-react';
+import { Plus, Network } from 'lucide-react';
 import type { ErgTest, ErgTestFilters as FilterState, CreateErgTestInput, UpdateErgTestInput } from '@v2/types/ergTests';
 
 /**
@@ -23,6 +24,9 @@ export function ErgTestsPage() {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTest, setEditingTest] = useState<ErgTest | null>(null);
+
+  // C2 status panel state
+  const [showC2Status, setShowC2Status] = useState(false);
 
   // Auth - redirects to login if not authenticated
   const { isLoading: isAuthLoading } = useRequireAuth();
@@ -124,13 +128,31 @@ export function ErgTestsPage() {
             </p>
           </div>
 
-          <button
-            onClick={handleOpenAddModal}
-            className="flex items-center gap-2 px-4 py-2 bg-interactive-primary text-white rounded-md hover:bg-interactive-primary-hover transition-colors"
-          >
-            <Plus size={18} />
-            Add Test
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowC2Status(!showC2Status)}
+              className={`
+                flex items-center gap-2 px-4 py-2 rounded-md transition-colors font-medium
+                ${
+                  showC2Status
+                    ? 'bg-interactive-primary text-white hover:bg-interactive-primary-hover'
+                    : 'bg-bg-subtle text-txt-secondary hover:bg-bg-default'
+                }
+              `}
+              title={showC2Status ? 'Hide C2 Status' : 'Show C2 Status'}
+            >
+              <Network size={18} />
+              C2 Status
+            </button>
+
+            <button
+              onClick={handleOpenAddModal}
+              className="flex items-center gap-2 px-4 py-2 bg-interactive-primary text-white rounded-md hover:bg-interactive-primary-hover transition-colors"
+            >
+              <Plus size={18} />
+              Add Test
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -138,14 +160,24 @@ export function ErgTestsPage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden">
-        <ErgTestsTable
-          tests={tests}
-          isLoading={isLoading}
-          onEdit={handleOpenEditModal}
-          onDelete={handleDelete}
-          onRowClick={handleRowClick}
-        />
+      <div className="flex-1 flex overflow-hidden">
+        {/* Main content - Erg tests table */}
+        <div className={`flex-1 overflow-hidden transition-all ${showC2Status ? 'mr-96' : ''}`}>
+          <ErgTestsTable
+            tests={tests}
+            isLoading={isLoading}
+            onEdit={handleOpenEditModal}
+            onDelete={handleDelete}
+            onRowClick={handleRowClick}
+          />
+        </div>
+
+        {/* C2 Status panel - slide-out from right */}
+        {showC2Status && (
+          <div className="w-96 border-l border-bdr-default bg-bg-surface flex-shrink-0 overflow-hidden">
+            <TeamC2StatusList />
+          </div>
+        )}
       </div>
 
       {/* Add/Edit Modal */}
