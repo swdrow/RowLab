@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { getHeadshotUrl } from '@v2/utils/countryFlags';
 
 export interface AthleteAvatarProps {
   firstName: string;
@@ -6,6 +7,7 @@ export interface AthleteAvatarProps {
   photoUrl?: string | null;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
+  showHeadshot?: boolean;
 }
 
 /**
@@ -52,20 +54,26 @@ export function AthleteAvatar({
   photoUrl,
   size = 'md',
   className = '',
+  showHeadshot = true,
 }: AthleteAvatarProps) {
+  const [imageError, setImageError] = useState(false);
   const initials = useMemo(() => getInitials(firstName, lastName), [firstName, lastName]);
   const backgroundColor = useMemo(
     () => stringToHSL(`${firstName}${lastName}`),
     [firstName, lastName]
   );
 
-  if (photoUrl) {
+  // Try to use headshot URL if not provided
+  const imageUrl = photoUrl || (showHeadshot && lastName ? getHeadshotUrl(lastName) : null);
+
+  if (imageUrl && !imageError) {
     return (
       <div className={`${SIZES[size]} rounded-full overflow-hidden flex-shrink-0 ${className}`}>
         <img
-          src={photoUrl}
+          src={imageUrl}
           alt={`${firstName} ${lastName}`}
           className="w-full h-full object-cover"
+          onError={() => setImageError(true)}
         />
       </div>
     );

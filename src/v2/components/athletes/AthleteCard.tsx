@@ -1,4 +1,5 @@
 import { AthleteAvatar } from './AthleteAvatar';
+import { getCountryFlag } from '@v2/utils/countryFlags';
 import type { Athlete } from '@v2/types/athletes';
 
 export interface AthleteCardProps {
@@ -60,8 +61,11 @@ export function AthleteCard({ athlete, onClick, isSelected = false, className = 
           size="lg"
         />
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-txt-primary truncate">
-            {athlete.firstName} {athlete.lastName}
+          <h3 className="font-semibold text-txt-primary truncate flex items-center gap-2">
+            <span>{athlete.firstName} {athlete.lastName}</span>
+            {athlete.country && (
+              <span title={athlete.country}>{getCountryFlag(athlete.country)}</span>
+            )}
           </h3>
           {athlete.email && (
             <p className="text-sm text-txt-tertiary truncate">{athlete.email}</p>
