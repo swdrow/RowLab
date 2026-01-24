@@ -3,7 +3,7 @@
 **Created:** 2026-01-23
 **Core Value:** Athletes and coaches get a context-aware dashboard experience that adapts to their role
 
-## Milestone: v1.0 — Full UX Redesign
+## Milestone: v1.0 — Full UX Redesign (COMPLETE)
 
 Ground-up rebuild with multi-persona Workspace/Context architecture using In-Place Strangler pattern.
 
@@ -172,7 +172,218 @@ Plans:
 
 ---
 
+## Milestone: v2.0 — Core Migration (ACTIVE)
+
+Complete V1 to V2 feature migration with world-class UI following "Precision Instrument" design philosophy (Raycast/Linear/Vercel inspired).
+
+### Phase 6: Athletes & Roster Management
+
+**Goal:** Coach has complete visibility into roster with filtering, biometrics, and attendance tracking.
+
+**Dependencies:** None (foundation for all subsequent phases)
+
+**Requirements:** ATH-01, ATH-02, ATH-03, ATH-04, ATH-05, ATH-06, ATH-07, ATH-08, ATT-01, ATT-02, ATT-03, DESIGN-02, DESIGN-03, DESIGN-04
+
+**Delivers:**
+- Athletes page with grid/list views
+- Search and filter by side preference and capabilities
+- Athlete profile with biometrics editing
+- Bulk CSV import with preview validation
+- Daily attendance recording (present, late, excused, unexcused)
+- Attendance history and team summary
+- Light/field theme CSS fixes
+- Table virtualization for 100+ rows
+
+**Success Criteria:**
+1. Coach can view full roster in grid or list view, switch between views, and see all athlete biometrics at a glance
+2. Coach can search by name and filter by side preference (port/starboard/both) and capabilities (scull, cox) to find specific athletes
+3. Coach can bulk import 50+ athletes from CSV with column mapping preview, and system validates format before committing
+4. Coach can record attendance for any practice date and view attendance history for individual athletes or team-wide summaries
+5. Tables with 100+ athletes scroll smoothly at 60 FPS with virtualization
+
+---
+
+### Phase 7: Erg Data & Performance
+
+**Goal:** Coach and athletes can track, analyze, and compare erg test performance over time.
+
+**Dependencies:** Phase 6 (athlete roster exists)
+
+**Requirements:** ERG-01, ERG-02, ERG-03, ERG-04, ERG-05, ERG-06, ERG-07, ERG-08, ERG-09
+
+**Delivers:**
+- Team erg tests table (sortable, filterable)
+- Manual erg test CRUD operations
+- Athlete erg history with trend charts
+- Bulk CSV import for erg tests
+- Concept2 sync status display
+- Manual C2 sync trigger
+
+**Success Criteria:**
+1. Coach can view all team erg tests in a sortable table, filtering by test type (2k, 6k, etc.) and date range
+2. Coach can add, edit, and delete individual erg test results with immediate UI feedback
+3. Athlete can view their personal erg history with a line chart showing progress over time
+4. Coach can bulk import erg tests from CSV and see which athletes have Concept2 connections with last sync timestamps
+
+---
+
+### Phase 8: Lineup Builder
+
+**Goal:** Coach can build, manage, and export boat lineups with drag-drop interface and full history.
+
+**Dependencies:** Phase 6 (athlete roster for athlete bank)
+
+**Requirements:** LINE-01, LINE-02, LINE-03, LINE-04, LINE-05, LINE-06, LINE-07, LINE-08, LINE-09, LINE-10, LINE-11, LINE-12, MARG-01, MARG-02, MARG-03, MARG-04, MARG-05, DESIGN-05
+
+**Delivers:**
+- Lineup builder with boat class selection (8+, 4+, 2x, etc.)
+- Drag-drop athletes from bank to seats
+- Seat rearrangement and removal
+- Seat validation (port/starboard, coxswain)
+- Undo/redo with keyboard shortcuts
+- Lineup history and versioning
+- Save, duplicate, and name lineups
+- Print-ready PDF export
+- Live average biometrics display
+- Boat margin visualizer with shell silhouettes
+- Spring-physics drag animations
+
+**Success Criteria:**
+1. Coach can create a lineup by selecting boat class, then drag athletes from the bank to seats with spring-physics animation feedback
+2. Coach can rearrange athletes between seats or remove them back to bank, with system validating port/starboard preferences and coxswain seat rules
+3. Coach can undo/redo any action with Ctrl+Z/Ctrl+Shift+Z, view lineup history, and restore previous versions
+4. Coach can save lineup with name/date, duplicate existing lineups, and export print-ready PDF with high-contrast large font
+5. Coach can view margin visualizer showing boat silhouettes with calculated distance gaps based on piece times
+
+---
+
+### Phase 9: Seat Racing & Selection
+
+**Goal:** Coach can run seat racing sessions with ELO-based rankings and statistically confident athlete comparisons.
+
+**Dependencies:** Phase 6 (athlete roster for assignments)
+
+**Requirements:** SEAT-01, SEAT-02, SEAT-03, SEAT-04, SEAT-05, SEAT-06, SEAT-07, SEAT-08, SEAT-09, SEAT-10
+
+**Delivers:**
+- Seat race session creation with metadata
+- Piece management (multiple boats per piece)
+- Time entry and athlete assignments
+- Switch recording between pieces
+- ELO-style ranking calculations
+- Confidence intervals on rankings
+- Sorted athlete rankings view
+- Optimal switch sequence generator
+- Configurable parameters (K-factor, piece weight)
+
+**Success Criteria:**
+1. Coach can create a seat race session with date/conditions, add multiple pieces with boats and times, and assign athletes to seats
+2. Coach can record switches between pieces (which athletes swapped) and system tracks all movements
+3. System calculates ELO ratings from results and displays confidence intervals (PROVISIONAL/LOW/MEDIUM/HIGH) based on piece count
+4. Coach can view athlete rankings sorted by ELO with confidence badges, and system suggests optimal switch sequences to minimize pieces for statistically significant results
+
+---
+
+### Phase 10: Training Plans & NCAA Compliance
+
+**Goal:** Coach can build periodized training programs with calendar scheduling and NCAA 20-hour rule tracking.
+
+**Dependencies:** Phase 6 (athlete roster for assignments)
+
+**Requirements:** TRAIN-01, TRAIN-02, TRAIN-03, TRAIN-04, TRAIN-05, TRAIN-06, TRAIN-07, TRAIN-08, TRAIN-09, TRAIN-10, ATT-04, NCAA-01, NCAA-02, NCAA-03, NCAA-04
+
+**Delivers:**
+- Training calendar (month/week views)
+- Workout creation and calendar placement
+- Drag-to-reschedule workouts
+- Periodization blocks (base, build, peak, taper)
+- Template application to date ranges
+- Individual/group workout assignments
+- Athlete view of assigned plans
+- Workout completion marking
+- Coach compliance dashboard
+- Training load calculations (TSS/volume)
+- NCAA daily/weekly hour tracking
+- 20-hour limit warnings
+- NCAA compliance audit reports
+- Attendance linked to training sessions
+
+**Success Criteria:**
+1. Coach can view training calendar in month or week view, create workouts, and drag them to reschedule with visual feedback
+2. Coach can define periodization blocks (base/build/peak/taper), apply templates to date ranges, and assign plans to individuals or groups
+3. Athlete can view their assigned training plan and mark workouts as completed; coach sees compliance dashboard showing who completed what
+4. System tracks NCAA hours (daily and weekly totals), warns when approaching 20-hour limit, and generates audit-ready compliance reports
+
+---
+
+### Phase 11: Racing & Regattas
+
+**Goal:** Coach can manage regattas, entries, results, and track team rankings against competitors.
+
+**Dependencies:** Phase 8 (lineups for race entries)
+
+**Requirements:** RACE-01, RACE-02, RACE-03, RACE-04, RACE-05, RACE-06, RACE-07, RACE-08, RACE-09, RACE-10, RANK-01, RANK-02, RANK-03, RANK-04, RANK-05
+
+**Delivers:**
+- Regatta management (name, location, dates)
+- Race creation within regattas
+- Race entries linked to lineups
+- Result entry (time, place, margin)
+- Auto-calculated margins
+- Regatta results summary
+- Team rankings from results
+- Race Day Command Center
+- Heat sheet with progression rules
+- Warm-up launch schedule
+- External rankings import (Row2k, USRowing, RegattaCentral)
+- Internal speed estimates
+- Team ranking vs competitors
+- Ranking confidence and contributing races
+
+**Success Criteria:**
+1. Coach can create regattas with metadata, add races with event details, and link lineup entries to races
+2. Coach can enter race results and system auto-calculates margins between finishers; regatta summary shows all results
+3. Race Day Command Center shows countdown to next race, heat sheet with progression rules, and warm-up launch schedule
+4. Coach can import external rankings, view team's estimated ranking vs competitors with confidence indicators and contributing race data
+
+---
+
+### Phase 12: Settings & Polish
+
+**Goal:** Complete settings migration and ensure all components follow Precision Instrument design language.
+
+**Dependencies:** Phases 6-11 (all features complete)
+
+**Requirements:** SET-01, SET-02, SET-03, SET-04
+
+**Delivers:**
+- Full settings page (migrated from V1)
+- Integration management (C2, Strava)
+- Billing management (Stripe)
+- Team member and role management
+
+**Success Criteria:**
+1. User can access complete settings page with all V1 settings functionality intact
+2. User can connect/disconnect integrations (Concept2, Strava) and see connection status
+3. Team owner can manage billing through Stripe integration
+4. Coach can manage team members, invite new members, and assign roles
+
+---
+
+## Cross-Cutting Requirements
+
+The following requirements apply across all v2.0 phases:
+
+| Requirement | Description | Application |
+|-------------|-------------|-------------|
+| DESIGN-01 | All components follow "Precision Instrument" design language | Every phase |
+| DESIGN-06 | All forms follow react-hook-form + Zod validation pattern | Phases 6-12 |
+
+---
+
 ## Phase Summary
+
+### v1.0 Milestone (Complete)
 
 | Phase | Name | Requirements | Plans | Status |
 |-------|------|--------------|-------|--------|
@@ -182,23 +393,41 @@ Plans:
 | 4 | Migration Loop | 11 | 12 | Complete |
 | 5 | The Flip | 5 | 5 | Complete |
 
-**Total:** 45 requirements across 5 phases
+**v1.0 Total:** 52 requirements across 5 phases
+
+### v2.0 Milestone (Active)
+
+| Phase | Name | Requirements | Plans | Status |
+|-------|------|--------------|-------|--------|
+| 6 | Athletes & Roster | 14 | — | Pending |
+| 7 | Erg Data & Performance | 9 | — | Pending |
+| 8 | Lineup Builder | 18 | — | Pending |
+| 9 | Seat Racing | 10 | — | Pending |
+| 10 | Training Plans & NCAA | 15 | — | Pending |
+| 11 | Racing & Regattas | 15 | — | Pending |
+| 12 | Settings & Polish | 4 | — | Pending |
+
+**v2.0 Total:** 85 requirements across 7 phases (84 unique + 1 ATT-04 linking)
 
 ---
 
-## Parallel Workstreams
+## Research Flags
 
-This roadmap uses parallel frontend/backend workstreams:
+Phases requiring deeper research during planning (from SUMMARY.md):
 
-```
-Phase 1-2: [FE] Shell Setup    + [BE] Schema Planning
-Phase 3:   [FE] Dashboard      + [BE] Data Integration APIs
-Phase 4:   [FE] Feature Migration + [BE] New Feature APIs
-Phase 5:   [BOTH] The Flip
-```
+| Phase | Topic | Reason |
+|-------|-------|--------|
+| 8 | Drag-drop with undo/redo | Complex @dnd-kit + Zustand temporal middleware integration |
+| 9 | ELO calculation | Optimal K-factor for rowing, confidence intervals, edge cases |
+| 10 | Calendar integration | react-big-calendar virtualization, mobile-first patterns |
 
-Backend APIs are scheduled to complete before frontend features need them.
+Phases with standard patterns (skip research):
+- Phase 6: Standard CRUD with virtualization
+- Phase 7: Chart library already used, CSV patterns established
+- Phase 11: Hierarchical CRUD, established patterns
+- Phase 12: Settings migration, no new patterns
 
 ---
+
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-24 — Milestone v1.0 complete*
+*Last updated: 2026-01-24 — Milestone v2.0 roadmap added*

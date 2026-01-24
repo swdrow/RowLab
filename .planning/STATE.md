@@ -2,256 +2,111 @@
 
 ## Current Status
 
-**Milestone:** v1.0 — Full UX Redesign — COMPLETE
-**Phase:** 5 (The Flip) — COMPLETE
-**Status:** All phases complete (5/5) — V2 is production-ready
-**Last activity:** 2026-01-24 — Completed feature parity verification (05-05)
+**Milestone:** v2.0 — Core Migration
+**Phase:** 6 (Athletes & Roster Management) — NOT STARTED
+**Status:** Roadmap complete, ready for phase planning
+**Last activity:** 2026-01-24 — Created v2.0 roadmap
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-01-23)
 
 **Core value:** Context-aware dashboard experience that adapts to athlete/coach role
-**Current focus:** Ready for Phase 3 - Vertical Slice (Personal Dashboard)
+**v2.0 focus:** Complete V1 to V2 migration with "Precision Instrument" design philosophy
 
 ## Progress
 
+### v1.0 Milestone (Complete)
+
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 1 | Clean Room Setup | ● Complete | 4/4 |
-| 2 | Foundation | ● Complete | 4/4 |
-| 3 | Vertical Slice | ● Complete | 7/7 |
-| 4 | Migration Loop | ● Complete | 12/12 |
-| 5 | The Flip | ● Complete | 5/5 |
+| 1 | Clean Room Setup | Complete | 4/4 |
+| 2 | Foundation | Complete | 4/4 |
+| 3 | Vertical Slice | Complete | 7/7 |
+| 4 | Migration Loop | Complete | 12/12 |
+| 5 | The Flip | Complete | 5/5 |
 
-Progress: ████████████ 100%
+v1.0 Progress: 100% Complete
+
+### v2.0 Milestone (Active)
+
+| Phase | Name | Status | Plans |
+|-------|------|--------|-------|
+| 6 | Athletes & Roster | Pending | —/— |
+| 7 | Erg Data & Performance | Pending | —/— |
+| 8 | Lineup Builder | Pending | —/— |
+| 9 | Seat Racing | Pending | —/— |
+| 10 | Training Plans & NCAA | Pending | —/— |
+| 11 | Racing & Regattas | Pending | —/— |
+| 12 | Settings & Polish | Pending | —/— |
+
+v2.0 Progress: ░░░░░░░░░░░░ 0%
 
 ## Quick Context
 
-**Architecture:** In-Place Strangler pattern
-- V2 at `/beta` route with `src/v2/` directory
+**Architecture:** In-Place Strangler pattern (v1.0)
+- V2 at `/app` (default)
+- V1 at `/legacy` (fallback)
 - Shares existing Zustand stores with V1
-- V1 remains untouched until V2 feature parity
 
 **Tech Stack:** React 18, TypeScript, Zustand, Tailwind CSS 3.4, Framer Motion, TanStack Query v5
 
+**v2.0 Design Philosophy:** "Precision Instrument" (Raycast/Linear/Vercel inspired)
+
 **Codebase Map:** .planning/codebase/ (7 documents, 1,978 lines)
 
-## Phase 1 Deliverables
+## Phase 6 Overview
 
-| Plan | Description | Status |
-|------|-------------|--------|
-| 01-01 | Frontend foundation (tokens, Tailwind) | ● Complete |
-| 01-02 | Backend schema (8 Prisma models) | ● Complete |
-| 01-03 | V2 entry point (V2Layout + /beta) | ● Complete |
-| 01-04 | Verification checkpoint | ● Approved |
+**Goal:** Coach has complete visibility into roster with filtering, biometrics, and attendance tracking
 
-**Commits:** 12 commits across 4 plans
+**Requirements (14):**
+- ATH-01 through ATH-08 (Athletes Page)
+- ATT-01 through ATT-03 (Attendance Tracking)
+- DESIGN-02, DESIGN-03, DESIGN-04 (Theme fixes, virtualization)
 
-## Phase 2 Deliverables
+**Success Criteria:**
+1. Coach can view full roster in grid or list view with biometrics
+2. Coach can search and filter by side preference and capabilities
+3. Coach can bulk import from CSV with preview validation
+4. Coach can record and view attendance history
+5. Tables scroll smoothly at 60 FPS with 100+ athletes
 
-| Plan | Description | Status |
-|------|-------------|--------|
-| 02-01 | Context store, theme hook, shared stores | ● Complete |
-| 02-02 | ContextRail component | ● Complete |
-| 02-03 | WorkspaceSidebar component | ● Complete |
-| 02-04 | Shell layout integration, keyboard navigation, theme toggle | ● Complete |
+**Dependencies:** None (foundation phase)
 
-**Commits:** 9 task commits + 1 metadata commit
+**Research Flag:** SKIP (standard CRUD patterns)
 
-## Phase 3 Deliverables
+## Accumulated Decisions (v1.0)
 
-| Plan | Description | Status |
-|------|-------------|--------|
-| 03-01 | TanStack Query setup | ● Complete |
-| 03-02 | Dashboard preferences API endpoints | ● Complete |
-| 03-03 | Unified activity feed API | ● Complete |
-| 03-04 | TanStack Query hooks (data layer) | ● Complete |
-| 03-05 | Adaptive headline widget (useAdaptiveHeadline, HeadlineWidget) | ● Complete |
-| 03-06 | Activity feed widget (ActivityCard, UnifiedActivityFeed) | ● Complete |
-| 03-07 | Dashboard page with bento grid (MeDashboard, DashboardGrid) | ● Complete |
-| 03-08 | Human verification checkpoint | ● Approved |
+See STATE.md.backup for full v1.0 decision history (211 decisions across 5 phases)
 
-**Commits:** 18 task commits + verification bug fixes
-
-**Bug Fixes During Verification:**
-- Merged V2 Tailwind tokens into main config (V2 config wasn't used by PostCSS)
-- Renamed conflicting tokens: `text-text-*` → `text-txt-*`, `border-border-*` → `border-bdr-*`
-- Fixed `card-bg` token to use elevated surface for proper contrast
-
-Note: Plan 03-01 contributed 3 commits, 03-02 contributed 2 commits, 03-03 contributed 3 commits, 03-04 contributed 3 commits, 03-05 contributed 2 commits, 03-06 contributed 2 commits, 03-07 contributed 3 commits
-
-## Phase 4 Deliverables
-
-| Plan | Description | Status |
-|------|-------------|--------|
-| 04-01 | Phase 4 npm dependencies | ● Complete |
-| 04-02 | Whiteboard API (REST endpoints, service layer) | ● Complete |
-| 04-03 | OarSet API (REST endpoints, service layer) | ● Complete |
-| 04-04 | Availability API (REST endpoints, service layer) | ● Complete |
-| 04-06 | Availability hooks (TanStack Query data layer) | ● Complete |
-| 04-07 | Whiteboard UI components (WhiteboardView, WhiteboardEditor) | ● Complete |
-| 04-08 | Fleet management UI (forms, tables, modal) | ● Complete |
-| 04-09 | Availability UI components (Grid, Cell, Editor) | ● Complete |
-| 04-10 | Coach pages (Whiteboard, Fleet, Availability) | ● Complete |
-| 04-11 | Human verification checkpoint | ● Complete |
-| 04-12 | Athlete biometrics (schema, API, types) | ● Complete |
-
-**Commits:** 24 task commits across 12 plans
-
-## Phase 5 Deliverables
-
-| Plan | Description | Status |
-|------|-------------|--------|
-| 05-01 | User preference store (userPreferenceStore, useVersionRedirect) | ● Complete |
-| 05-02 | Route flip (V2 to /app, V1 to /legacy) | ● Complete |
-| 05-03 | Version toggle UI (VersionToggle, VersionRedirectGuard) | ● Complete |
-| 05-04 | Route analytics tracking (useRouteAnalytics, getVersionUsageStats) | ● Complete |
-| 05-05 | Feature parity verification (checklist + human verification) | ● Complete |
-
-**Commits:** 15 commits (13 task + 1 deviation fix + 1 metadata)
-
-## Accumulated Decisions
-
-| Phase | Decision | Rationale |
-|-------|----------|-----------|
-| 01-01 | Use selector strategy (important: '.v2') for CSS isolation | Complete isolation without separate builds |
-| 01-01 | Three-level token system (palette → semantic → component) | Maintainable design system with theme support |
-| 01-01 | Support dark/light/field themes | Field theme for high-contrast outdoor visibility |
-| 01-02 | Equipment enums for type safety | Prevents invalid values, provides autocomplete, database validation |
-| 01-02 | JSON storage for default schedules | Flexible weekly patterns without separate table per day |
-| 01-02 | Activity deduplication at database level | Unique constraint on (source, sourceId) prevents sync duplicates |
-| 01-02 | Morning/evening availability granularity | Matches rowing practice scheduling (AM and PM sessions) |
-| 01-03 | Theme defaults to dark (no data-theme attribute) | Cleaner markup; only light/field themes set data-theme |
-| 01-03 | V2Layout wraps all /beta routes | Provides .v2 class for CSS isolation |
-| 01-03 | Use @v2 path alias for V2 lazy imports | Consistent import pattern, works with Vite alias config |
-| 02-01 | Default context: 'me' (athlete view) | Athlete view is primary use case, coaches/admins are power users |
-| 02-01 | System preference as default theme | Respects OS dark mode unless user explicitly overrides |
-| 02-01 | Share Zustand store instances via Context, not values | Avoids re-render loop pitfall (Pattern from 02-RESEARCH.md) |
-| 02-01 | Three-theme support (dark/light/field) | Matches Phase 1 token system design |
-| 02-03 | Use Lucide React icons with string-to-component mapping | contextStore uses string icon names for flexibility, ICON_MAP bridges to components |
-| 02-03 | Navigation items from contextStore CONTEXT_CONFIGS | Consume existing navigation config rather than duplicating |
-| 02-03 | V2 design tokens for all sidebar styling | Active state uses bg-action-primary, inactive uses text-text-secondary with hover states |
-| 02-02 | Use inline SVG icons (Lucide-style) for rail | Avoids icon library dependency, keeps bundle small |
-| 02-02 | 64px rail width (w-16) | Comfortable click targets meeting WCAG requirements |
-| 02-02 | layoutId="activeContext" for indicator animation | Framer Motion shared element transition pattern |
-| 02-04 | Convert useTheme to Zustand for shared state | useState created independent instances; Zustand ensures all V2 components share theme state |
-| 02-04 | CSS Grid layout with fixed sidebar widths (rail 64px, sidebar 256px) | Precise layout control, stable across all pages |
-| 02-04 | Keyboard shortcuts Ctrl/Cmd+1/2/3 for context switching | Power-user rapid context switching without UI interaction |
-| 02-04 | Focus management: move to first sidebar item on context switch | Accessibility requirement for keyboard-only users |
-| 02-04 | Scope theme CSS selectors to .v2[data-theme="..."] | data-theme on .v2 div not :root; selectors must match for cascade |
-| 02-04 | V1 store access via Context providers (AuthStoreContext, SettingsStoreContext) | V2 components access V1 Zustand stores without cross-contamination |
-| 02-04 | Defer light/field theme visual rendering to post-Phase 5 | Dark theme works; light/field have CSS cascade issues; low priority vs. feature development |
-| 03-01 | QueryClient singleton exported from dedicated module | Prevent recreation on render; follows React Query best practices |
-| 03-01 | staleTime 5min and gcTime 10min for external APIs | External APIs (C2, Strava) change infrequently; reduce refetch overhead |
-| 03-01 | refetchOnWindowFocus disabled | Prevent API hammering when switching tabs; critical for rate-limited APIs |
-| 03-01 | retry: 1 for queries, 0 for mutations | Network resilience without retry loops; avoid duplicate mutations |
-| 03-01 | QueryClientProvider as outermost provider in V2Layout | TanStack Query context available to all V2 components |
-| 03-02 | Upsert pattern for dashboard preferences PUT endpoint | Single atomic operation for create-or-update eliminates race conditions |
-| 03-02 | Return empty arrays as defaults for missing preferences | Avoids 404 errors for new users, provides predictable response shape |
-| 03-02 | Validate hiddenSources against full ActivitySource enum | Includes CALENDAR, WATER_SESSION for future-proofing beyond plan spec |
-| 03-02 | Dashboard preferences are per-user, not per-team | authenticateToken without teamIsolation - same preferences across all teams |
-| 03-03 | C2 is ALWAYS primary for rowing activities | C2 logbook is canonical source for erg data; overrides general source priority |
-| 03-03 | ±5min time window + ±10% distance tolerance for deduplication | Activities within 5 minutes and 10% distance difference may be same workout |
-| 03-03 | Activity type normalization (erg/row → rowing) | Ensures consistent matching across different activity type labels |
-| 03-03 | User-scoped endpoint (not team-isolated) | Activities are personal data (C2 logbook, Strava sync), not team-specific |
-| 03-03 | Fetch 2x limit to account for deduplication | Fetches more activities before dedup to ensure enough results after filtering; caps at 100 |
-| 03-04 | Sort excludeSources array for stable queryKey | Prevents refetch when same sources in different order |
-| 03-04 | Export formatting helpers from hooks | Colocate view logic with data fetching (getActivityTypeName, formatDuration, formatDistance) |
-| 03-04 | Different staleTimes for preferences vs activities | 10min for preferences (change infrequently), 5min for activities (external sync) |
-| 03-04 | Helper methods on hook return object | setPinnedModules and toggleSourceVisibility encapsulate mutation logic |
-| 03-05 | Priority-based headline selection | Highest priority candidate wins; simple rule-based system (not ML) for V1 |
-| 03-05 | Streak requires today or yesterday activity | Grace period allows overnight workouts; broken if last activity was 2+ days ago |
-| 03-05 | Rest reminder at 3+ days, welcome back at 7+ days | Gentle rest reminder (3-6 days), welcome back with CTA (7+ days) |
-| 03-05 | Time-of-day greeting as fallback | Always added as lowest-priority candidate to ensure headline displays something |
-| 03-06 | Fixed V2 design token class names in ActivityCard | Corrected bg-surface-tertiary → bg-card-bg, text-text-tertiary → text-text-secondary to match tailwind.v2.config.js |
-| 03-06 | Loading skeleton shows 3 cards | Matches typical viewport height without overwhelming initial render |
-| 03-06 | Error state includes retry button | Manual recovery without page refresh |
-| 03-07 | Hero section (headline) outside main grid | Headline rendered separately from bento grid to prevent reordering |
-| 03-07 | Optimistic drag updates with server persistence | Local state updates immediately, then syncs to server via setPinnedModules |
-| 03-07 | 8px activation constraint for drag | Prevents accidental drags when clicking widget contents |
-| 03-07 | Placeholder widgets for future integrations | c2-logbook, strava-feed, quick-stats show "coming soon" messages |
-| 04-01 | Phase-level dependency installation | Install all phase dependencies upfront before feature work |
-| 04-02 | Upsert pattern for whiteboard POST | Single atomic operation for create-or-update by team+date eliminates race conditions |
-| 04-02 | Team isolation via middleware on all whiteboard endpoints | Ensures queries scoped to activeTeamId for security |
-| 04-02 | COACH/OWNER-only mutations for whiteboards | Athletes have read-only access, only coaches can create/edit/delete |
-| 04-06 | formatDate helper for stable query keys | Removes time component from dates to prevent unnecessary refetches |
-| 04-06 | Dual invalidation pattern on availability mutations | Refreshes both team grid and athlete detail views for UI consistency |
-| 04-06 | Conditional query enabling for athlete availability | enabled: !!athleteId prevents requests when no athlete selected |
-| 04-12 | Default false for canScull and canCox | Safe default - coaches explicitly enable capabilities |
-| 04-12 | UI implementation deferred to plan 04-09 | Types updated now, AvailabilityGrid UI added when component created |
-| 04-07 | Use MDEditor.Markdown for rendering | Consistent with editing experience, requires data-color-mode wrapper |
-| 04-07 | Empty state with conditional CTA | Show create button only when canEdit=true (coach permission) |
-| 04-07 | Permission-based edit button | UI-level enforcement - API enforces COACH/OWNER role |
-| 04-08 | Used @headlessui/react Dialog for modal | Provides accessible modal with focus management and transitions |
-| 04-08 | Zod schemas match Prisma enums exactly | Ensures client-side validation matches server-side constraints |
-| 04-08 | Status badge color semantics | Green=available, blue=in-use, yellow=maintenance, gray=retired |
-| 04-08 | Role-based action visibility | Tables show edit/delete only when canEdit prop is true |
-| 04-09 | Biometrics badge design | Display as compact badges (P/S/B/C, Sc, Cx) next to athlete name for immediate visibility |
-| 04-09 | Sticky column width 200px | Accommodates name + 3 badges without truncation |
-| 04-09 | Slot selector UI with buttons | Button group (✓ ? ✗ —) instead of dropdown for faster interaction |
-| 04-10 | Derive canEdit from auth store at page level | Pages determine permissions and pass to components as props |
-| 04-10 | Week navigation starts Monday | Availability grid uses Monday-start weeks with Sunday adjustment logic |
-| 04-10 | Permission-based athlete editing | Coaches can edit any athlete, athletes can only edit their own availability |
-| 04-10 | Page-level modal state management | Separate state for modal visibility and editing entity (editingShell, editingOarSet, editingAthlete) |
-| 05-01 | Default to V2 mode (useLegacyMode: false) | V2 is the primary experience; legacy mode is opt-in |
-| 05-01 | Manual localStorage over Zustand persist middleware | Simpler pattern matching research; direct control over storage key |
-| 05-01 | Exclude auth routes from redirect logic | Prevents login loops when switching versions |
-| 05-01 | Use replace: true for version redirects | Avoids polluting browser history with redirect entries |
-| 05-01 | @v2 path alias in both Vite and tsconfig.json | Ensures TypeScript module resolution matches Vite bundler |
-| 05-02 | V2 at /app as default authenticated experience | V2 is production-ready and should be the primary user entry point after login |
-| 05-02 | Preserve V1 at /legacy with full functionality | Users may need V1 features not yet migrated to V2 |
-| 05-02 | LandingPage links remain pointing to /app | Landing page should drive users to V2 (the new default) |
-| 05-02 | /beta/* redirect to /app for bookmark compatibility | Existing bookmarks to /beta/* from Phase 4 testing should not break |
-| 05-03 | Dual styling approach for V1 vs V2 contexts | V2 uses design tokens, V1 uses legacy classes - single component works in both environments |
-| 05-03 | Wrapper component pattern for useVersionRedirect | Separates hook logic from layout structure for clean integration and testability |
-| 05-03 | Navigate with replace: true for version switches | Avoids polluting browser history - back button returns to previous page, not previous version |
-| 05-05 | Feature parity defined as feature *access*, not feature *parity* | V2 provides navigation to equivalent features; legacy features accessible via /legacy route |
-| 05-05 | V1-only features documented as [Legacy] status | Lineup builder, 3D boat view, etc. not blocking for V2 default - users access via /legacy |
+Key architectural decisions carrying forward:
+- TanStack Query for server state, Zustand for complex client state only
+- Feature-based organization in src/v2/features/
+- react-hook-form + Zod for all form validation
+- @dnd-kit for drag-drop interactions
+- recharts for data visualization
 
 ## Session Continuity
 
-**Last session:** 2026-01-24 00:36 UTC
-**Stopped at:** Completed 05-05-PLAN.md (Feature Parity Verification) - All phases complete
-**Resume file:** None
+**Last session:** 2026-01-24
+**Stopped at:** Created v2.0 roadmap (milestone initialization)
+**Resume file:** None — ready for `/gsd:plan-phase 6`
 
 ## Known Limitations
 
-- **Light/Field themes:** CSS cascade issue prevents visual theme changes. Dark theme works. Deferred to post-Phase 5.
+- **Light/Field themes:** CSS cascade issue prevents visual theme changes. Dark theme works. Deferred.
 
 ## Next Action
 
-**MILESTONE v1.0 COMPLETE** — All phases delivered:
+Run `/gsd:plan-phase 6` to create executable plans for Athletes & Roster Management phase.
 
-**Phase 1: Clean Room Setup** (4/4 plans)
-- ✓ Frontend foundation with V2 design tokens
-- ✓ Backend schema with 8 Prisma models
-- ✓ V2 entry point at /beta route
-
-**Phase 2: Foundation** (4/4 plans)
-- ✓ Context-aware navigation (ContextRail + WorkspaceSidebar)
-- ✓ Theme system with dark/light/field support
-- ✓ Shell layout with keyboard shortcuts
-
-**Phase 3: Vertical Slice** (7/7 plans)
-- ✓ TanStack Query integration
-- ✓ Personal dashboard with adaptive headline
-- ✓ Unified activity feed with C2/Strava integration
-
-**Phase 4: Migration Loop** (12/12 plans)
-- ✓ Coach whiteboard with markdown editor
-- ✓ Fleet management (shells + oars)
-- ✓ Availability grid with biometrics
-- ✓ Complete API + hooks + UI for all coach features
-
-**Phase 5: The Flip** (5/5 plans)
-- ✓ User preference store with version switching
-- ✓ Route flip: V2 to /app (default), V1 to /legacy
-- ✓ Version toggle UI in both layouts
-- ✓ Route analytics tracking
-- ✓ Feature parity verification
-
-**V2 is production-ready and deployed as the default experience at /app.**
+**Phase 6 Scope:**
+- Athletes page with grid/list views, search, filters
+- Athlete profile with biometrics editing
+- Bulk CSV import with preview
+- Attendance recording and history
+- Light/field theme CSS fixes
+- Table virtualization
 
 ---
-*Last updated: 2026-01-24 — All phases complete (30/30 plans)*
+*Last updated: 2026-01-24 — v2.0 roadmap created*
