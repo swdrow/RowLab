@@ -32,7 +32,7 @@ export default function V2Layout() {
           <VersionRedirectGuard>
             <div
               className="v2"
-              data-theme={theme === 'dark' ? undefined : theme}
+              data-theme={theme}
             >
               <div className="min-h-screen bg-bg-surface">
               <header className="bg-bg-surface-elevated border-b border-bdr-default px-4 py-3">
