@@ -150,6 +150,7 @@ model Athlete {
   weightKg        Decimal? @db.Decimal(5, 2)
   heightCm        Int?
   country         String?  // ISO 3166-1 alpha-3 country code (e.g., USA, GBR)
+  avatar          String?  @db.Text  // Base64 encoded image data URL
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
