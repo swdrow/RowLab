@@ -1,0 +1,194 @@
+/**
+ * Reduced motion support for accessibility
+ * WCAG 2.1 Success Criterion 2.3.3 (AAA) and 2.2.2 (A)
+ *
+ * @media (prefers-reduced-motion: reduce) disables or minimizes
+ * motion for users who may experience vestibular disorders or
+ * motion sensitivity.
+ *
+ * Note: JavaScript-level animation disabling is handled by
+ * usePrefersReducedMotion hook in src/v2/utils/animations.ts
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* ========================================
+     GLOBAL: Disable all animations and transitions
+     ======================================== */
+  .v2 *,
+  .v2 *::before,
+  .v2 *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Keep minimal feedback for essential UX */
+  .v2 button,
+  .v2 [role="button"] {
+    /* Allow instant color changes, just no motion */
+    transition: background-color 0.01ms !important;
+  }
+
+  /* ========================================
+     SKELETON LOADING
+     Disable shimmer animation
+     ======================================== */
+  .v2 .react-loading-skeleton,
+  .v2 [class*="skeleton"] {
+    animation: none !important;
+    background-image: none !important;
+  }
+
+  /* ========================================
+     FRAMER MOTION
+     Disable via CSS (JS hook handles most cases)
+     ======================================== */
+  .v2 [data-framer-animation],
+  .v2 [style*="transform"] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  /* ========================================
+     PAGE TRANSITIONS
+     ======================================== */
+  .v2 [data-page-transition] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  /* ========================================
+     DRAG AND DROP
+     Disable visual drag animation but keep functionality
+     ======================================== */
+  .v2 [data-dragging="true"],
+  .v2 [data-rbd-draggable-id] {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .v2 [data-rbd-drag-handle-draggable-id] {
+    transition: none !important;
+  }
+
+  /* ========================================
+     MODALS AND OVERLAYS
+     Instant appearance
+     ======================================== */
+  .v2 [data-modal-backdrop],
+  .v2 [role="dialog"],
+  .v2 [aria-modal="true"] {
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* ========================================
+     TOASTS AND NOTIFICATIONS
+     ======================================== */
+  .v2 [data-toast],
+  .v2 [role="alert"],
+  .v2 [role="status"] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  /* ========================================
+     LOADING SPINNERS
+     Replace with static indicator
+     ======================================== */
+  .v2 .animate-spin,
+  .v2 [class*="spinner"] {
+    animation: none !important;
+    /* Visual indication that loading is happening */
+    opacity: 0.7;
+  }
+
+  /* ========================================
+     HOVER EFFECTS
+     Disable scale/transform on hover
+     ======================================== */
+  .v2 button:hover,
+  .v2 [role="button"]:hover,
+  .v2 a:hover {
+    transform: none !important;
+  }
+
+  /* ========================================
+     CAROUSEL/SLIDER
+     Disable scroll snapping motion
+     ======================================== */
+  .v2 [data-carousel],
+  .v2 [class*="carousel"] {
+    scroll-snap-type: none !important;
+    overflow: auto !important;
+  }
+
+  /* ========================================
+     COLLAPSIBLE/ACCORDION
+     Instant expand/collapse
+     ======================================== */
+  .v2 [data-state="open"],
+  .v2 [data-state="closed"],
+  .v2 [aria-expanded] {
+    transition: none !important;
+  }
+
+  /* ========================================
+     DROPDOWN MENUS
+     ======================================== */
+  .v2 [role="menu"],
+  .v2 [role="listbox"] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  /* ========================================
+     TABS
+     Instant tab switching
+     ======================================== */
+  .v2 [role="tabpanel"] {
+    transition: none !important;
+    opacity: 1 !important;
+  }
+
+  /* ========================================
+     PROGRESS INDICATORS
+     Disable animated progress
+     ======================================== */
+  .v2 [role="progressbar"],
+  .v2 progress {
+    transition: none !important;
+  }
+
+  /* ========================================
+     TAILWIND ANIMATION UTILITIES
+     Override common Tailwind animation classes
+     ======================================== */
+  .v2 .animate-pulse,
+  .v2 .animate-bounce,
+  .v2 .animate-ping {
+    animation: none !important;
+  }
+}
+
+/* ========================================
+   ALTERNATIVE LOADING INDICATION
+   Provide text fallback when animations disabled
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  .v2 [aria-busy="true"]::after {
+    content: "Loading...";
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+
+  /* Skip the loading text if element already has loading text */
+  .v2 [aria-busy="true"][aria-label*="loading"]::after,
+  .v2 [aria-busy="true"][aria-label*="Loading"]::after {
+    content: none;
+  }
+}
