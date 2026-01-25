@@ -322,3 +322,9 @@ Phase 12 in progress. Continue with remaining plans.
 
 ---
 *Last updated: 2026-01-25 — Phase 12 Plan 10 Complete*
+| 12-11 | SecondaryAction prop added to EmptyState | Enables dual CTAs (Add + Import) for empty states |
+| 12-11 | Separate no-data vs no-results components | Different messaging helps users understand context and take appropriate action |
+| 12-11 | Success empty state for AthleteBank | Positive feedback "All athletes assigned" when lineup is complete |
+
+---
+*Last updated: 2026-01-25 — Phase 12 Plan 11 Complete*
