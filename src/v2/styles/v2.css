@@ -3,13 +3,21 @@
  *
  * This file is imported by V2Layout and provides:
  * 1. Design tokens (CSS custom properties)
- * 2. V2-scoped Tailwind utilities
+ * 2. Theme overrides (dark, light, field)
+ * 3. Accessibility styles (focus rings, reduced motion)
+ * 4. V2-scoped Tailwind utilities
  *
  * IMPORTANT: This file is only loaded within .v2 scope
  * V1 styles remain completely isolated
  */
 
+/* Core design tokens */
 @import './tokens.css';
+
+/* Theme-specific overrides */
+@import './themes/dark.css';
+@import './themes/light.css';
+@import './themes/field.css';
 
 /* V2-scoped Tailwind - loaded by V2Layout */
 @tailwind base;
