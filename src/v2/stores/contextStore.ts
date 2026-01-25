@@ -32,6 +32,7 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
       { to: '/app/coach/training', label: 'Training', icon: 'activity' },
       { to: '/app/regattas', label: 'Regattas', icon: 'flag' },
       { to: '/app/rankings', label: 'Rankings', icon: 'bar-chart' },
+      { to: '/app/settings', label: 'Settings', icon: 'settings' },
     ],
   },
   {
@@ -42,7 +43,7 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
     navItems: [
       { to: '/beta/users', label: 'Users', icon: 'users' },
       { to: '/beta/teams', label: 'Teams', icon: 'team' },
-      { to: '/beta/settings', label: 'Settings', icon: 'settings' },
+      { to: '/app/settings', label: 'Settings', icon: 'settings' },
     ],
   },
 ];
