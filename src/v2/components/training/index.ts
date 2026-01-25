@@ -38,3 +38,7 @@ export {
   NCAAWarningBadge,
   NCAAAuditReport,
 } from './compliance';
+
+// Empty states
+export { CalendarEmptyState, TrainingPlansEmptyState } from './CalendarEmptyState';
+export type { CalendarEmptyStateProps, TrainingPlansEmptyStateProps } from './CalendarEmptyState';
