@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 12 (Settings & Polish) — In Progress
-**Status:** Plans 01-06b, 08-09 complete
-**Last activity:** 2026-01-25 — Completed 12-08-PLAN.md (Design System Audit)
+**Status:** Plans 01-07, 08-11 complete
+**Last activity:** 2026-01-25 — Completed 12-07-PLAN.md (Settings Page Integration)
 
 ## Project Reference
 
@@ -38,7 +38,7 @@ v1.0 Progress: 100% Complete
 | 9 | Seat Racing | Complete | 9/9 |
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
-| 12 | Settings & Polish | In Progress | 8/16 |
+| 12 | Settings & Polish | In Progress | 10/16 |
 | 13 | Cross-Feature Integrations | Pending | —/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
@@ -212,7 +212,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 12-08-PLAN.md (Design System Audit)
+**Stopped at:** Completed 12-10-PLAN.md (Skeleton Loading States)
 **Resume file:** None
 
 ## Known Limitations
@@ -223,19 +223,21 @@ None - all v2.0 foundation issues resolved.
 
 Phase 12 in progress. Continue with remaining plans.
 
-**Phase 12 Progress (8/16 plans):**
+**Phase 12 Progress (10/16 plans):**
 - ✓ Plan 01: Common UI Foundation (deps, animations, loading/empty/error/toast)
 - ✓ Plan 02: Settings Types and Hooks
 - ✓ Plan 05: Team & Billing Sections (visibility toggles, Stripe portal)
 - ✓ Plan 06b: Athlete Photo API Backend (avatar field, PATCH endpoint validation)
 - ✓ Plan 08: Design System Audit (token documentation, WCAG verification)
 - ✓ Plan 09: Interactive Elements Polish (Button, Toggle, Modal, Card with animations)
+- ✓ Plan 10: Skeleton Loading States (23 skeletons across 6 features)
+- ✓ Plan 11: Empty States (5 feature empty states)
 
 **Remaining Phase 12 Plans:**
 - Plan 03: Settings Page Shell
 - Plan 04: Profile & Preferences sections
 - Plan 06: Athlete Photo Upload with Face Detection (frontend)
-- Plan 07, 10-16: Additional polish and integrations
+- Plan 07, 12-16: Additional polish and integrations
 
 **User Feedback for Phase 13:**
 - Restructure: Practice → Workouts (instead of Workout → Exercises)
@@ -314,3 +316,9 @@ Phase 12 in progress. Continue with remaining plans.
 
 ---
 *Last updated: 2026-01-25 — Phase 12 Plan 09 Complete*
+| 12-10 | Feature-based skeleton organization | Skeletons in src/v2/features/{feature}/components/ for co-location with actual components |
+| 12-10 | Granular skeleton exports per feature | Multiple skeletons per feature (table, card, form, chart) enable flexible loading states |
+| 12-10 | CSS custom properties for theme colors | Using var(--color-bg-surface) and var(--color-bg-hover) ensures skeletons adapt to themes |
+
+---
+*Last updated: 2026-01-25 — Phase 12 Plan 10 Complete*
