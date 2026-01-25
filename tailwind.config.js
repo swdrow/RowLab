@@ -179,6 +179,13 @@ export default {
           'strong': 'var(--color-border-strong)',
           'brand': 'var(--color-border-brand)',
         },
+
+        // V2 Focus ring tokens
+        // Usage: ring-focus-ring, ring-focus-error
+        'focus': {
+          'ring': 'var(--color-focus-ring)',
+          'error': 'var(--color-focus-ring-error)',
+        },
       },
 
       // Background gradients - Water/Dawn system

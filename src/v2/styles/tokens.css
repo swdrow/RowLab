@@ -113,6 +113,28 @@
   --color-field-sky: #60a5fa;
   --color-field-grass: #22c55e;
   --color-field-weather: #f59e0b;
+
+  /* ========================================
+     FOCUS & ACCESSIBILITY TOKENS
+     ======================================== */
+
+  /* Focus Ring Colors */
+  --color-focus-ring: rgba(59, 130, 246, 0.5);
+  --color-focus-ring-error: rgba(239, 68, 68, 0.5);
+
+  /* ========================================
+     TRANSITION TOKENS
+     ======================================== */
+
+  /* Duration Scale */
+  --transition-fast: 100ms;
+  --transition-normal: 150ms;
+  --transition-slow: 200ms;
+
+  /* Timing Functions */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-snap: cubic-bezier(0, 0, 0.2, 1);
+  --ease-precision: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ========================================
@@ -234,4 +256,20 @@
   --color-status-warning: #a16207; /* yellow-700 */
   --color-status-error: #b91c1c; /* red-700 */
   --color-status-info: #1d4ed8; /* blue-700 */
+
+  /* Component Tokens - Field theme overrides */
+  --color-card-bg: #ffffff;
+  --color-card-border: #e7e5e4; /* stone-200 */
+  --color-card-hover: #fef3c7; /* amber-100 */
+
+  --color-button-secondary-bg: #e7e5e4; /* stone-200 */
+  --color-button-secondary-hover: #d6d3d1; /* stone-300 */
+  --color-button-secondary-text: #1c1917; /* stone-900 */
+
+  --color-input-bg: #ffffff;
+  --color-input-border: #d6d3d1; /* stone-300 */
+  --color-input-text: #1c1917; /* stone-900 */
+
+  /* Focus Ring - high visibility for outdoor */
+  --color-focus-ring: rgba(180, 83, 9, 0.5); /* amber-700 */
 }
