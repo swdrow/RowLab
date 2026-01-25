@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 12 (Settings & Polish) — In Progress
-**Status:** Plans 01-02 complete
-**Last activity:** 2026-01-25 — Completed 12-01-PLAN.md (common UI foundation) and 12-02-PLAN.md (settings types and hooks)
+**Status:** Plans 01-02, 05 complete
+**Last activity:** 2026-01-25 — Completed 12-05-PLAN.md (Team & Billing sections)
 
 ## Project Reference
 
@@ -38,7 +38,7 @@ v1.0 Progress: 100% Complete
 | 9 | Seat Racing | Complete | 9/9 |
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
-| 12 | Settings & Polish | In Progress | 2/16 |
+| 12 | Settings & Polish | In Progress | 3/16 |
 | 13 | Cross-Feature Integrations | Pending | —/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
@@ -212,7 +212,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 12-01-PLAN.md (common UI foundation) and 12-02-PLAN.md
+**Stopped at:** Completed 12-05-PLAN.md (Team & Billing sections)
 **Resume file:** None
 
 ## Known Limitations
@@ -221,14 +221,17 @@ None - all v2.0 foundation issues resolved.
 
 ## Next Action
 
-Phase 12 in progress. Continue with Plan 03 (Settings Page Shell).
+Phase 12 in progress. Continue with remaining plans.
 
-**Phase 12 Progress (2/16 plans):**
+**Phase 12 Progress (3/16 plans):**
 - ✓ Plan 01: Common UI Foundation (deps, animations, loading/empty/error/toast)
 - ✓ Plan 02: Settings Types and Hooks
+- ✓ Plan 05: Team & Billing Sections (visibility toggles, Stripe portal)
 
 **Remaining Phase 12 Plans:**
-- Plan 03-16: Settings UI components, photo upload, polish
+- Plan 03: Settings Page Shell
+- Plan 04: Profile & Preferences sections
+- Plan 06-16: Integrations, photo upload, polish
 
 **User Feedback for Phase 13:**
 - Restructure: Practice → Workouts (instead of Workout → Exercises)
@@ -267,6 +270,10 @@ Phase 12 in progress. Continue with Plan 03 (Settings Page Shell).
 | 12-02 | Hooks in src/v2/hooks/ not feature dir | Follow existing codebase pattern where all V2 hooks are in shared hooks directory |
 | 12-02 | 5-minute staleTime for settings queries | Consistent with Phase 7 C2 status pattern |
 | 12-02 | useAuthStore instead of accessToken param | Existing hooks use store directly which is cleaner than passing token |
+| 12-05 | V1 subscriptionStore for Stripe integration | Preserves backward compatibility with existing billing page, avoids duplicating store logic |
+| 12-05 | Animated Toggle with SPRING_CONFIG | Consistent micro-interactions using centralized animation config from 12-01 |
+| 12-05 | Section component pattern with accent colors | Reusable section container with violet/green/orange themes for visual hierarchy |
+| 12-05 | Access restriction pattern for billing | AccessRestricted component shows clear message for non-owner billing access attempts |
 
 ---
-*Last updated: 2026-01-25 — Phase 12 Plans 01-02 Complete*
+*Last updated: 2026-01-25 — Phase 12 Plan 05 Complete*
