@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 12 (Settings & Polish) — In Progress
-**Status:** Plans 01-04, 05, 06, 06b complete
-**Last activity:** 2026-01-25 — Completed 12-04-PLAN.md (Integrations Tab Components)
+**Status:** Plans 01-06b, 08-09 complete
+**Last activity:** 2026-01-25 — Completed 12-08-PLAN.md (Design System Audit)
 
 ## Project Reference
 
@@ -38,7 +38,7 @@ v1.0 Progress: 100% Complete
 | 9 | Seat Racing | Complete | 9/9 |
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
-| 12 | Settings & Polish | In Progress | 6/16 |
+| 12 | Settings & Polish | In Progress | 8/16 |
 | 13 | Cross-Feature Integrations | Pending | —/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
@@ -212,7 +212,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 12-04-PLAN.md (Integrations Tab Components)
+**Stopped at:** Completed 12-08-PLAN.md (Design System Audit)
 **Resume file:** None
 
 ## Known Limitations
@@ -223,17 +223,19 @@ None - all v2.0 foundation issues resolved.
 
 Phase 12 in progress. Continue with remaining plans.
 
-**Phase 12 Progress (5/16 plans):**
+**Phase 12 Progress (8/16 plans):**
 - ✓ Plan 01: Common UI Foundation (deps, animations, loading/empty/error/toast)
 - ✓ Plan 02: Settings Types and Hooks
 - ✓ Plan 05: Team & Billing Sections (visibility toggles, Stripe portal)
 - ✓ Plan 06b: Athlete Photo API Backend (avatar field, PATCH endpoint validation)
+- ✓ Plan 08: Design System Audit (token documentation, WCAG verification)
+- ✓ Plan 09: Interactive Elements Polish (Button, Toggle, Modal, Card with animations)
 
 **Remaining Phase 12 Plans:**
 - Plan 03: Settings Page Shell
 - Plan 04: Profile & Preferences sections
 - Plan 06: Athlete Photo Upload with Face Detection (frontend)
-- Plan 07-16: Integrations, polish
+- Plan 07, 10-16: Additional polish and integrations
 
 **User Feedback for Phase 13:**
 - Restructure: Practice → Workouts (instead of Workout → Exercises)
@@ -295,5 +297,10 @@ Phase 12 in progress. Continue with remaining plans.
 | 12-06 | 30% padding on face bounding box | Standard headshot framing includes head plus shoulders |
 | 12-06 | Max 400px cropped output | Balances quality with storage for profile photos |
 
+| 12-08 | Focus ring tokens as CSS variables | Enables theme-aware focus states (Field theme uses amber-700) |
+| 12-08 | Transition tokens as CSS variables | Allows JS access to timing values for Framer Motion coordination |
+| 12-08 | Complete Field theme component tokens | Ensures all three themes have identical token coverage |
+| 12-08 | ring-focus-ring Tailwind mapping | Enables focus:ring-focus-ring utility class usage |
+
 ---
-*Last updated: 2026-01-25 — Phase 12 Plan 06 Complete*
+*Last updated: 2026-01-25 — Phase 12 Plan 08 Complete*
