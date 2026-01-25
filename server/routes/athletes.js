@@ -580,6 +580,25 @@ router.patch(
     body('side').optional().isIn(['Port', 'Starboard', 'Both', 'Cox', null]),
     body('weightKg').optional({ nullable: true }).isFloat({ min: 30, max: 200 }),
     body('heightCm').optional({ nullable: true }).isInt({ min: 100, max: 250 }),
+    body('avatar')
+      .optional({ nullable: true })
+      .custom((value) => {
+        // Allow null to clear avatar
+        if (value === null) return true;
+        // Must be a string
+        if (typeof value !== 'string') {
+          throw new Error('Avatar must be a string');
+        }
+        // Validate base64 data URL format
+        if (!value.startsWith('data:image/')) {
+          throw new Error('Avatar must be a valid image data URL');
+        }
+        // Check size (max ~500KB base64 = ~375KB image)
+        if (value.length > 500000) {
+          throw new Error('Avatar image too large (max 500KB)');
+        }
+        return true;
+      }),
   ],
   validateRequest,
   async (req, res) => {
