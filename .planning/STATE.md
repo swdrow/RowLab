@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.0 — Core Migration
-**Phase:** 9 (Seat Racing) — In Progress
-**Status:** Completed 09-07-PLAN.md (Seat Racing Page & Navigation)
-**Last activity:** 2026-01-24 — Completed 09-07-PLAN.md
+**Phase:** 10 (Training Plans & NCAA Compliance) — In Progress
+**Status:** Completed 10-01-PLAN.md (Foundation Types & Utilities)
+**Last activity:** 2026-01-25 — Completed 10-01-PLAN.md
 
 ## Project Reference
 
@@ -36,7 +36,7 @@ v1.0 Progress: 100% Complete
 | 7 | Erg Data & Performance | Complete | 6/6 |
 | 8 | Lineup Builder | Complete | 10/10 |
 | 9 | Seat Racing | Pending | —/— |
-| 10 | Training Plans & NCAA | Pending | —/— |
+| 10 | Training Plans & NCAA | In Progress | 1/— |
 | 11 | Racing & Regattas | Pending | —/— |
 | 12 | Settings & Polish | Pending | —/— |
 
@@ -183,12 +183,17 @@ Key architectural decisions carrying forward:
 | 09-06 | Hierarchical POST pattern for session creation | API uses separate endpoints (session → pieces → boats → assignments) instead of nested POST |
 | 09-06 | Validation warnings don't block submission | Coach can submit with missing times/assignments - shown as orange warnings, not blocking errors |
 | 09-06 | onComplete receives created session object | Changed from form data to API response with session.id, enables navigation to detail view |
+| 10-01 | Power-based TSS with HR and duration fallbacks | Rowing teams have varying equipment - power meters (most accurate) → HR monitors → duration estimate ensures TSS available for all workouts |
+| 10-01 | NCAA competitions count as 3 hours | NCAA Bylaw 17.1.7.2 specifies competitions count as 3 CARA hours regardless of actual duration |
+| 10-01 | CalendarEvent.resource.planId for filtering | Multiple concurrent plans (team, individual, archived) require plan-specific filtering to prevent calendar clutter |
+| 10-01 | NCAA week runs Monday-Sunday | NCAA defines compliance week as Monday-Sunday, not calendar week - critical for accurate compliance reporting |
+| 10-01 | Simple RRULE parsing instead of full library | Most training plans use weekly recurrence (MWF practice) - simple parser avoids dependency weight, can expand later if needed |
 
 ## Session Continuity
 
-**Last session:** 2026-01-24
-**Stopped at:** Completed 09-07-PLAN.md (Seat Racing Page & Navigation)
-**Resume file:** None — continuing Phase 9
+**Last session:** 2026-01-25
+**Stopped at:** Completed 10-01-PLAN.md (Foundation Types & Utilities)
+**Resume file:** None — continuing Phase 10
 
 ## Known Limitations
 
@@ -196,21 +201,19 @@ None - all v2.0 foundation issues resolved.
 
 ## Next Action
 
-Start Phase 9 (Seat Racing) - run `/gsd:plan-phase 9` to begin.
+Continue Phase 10 (Training Plans & NCAA Compliance) - execute remaining plans.
 
-**Phase 9 Scope:**
-- Seat race session creation with metadata
-- Piece management (multiple boats per piece)
-- Time entry and athlete assignments
-- Switch recording between pieces
-- ELO-style ranking calculations
-- Confidence intervals on rankings
-- Sorted athlete rankings view
-- Optimal switch sequence generator
+**Phase 10 Progress:**
+- ✓ Plan 01: Foundation Types & Utilities (TSS calculation, NCAA compliance, calendar helpers)
+- Next: Plan 02 (TanStack Query hooks for training plans, workouts, assignments)
 
-**Phase 12 Addition:**
-- Athlete photo upload with AI face detection cropping
-- Integration with `/home/swd/face-detection-cropping` project
+**Phase 10 Remaining Scope:**
+- TanStack Query hooks for training data
+- Calendar component with drag-drop and plan filtering
+- Training plan creation wizard with periodization
+- Workout creation modal with recurring patterns
+- NCAA compliance dashboard with weekly reports
+- Plan assignment UI for coaches
 
 ---
-*Last updated: 2026-01-24 — Phase 8 Complete*
+*Last updated: 2026-01-25 — Phase 10 Plan 01 Complete*
