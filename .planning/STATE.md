@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 12 (Settings & Polish) — In Progress
-**Status:** Plans 01-02, 05, 06b complete
-**Last activity:** 2026-01-25 — Completed 12-06b-PLAN.md (Athlete Photo API Backend)
+**Status:** Plans 01-04, 05, 06, 06b complete
+**Last activity:** 2026-01-25 — Completed 12-04-PLAN.md (Integrations Tab Components)
 
 ## Project Reference
 
@@ -38,7 +38,7 @@ v1.0 Progress: 100% Complete
 | 9 | Seat Racing | Complete | 9/9 |
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
-| 12 | Settings & Polish | In Progress | 4/16 |
+| 12 | Settings & Polish | In Progress | 6/16 |
 | 13 | Cross-Feature Integrations | Pending | —/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
@@ -212,7 +212,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 12-06b-PLAN.md (Athlete Photo API Backend)
+**Stopped at:** Completed 12-04-PLAN.md (Integrations Tab Components)
 **Resume file:** None
 
 ## Known Limitations
@@ -223,7 +223,7 @@ None - all v2.0 foundation issues resolved.
 
 Phase 12 in progress. Continue with remaining plans.
 
-**Phase 12 Progress (4/16 plans):**
+**Phase 12 Progress (5/16 plans):**
 - ✓ Plan 01: Common UI Foundation (deps, animations, loading/empty/error/toast)
 - ✓ Plan 02: Settings Types and Hooks
 - ✓ Plan 05: Team & Billing Sections (visibility toggles, Stripe portal)
