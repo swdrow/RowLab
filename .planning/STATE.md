@@ -304,3 +304,13 @@ Phase 12 in progress. Continue with remaining plans.
 
 ---
 *Last updated: 2026-01-25 — Phase 12 Plan 08 Complete*
+| 12-09 | SPRING_FAST for button micro-interactions | Snappier response (stiffness 400 vs 300) for hover/tap |
+| 12-09 | SPRING_CONFIG for toggle thumb movement | Natural physics for sliding motion |
+| 12-09 | Headless UI Dialog for Modal | Built-in focus trapping, aria handling, escape key support |
+| 12-09 | AnimatePresence for enter/exit animations | Required for exit animations in React |
+| 12-09 | Glow effect on enabled toggle | Visual feedback beyond color change (box-shadow) |
+| 12-09 | cn() utility per UI component file | Self-contained, no external dependency needed |
+| 12-09 | UI components in src/v2/components/ui/ | Separate directory for primitive components |
+
+---
+*Last updated: 2026-01-25 — Phase 12 Plan 09 Complete*
