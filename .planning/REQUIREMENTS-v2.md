@@ -125,10 +125,31 @@ Requirements for v2.0 milestone. Each maps to roadmap phases.
 
 ### Settings & Configuration
 
-- [ ] **SET-01**: User can access full settings page (migrated from V1)
-- [ ] **SET-02**: User can manage integrations (C2, Strava connections)
-- [ ] **SET-03**: Team owner can manage billing (Stripe integration)
-- [ ] **SET-04**: Coach can manage team members and roles
+- [x] **SET-01**: User can access full settings page (migrated from V1)
+- [x] **SET-02**: User can manage integrations (C2, Strava connections)
+- [x] **SET-03**: Team owner can manage billing (Stripe integration)
+- [x] **SET-04**: Coach can manage team members and roles
+
+### Athlete Photos
+
+- [x] **PHOTO-01**: Coach can upload athlete photos via drag-drop or file picker
+- [x] **PHOTO-02**: System auto-detects faces and crops to standardized headshot format
+- [x] **PHOTO-03**: Non-headshot photos can be used as profile photos without cropping
+
+### Design Polish (Phase 12)
+
+- [x] **POLISH-01**: Design system audit — review all tokens (colors, spacing, typography, shadows) for consistency
+- [x] **POLISH-02**: Component inventory — audit all V2 components against "Precision Instrument" checklist
+- [x] **POLISH-03**: Micro-interactions — standardized Framer Motion spring configs across all animations
+- [x] **POLISH-04**: Loading states — skeleton loaders for all data-fetching components
+- [x] **POLISH-05**: Empty states — illustrations + helpful CTAs for all list/table views
+- [x] **POLISH-06**: Error states — friendly error messages with retry actions
+- [x] **POLISH-07**: Button/interactive polish — hover, focus, active states with subtle transforms
+- [x] **POLISH-08**: Modal animations — consistent slide + fade open/close transitions
+- [x] **POLISH-09**: Theme consistency — dark, light, field themes all render correctly
+- [x] **POLISH-10**: Responsive audit — all pages tested at 375px, 768px, 1024px breakpoints
+- [x] **POLISH-11**: Accessibility (WCAG 2.1 AA) — focus rings, keyboard nav, screen reader labels, contrast
+- [x] **POLISH-12**: Typography/icon audit — consistent heading hierarchy, icon sizing
 
 ## v2.1+ Requirements (Deferred)
 
@@ -261,14 +282,29 @@ Explicitly excluded from v2.0.
 | DESIGN-04 | Phase 6 | Pending |
 | DESIGN-05 | Phase 8 | Pending |
 | DESIGN-06 | All Phases | Pending |
-| SET-01 | Phase 12 | Pending |
-| SET-02 | Phase 12 | Pending |
-| SET-03 | Phase 12 | Pending |
-| SET-04 | Phase 12 | Pending |
+| SET-01 | Phase 12 | Complete |
+| SET-02 | Phase 12 | Complete |
+| SET-03 | Phase 12 | Complete |
+| SET-04 | Phase 12 | Complete |
+| PHOTO-01 | Phase 12 | Complete |
+| PHOTO-02 | Phase 12 | Complete |
+| PHOTO-03 | Phase 12 | Complete |
+| POLISH-01 | Phase 12 | Complete |
+| POLISH-02 | Phase 12 | Complete |
+| POLISH-03 | Phase 12 | Complete |
+| POLISH-04 | Phase 12 | Complete |
+| POLISH-05 | Phase 12 | Complete |
+| POLISH-06 | Phase 12 | Complete |
+| POLISH-07 | Phase 12 | Complete |
+| POLISH-08 | Phase 12 | Complete |
+| POLISH-09 | Phase 12 | Complete |
+| POLISH-10 | Phase 12 | Complete |
+| POLISH-11 | Phase 12 | Complete |
+| POLISH-12 | Phase 12 | Complete |
 
 **Coverage:**
-- v2.0 requirements: 84 total
-- Mapped to phases: 84
+- v2.0 requirements: 99 total
+- Mapped to phases: 99
 - Unmapped: 0
 
 **Phase Distribution:**
@@ -280,9 +316,9 @@ Explicitly excluded from v2.0.
 | 9 | SEAT-01-10 | 10 |
 | 10 | TRAIN-01-10, ATT-04, NCAA-01-04 | 15 |
 | 11 | RACE-01-10, RANK-01-05 | 15 |
-| 12 | SET-01-04 | 4 |
+| 12 | SET-01-04, PHOTO-01-03, POLISH-01-12 | 19 |
 | All | DESIGN-01, DESIGN-06 | 2 (cross-cutting) |
 
 ---
 *Requirements defined: 2026-01-24*
-*Last updated: 2026-01-24 — Phase mappings finalized*
+*Last updated: 2026-01-25 — Added PHOTO and POLISH requirements for Phase 12*
