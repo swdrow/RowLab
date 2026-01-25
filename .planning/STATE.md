@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 10 (Training Plans & NCAA Compliance) — In Progress
-**Status:** Completed 10-08-PLAN.md (Compliance Dashboard Components)
-**Last activity:** 2026-01-25 — Completed 10-08-PLAN.md
+**Status:** Completed 10-09-PLAN.md (NCAA Warning & Audit Components)
+**Last activity:** 2026-01-25 — Completed 10-09-PLAN.md
 
 ## Project Reference
 
@@ -36,11 +36,11 @@ v1.0 Progress: 100% Complete
 | 7 | Erg Data & Performance | Complete | 6/6 |
 | 8 | Lineup Builder | In Progress | 9/10 |
 | 9 | Seat Racing | In Progress | 8/9 |
-| 10 | Training Plans & NCAA | In Progress | 9/11 |
+| 10 | Training Plans & NCAA | In Progress | 10/11 |
 | 11 | Racing & Regattas | Pending | —/— |
 | 12 | Settings & Polish | Pending | —/— |
 
-v2.0 Progress: ██████████░░ 90% (40/44)
+v2.0 Progress: ██████████░░ 91% (41/45)
 
 ## Quick Context
 
@@ -201,11 +201,16 @@ Key architectural decisions carrying forward:
 | 10-06 | Conflict detection shows first 5 workouts with expand/collapse | Large date ranges could have dozens of conflicts, preview prevents UI clutter while showing enough info for decision |
 | 10-06 | Replace existing as opt-in checkbox | Default behavior preserves existing workouts (safer), coach explicitly chooses to replace when needed |
 | 10-06 | Focus areas as multi-select toggle buttons | More engaging than checkboxes, shows selected state clearly, easier to tap on mobile than small checkboxes |
+| 10-09 | Warning component returns null when no warning | Cleaner than passing showWarning prop, enables conditional rendering in parent without extra logic |
+| 10-09 | Separate NCAAWarningBadge for inline display | Reusable badge for tables/forms without full warning panel, different UX context requires different component |
+| 10-09 | Print via window.open with inline styles | No external dependencies, works in all browsers, styles guaranteed to render, simpler than jsPDF |
+| 10-09 | Report uses off-screen render ref for printing | Maintains separation between screen UI and print layout, full control over print formatting |
+| 10-09 | Activity type labels via Record<ActivityType, string> | Type-safe mapping ensures all activity types covered, prevents runtime errors from missing cases |
 
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 10-08-PLAN.md (Compliance Dashboard Components)
+**Stopped at:** Completed 10-09-PLAN.md (NCAA Warning & Audit Components)
 **Resume file:** None — continuing Phase 10
 
 ## Known Limitations
@@ -225,7 +230,8 @@ Continue Phase 10 (Training Plans & NCAA Compliance) - execute remaining plans.
 - ✓ Plan 06: Periodization Management Components (PeriodizationTimeline, BlockForm, TemplateApplicator)
 - ✓ Plan 07: Assignment Management Components (AssignmentManager, AthleteWorkoutView)
 - ✓ Plan 08: Compliance Dashboard Components (ComplianceDashboard, WeeklyHoursTable, TrainingLoadChart, AttendanceTrainingLinkPanel)
-- Next: Plan 09 (Workout creation modal with recurring patterns)
+- ✓ Plan 09: NCAA Warning & Audit Components (NCAA20HourWarning, NCAAAuditReport)
+- Next: Plan 10 (Workout creation modal with recurring patterns)
 
 **Phase 10 Remaining Scope:**
 - TanStack Query hooks for training data
