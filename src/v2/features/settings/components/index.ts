@@ -3,3 +3,8 @@ export { SettingsLayout } from './SettingsLayout';
 export { ProfileSection } from './ProfileSection';
 export { PreferencesSection } from './PreferencesSection';
 export { SecuritySection } from './SecuritySection';
+export { IntegrationCard } from './IntegrationCard';
+export type { IntegrationCardProps } from './IntegrationCard';
+export { IntegrationsSection } from './IntegrationsSection';
+export { C2StravaSync } from './C2StravaSync';
+export { FitImportSection } from './FitImportSection';
