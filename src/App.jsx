@@ -48,6 +48,7 @@ const CoachTrainingPage = lazy(() => import('@v2/pages/CoachTrainingPage'));
 const RegattasPage = lazy(() => import('@v2/pages/RegattasPage'));
 const RaceDayCommandCenter = lazy(() => import('@v2/pages/RaceDayCommandCenter'));
 const RankingsPage = lazy(() => import('@v2/pages/RankingsPage'));
+const V2SettingsPage = lazy(() => import('@v2/features/settings/pages/SettingsPage'));
 
 // Error Boundary for catching rendering errors
 class ErrorBoundary extends React.Component {
@@ -275,6 +276,14 @@ function App() {
                   element={
                     <Suspense fallback={<LoadingFallback variant="component" message="Loading rankings..." />}>
                       <RankingsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="settings"
+                  element={
+                    <Suspense fallback={<LoadingFallback variant="component" message="Loading settings..." />}>
+                      <V2SettingsPage />
                     </Suspense>
                   }
                 />
