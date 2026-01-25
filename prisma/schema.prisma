@@ -207,15 +207,16 @@ model DefaultSchedule {
 // ============================================
 
 model Attendance {
-  id         String   @id @default(uuid())
-  teamId     String
-  athleteId  String
-  date       DateTime @db.Date
-  status     String   // present, late, excused, unexcused
-  notes      String?
-  recordedBy String?  // userId who recorded
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id              String   @id @default(uuid())
+  teamId          String
+  athleteId       String
+  date            DateTime @db.Date
+  status          String   // present, late, excused, unexcused
+  durationMinutes Int?     // For NCAA hour tracking
+  notes           String?
+  recordedBy      String?  // userId who recorded
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
