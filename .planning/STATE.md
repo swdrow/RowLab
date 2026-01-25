@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 10 (Training Plans & NCAA Compliance) — In Progress
-**Status:** Completed 10-01-PLAN.md (Foundation Types & Utilities)
-**Last activity:** 2026-01-25 — Completed 10-01-PLAN.md
+**Status:** Completed 10-03-PLAN.md (Training Calendar UI)
+**Last activity:** 2026-01-25 — Completed 10-03-PLAN.md
 
 ## Project Reference
 
@@ -36,7 +36,7 @@ v1.0 Progress: 100% Complete
 | 7 | Erg Data & Performance | Complete | 6/6 |
 | 8 | Lineup Builder | Complete | 10/10 |
 | 9 | Seat Racing | Pending | —/— |
-| 10 | Training Plans & NCAA | In Progress | 2/11 |
+| 10 | Training Plans & NCAA | In Progress | 3/11 |
 | 11 | Racing & Regattas | Pending | —/— |
 | 12 | Settings & Polish | Pending | —/— |
 
@@ -192,7 +192,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 10-01-PLAN.md (Foundation Types & Utilities)
+**Stopped at:** Completed 10-03-PLAN.md (Training Calendar UI)
 **Resume file:** None — continuing Phase 10
 
 ## Known Limitations
@@ -205,7 +205,9 @@ Continue Phase 10 (Training Plans & NCAA Compliance) - execute remaining plans.
 
 **Phase 10 Progress:**
 - ✓ Plan 01: Foundation Types & Utilities (TSS calculation, NCAA compliance, calendar helpers)
-- Next: Plan 02 (TanStack Query hooks for training plans, workouts, assignments)
+- ✓ Plan 02: TanStack Query hooks for training data
+- ✓ Plan 03: Training Calendar UI (month/week views, custom toolbar, event rendering)
+- Next: Plan 04 (Drag-drop calendar rescheduling)
 
 **Phase 10 Remaining Scope:**
 - TanStack Query hooks for training data
@@ -215,10 +217,15 @@ Continue Phase 10 (Training Plans & NCAA Compliance) - execute remaining plans.
 - NCAA compliance dashboard with weekly reports
 - Plan assignment UI for coaches
 
----
-*Last updated: 2026-01-25 — Phase 10 Plan 02 Complete*
 | 10-02 | Inline types in hooks instead of shared training.ts | training.ts wasn't created yet, inline types make hooks self-contained and executable now |
 | 10-02 | 5-minute staleTime for training queries | Follows useSeatRaceSessions pattern, balances data freshness with API efficiency |
 | 10-02 | Optimistic updates for useRescheduleWorkout | Enables smooth drag-drop calendar rescheduling without loading states |
 | 10-02 | useCalendarEvents expands recurring workouts | Converts recurrenceRule into individual calendar events for calendar view |
 | 10-02 | Cross-plan workout aggregation for calendar | Fetches all plans when no planId specified, enables team-wide calendar view |
+| 10-03 | Monday week start for calendar (weekStartsOn: 1) | Standard for rowing programs, matches coach expectations for weekly training cycles |
+| 10-03 | Custom toolbar and event components for V2 design | React-big-calendar defaults don't match V2 design system, custom components provide full control |
+| 10-03 | CSS-in-JS for calendar styling with V2 tokens | styled-jsx global styles override react-big-calendar CSS to integrate design tokens (--surface-*, --txt-*, --bdr-*) |
+| 10-03 | Loading spinner overlay for async event fetching | Preserves calendar layout during loading, overlay doesn't shift content |
+
+---
+*Last updated: 2026-01-25 — Phase 10 Plan 03 Complete*
