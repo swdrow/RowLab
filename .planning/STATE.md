@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 10 (Training Plans & NCAA Compliance) — In Progress
-**Status:** Completed 10-03-PLAN.md (Training Calendar UI)
-**Last activity:** 2026-01-25 — Completed 10-03-PLAN.md
+**Status:** Completed 10-04-PLAN.md (Workout Form Components)
+**Last activity:** 2026-01-25 — Completed 10-04-PLAN.md
 
 ## Project Reference
 
@@ -36,7 +36,7 @@ v1.0 Progress: 100% Complete
 | 7 | Erg Data & Performance | Complete | 6/6 |
 | 8 | Lineup Builder | Complete | 10/10 |
 | 9 | Seat Racing | Pending | —/— |
-| 10 | Training Plans & NCAA | In Progress | 3/11 |
+| 10 | Training Plans & NCAA | In Progress | 4/11 |
 | 11 | Racing & Regattas | Pending | —/— |
 | 12 | Settings & Polish | Pending | —/— |
 
@@ -188,11 +188,15 @@ Key architectural decisions carrying forward:
 | 10-01 | CalendarEvent.resource.planId for filtering | Multiple concurrent plans (team, individual, archived) require plan-specific filtering to prevent calendar clutter |
 | 10-01 | NCAA week runs Monday-Sunday | NCAA defines compliance week as Monday-Sunday, not calendar week - critical for accurate compliance reporting |
 | 10-01 | Simple RRULE parsing instead of full library | Most training plans use weekly recurrence (MWF practice) - simple parser avoids dependency weight, can expand later if needed |
+| 10-04 | FormProvider for nested form context | ExerciseFieldArray needs parent form control - FormProvider enables clean separation without prop drilling |
+| 10-04 | Duration conversion in form layer | Coaches think in minutes, API expects seconds - form handles conversion keeping UX friendly |
+| 10-04 | TSS auto-calculation with useEffect | Reduces coach effort - TSS updates immediately when duration/intensity change using estimateTSSFromPlan |
+| 10-04 | Exercise intensity as optional string | Exercises need flexibility for targets like "70% FTP" or "Rate 22", not just easy/moderate/hard/max enum |
 
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 10-03-PLAN.md (Training Calendar UI)
+**Stopped at:** Completed 10-04-PLAN.md (Workout Form Components)
 **Resume file:** None — continuing Phase 10
 
 ## Known Limitations
@@ -207,7 +211,8 @@ Continue Phase 10 (Training Plans & NCAA Compliance) - execute remaining plans.
 - ✓ Plan 01: Foundation Types & Utilities (TSS calculation, NCAA compliance, calendar helpers)
 - ✓ Plan 02: TanStack Query hooks for training data
 - ✓ Plan 03: Training Calendar UI (month/week views, custom toolbar, event rendering)
-- Next: Plan 04 (Drag-drop calendar rescheduling)
+- ✓ Plan 04: Workout Form Components (WorkoutForm, ExerciseFieldArray with dynamic lists)
+- Next: Plan 05 (Workout creation modal with recurring patterns)
 
 **Phase 10 Remaining Scope:**
 - TanStack Query hooks for training data
@@ -228,4 +233,4 @@ Continue Phase 10 (Training Plans & NCAA Compliance) - execute remaining plans.
 | 10-03 | Loading spinner overlay for async event fetching | Preserves calendar layout during loading, overlay doesn't shift content |
 
 ---
-*Last updated: 2026-01-25 — Phase 10 Plan 03 Complete*
+*Last updated: 2026-01-25 — Phase 10 Plan 04 Complete*
