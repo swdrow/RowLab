@@ -9,6 +9,8 @@ import {
   LayoutGrid,
   Clipboard,
   Trophy,
+  Flag,
+  BarChart2,
 } from 'lucide-react';
 import { useContextStore } from '@v2/stores/contextStore';
 
@@ -28,6 +30,8 @@ const ICON_MAP = {
   layout: LayoutGrid, // Grid layout for lineup builder
   clipboard: Clipboard, // Clipboard for whiteboard
   trophy: Trophy, // Trophy for seat racing
+  flag: Flag, // Flag for regattas
+  'bar-chart': BarChart2, // Bar chart for rankings
 } as const;
 
 /**
