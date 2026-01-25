@@ -19,6 +19,9 @@
 @import './themes/light.css';
 @import './themes/field.css';
 
+/* Accessibility styles */
+@import './focus-rings.css';
+
 /* V2-scoped Tailwind - loaded by V2Layout */
 @tailwind base;
 @tailwind components;

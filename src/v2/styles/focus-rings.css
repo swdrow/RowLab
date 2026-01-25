@@ -1,0 +1,170 @@
+/**
+ * Focus ring styles for keyboard navigation accessibility
+ * WCAG 2.1 AA requires visible focus indicators on interactive elements
+ *
+ * Uses :focus-visible to show focus only for keyboard navigation,
+ * not mouse clicks (unlike :focus)
+ */
+
+/* Remove default browser focus (will be replaced with :focus-visible) */
+.v2 *:focus {
+  outline: none;
+}
+
+/* Default focus ring for all interactive elements */
+.v2 *:focus-visible {
+  outline: 2px solid var(--color-interactive-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+/* Button-specific focus ring with glow */
+.v2 button:focus-visible,
+.v2 [role="button"]:focus-visible {
+  outline-color: var(--color-interactive-primary);
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+/* Input focus - inset ring */
+.v2 input:focus-visible,
+.v2 textarea:focus-visible,
+.v2 select:focus-visible {
+  outline: none;
+  border-color: var(--color-interactive-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+/* Card/panel focus - inset outline */
+.v2 [role="listitem"]:focus-visible,
+.v2 [role="option"]:focus-visible,
+.v2 [role="row"]:focus-visible {
+  outline-width: 2px;
+  outline-offset: -2px; /* Inside the element */
+}
+
+/* Link focus */
+.v2 a:focus-visible {
+  outline-offset: 4px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+/* Tab focus */
+.v2 [role="tab"]:focus-visible {
+  outline-offset: -4px;
+  z-index: 1;
+}
+
+/* Toggle/switch focus */
+.v2 [role="switch"]:focus-visible {
+  outline-offset: 2px;
+}
+
+/* Checkbox and radio focus */
+.v2 input[type="checkbox"]:focus-visible,
+.v2 input[type="radio"]:focus-visible {
+  outline: 2px solid var(--color-interactive-primary);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Menu item focus */
+.v2 [role="menuitem"]:focus-visible,
+.v2 [role="menuitemcheckbox"]:focus-visible,
+.v2 [role="menuitemradio"]:focus-visible {
+  outline: none;
+  background-color: var(--color-bg-hover);
+}
+
+/* ========================================
+   DARK THEME ADJUSTMENTS
+   ======================================== */
+.v2[data-theme="dark"] *:focus-visible {
+  outline-color: var(--color-interactive-primary);
+}
+
+.v2[data-theme="dark"] button:focus-visible,
+.v2[data-theme="dark"] [role="button"]:focus-visible {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+}
+
+/* ========================================
+   LIGHT THEME ADJUSTMENTS
+   ======================================== */
+.v2[data-theme="light"] *:focus-visible {
+  outline-color: var(--color-interactive-primary);
+}
+
+.v2[data-theme="light"] button:focus-visible,
+.v2[data-theme="light"] [role="button"]:focus-visible {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+/* ========================================
+   FIELD THEME ADJUSTMENTS
+   Thicker rings for outdoor visibility
+   ======================================== */
+.v2[data-theme="field"] *:focus-visible {
+  outline-width: 3px;
+  outline-color: var(--color-interactive-primary);
+}
+
+.v2[data-theme="field"] button:focus-visible,
+.v2[data-theme="field"] [role="button"]:focus-visible {
+  box-shadow: 0 0 0 5px rgba(180, 83, 9, 0.3);
+}
+
+.v2[data-theme="field"] input:focus-visible,
+.v2[data-theme="field"] textarea:focus-visible,
+.v2[data-theme="field"] select:focus-visible {
+  box-shadow: 0 0 0 4px rgba(180, 83, 9, 0.25);
+}
+
+/* ========================================
+   SKIP LINK FOR SCREEN READERS
+   ======================================== */
+.v2 .skip-link {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: var(--color-bg-surface);
+  border: 2px solid var(--color-border-default);
+  border-radius: var(--radius-md, 6px);
+  color: var(--color-text-primary);
+  font-weight: 500;
+  text-decoration: none;
+  z-index: 100;
+  transition: top 0.2s ease-out;
+}
+
+.v2 .skip-link:focus {
+  top: 8px;
+  outline: 2px solid var(--color-interactive-primary);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   FOCUS WITHIN FOR COMPOSITE COMPONENTS
+   ======================================== */
+.v2 .focus-within-container:focus-within {
+  outline: 2px solid var(--color-interactive-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-md, 6px);
+}
+
+/* ========================================
+   HIGH CONTRAST MODE SUPPORT
+   ======================================== */
+@media (forced-colors: active) {
+  .v2 *:focus-visible {
+    outline: 3px solid CanvasText;
+    outline-offset: 2px;
+  }
+
+  .v2 button:focus-visible,
+  .v2 [role="button"]:focus-visible {
+    outline: 3px solid Highlight;
+    box-shadow: none;
+  }
+}
