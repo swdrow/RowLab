@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 12 (Settings & Polish) — In Progress
-**Status:** Plans 01-02, 05 complete
-**Last activity:** 2026-01-25 — Completed 12-05-PLAN.md (Team & Billing sections)
+**Status:** Plans 01-02, 05, 06b complete
+**Last activity:** 2026-01-25 — Completed 12-06b-PLAN.md (Athlete Photo API Backend)
 
 ## Project Reference
 
@@ -38,7 +38,7 @@ v1.0 Progress: 100% Complete
 | 9 | Seat Racing | Complete | 9/9 |
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
-| 12 | Settings & Polish | In Progress | 3/16 |
+| 12 | Settings & Polish | In Progress | 4/16 |
 | 13 | Cross-Feature Integrations | Pending | —/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
@@ -212,7 +212,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-25
-**Stopped at:** Completed 12-05-PLAN.md (Team & Billing sections)
+**Stopped at:** Completed 12-06b-PLAN.md (Athlete Photo API Backend)
 **Resume file:** None
 
 ## Known Limitations
@@ -223,15 +223,17 @@ None - all v2.0 foundation issues resolved.
 
 Phase 12 in progress. Continue with remaining plans.
 
-**Phase 12 Progress (3/16 plans):**
+**Phase 12 Progress (4/16 plans):**
 - ✓ Plan 01: Common UI Foundation (deps, animations, loading/empty/error/toast)
 - ✓ Plan 02: Settings Types and Hooks
 - ✓ Plan 05: Team & Billing Sections (visibility toggles, Stripe portal)
+- ✓ Plan 06b: Athlete Photo API Backend (avatar field, PATCH endpoint validation)
 
 **Remaining Phase 12 Plans:**
 - Plan 03: Settings Page Shell
 - Plan 04: Profile & Preferences sections
-- Plan 06-16: Integrations, photo upload, polish
+- Plan 06: Frontend PhotoCropper components
+- Plan 07-16: Integrations, polish
 
 **User Feedback for Phase 13:**
 - Restructure: Practice → Workouts (instead of Workout → Exercises)
@@ -274,6 +276,9 @@ Phase 12 in progress. Continue with remaining plans.
 | 12-05 | Animated Toggle with SPRING_CONFIG | Consistent micro-interactions using centralized animation config from 12-01 |
 | 12-05 | Section component pattern with accent colors | Reusable section container with violet/green/orange themes for visual hierarchy |
 | 12-05 | Access restriction pattern for billing | AccessRestricted component shows clear message for non-owner billing access attempts |
+| 12-06b | @db.Text for avatar storage | Base64 images can be several hundred KB, requires Text type not String |
+| 12-06b | 500KB size limit for avatar | Balances image quality with storage/bandwidth, ~375KB actual image after base64 encoding |
+| 12-06b | Extend PATCH endpoint for avatar | Cleaner API design vs dedicated /photo endpoint, consistent with other athlete field updates |
 
 ---
-*Last updated: 2026-01-25 — Phase 12 Plan 05 Complete*
+*Last updated: 2026-01-25 — Phase 12 Plan 06b Complete*
