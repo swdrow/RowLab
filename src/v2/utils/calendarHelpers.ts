@@ -5,10 +5,7 @@ import {
   endOfMonth,
   format,
   parseISO,
-  addDays,
-  addWeeks,
   isBefore,
-  isAfter,
   eachDayOfInterval,
 } from 'date-fns';
 import type { CalendarEvent, PlannedWorkout } from '../types/training';

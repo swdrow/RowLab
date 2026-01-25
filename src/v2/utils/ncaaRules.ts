@@ -1,4 +1,4 @@
-import { parseISO, isWithinInterval, addDays, startOfWeek, endOfWeek, format } from 'date-fns';
+import { parseISO, isWithinInterval, addDays, startOfWeek, format } from 'date-fns';
 import type { PracticeSession, NCAAAuditEntry } from '../types/training';
 
 // NCAA limits
