@@ -20,6 +20,7 @@ export interface Athlete {
   weightKg: number | null;
   heightCm: number | null;
   country: string | null;
+  avatar: string | null;
   createdAt: string;
   updatedAt: string;
 }
