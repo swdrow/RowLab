@@ -136,6 +136,7 @@ export async function updateAthlete(athleteId, teamId, updates) {
     'weightKg',
     'heightCm',
     'concept2UserId',
+    'avatar',
   ];
 
   const data = {};
@@ -326,6 +327,7 @@ function formatAthlete(athlete, includeStats = false) {
     heightCm: athlete.heightCm,
     country: athlete.country,
     concept2UserId: athlete.concept2UserId,
+    avatar: athlete.avatar || null,
     createdAt: athlete.createdAt,
     updatedAt: athlete.updatedAt,
   };
