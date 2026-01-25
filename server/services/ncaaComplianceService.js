@@ -68,7 +68,7 @@ export async function getWeeklyCompliance(teamId, weekStart, athleteId = null) {
         (athleteDailyHours[athleteKey].dailyHours[dateKey] || 0) + durationHours;
       athleteDailyHours[athleteKey].totalWeekHours += durationHours;
     }
-  });
+  }
 
   // Convert to audit entries array
   const auditEntries = [];
