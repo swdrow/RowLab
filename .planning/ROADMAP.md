@@ -699,7 +699,7 @@ The following requirements apply across all v2.0 phases:
 | 9 | Seat Racing | 10 | 9 | Complete |
 | 10 | Training Plans & NCAA | 15 | 11 | Complete |
 | 11 | Racing & Regattas | 15 | 10 | Complete |
-| 12 | Settings & Polish | 7 | — | Pending |
+| 12 | Settings & Polish | 19 | 17 | Complete |
 | 13 | Cross-Feature Integrations | 8 | — | Pending |
 | 14 | Advanced Seat Racing Analytics ⚡ | 12 | — | Research |
 
@@ -759,4 +759,4 @@ Phase 13 is flagged for extensive pre-implementation research:
 ---
 
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-25 — Phase 10 revised with 11 plans (10-00 added for backend APIs, ATT-04 coverage)*
+*Last updated: 2026-01-25 — Phase 12 complete (17 plans, 19 requirements)*
