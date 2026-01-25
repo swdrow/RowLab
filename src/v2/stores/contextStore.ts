@@ -29,6 +29,7 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
       { to: '/app/coach/availability', label: 'Availability', icon: 'calendar' },
       { to: '/app/coach/lineup-builder', label: 'Lineup Builder', icon: 'layout' },
       { to: '/app/coach/seat-racing', label: 'Seat Racing', icon: 'trophy' },
+      { to: '/app/coach/training', label: 'Training', icon: 'activity' },
     ],
   },
   {
