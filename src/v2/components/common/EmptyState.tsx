@@ -23,8 +23,10 @@ interface EmptyStateProps {
   title: string;
   /** Description text (max-w-sm for readability) */
   description: string;
-  /** Optional CTA button */
+  /** Optional primary CTA button */
   action?: EmptyStateAction;
+  /** Optional secondary CTA button */
+  secondaryAction?: EmptyStateAction;
   /** Optional custom illustration component */
   illustration?: React.ReactNode;
   /** Additional class names */
@@ -36,10 +38,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   title,
   description,
   action,
+  secondaryAction,
   illustration,
   className,
 }) => {
   const ActionIcon = action?.icon || Plus;
+  const SecondaryIcon = secondaryAction?.icon;
 
   return (
     <div
@@ -56,14 +60,27 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-sm">
         {description}
       </p>
-      {action && (
-        <button
-          onClick={action.onClick}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-interactive-primary)] text-white rounded-lg hover:bg-[var(--color-interactive-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
-        >
-          <ActionIcon className="w-4 h-4" />
-          {action.label}
-        </button>
+      {(action || secondaryAction) && (
+        <div className="flex items-center gap-3">
+          {action && (
+            <button
+              onClick={action.onClick}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-interactive-primary)] text-white rounded-lg hover:bg-[var(--color-interactive-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
+            >
+              <ActionIcon className="w-4 h-4" />
+              {action.label}
+            </button>
+          )}
+          {secondaryAction && (
+            <button
+              onClick={secondaryAction.onClick}
+              className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--color-border-default)] text-[var(--color-text-primary)] rounded-lg hover:bg-[var(--color-bg-surface-elevated)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
+            >
+              {SecondaryIcon && <SecondaryIcon className="w-4 h-4" />}
+              {secondaryAction.label}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
