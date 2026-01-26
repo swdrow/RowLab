@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-06 complete (4 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-05-PLAN.md (Advanced Ranking API Endpoints)
+**Status:** Plan 14-13 complete (5 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-13-PLAN.md (Passive ELO Tracking Service)
 
 ## Project Reference
 
@@ -40,9 +40,9 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | In Progress | 4/14 |
+| 14 | Advanced Seat Racing Analytics | In Progress | 5/14 |
 
-v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 4/14 plans)
+v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 5/14 plans)
 
 ## Quick Context
 
@@ -259,7 +259,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed 14-05-PLAN.md (Advanced Ranking API Endpoints)
+**Stopped at:** Completed 14-13-PLAN.md (Passive ELO Tracking Service)
 **Resume file:** None
 
 ## Known Limitations
@@ -434,6 +434,10 @@ Phase 13 delivered the cross-feature integration layer:
 | 14-03 | Comparison tracking via sorted athlete ID pairs | Key format "a-b" enables efficient duplicate detection and count tracking for variance calculation |
 | 14-03 | Balance score formula: 1 / (1 + variance) | Normalizes variance to 0-1 range for consistent scoring, lower variance = higher balance |
 | 14-03 | Named export for BOAT_SIZES constant | Enables direct import in test files while maintaining backward compatibility with default export |
+| 14-13 | Passive observation weight 0.5x default | Practice data less controlled than formal seat races - reduces impact while enabling continuous ranking improvement |
+| 14-13 | Minimum split threshold 0.5 seconds | Sub-second differences likely measurement noise or conditions, ignoring improves signal-to-noise ratio |
+| 14-13 | Clean 1:1 swaps only for observations | Multiple simultaneous swaps create ambiguous attribution - can't determine individual athlete impact |
+| 14-13 | Deferred ELO application pattern | Separating observation recording from rating updates enables batch processing, dry-run testing, and audit trail |
 
 ---
-*Last updated: 2026-01-26 — Phase 14 Plan 01 Complete*
+*Last updated: 2026-01-26 — Phase 14 Plan 13 Complete*
