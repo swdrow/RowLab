@@ -37,6 +37,7 @@ model User {
   dashboardPreferences DashboardPreferences?
   whiteboards          Whiteboard[]
   createdSessions      Session[]             @relation("SessionCreator")
+  attendanceOverrides  SessionAttendance[]   @relation("AttendanceOverrides")
 
   @@map("users")
 }
@@ -167,6 +168,7 @@ model Athlete {
   availability        Availability[]
   defaultSchedule     DefaultSchedule?
   attendance          Attendance[]
+  sessionAttendance   SessionAttendance[]
 
   @@unique([teamId, lastName, firstName])
   @@index([teamId])
@@ -1158,9 +1160,10 @@ model Session {
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
-  team      Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  createdBy User    @relation("SessionCreator", fields: [createdById], references: [id])
-  pieces    Piece[]
+  team       Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdBy  User                @relation("SessionCreator", fields: [createdById], references: [id])
+  pieces     Piece[]
+  attendance SessionAttendance[]
 
   @@index([teamId, date])
   @@map("sessions")
@@ -1189,4 +1192,31 @@ model Piece {
 
   @@index([sessionId, order])
   @@map("pieces")
+}
+
+// ============================================
+// SESSION ATTENDANCE: Auto-recorded attendance
+// ============================================
+
+// Session attendance tracking
+model SessionAttendance {
+  id                   String    @id @default(cuid())
+  sessionId            String
+  athleteId            String
+  status               String // Present, Late, Partial, Absent, Injured, Class
+  participationPercent Float     @default(0) // 0-100
+  autoRecorded         Boolean   @default(true)
+  overriddenAt         DateTime?
+  overriddenById       String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  session      Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  athlete      Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  overriddenBy User?    @relation("AttendanceOverrides", fields: [overriddenById], references: [id])
+
+  @@unique([sessionId, athleteId])
+  @@index([sessionId])
+  @@index([athleteId])
+  @@map("session_attendance")
 }
