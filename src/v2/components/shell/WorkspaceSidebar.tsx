@@ -58,6 +58,7 @@ const NAV_ITEM_FEATURES: Record<string, FeatureId | null> = {
   // Advanced features (feature-gated)
   '/app/regattas': 'racing-regattas',
   '/app/rankings': 'bradley-terry',
+  '/app/recruiting': 'recruiting',
 };
 
 /**
