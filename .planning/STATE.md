@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 15 (Feature Toggles & Recruiting) — In Progress
-**Status:** Plan 15-02 complete
-**Last activity:** 2026-01-26 — Completed 15-02-PLAN.md (Feature Toggle Settings UI)
+**Status:** Plan 15-03 complete
+**Last activity:** 2026-01-26 — Completed 15-03-PLAN.md (FeatureGuard Components)
 
 ## Project Reference
 
@@ -301,8 +301,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-26T20:26:58Z
-**Stopped at:** Completed 15-05-PLAN.md (TanStack Query Hooks for Recruit Visits)
+**Last session:** 2026-01-26T20:30:09Z
+**Stopped at:** Completed 15-03-PLAN.md (FeatureGuard Components)
 **Resume file:** None
 
 ## Known Limitations
@@ -522,10 +522,14 @@ Phase 13 delivered the cross-feature integration layer:
 | 15-02 | "Always on" badge for core features instead of disabled toggle | Core features cannot be toggled off, showing badge is clearer than disabled toggle |
 | 15-02 | Info banners for feature groups | Helps users understand why core features are always enabled and how to use advanced features |
 | 15-02 | Animated toggle switch matching V2 patterns | Consistent with PreferencesSection toggle implementation, maintains design system cohesion |
+| 15-03 | FeatureGuard with default and Hidden variants | Default shows discovery hint when disabled (page content), Hidden returns null (navigation items) |
+| 15-03 | Route-to-feature mapping for navigation filtering | Declarative NAV_ITEM_FEATURES mapping (null for core, FeatureId for advanced) cleaner than inline conditionals |
+| 15-03 | Discovery hint links to settings?tab=features | Direct link to feature enablement provides clear call-to-action for users |
+| 15-03 | Zustand store selector for reactive navigation | useFeaturePreferenceStore(state => state.isFeatureEnabled) enables automatic navigation updates on toggle |
 | 15-04 | Share tokens use URL-safe base64 encoding | crypto.randomBytes(24) with base64url prevents URL encoding issues in share links |
 | 15-04 | Public shared endpoint returns limited fields | Protects privacy by excluding internal notes and team details from public view |
 | 15-04 | Host athlete SetNull cascade | Preserves recruit visits when host athlete deleted, prevents data loss |
 | 15-04 | Status as string enum (not Prisma enum) | Follows Phase 6 attendance pattern, flexible for future status additions without migration |
 
 ---
-*Last updated: 2026-01-26 — Phase 15 Plan 02 Complete*
+*Last updated: 2026-01-26 — Phase 15 Plan 03 Complete*
