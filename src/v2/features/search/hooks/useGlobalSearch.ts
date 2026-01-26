@@ -6,6 +6,7 @@
  */
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import { create } from 'zustand';
 import { useAthletes } from '@v2/hooks/useAthletes';
 import { useSessions } from '@v2/hooks/useSessions';
 import { useErgTests } from '@v2/hooks/useErgTests';
@@ -21,6 +22,28 @@ import {
   addRecentItem,
   clearRecentItems,
 } from '../services/searchService';
+
+// ============================================
+// PALETTE STORE (shared state for open/close)
+// ============================================
+
+interface CommandPaletteStore {
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+}
+
+/**
+ * Zustand store for command palette open/close state.
+ * Shared across all components using the search.
+ */
+export const useCommandPaletteStore = create<CommandPaletteStore>((set) => ({
+  isOpen: false,
+  open: () => set({ isOpen: true }),
+  close: () => set({ isOpen: false }),
+  toggle: () => set((state) => ({ isOpen: !state.isOpen })),
+}));
 
 // ============================================
 // TYPES
@@ -61,15 +84,25 @@ export interface UseGlobalSearchReturn {
  * Hook for global search across all entity types
  */
 export function useGlobalSearch(): UseGlobalSearchReturn {
-  // State
-  const [query, setQuery] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
+  // Palette open/close state from shared store
+  const { isOpen, open: storeOpen, close: storeClose, toggle: storeToggle } =
+    useCommandPaletteStore();
+
+  // Local state for search
+  const [query, setQueryInternal] = useState('');
   const [recentItems, setRecentItems] = useState<SearchResult[]>([]);
 
   // Load recent items on mount
   useEffect(() => {
     setRecentItems(getRecentItems());
   }, []);
+
+  // Clear query when closing
+  useEffect(() => {
+    if (!isOpen) {
+      setQueryInternal('');
+    }
+  }, [isOpen]);
 
   // Fetch all searchable entities in parallel
   const { allAthletes, isLoading: athletesLoading } = useAthletes();
@@ -121,6 +154,10 @@ export function useGlobalSearch(): UseGlobalSearchReturn {
   }, [searchIndex, query]);
 
   // Callbacks
+  const setQuery = useCallback((q: string) => {
+    setQueryInternal(q);
+  }, []);
+
   const addToRecent = useCallback((item: SearchResult) => {
     addRecentItem(item);
     setRecentItems(getRecentItems());
@@ -132,23 +169,16 @@ export function useGlobalSearch(): UseGlobalSearchReturn {
   }, []);
 
   const open = useCallback(() => {
-    setIsOpen(true);
-    setQuery('');
-  }, []);
+    storeOpen();
+  }, [storeOpen]);
 
   const close = useCallback(() => {
-    setIsOpen(false);
-    setQuery('');
-  }, []);
+    storeClose();
+  }, [storeClose]);
 
   const toggle = useCallback(() => {
-    setIsOpen((prev) => {
-      if (prev) {
-        setQuery('');
-      }
-      return !prev;
-    });
-  }, []);
+    storeToggle();
+  }, [storeToggle]);
 
   return {
     query,
