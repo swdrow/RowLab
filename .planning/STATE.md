@@ -5,7 +5,7 @@
 **Milestone:** v2.0 — Core Migration
 **Phase:** 13 (Cross-Feature Integrations) — In Progress
 **Status:** Executing Phase 13 plans
-**Last activity:** 2026-01-26 — Completed 13-09-PLAN.md (Cross-Feature Navigation Components)
+**Last activity:** 2026-01-26 — Completed 13-10-PLAN.md (Session Creation UI)
 
 ## Project Reference
 
@@ -39,7 +39,7 @@ v1.0 Progress: 100% Complete
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
-| 13 | Cross-Feature Integrations | In Progress | 9/— |
+| 13 | Cross-Feature Integrations | In Progress | 10/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
 v2.0 Progress: ████████████░ (71 phases 6-12 complete, Phase 13 in progress)
@@ -227,11 +227,16 @@ Key architectural decisions carrying forward:
 | 13-09 | Auto-generate breadcrumbs from route path | Component automatically generates breadcrumb trail with label mapping, detects ID segments |
 | 13-09 | SearchTriggerButton pattern for search integration | Leverages existing Zustand store instead of duplicating state, provides ⌘K shortcut display |
 | 13-09 | CommandPalette rendered at ShellLayout root | Enables global keyboard shortcut support across both mobile and desktop layouts |
+| 13-10 | useWatch instead of watch for FormProvider context | Provides proper TypeScript inference with reactive form field updates in nested components |
+| 13-10 | Duration input in minutes, converted to seconds for API | Friendlier UX (coaches think in minutes) while maintaining backend consistency (seconds) |
+| 13-10 | Collapsible segment sections for piece organization | Sessions with many pieces would create excessive scroll, collapse provides better UX scalability |
+| 13-10 | Type-specific targets shown conditionally | ERG sessions show split/rate/watts, avoids cluttering form with irrelevant fields |
+| 13-10 | RRULE preview uses formatRRule utility | Human-readable schedule confirmation ("Every Mon, Wed, Fri") prevents user confusion |
 
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed 13-09-PLAN.md (Cross-Feature Navigation Components)
+**Stopped at:** Completed 13-10-PLAN.md (Session Creation UI)
 **Resume file:** None - waiting for next plan
 
 ## Known Limitations
