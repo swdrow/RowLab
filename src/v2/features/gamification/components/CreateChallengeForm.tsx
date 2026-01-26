@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Calendar, Flag, Users, Zap } from 'lucide-react';
 import { useCreateChallenge, useChallengeTemplates } from '../../../hooks/useChallenges';
-import { toast } from 'sonner';
+import { useToast } from '../../../contexts/ToastContext';
 import type {
   ChallengeType,
   ChallengeMetric,
@@ -14,6 +13,7 @@ interface CreateChallengeFormProps {
 }
 
 export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeFormProps) {
+  const { showToast } = useToast();
   const { data: templates } = useChallengeTemplates();
   const createChallenge = useCreateChallenge();
 
@@ -52,7 +52,7 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
     e.preventDefault();
 
     if (!formData.name || !startDate || !endDate) {
-      toast.error('Please fill in all required fields');
+      showToast('error', 'Please fill in all required fields');
       return;
     }
 
@@ -66,10 +66,10 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
         endDate: new Date(endDate).toISOString(),
       } as CreateChallengeInput);
 
-      toast.success('Challenge created!');
+      showToast('success', 'Challenge created!');
       onSuccess?.();
     } catch (error) {
-      toast.error('Failed to create challenge');
+      showToast('error', 'Failed to create challenge');
     }
   };
 

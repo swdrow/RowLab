@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { Shield, Bell, Eye, EyeOff } from 'lucide-react';
+import { Shield, Eye, EyeOff } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useToast } from '../../../contexts/ToastContext';
 import api from '../../../utils/api';
 import { useGamificationEnabled } from '../../../hooks/useGamificationPreference';
 import { useFeature } from '../../../hooks/useFeaturePreference';
@@ -16,6 +15,7 @@ interface GamificationSettingsProps {
  */
 export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const teamEnabled = useFeature('gamification');
   const { enabled, athleteOptedIn, isLoading } = useGamificationEnabled();
 
@@ -28,10 +28,10 @@ export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['athlete', 'gamification-preference'] });
-      toast.success('Settings updated');
+      showToast('success', 'Settings updated');
     },
     onError: () => {
-      toast.error('Failed to update settings');
+      showToast('error', 'Failed to update settings');
     },
   });
 
