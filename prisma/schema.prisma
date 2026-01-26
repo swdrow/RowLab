@@ -77,6 +77,7 @@ model Team {
   checklistTemplates ChecklistTemplate[]
   externalRankings   ExternalRanking[]
   sessions           Session[]
+  passiveObservations PassiveObservation[]
 
   @@map("teams")
 }
@@ -169,6 +170,8 @@ model Athlete {
   defaultSchedule     DefaultSchedule?
   attendance          Attendance[]
   sessionAttendance   SessionAttendance[]
+  passiveSwapsAs1     PassiveObservation[] @relation("PassiveSwap1")
+  passiveSwapsAs2     PassiveObservation[] @relation("PassiveSwap2")
 
   @@unique([teamId, lastName, firstName])
   @@index([teamId])
@@ -648,6 +651,34 @@ model AthleteRating {
 
   @@unique([athleteId, ratingType])
   @@map("athlete_ratings")
+}
+
+// Passive ELO observation from practice data
+model PassiveObservation {
+  id                    String   @id @default(cuid())
+  teamId                String
+  sessionId             String? // Link to Phase 13 Session if available
+  pieceId               String? // Link to specific piece
+  boat1Athletes         String[] // Athletes in boat 1 (stored as JSON array)
+  boat2Athletes         String[] // Athletes in boat 2
+  swappedAthlete1Id     String // Athlete unique to boat 1
+  swappedAthlete2Id     String // Athlete unique to boat 2
+  splitDifferenceSeconds Float // Positive = boat1 faster
+  weight                Float   @default(0.5) // Weight factor (0.5 for practice, 1.0 for formal)
+  source                String  @default("manual") // 'auto_detect', 'manual', 'split_observation'
+  appliedToRatings      Boolean @default(false)
+  appliedAt             DateTime?
+  createdAt             DateTime @default(now())
+
+  team            Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  session         Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  swappedAthlete1 Athlete  @relation("PassiveSwap1", fields: [swappedAthlete1Id], references: [id])
+  swappedAthlete2 Athlete  @relation("PassiveSwap2", fields: [swappedAthlete2Id], references: [id])
+
+  @@index([teamId])
+  @@index([sessionId])
+  @@index([appliedToRatings])
+  @@map("passive_observations")
 }
 
 // ============================================
@@ -1160,10 +1191,11 @@ model Session {
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
-  team       Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  createdBy  User                @relation("SessionCreator", fields: [createdById], references: [id])
-  pieces     Piece[]
-  attendance SessionAttendance[]
+  team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdBy           User                 @relation("SessionCreator", fields: [createdById], references: [id])
+  pieces              Piece[]
+  attendance          SessionAttendance[]
+  passiveObservations PassiveObservation[]
 
   @@index([teamId, date])
   @@map("sessions")
