@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.0 — Core Migration
-**Phase:** 13 (Cross-Feature Integrations) — Complete
-**Status:** Phase 13 complete, ready for Phase 14
-**Last activity:** 2026-01-26 — Completed all 12 plans in Phase 13
+**Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
+**Status:** Plan 14-04 complete (4 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-04-PLAN.md (Composite Ranking & Side-Specific ELO)
 
 ## Project Reference
 
@@ -40,9 +40,9 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | Pending | —/— |
+| 14 | Advanced Seat Racing Analytics | In Progress | 4/14 |
 
-v2.0 Progress: █████████████ (8 phases 6-13 complete, Phase 14 pending)
+v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 4/14 plans)
 
 ## Quick Context
 
@@ -237,11 +237,22 @@ Key architectural decisions carrying forward:
 | 13-12 | Cross-feature widgets pull from multiple domains | Dashboard widgets aggregate data from sessions, activity feed, and attendance for unified overview |
 | 13-12 | Edit mode toggle for dashboard customization | Separates view mode from edit mode, prevents accidental widget rearrangement during normal use |
 
+### Phase 14 Decisions
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 14-04 | Three weight profiles for composite rankings | Performance-First (85/10/5), Balanced (75/15/10), Reliability-Focus (65/15/20) accommodate different coaching philosophies |
+| 14-04 | Z-score normalization with sigmoid transformation | Enables fair comparison across different scales (ELO ~1000, attendance 0-1, erg times ~seconds), sigmoid maps to [0,1] for weighted combination |
+| 14-04 | Erg test type weighting hierarchy | 2k=1.0, 6k=0.8, 500m=0.6, steady_state=0.3 prioritizes gold-standard tests over practice observations |
+| 14-04 | Side-specific rating suffix pattern | seat_race_elo_port/starboard/cox preserves backward compatibility with existing seat_race_elo combined rating |
+| 14-04 | 90-day erg window, 30-day attendance window | Balances recency with sufficient data points - erg captures training block, attendance shows recent reliability |
+| 14-04 | Confidence threshold at 5 data points | Conservative approach: 5+ data points = 100% confidence, provides reasonable certainty for ranking decisions |
+
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed Phase 13 (all 12 plans)
-**Resume file:** None - Phase 13 complete
+**Stopped at:** Completed 14-04-PLAN.md (Composite Ranking & Side-Specific ELO)
+**Resume file:** None
 
 ## Known Limitations
 
