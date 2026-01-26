@@ -21,3 +21,14 @@ export type { SeatRacingEmptyStateProps, RankingsEmptyStateProps } from './SeatR
 
 // Wizard components for session creation
 export * from './wizard';
+
+// Phase 14: Advanced Seat Racing Analytics
+export { ComparisonGraph } from './ComparisonGraph';
+export { ProbabilityMatrix } from './ProbabilityMatrix';
+export { MatrixPlanner } from './MatrixPlanner';
+export { SwapScheduleView, SwapScheduleGrid, SwapScheduleTimeline } from './SwapScheduleView';
+export { CompositeRankings } from './CompositeRankings';
+export { RankingBreakdown } from './RankingBreakdown';
+export { WeightProfileSelector } from './WeightProfileSelector';
+export { BradleyTerryRankings } from './BradleyTerryRankings';
+export { SideRankings } from './SideRankings';
