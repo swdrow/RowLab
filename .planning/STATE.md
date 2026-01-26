@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.0 — Core Migration
-**Phase:** 13 (Cross-Feature Integrations) — In Progress
-**Status:** Executing Phase 13 plans
-**Last activity:** 2026-01-26 — Completed 13-12-PLAN.md (Cross-Feature Dashboard Widgets)
+**Phase:** 13 (Cross-Feature Integrations) — Complete
+**Status:** Phase 13 complete, ready for Phase 14
+**Last activity:** 2026-01-26 — Completed all 12 plans in Phase 13
 
 ## Project Reference
 
@@ -39,10 +39,10 @@ v1.0 Progress: 100% Complete
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
-| 13 | Cross-Feature Integrations | In Progress | 12/— |
+| 13 | Cross-Feature Integrations | Complete | 12/12 |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
-v2.0 Progress: ████████████░ (71 phases 6-12 complete, Phase 13 in progress)
+v2.0 Progress: █████████████ (8 phases 6-13 complete, Phase 14 pending)
 
 ## Quick Context
 
@@ -240,8 +240,8 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed 13-12-PLAN.md (Cross-Feature Dashboard Widgets)
-**Resume file:** None - waiting for next plan
+**Stopped at:** Completed Phase 13 (all 12 plans)
+**Resume file:** None - Phase 13 complete
 
 ## Known Limitations
 
@@ -249,32 +249,29 @@ None - all v2.0 foundation issues resolved.
 
 ## Next Action
 
-**Phase 13: IN PROGRESS**
+**Phase 14: Advanced Seat Racing Analytics** (Pending)
 
-Plans 13-01 and 13-02 complete. Foundation and frontend data layer established.
+Phase 13 delivered the cross-feature integration layer:
 
-**Completed in 13-01:**
-- Installed cmdk, rrule, react-intersection-observer, react-grid-layout, @radix-ui/react-hover-card, fuse.js
-- Created Session and Piece Prisma models with enums
-- Applied database migration via db push
+**Wave 1 (Foundation):**
+- 13-01: Session/Piece Prisma models, dependencies
+- 13-02: TypeScript types, TanStack Query hooks, RRULE utilities
 
-**Completed in 13-02:**
-- Created Session TypeScript types (Session, Piece, SessionType, SessionStatus, PieceSegment)
-- Created RRULE utilities (parseRRule, generateRRule, expandRecurrence, formatRRule, rrulePresets)
-- Created TanStack Query hooks (useSessions, useSession, useCreateSession, useUpdateSession, useDeleteSession)
-- Added Live session types and calendar event types for future plans
+**Wave 2 (APIs & Core Components):**
+- 13-03: Sessions CRUD API with pieces
+- 13-04: Command palette with cmdk (⌘K global search)
+- 13-05: Live erg dashboard (grid/list views, polling)
+- 13-08: Unified activity feed with infinite scroll
 
-**Completed in 13-03:**
-- Created Sessions API routes with full CRUD operations
-- GET /api/v1/sessions with filters (type, status, startDate, endDate)
-- GET /api/v1/sessions/active for currently active team session
-- POST /api/v1/sessions with nested pieces creation
-- PATCH /api/v1/sessions/:id with auto-generate session code when ACTIVE
-- DELETE /api/v1/sessions/:id with cascade delete of pieces
-- POST /api/v1/sessions/join/:code for live session joining
-- Piece CRUD nested under sessions
+**Wave 3 (Integration Layer):**
+- 13-06: Live erg data API aggregating C2 Logbook
+- 13-07: Session attendance recording with override
+- 13-09: HoverCard, Breadcrumbs, Header search integration
+- 13-10: SessionForm, PieceEditor, RecurrenceEditor
 
-**Next:** 13-04-PLAN.md (Session Builder UI)
+**Wave 4 (Pages & Dashboard):**
+- 13-11: SessionsPage, SessionDetailPage, LiveSessionPage
+- 13-12: DashboardGrid with react-grid-layout widgets
 
 | 10-02 | Inline types in hooks instead of shared training.ts | training.ts wasn't created yet, inline types make hooks self-contained and executable now |
 | 10-02 | 5-minute staleTime for training queries | Follows useSeatRaceSessions pattern, balances data freshness with API efficiency |
