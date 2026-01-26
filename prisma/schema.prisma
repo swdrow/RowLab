@@ -1409,3 +1409,34 @@ model ChallengeParticipant {
   @@index([score])
   @@map("challenge_participants")
 }
+
+// ============================================
+// GAMIFICATION: Personal Records
+// ============================================
+
+model PersonalRecord {
+  id            String   @id @default(cuid())
+  athleteId     String
+  teamId        String
+
+  // What type of PR
+  testType      String   // "2k", "6k", "500m", etc.
+  scope         String   // "all-time", "season", "training-block"
+  scopeContext  String?  // Season name or training block ID
+
+  // The record
+  ergTestId     String   // Reference to the test that set this PR
+  result        Decimal  @db.Decimal(10, 1) // Time in seconds
+  previousBest  Decimal? @db.Decimal(10, 1) // Previous best for delta calculation
+  improvement   Decimal? @db.Decimal(10, 1) // Delta in seconds (positive = improvement)
+
+  achievedAt    DateTime @default(now())
+
+  athlete       Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([athleteId, testType, scope, scopeContext], name: "athlete_pr_unique")
+  @@index([athleteId])
+  @@index([teamId])
+  @@index([testType])
+  @@map("personal_records")
+}
