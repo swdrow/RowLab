@@ -1,5 +1,5 @@
 import { prisma } from '../db/connection.js';
-import { logger } from '../utils/logger.js';
+import logger from '../utils/logger.js';
 
 /**
  * Determine current season based on date
