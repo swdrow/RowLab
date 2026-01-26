@@ -8,8 +8,13 @@ export { PreferencesSection } from './PreferencesSection';
 export { SecuritySection } from './SecuritySection';
 export { IntegrationsSection } from './IntegrationsSection';
 export { NotificationsSection } from './NotificationsSection';
+export { FeaturesSection } from './FeaturesSection';
 export { TeamSection } from './TeamSection';
 export { BillingSection } from './BillingSection';
+
+// Feature components
+export { FeatureGroupCard } from './FeatureGroupCard';
+export { FeatureToggleRow } from './FeatureToggleRow';
 
 // Integration components
 export { IntegrationCard } from './IntegrationCard';

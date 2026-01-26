@@ -133,22 +133,71 @@ export interface WorkoutCompletion {
 // CALENDAR EVENTS
 // ============================================
 
+export type CalendarEventType = 'workout' | 'recruit_visit' | 'session';
+
 export interface CalendarEvent {
   id: string;
   title: string;
   start: Date;
   end: Date;
   allDay?: boolean;
+  type?: CalendarEventType;
   resource?: {
+    // Workout fields
     workoutId?: string;
     planId?: string;
-    type: WorkoutType;
+    type?: WorkoutType;
     intensity?: IntensityLevel;
     tss?: number;
     isRecurring?: boolean;
     parentId?: string;
     blockId?: string;
     blockPhase?: PeriodizationPhase;
+
+    // Recruit visit fields
+    visitId?: string;
+    recruitName?: string;
+    hostAthleteId?: string;
+    hostAthleteName?: string;
+    visitStatus?: 'scheduled' | 'completed' | 'cancelled';
+  };
+}
+
+// ============================================
+// CALENDAR EVENT HELPERS
+// ============================================
+
+import type { RecruitVisit } from './recruiting';
+
+/**
+ * Convert a RecruitVisit to a CalendarEvent for calendar display
+ */
+export function recruitVisitToCalendarEvent(visit: RecruitVisit): CalendarEvent {
+  const [startHour, startMin] = visit.startTime.split(':').map(Number);
+  const [endHour, endMin] = visit.endTime.split(':').map(Number);
+
+  const startDate = new Date(visit.date);
+  startDate.setHours(startHour, startMin, 0, 0);
+
+  const endDate = new Date(visit.date);
+  endDate.setHours(endHour, endMin, 0, 0);
+
+  return {
+    id: `recruit-${visit.id}`,
+    title: `Recruit: ${visit.recruitName}`,
+    start: startDate,
+    end: endDate,
+    allDay: false,
+    type: 'recruit_visit',
+    resource: {
+      visitId: visit.id,
+      recruitName: visit.recruitName,
+      hostAthleteId: visit.hostAthleteId,
+      hostAthleteName: visit.hostAthlete
+        ? `${visit.hostAthlete.firstName} ${visit.hostAthlete.lastName}`
+        : undefined,
+      visitStatus: visit.status,
+    },
   };
 }
 

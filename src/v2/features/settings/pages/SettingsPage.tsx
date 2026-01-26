@@ -9,13 +9,14 @@ import { PreferencesSection } from '../components/PreferencesSection';
 import { SecuritySection } from '../components/SecuritySection';
 import { IntegrationsSection } from '../components/IntegrationsSection';
 import { NotificationsSection } from '../components/NotificationsSection';
+import { FeaturesSection } from '../components/FeaturesSection';
 import { TeamSection } from '../components/TeamSection';
 import { BillingSection } from '../components/BillingSection';
 import { LoadingSkeleton, SkeletonLine } from '@v2/components/common';
 import { ErrorState } from '@v2/components/common/ErrorState';
 import type { SettingsTab, UserProfile, UserPreferences } from '@v2/types/settings';
 
-const validTabs: SettingsTab[] = ['profile', 'preferences', 'security', 'integrations', 'notifications', 'team', 'billing'];
+const validTabs: SettingsTab[] = ['profile', 'preferences', 'security', 'integrations', 'notifications', 'features', 'team', 'billing'];
 
 /**
  * SettingsPage - Main settings page with URL-synced tabs
@@ -214,6 +215,9 @@ export const SettingsPage: React.FC = () => {
         )}
         {activeTab === 'notifications' && (
           <NotificationsSection />
+        )}
+        {activeTab === 'features' && (
+          <FeaturesSection />
         )}
         {activeTab === 'team' && isOwner && (
           <TeamSection isOwner={isOwner} />
