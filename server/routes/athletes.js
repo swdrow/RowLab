@@ -233,6 +233,153 @@ router.get('/me', async (req, res) => {
 });
 
 /**
+ * GET /api/v1/athletes/me/preferences
+ * Get current athlete's gamification preferences
+ */
+router.get('/me/preferences', async (req, res) => {
+  try {
+    // Find athlete linked to this user in the active team
+    const athlete = await prisma.athlete.findFirst({
+      where: {
+        userId: req.user.id,
+        teamId: req.user.activeTeamId,
+      },
+      select: {
+        id: true,
+        gamificationEnabled: true,
+      },
+    });
+
+    if (!athlete) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'No athlete profile found for this user' },
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        gamificationEnabled: athlete.gamificationEnabled,
+      },
+    });
+  } catch (error) {
+    logger.error('Get athlete preferences error', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to get preferences' },
+    });
+  }
+});
+
+/**
+ * PATCH /api/v1/athletes/me/preferences
+ * Update current athlete's gamification preferences
+ */
+router.patch(
+  '/me/preferences',
+  [body('gamificationEnabled').optional().isBoolean()],
+  validateRequest,
+  async (req, res) => {
+    try {
+      // Find athlete linked to this user in the active team
+      const athlete = await prisma.athlete.findFirst({
+        where: {
+          userId: req.user.id,
+          teamId: req.user.activeTeamId,
+        },
+      });
+
+      if (!athlete) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'No athlete profile found for this user' },
+        });
+      }
+
+      // Update preferences
+      const updated = await prisma.athlete.update({
+        where: { id: athlete.id },
+        data: {
+          gamificationEnabled: req.body.gamificationEnabled ?? athlete.gamificationEnabled,
+        },
+        select: {
+          id: true,
+          gamificationEnabled: true,
+        },
+      });
+
+      res.json({
+        success: true,
+        data: {
+          gamificationEnabled: updated.gamificationEnabled,
+        },
+      });
+    } catch (error) {
+      logger.error('Update athlete preferences error', { error: error.message });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to update preferences' },
+      });
+    }
+  }
+);
+
+/**
+ * PATCH /api/v1/athletes/:id/preferences
+ * Update athlete's preferences (for coaches updating athlete settings)
+ */
+router.patch(
+  '/:id/preferences',
+  requireRole('OWNER', 'COACH'),
+  [param('id').isUUID(), body('gamificationEnabled').optional().isBoolean()],
+  validateRequest,
+  async (req, res) => {
+    try {
+      // Find athlete by ID in active team
+      const athlete = await prisma.athlete.findFirst({
+        where: {
+          id: req.params.id,
+          teamId: req.user.activeTeamId,
+        },
+      });
+
+      if (!athlete) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Athlete not found' },
+        });
+      }
+
+      // Update preferences
+      const updated = await prisma.athlete.update({
+        where: { id: athlete.id },
+        data: {
+          gamificationEnabled: req.body.gamificationEnabled ?? athlete.gamificationEnabled,
+        },
+        select: {
+          id: true,
+          gamificationEnabled: true,
+        },
+      });
+
+      res.json({
+        success: true,
+        data: {
+          gamificationEnabled: updated.gamificationEnabled,
+        },
+      });
+    } catch (error) {
+      logger.error('Update athlete preferences error', { error: error.message });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to update preferences' },
+      });
+    }
+  }
+);
+
+/**
  * GET /api/v1/athletes/:id/dashboard
  * Get full dashboard data for a specific athlete (Coach view)
  * Allows OWNER/COACH to view any athlete's dashboard in their team

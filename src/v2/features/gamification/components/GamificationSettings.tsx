@@ -21,7 +21,8 @@ export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
 
   const updatePreference = useMutation({
     mutationFn: async (gamificationEnabled: boolean) => {
-      const response = await api.patch(`/api/v1/athletes/${athleteId}/preferences`, {
+      // Use /me/preferences so athletes can update their own settings
+      const response = await api.patch('/api/v1/athletes/me/preferences', {
         gamificationEnabled,
       });
       return response.data;
