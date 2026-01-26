@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-13 complete (5 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-13-PLAN.md (Passive ELO Tracking Service)
+**Status:** Plan 14-09 complete (7 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-09-PLAN.md (Composite Rankings UI)
 
 ## Project Reference
 
@@ -40,9 +40,9 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | In Progress | 5/14 |
+| 14 | Advanced Seat Racing Analytics | In Progress | 7/14 |
 
-v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 5/14 plans)
+v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 7/14 plans)
 
 ## Quick Context
 
@@ -255,11 +255,14 @@ Key architectural decisions carrying forward:
 | 14-05 | Structured error codes for API responses | NO_TEAM, INVALID_INPUT, SERVER_ERROR etc. enable frontend to handle errors programmatically |
 | 14-05 | teamId query param with activeTeamId fallback | Flexibility for admin views while defaulting to current team context |
 | 14-05 | Enrich API responses with athlete details | Reduces frontend API calls by including names/side in ranking responses |
+| 14-10 | Visual error bars for confidence intervals | CI bar + strength bar + whiskers makes statistical uncertainty visible without cluttering interface |
+| 14-10 | Methodology toggle for Bradley-Terry | Power users want details, beginners don't need complexity upfront - toggle balances both needs |
+| 14-10 | Side filter as button group | Button group faster than dropdown - all options visible simultaneously, clearer current state |
 
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed 14-13-PLAN.md (Passive ELO Tracking Service)
+**Stopped at:** Completed 14-10-PLAN.md (Bradley-Terry and Side Rankings Components)
 **Resume file:** None
 
 ## Known Limitations
