@@ -4,6 +4,7 @@ import {
   Palette,
   Shield,
   Plug,
+  Bell,
   Users,
   CreditCard,
 } from 'lucide-react';
@@ -21,6 +22,7 @@ const TABS: TabConfig[] = [
   { id: 'preferences', label: 'Preferences', icon: Palette },
   { id: 'security', label: 'Security', icon: Shield },
   { id: 'integrations', label: 'Integrations', icon: Plug },
+  { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'team', label: 'Team', icon: Users, ownerOnly: true },
   { id: 'billing', label: 'Billing', icon: CreditCard, ownerOnly: true },
 ];

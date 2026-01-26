@@ -125,7 +125,7 @@ export interface UsageStats {
 /**
  * Settings tab type
  */
-export type SettingsTab = 'profile' | 'preferences' | 'security' | 'integrations' | 'team' | 'billing';
+export type SettingsTab = 'profile' | 'preferences' | 'security' | 'integrations' | 'notifications' | 'team' | 'billing';
 
 /**
  * API response wrapper for settings endpoints

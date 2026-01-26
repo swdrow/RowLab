@@ -7,6 +7,7 @@ export { ProfileSection } from './ProfileSection';
 export { PreferencesSection } from './PreferencesSection';
 export { SecuritySection } from './SecuritySection';
 export { IntegrationsSection } from './IntegrationsSection';
+export { NotificationsSection } from './NotificationsSection';
 export { TeamSection } from './TeamSection';
 export { BillingSection } from './BillingSection';
 
