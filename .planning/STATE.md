@@ -5,7 +5,7 @@
 **Milestone:** v2.0 — Core Migration
 **Phase:** 13 (Cross-Feature Integrations) — In Progress
 **Status:** Executing Phase 13 plans
-**Last activity:** 2026-01-26 — Completed 13-03-PLAN.md (Sessions API Backend)
+**Last activity:** 2026-01-26 — Completed 13-08-PLAN.md (Activity Feed Timeline)
 
 ## Project Reference
 
@@ -39,7 +39,7 @@ v1.0 Progress: 100% Complete
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
-| 13 | Cross-Feature Integrations | In Progress | 3/— |
+| 13 | Cross-Feature Integrations | In Progress | 4/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
 v2.0 Progress: ████████████░ (71 phases 6-12 complete, Phase 13 in progress)
@@ -365,6 +365,9 @@ Plans 13-01 and 13-02 complete. Foundation and frontend data layer established.
 | 13-03 | Session code cleared on COMPLETED/CANCELLED | Frees up codes for reuse, signals session is no longer joinable |
 | 13-03 | Pieces cascade delete via Prisma onDelete | Ensures data integrity when sessions are deleted |
 | 13-03 | Join endpoint not restricted by team | Allows cross-team session joining for special events/camps |
+| 13-08 | Extended existing activities.js | Maintains API consistency with existing /api/v1/activities endpoint |
+| 13-08 | Cursor-based pagination with ISO date | Natural ordering for time-series data, human-readable cursor values |
+| 13-08 | Date grouping: Today/Yesterday/This Week/Earlier | Common UX pattern for activity timelines, easy to scan |
 
 ---
-*Last updated: 2026-01-26 — Phase 13 Plan 03 Complete*
+*Last updated: 2026-01-26 — Phase 13 Plan 08 Complete*
