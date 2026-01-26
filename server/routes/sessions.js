@@ -1,5 +1,5 @@
 import express from 'express';
-import { param, validationResult } from 'express-validator';
+import { param, body, validationResult } from 'express-validator';
 import { authenticateToken, requireTeam, requireRole } from '../middleware/auth.js';
 import { prisma } from '../db/connection.js';
 import logger from '../utils/logger.js';
@@ -733,6 +733,181 @@ router.get('/:id/live-data', param('id').isString(), async (req, res) => {
   } catch (error) {
     logger.error('Live data fetch error', { error: error.message });
     res.status(500).json({ error: 'Failed to fetch live erg data' });
+  }
+});
+
+// ============================================
+// Attendance Routes
+// ============================================
+
+/**
+ * POST /api/v1/sessions/:id/record-attendance
+ * Record attendance from session participation
+ * Automatically determines status based on participation percentage
+ */
+router.post(
+  '/:id/record-attendance',
+  [
+    param('id').isString(),
+    body('athleteId').isString(),
+    body('participationPercent').isFloat({ min: 0, max: 100 }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id: sessionId } = req.params;
+    const { athleteId, participationPercent } = req.body;
+    const teamId = req.user.activeTeamId;
+
+    try {
+      // Verify session exists and belongs to team
+      const session = await prisma.session.findFirst({
+        where: { id: sessionId, teamId },
+      });
+
+      if (!session) {
+        return res.status(404).json({ error: 'Session not found' });
+      }
+
+      // Determine status based on participation threshold
+      // Default thresholds: 75% = Present, 25-75% = Partial, <25% = Absent
+      let status = 'Absent';
+      if (participationPercent >= 75) {
+        status = 'Present';
+      } else if (participationPercent >= 25) {
+        status = 'Partial';
+      }
+
+      // Upsert attendance record
+      const attendance = await prisma.sessionAttendance.upsert({
+        where: {
+          sessionId_athleteId: { sessionId, athleteId },
+        },
+        update: {
+          participationPercent,
+          status,
+          autoRecorded: true,
+        },
+        create: {
+          sessionId,
+          athleteId,
+          participationPercent,
+          status,
+          autoRecorded: true,
+        },
+      });
+
+      res.json(attendance);
+    } catch (error) {
+      logger.error('Error recording attendance:', error);
+      res.status(500).json({ error: 'Failed to record attendance' });
+    }
+  }
+);
+
+/**
+ * PATCH /api/v1/sessions/:id/attendance/:athleteId
+ * Override attendance status (OWNER, COACH only)
+ */
+router.patch(
+  '/:id/attendance/:athleteId',
+  requireRole('OWNER', 'COACH'),
+  [
+    param('id').isString(),
+    param('athleteId').isString(),
+    body('status').isIn(['Present', 'Late', 'Partial', 'Absent', 'Injured', 'Class']),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id: sessionId, athleteId } = req.params;
+    const { status } = req.body;
+    const teamId = req.user.activeTeamId;
+    const userId = req.user.id;
+
+    try {
+      // Verify session exists and belongs to team
+      const session = await prisma.session.findFirst({
+        where: { id: sessionId, teamId },
+      });
+
+      if (!session) {
+        return res.status(404).json({ error: 'Session not found' });
+      }
+
+      // Check if attendance exists
+      const existing = await prisma.sessionAttendance.findUnique({
+        where: {
+          sessionId_athleteId: { sessionId, athleteId },
+        },
+      });
+
+      if (!existing) {
+        return res.status(404).json({ error: 'Attendance record not found' });
+      }
+
+      // Update attendance
+      const attendance = await prisma.sessionAttendance.update({
+        where: {
+          sessionId_athleteId: { sessionId, athleteId },
+        },
+        data: {
+          status,
+          autoRecorded: false,
+          overriddenAt: new Date(),
+          overriddenById: userId,
+        },
+      });
+
+      res.json(attendance);
+    } catch (error) {
+      logger.error('Error overriding attendance:', error);
+      res.status(500).json({ error: 'Failed to override attendance' });
+    }
+  }
+);
+
+/**
+ * GET /api/v1/sessions/:id/attendance
+ * Get session attendance records
+ */
+router.get('/:id/attendance', param('id').isString(), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { id: sessionId } = req.params;
+  const teamId = req.user.activeTeamId;
+
+  try {
+    const session = await prisma.session.findFirst({
+      where: { id: sessionId, teamId },
+      include: {
+        attendance: {
+          include: {
+            athlete: {
+              select: { id: true, firstName: true, lastName: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
+    res.json(session.attendance);
+  } catch (error) {
+    logger.error('Error fetching attendance:', error);
+    res.status(500).json({ error: 'Failed to fetch attendance' });
   }
 });
 
