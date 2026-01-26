@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDownIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import { CaretDown, Faders } from '@phosphor-icons/react';
 import { useWeightProfiles } from '../../hooks/useCompositeRankings';
 import type { RankingWeightProfile } from '../../types/advancedRanking';
 
@@ -91,7 +91,7 @@ export function WeightProfileSelector({
             ))}
             <option value="custom">Custom</option>
           </select>
-          <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-txt-secondary pointer-events-none" />
+          <CaretDown size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-txt-secondary pointer-events-none" />
         </div>
 
         {/* Toggle custom sliders */}
@@ -102,7 +102,7 @@ export function WeightProfileSelector({
           }`}
           title="Customize weights"
         >
-          <AdjustmentsHorizontalIcon className="w-4 h-4" />
+          <Faders size={16} />
         </button>
       </div>
 
