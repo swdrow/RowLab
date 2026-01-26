@@ -66,7 +66,9 @@ export async function getOrCreateRating(athleteId, teamId, ratingType = 'seat_ra
  * @param {string} athlete1Id - First athlete UUID
  * @param {string} athlete2Id - Second athlete UUID
  * @param {number} performanceDiff - Time difference in seconds (positive = athlete1 faster)
- * @param {string} ratingType - Type of rating (default: 'seat_race_elo')
+ * @param {Object|string} options - Options object or ratingType string (for backward compatibility)
+ * @param {string} options.ratingType - Type of rating (default: 'seat_race_elo')
+ * @param {number} options.weight - Weight factor for K adjustment (default: 1.0)
  * @returns {Promise<Object>} Object containing old and new ratings for both athletes
  */
 export async function updateRatingsFromSeatRace(
@@ -74,8 +76,11 @@ export async function updateRatingsFromSeatRace(
   athlete1Id,
   athlete2Id,
   performanceDiff,
-  ratingType = 'seat_race_elo'
+  options = {}
 ) {
+  // Backward compatibility: if options is a string, treat it as ratingType
+  const ratingType = typeof options === 'string' ? options : (options.ratingType || 'seat_race_elo');
+  const weightFactor = typeof options === 'object' ? (options.weight || 1.0) : 1.0;
   // Get current ratings
   const rating1 = await getOrCreateRating(athlete1Id, teamId, ratingType);
   const rating2 = await getOrCreateRating(athlete2Id, teamId, ratingType);
@@ -106,7 +111,8 @@ export async function updateRatingsFromSeatRace(
   // Scale K factor by margin of victory
   // marginFactor scales from 1 (close race) to 2 (5+ second margin)
   const marginFactor = Math.min(2, 1 + Math.abs(performanceDiff) / 5);
-  const adjustedK = K_FACTOR * marginFactor;
+  // Apply weight factor (used for passive observations with reduced impact)
+  const adjustedK = K_FACTOR * marginFactor * weightFactor;
 
   // Calculate new ratings
   const newRating1 = calculateNewRating(oldRating1, expected1, score1, adjustedK);
