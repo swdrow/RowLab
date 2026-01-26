@@ -4,6 +4,7 @@ import { DotsSixVertical, Gear, ArrowsOut } from '@phosphor-icons/react';
 import { UpcomingSessionsWidget } from './widgets/UpcomingSessionsWidget';
 import { RecentActivityWidget } from './widgets/RecentActivityWidget';
 import { AttendanceSummaryWidget } from './widgets/AttendanceSummaryWidget';
+import { HostVisitsWidget } from './widgets/HostVisitsWidget';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -27,6 +28,11 @@ const WIDGETS = {
     component: AttendanceSummaryWidget,
     defaultSize: { w: 4, h: 4 },
   },
+  hostVisits: {
+    title: 'Host Visits',
+    component: HostVisitsWidget,
+    defaultSize: { w: 6, h: 4 },
+  },
 };
 
 type WidgetId = keyof typeof WIDGETS;
@@ -35,7 +41,8 @@ type WidgetId = keyof typeof WIDGETS;
 const DEFAULT_LAYOUT: Layout[] = [
   { i: 'upcomingSessions', x: 0, y: 0, w: 6, h: 4 },
   { i: 'attendanceSummary', x: 6, y: 0, w: 4, h: 4 },
-  { i: 'recentActivity', x: 0, y: 4, w: 10, h: 6 },
+  { i: 'hostVisits', x: 0, y: 4, w: 6, h: 4 },
+  { i: 'recentActivity', x: 0, y: 8, w: 10, h: 6 },
 ];
 
 // Local storage key
