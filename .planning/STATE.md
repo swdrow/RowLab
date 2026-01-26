@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-09 complete (7 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-09-PLAN.md (Composite Rankings UI)
+**Status:** Plan 14-14 complete (6 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-14-PLAN.md (Passive ELO Tracking API)
 
 ## Project Reference
 
@@ -40,9 +40,9 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | In Progress | 7/14 |
+| 14 | Advanced Seat Racing Analytics | In Progress | 6/14 |
 
-v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 7/14 plans)
+v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 6/14 plans)
 
 ## Quick Context
 
