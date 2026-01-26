@@ -32,6 +32,7 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
       { to: '/app/coach/training', label: 'Training', icon: 'activity' },
       { to: '/app/regattas', label: 'Regattas', icon: 'flag' },
       { to: '/app/rankings', label: 'Rankings', icon: 'bar-chart' },
+      { to: '/app/recruiting', label: 'Recruiting', icon: 'users' },
       { to: '/app/settings', label: 'Settings', icon: 'settings' },
     ],
   },
