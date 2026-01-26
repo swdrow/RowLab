@@ -7,6 +7,8 @@ import { SkipLink } from '@v2/components/shell/SkipLink';
 import { Header } from '@v2/components/shell/Header';
 import { CommandPalette } from '@v2/features/search/components/CommandPalette';
 import { useContextStore } from '@v2/stores/contextStore';
+import { useRequireAuth } from '@/hooks/useAuth';
+import { LoadingSkeleton, SkeletonLine } from '@v2/components/common';
 
 /**
  * ShellLayout Component
@@ -48,6 +50,9 @@ export function ShellLayout() {
   const { activeContext, setActiveContext } = useContextStore();
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Require authentication - redirects to login if not authenticated
+  const { isLoading: isAuthLoading } = useRequireAuth();
 
   // Mobile detection
   useEffect(() => {
@@ -102,6 +107,21 @@ export function ShellLayout() {
     coach: 'Coach',
     admin: 'Admin',
   };
+
+  // Show loading state while auth is being verified
+  if (isAuthLoading) {
+    return (
+      <div className="v2 h-screen flex items-center justify-center bg-bg-surface">
+        <LoadingSkeleton>
+          <div className="space-y-4 w-64">
+            <SkeletonLine height={40} />
+            <SkeletonLine height={200} />
+            <SkeletonLine height={100} />
+          </div>
+        </LoadingSkeleton>
+      </div>
+    );
+  }
 
   // Mobile layout
   if (isMobile) {
