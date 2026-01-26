@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 16 (Gamification & Engagement) — In Progress
-**Status:** 8 of 12 plans complete
-**Last activity:** 2026-01-26 — Completed 16-08-PLAN.md
+**Status:** 9 of 12 plans complete
+**Last activity:** 2026-01-26 — Completed 16-09-PLAN.md
 
 ## Project Reference
 
@@ -49,7 +49,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
-| 16 | Gamification & Engagement | In Progress | 8/12 |
+| 16 | Gamification & Engagement | In Progress | 9/12 |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
 | 18 | Lineup & Boat Improvements | Planned | TBD |
 
@@ -313,8 +313,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-26T22:57:56Z
-**Stopped at:** Completed 16-08-PLAN.md (Achievement Display Components)
+**Last session:** 2026-01-26T22:59:21Z
+**Stopped at:** Completed 16-09-PLAN.md (PR Celebration & Shareable Cards)
 **Resume file:** None
 
 ## Known Limitations
@@ -564,6 +564,9 @@ Phase 13 delivered the cross-feature integration layer:
 | 16-06 | Query key factories for structured caching | achievementKeys, prKeys, challengeKeys patterns enable proper cache invalidation and management |
 | 16-06 | Conditional polling based on challenge status | Leaderboard polling stops when challenge inactive to conserve API resources |
 | 16-06 | Variable staleTime per data mutability | Immutable data (PR detection, templates) uses Infinity, real-time (leaderboards) uses 0, dynamic uses 2min |
+| 16-09 | Inline PR celebration over popup modal | Non-disruptive UX with gold border/amber styling - visible but not blocking per CONTEXT.md |
+| 16-09 | html-to-image for PNG generation | 3x faster than html2canvas (already installed in 16-01), uses forwardRef pattern for DOM capture |
+| 16-09 | Fixed 480x320px card dimensions | Consistent PNG output for social sharing with 16:9-ish aspect ratio |
 
 ---
-*Last updated: 2026-01-26 — Phase 16 Plan 06 Complete*
+*Last updated: 2026-01-26 — Phase 16 Plan 09 Complete*
