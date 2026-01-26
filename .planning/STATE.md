@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.0 — Core Migration
-**Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-12 complete (12 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-12-PLAN.md (Advanced Analytics Navigation Enhancement)
+**Phase:** 15 (Feature Toggles & Recruiting) — In Progress
+**Status:** Plan 15-01 complete
+**Last activity:** 2026-01-26 — Completed 15-01-PLAN.md (Feature Preference Store)
 
 ## Project Reference
 
@@ -40,9 +40,31 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | In Progress | 12/14 |
+| 14 | Advanced Seat Racing Analytics | Complete | 14/14 |
 
-v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 12/14 plans)
+v2.0 Progress: ██████████████ (9 phases complete) ✅
+
+### v2.1 Milestone (Planned)
+
+| Phase | Name | Status | Plans |
+|-------|------|--------|-------|
+| 15 | Feature Toggles & Recruiting | In Progress | 1/? |
+| 16 | Gamification & Engagement | Planned | TBD |
+| 17 | Complete Design Overhaul 🎨 | Planned | TBD |
+| 18 | Lineup & Boat Improvements | Planned | TBD |
+
+v2.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
+
+### v2.2 Milestone (Planned)
+
+| Phase | Name | Status | Plans |
+|-------|------|--------|-------|
+| 19 | Telemetry & Combined Scoring | Planned | TBD |
+| 20 | AI Lineup Optimizer (v2) | Planned | TBD |
+| 21 | Predictive Analytics | Planned | TBD |
+| 22 | Coxswain Mobile View | Planned | TBD |
+
+v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 
 ## Quick Context
 
@@ -261,8 +283,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-26
-**Stopped at:** Completed 14-07-PLAN.md (Comparison Graph & Probability Matrix)
+**Last session:** 2026-01-26T20:15:15Z
+**Stopped at:** Completed 15-01-PLAN.md (Feature Preference Store)
 **Resume file:** None
 
 ## Known Limitations
@@ -271,7 +293,23 @@ None - all v2.0 foundation issues resolved.
 
 ## Next Action
 
-**Phase 14: Advanced Seat Racing Analytics** (Pending)
+**v2.1 Milestone: Feature Expansion** (Ready to Start)
+
+Phase 14 (Advanced Seat Racing Analytics) is complete. The roadmap now extends through Phase 22:
+
+**v2.1 — Feature Expansion:**
+- Phase 15: Feature Toggles & Recruiting
+- Phase 16: Gamification & Engagement
+- Phase 17: Complete Design Overhaul 🎨
+- Phase 18: Lineup & Boat Improvements
+
+**v2.2 — Advanced Analytics:**
+- Phase 19: Telemetry & Combined Scoring
+- Phase 20: AI Lineup Optimizer (v2)
+- Phase 21: Predictive Analytics
+- Phase 22: Coxswain Mobile View
+
+To begin v2.1, run `/gsd:plan-phase` for Phase 15.
 
 Phase 13 delivered the cross-feature integration layer:
 
@@ -453,3 +491,15 @@ Phase 13 delivered the cross-feature integration layer:
 
 ---
 *Last updated: 2026-01-26 — Phase 14 Plan 11 Complete*
+
+### v2.0 Decisions (Phase 15)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 15-01 | Core features (6) always enabled, advanced features (7) toggleable | Keeps UI clean for basic teams while providing power features when needed |
+| 15-01 | Zustand persist middleware with localStorage | Team-level feature preferences persist across sessions without server state |
+| 15-01 | Store actions no-op for core features | Safety mechanism prevents accidental disabling of essential features |
+| 15-01 | Multiple hook abstractions (full/simple/group) | useFeaturePreference (full), useFeature (boolean), useFeatureGroup (bulk) cover different use cases |
+
+---
+*Last updated: 2026-01-26 — Phase 15 Plan 01 Complete*
