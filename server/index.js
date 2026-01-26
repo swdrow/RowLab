@@ -52,6 +52,7 @@ import uploadRoutes from './routes/uploads.js';
 import personalRecordsRoutes from './routes/personalRecords.js';
 import challengeRoutes from './routes/challenges.js';
 import achievementRoutes from './routes/achievements.js';
+import streakRoutes from './routes/streaks.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
@@ -142,6 +143,7 @@ app.use('/api/v1/uploads', apiLimiter, uploadRoutes);
 app.use('/api/v1/personal-records', apiLimiter, personalRecordsRoutes);
 app.use('/api/v1/challenges', apiLimiter, challengeRoutes);
 app.use('/api/v1/achievements', apiLimiter, achievementRoutes);
+app.use('/api/v1/streaks', apiLimiter, streakRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
