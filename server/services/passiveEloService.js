@@ -9,10 +9,10 @@ import prisma from '../db/connection.js';
 import { updateRatingsFromSeatRace } from './eloRatingService.js';
 
 // Default weight for passive observations (vs 1.0 for formal seat races)
-const DEFAULT_PASSIVE_WEIGHT = 0.5;
+export const DEFAULT_PASSIVE_WEIGHT = 0.5;
 
 // Minimum split difference to record (ignore noise)
-const MIN_SPLIT_DIFFERENCE_SECONDS = 0.5;
+export const MIN_SPLIT_DIFFERENCE_SECONDS = 0.5;
 
 // ============================================
 // SWAP DETECTION
