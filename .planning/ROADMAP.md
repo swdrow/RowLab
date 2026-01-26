@@ -687,7 +687,7 @@ Plans:
 
 ---
 
-### Phase 16: Gamification & Engagement
+### Phase 16: Gamification & Engagement ✅
 
 **Goal:** Achievement system, PRs, team challenges, and engagement features.
 
@@ -695,18 +695,35 @@ Plans:
 
 **Requirements:** ACH-01, ACH-02, PR-01, PR-02, CHAL-01, CHAL-02, JOURNEY-01, STREAK-01
 
+**Plans:** 12 plans
+
+Plans:
+- [x] 16-01-PLAN.md — Prisma schema (Achievement, PersonalRecord, Challenge, Streak models)
+- [x] 16-02-PLAN.md — TypeScript types for gamification domain
+- [x] 16-03-PLAN.md — Achievement service (definition, progress, unlocking)
+- [x] 16-04-PLAN.md — Personal records service (PR detection, ranks, history)
+- [x] 16-05-PLAN.md — Challenge service (creation, enrollment, leaderboards)
+- [x] 16-06-PLAN.md — TanStack Query hooks (achievements, PRs, challenges)
+- [x] 16-07-PLAN.md — Streak service (PostgreSQL window functions)
+- [x] 16-08-PLAN.md — Achievement UI (badges, progress, grid with rarity)
+- [x] 16-09-PLAN.md — PR celebration UI (inline gold highlight, shareable cards)
+- [x] 16-10-PLAN.md — Challenge UI (leaderboard with 5s polling, create form)
+- [x] 16-11-PLAN.md — Pages (StreakDisplay, SeasonJourney, AchievementsPage, ChallengesPage)
+- [x] 16-12-PLAN.md — Routes and navigation integration
+
 **Delivers:**
 - Achievement system with badges and milestones
 - Personal records wall with celebrations
 - Team challenges with leaderboards
 - Season journey visualization
 - Streak tracking
+- Per-athlete gamification opt-out
 
 **Success Criteria:**
-1. Athletes earn achievements automatically
-2. New PRs trigger celebratory animations
-3. Coach can create team challenges
-4. Athletes can view season journey timeline
+1. ✅ Athletes earn achievements automatically
+2. ✅ New PRs trigger celebratory animations
+3. ✅ Coach can create team challenges
+4. ✅ Athletes can view season journey timeline
 
 ---
 
@@ -901,12 +918,12 @@ The following requirements apply across all v2.0 phases:
 
 | Phase | Name | Requirements | Plans | Status |
 |-------|------|--------------|-------|--------|
-| 15 | Feature Toggles & Recruiting | 6 | 10 | Planned |
-| 16 | Gamification & Engagement | 8 | TBD | Planned |
+| 15 | Feature Toggles & Recruiting | 6 | 10 | Complete ✅ |
+| 16 | Gamification & Engagement | 8 | 12 | Complete ✅ |
 | 17 | Complete Design Overhaul | 7 | TBD | Planned |
 | 18 | Lineup & Boat Improvements | 9 | TBD | Planned |
 
-**v2.1 Total:** 30 requirements across 4 phases
+**v2.1 Total:** 30 requirements across 4 phases (2 complete, 2 planned)
 
 ### v2.2 Milestone (Planned)
 
