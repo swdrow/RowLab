@@ -49,6 +49,8 @@ import attendanceRoutes from './routes/attendance.js';
 import sessionRoutes from './routes/sessions.js';
 import recruitVisitsRoutes from './routes/recruitVisits.js';
 import uploadRoutes from './routes/uploads.js';
+import personalRecordsRoutes from './routes/personalRecords.js';
+import challengeRoutes from './routes/challenges.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
@@ -135,6 +137,8 @@ app.use('/api/v1/attendance', apiLimiter, attendanceRoutes);
 app.use('/api/v1/sessions', apiLimiter, sessionRoutes);
 app.use('/api/v1/recruit-visits', apiLimiter, recruitVisitsRoutes);
 app.use('/api/v1/uploads', apiLimiter, uploadRoutes);
+app.use('/api/v1/personal-records', apiLimiter, personalRecordsRoutes);
+app.use('/api/v1/challenges', apiLimiter, challengeRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
