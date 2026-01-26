@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-07 complete (11 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-07-PLAN.md (Comparison Graph & Probability Matrix)
+**Status:** Plan 14-11 complete (11 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-11-PLAN.md (Advanced Rankings & Matrix Planner Pages)
 
 ## Project Reference
 
@@ -447,6 +447,9 @@ Phase 13 delivered the cross-feature integration layer:
 | 14-07 | vis-network over Cytoscape.js | Simpler API, sufficient for < 50 node graphs, built-in physics simulation adequate for team roster sizes |
 | 14-07 | Diverging color scale for probability matrix | Blue-orange scale (blue=unlikely to win, orange=likely to win, white=50/50) more intuitive than single gradient |
 | 14-07 | Matrix size limit of 15 athletes | Larger matrices unreadable on typical screens, balances information density with UX |
+| 14-11 | Tabbed interface for rankings | Chose tabs over separate pages to provide unified view where coaches can quickly switch between ranking methods |
+| 14-11 | Educational content in MatrixPlanner | Added "How it works" section and benefit cards to explain statistical approach, helping coaches understand Latin Square designs |
+| 14-11 | Header navigation pattern | Placed new feature links alongside "New Session" button for discoverability while maintaining primary action prominence |
 
 ---
-*Last updated: 2026-01-26 — Phase 14 Plan 07 Complete*
+*Last updated: 2026-01-26 — Phase 14 Plan 11 Complete*
