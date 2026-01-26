@@ -80,6 +80,7 @@ model Team {
   sessions            Session[]
   passiveObservations PassiveObservation[]
   recruitVisits       RecruitVisit[]
+  challenges          Challenge[]
 
   @@map("teams")
 }
@@ -1349,4 +1350,62 @@ model AthleteAchievement {
   @@index([athleteId])
   @@index([unlockedAt])
   @@map("athlete_achievements")
+}
+
+// ============================================
+// GAMIFICATION: Team Challenges
+// ============================================
+
+model Challenge {
+  id            String    @id @default(cuid())
+  teamId        String
+  name          String
+  description   String?
+  type          String    // "individual" or "collective"
+  status        String    @default("active") // "active", "completed", "cancelled"
+
+  // Timing
+  startDate     DateTime
+  endDate       DateTime
+
+  // Scoring
+  metric        String    // "meters", "workouts", "attendance", "composite"
+  formula       Json?     // Custom formula config: { type: "weighted", weights: {...} }
+  handicap      Json?     // Optional handicapping: { enabled: true, type: "weight-class", adjustments: {...} }
+
+  // Template info
+  templateId    String?   // NULL = custom challenge
+
+  createdById   String    // User who created
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  team          Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  participants  ChallengeParticipant[]
+
+  @@index([teamId])
+  @@index([status])
+  @@index([endDate])
+  @@map("challenges")
+}
+
+model ChallengeParticipant {
+  id            String   @id @default(cuid())
+  challengeId   String
+  athleteId     String
+
+  score         Decimal  @default(0) @db.Decimal(12, 2)
+  rank          Int?     // Calculated on update
+  contribution  Json?    // For collective: breakdown of individual contribution
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  challenge     Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  athlete       Athlete   @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, athleteId])
+  @@index([challengeId])
+  @@index([score])
+  @@map("challenge_participants")
 }
