@@ -330,10 +330,10 @@ Plans:
 - Note: Advanced matrix seat racing and Bradley-Terry model planned for Phase 14
 
 **Success Criteria:**
-1. ✅ Coach can create a seat race session with date/conditions, add multiple pieces with boats and times, and assign athletes to seats
-2. ✅ Coach can record switches between pieces (which athletes swapped) and system tracks all movements
-3. ✅ System calculates ELO ratings from results and displays confidence intervals (PROVISIONAL/LOW/MEDIUM/HIGH) based on piece count
-4. ✅ Coach can view athlete rankings sorted by ELO with confidence badges
+1. Coach can create a seat race session with date/conditions, add multiple pieces with boats and times, and assign athletes to seats
+2. Coach can record switches between pieces (which athletes swapped) and system tracks all movements
+3. System calculates ELO ratings from results and displays confidence intervals (PROVISIONAL/LOW/MEDIUM/HIGH) based on piece count
+4. Coach can view athlete rankings sorted by ELO with confidence badges
 
 ---
 
@@ -643,6 +643,219 @@ Plans:
 
 ---
 
+## Milestone: v2.1 — Feature Expansion (PLANNED)
+
+Feature toggles, gamification, design overhaul, and lineup improvements.
+
+### Phase 15: Feature Toggles & Recruiting
+
+**Goal:** Progressive unlock system for advanced features and basic recruit visit management.
+
+**Dependencies:** Phase 12 (settings)
+
+**Requirements:** TOGGLE-01, TOGGLE-02, RECRUIT-01 through RECRUIT-03, NOTIFY-01
+
+**Plans:** 10 plans
+
+Plans:
+- [ ] 15-01-PLAN.md — Feature preferences store and TypeScript types
+- [ ] 15-02-PLAN.md — Feature toggle UI in settings (FeaturesSection, FeatureGroupCard)
+- [ ] 15-03-PLAN.md — Navigation/page conditional rendering (FeatureGuard, FeatureDiscoveryHint)
+- [ ] 15-04-PLAN.md — Recruit visit Prisma schema and CRUD API endpoints
+- [ ] 15-05-PLAN.md — TanStack Query hooks and calendar event components
+- [ ] 15-06-PLAN.md — Lexical rich text editor and DOMPurify sanitization
+- [ ] 15-07-PLAN.md — Visit schedule form (PDF upload + rich text)
+- [ ] 15-08-PLAN.md — Host athlete dashboard widget and recruiting page
+- [ ] 15-09-PLAN.md — Sonner toast notifications and notification preferences
+- [ ] 15-10-PLAN.md — Integration verification checkpoint
+
+**Delivers:**
+- Progressive unlock system in team settings
+- Feature groups (Core always on, Advanced opt-in)
+- Feature-gated navigation (disabled features hidden)
+- Recruit visit calendar events with host assignment
+- Visit schedule upload (PDF) or creation (rich text)
+- Host athlete dashboard widget for assigned visits
+- Smart notifications foundation (Sonner toasts, preferences store)
+
+**Success Criteria:**
+1. Coach can toggle advanced features on/off in settings
+2. UI adapts to show only enabled features (navigation hides disabled)
+3. Coach can create recruit visits with host assignment
+4. Host athlete sees assigned visits in dashboard
+5. Visit schedules can be uploaded (PDF) or created inline (rich text)
+
+---
+
+### Phase 16: Gamification & Engagement
+
+**Goal:** Achievement system, PRs, team challenges, and engagement features.
+
+**Dependencies:** Phase 6-7 (athlete data, erg data)
+
+**Requirements:** ACH-01, ACH-02, PR-01, PR-02, CHAL-01, CHAL-02, JOURNEY-01, STREAK-01
+
+**Delivers:**
+- Achievement system with badges and milestones
+- Personal records wall with celebrations
+- Team challenges with leaderboards
+- Season journey visualization
+- Streak tracking
+
+**Success Criteria:**
+1. Athletes earn achievements automatically
+2. New PRs trigger celebratory animations
+3. Coach can create team challenges
+4. Athletes can view season journey timeline
+
+---
+
+### Phase 17: Complete Design Overhaul 🎨
+
+**Goal:** Rebuild design system with "Rowing Instrument" aesthetic.
+
+**Dependencies:** All previous phases (components to update)
+
+**Requirements:** DESIGN-01 through DESIGN-07
+
+**Delivers:**
+- Warm color system (dark and light modes)
+- Typography system with data-forward metrics
+- Component library rebuild with tactile interactions
+- Animation system (spring physics)
+- Theme polish (dark, light, field)
+- Mobile responsive overhaul
+- Landing page redesign
+
+**Success Criteria:**
+1. Color system updated with warm tones
+2. All components have satisfying interactions
+3. Animations consistent with spring physics
+4. Landing page matches app aesthetic
+
+---
+
+### Phase 18: Lineup & Boat Configuration Improvements
+
+**Goal:** Enhanced lineup builder with custom configs, rigging, and equipment tracking.
+
+**Dependencies:** Phase 8 (lineup builder), Phase 4 (fleet)
+
+**Requirements:** BOAT-01 through BOAT-04, LINEUP-01 through LINEUP-05
+
+**Delivers:**
+- Custom boat configurations
+- Rigging profiles per boat/athlete
+- Equipment assignment and tracking
+- Lineup comparison view
+- Historical lineup analysis
+- Lineup templates
+- Enhanced PDF export
+
+**Success Criteria:**
+1. Coach can create custom boat configurations
+2. Rigging settings stored per boat
+3. Equipment conflicts are warned
+4. Lineups can be compared side-by-side
+
+---
+
+## Milestone: v2.2 — Advanced Analytics (PLANNED)
+
+Telemetry, AI optimization, predictive modeling, and mobile coxswain experience.
+
+### Phase 19: Telemetry & Combined Scoring
+
+**Goal:** Import telemetry data from rowing sensors and create combined rankings.
+
+**Dependencies:** Phase 14 (rankings foundation)
+
+**Requirements:** TEL-01 through TEL-08
+
+**Delivers:**
+- Empower, Peach, NK SpeedCoach import
+- Force curve visualization
+- Stroke timing and synchronization analysis
+- Combined scoring engine
+- Multi-metric rankings
+
+**Success Criteria:**
+1. Coach can import telemetry files from major vendors
+2. Force curves and stroke timing visualizations work
+3. Combined scoring produces multi-source rankings
+
+---
+
+### Phase 20: AI Lineup Optimizer (v2)
+
+**Goal:** AI-powered lineup recommendations with explanations.
+
+**Dependencies:** Phase 8, Phase 14, Phase 19
+
+**Requirements:** AI-01 through AI-08
+
+**Delivers:**
+- Enhanced multi-objective optimization
+- Constraint configuration
+- Scenario comparison view
+- Explanation system
+- Coach override learning
+- Optional LLM integration
+
+**Success Criteria:**
+1. AI generates recommendations with clear explanations
+2. Constraints respected and violations flagged
+3. Coach can compare scenarios side-by-side
+
+---
+
+### Phase 21: Predictive Analytics
+
+**Goal:** Data-driven predictions for performance, 2k potential, and injury risk.
+
+**Dependencies:** Phase 7, Phase 10, Phase 14, Phase 19
+
+**Requirements:** PRED-01 through PRED-08
+
+**Delivers:**
+- Predictive 2k calculator
+- Race outcome predictions
+- Training response modeling
+- Injury risk indicators
+- Progress projections
+- Prediction dashboard
+
+**Success Criteria:**
+1. 2k predictions within 3 seconds 80% of time
+2. Injury risk indicators >60% accuracy
+3. All predictions include uncertainty communication
+
+---
+
+### Phase 22: Coxswain Mobile View
+
+**Goal:** Dedicated mobile interface for on-water use with offline support.
+
+**Dependencies:** Phase 13 (sessions), PWA infrastructure
+
+**Requirements:** COX-01 through COX-08
+
+**Delivers:**
+- Mobile-optimized layout (56px touch targets)
+- Lineup reference
+- Piece timer with audio cues
+- Stroke rate counter
+- Full offline mode
+- Race day mode
+- Coach communication
+
+**Success Criteria:**
+1. Works entirely offline
+2. Usable in direct sunlight
+3. Times sync when connectivity restored
+
+---
+
 ## Cross-Cutting Requirements
 
 The following requirements apply across all v2.0 phases:
@@ -668,7 +881,7 @@ The following requirements apply across all v2.0 phases:
 
 **v1.0 Total:** 52 requirements across 5 phases
 
-### v2.0 Milestone (Active)
+### v2.0 Milestone (Complete)
 
 | Phase | Name | Requirements | Plans | Status |
 |-------|------|--------------|-------|--------|
@@ -679,16 +892,38 @@ The following requirements apply across all v2.0 phases:
 | 10 | Training Plans & NCAA | 15 | 11 | Complete |
 | 11 | Racing & Regattas | 15 | 10 | Complete |
 | 12 | Settings & Polish | 19 | 17 | Complete |
-| 13 | Cross-Feature Integrations | 8 | 12 | Active |
-| 14 | Advanced Seat Racing Analytics ⚡ | 12 | 14 | Planned |
+| 13 | Cross-Feature Integrations | 8 | 12 | Complete |
+| 14 | Advanced Seat Racing Analytics | 12 | 14 | Complete |
 
 **v2.0 Total:** 120 requirements across 9 phases
+
+### v2.1 Milestone (In Progress)
+
+| Phase | Name | Requirements | Plans | Status |
+|-------|------|--------------|-------|--------|
+| 15 | Feature Toggles & Recruiting | 6 | 10 | Planned |
+| 16 | Gamification & Engagement | 8 | TBD | Planned |
+| 17 | Complete Design Overhaul | 7 | TBD | Planned |
+| 18 | Lineup & Boat Improvements | 9 | TBD | Planned |
+
+**v2.1 Total:** 30 requirements across 4 phases
+
+### v2.2 Milestone (Planned)
+
+| Phase | Name | Requirements | Plans | Status |
+|-------|------|--------------|-------|--------|
+| 19 | Telemetry & Combined Scoring | 8 | TBD | Planned |
+| 20 | AI Lineup Optimizer (v2) | 8 | TBD | Planned |
+| 21 | Predictive Analytics | 8 | TBD | Planned |
+| 22 | Coxswain Mobile View | 8 | TBD | Planned |
+
+**v2.2 Total:** 32 requirements across 4 phases
 
 ---
 
 ## Research Flags
 
-Phases requiring deeper research during planning (from SUMMARY.md):
+Phases requiring deeper research during planning:
 
 | Phase | Topic | Reason |
 |-------|-------|--------|
@@ -696,14 +931,22 @@ Phases requiring deeper research during planning (from SUMMARY.md):
 | 9 | ELO calculation | Optimal K-factor for rowing, confidence intervals, edge cases |
 | 10 | Calendar integration | react-big-calendar virtualization, mobile-first patterns |
 | 14 | **Bradley-Terry & Matrix Racing** | **DEEP RESEARCH COMPLETE** — See 14-RESEARCH.md |
+| 15 | **Feature toggles & Recruiting** | **RESEARCH COMPLETE** — See 15-RESEARCH.md |
+| 16 | **Gamification patterns** | Achievement system design, streak mechanics, engagement psychology |
+| 17 | **Design system rebuild** | Framer Motion patterns, spring physics, satisfying interactions |
+| 19 | **Telemetry file formats** | Empower, Peach, NK have different file structures and metrics |
+| 20 | **AI/LLM integration** | GPT/Claude API patterns, prompt engineering for lineup optimization |
+| 21 | **Predictive modeling** | ML model selection, training data requirements, accuracy metrics |
+| 22 | **PWA offline patterns** | Service worker caching, IndexedDB, background sync strategies |
 
 Phases with standard patterns (skip research):
 - Phase 6: Standard CRUD with virtualization
 - Phase 7: Chart library already used, CSV patterns established
 - Phase 11: Hierarchical CRUD, established patterns
 - Phase 12: Settings migration, no new patterns
+- Phase 18: Lineup builder extensions, established patterns
 
 ---
 
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-26 — Phase 14 revised (14 plans, 5 waves) — added passive ELO tracking, boat speed bias correction*
+*Last updated: 2026-01-26 — Phase 15 planning complete (10 plans in 5 waves)*
