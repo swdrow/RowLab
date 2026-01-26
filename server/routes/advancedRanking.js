@@ -5,6 +5,14 @@ import { fitBradleyTerryModel, computeProbabilityMatrix } from '../services/brad
 import { generateSwapSchedule, validateSchedule } from '../services/matrixPlannerService.js';
 import { calculateCompositeRankings, getWeightProfile, DEFAULT_WEIGHT_PROFILES } from '../services/compositeRankingService.js';
 import { getTeamRankingsBySide, getAthleteSideRatings } from '../services/eloRatingService.js';
+import {
+  recordPassiveObservation,
+  recordSplitObservation,
+  applyPendingObservations,
+  processSessionForPassiveTracking,
+  getAthletePassiveHistory,
+  getTeamPassiveStats
+} from '../services/passiveEloService.js';
 import logger from '../utils/logger.js';
 
 const router = express.Router();
@@ -476,6 +484,239 @@ router.get('/comparison-graph', async (req, res) => {
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: error.message }
+    });
+  }
+});
+
+// ============================================
+// PASSIVE ELO TRACKING
+// ============================================
+
+/**
+ * POST /api/v1/advanced-ranking/passive/observation
+ * Record a passive observation from practice
+ * Body: { boat1Athletes, boat2Athletes, splitDifferenceSeconds, sessionId?, weight? }
+ */
+router.post('/passive/observation', async (req, res) => {
+  try {
+    const teamId = req.body.teamId || req.user.activeTeamId;
+    const {
+      boat1Athletes,
+      boat2Athletes,
+      splitDifferenceSeconds,
+      sessionId,
+      pieceId,
+      weight,
+      source
+    } = req.body;
+
+    if (!teamId) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Team ID required' }
+      });
+    }
+
+    if (!boat1Athletes || !boat2Athletes || splitDifferenceSeconds === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'boat1Athletes, boat2Athletes, and splitDifferenceSeconds are required' }
+      });
+    }
+
+    const observation = await recordPassiveObservation({
+      teamId,
+      boat1Athletes,
+      boat2Athletes,
+      splitDifferenceSeconds,
+      sessionId,
+      pieceId,
+      weight,
+      source
+    });
+
+    if (!observation) {
+      return res.json({
+        success: true,
+        data: null,
+        message: 'Observation ignored (split difference below threshold)'
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      data: observation
+    });
+  } catch (error) {
+    console.error('Record passive observation error:', error);
+    res.status(400).json({
+      success: false,
+      error: { message: error.message }
+    });
+  }
+});
+
+/**
+ * POST /api/v1/advanced-ranking/passive/split-observation
+ * Record a simplified split observation (boat names + split times)
+ * Body: { boat1Name, boat1Athletes, boat1SplitSeconds, boat2Name, boat2Athletes, boat2SplitSeconds }
+ */
+router.post('/passive/split-observation', async (req, res) => {
+  try {
+    const teamId = req.body.teamId || req.user.activeTeamId;
+    const {
+      boat1Athletes,
+      boat2Athletes,
+      boat1SplitSeconds,
+      boat2SplitSeconds,
+      sessionId
+    } = req.body;
+
+    if (!teamId) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Team ID required' }
+      });
+    }
+
+    if (!boat1Athletes || !boat2Athletes || boat1SplitSeconds === undefined || boat2SplitSeconds === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'boat1Athletes, boat2Athletes, boat1SplitSeconds, and boat2SplitSeconds are required' }
+      });
+    }
+
+    const observation = await recordSplitObservation({
+      teamId,
+      boat1Athletes,
+      boat2Athletes,
+      boat1SplitSeconds,
+      boat2SplitSeconds,
+      sessionId
+    });
+
+    res.status(201).json({
+      success: true,
+      data: observation
+    });
+  } catch (error) {
+    console.error('Record split observation error:', error);
+    res.status(400).json({
+      success: false,
+      error: { message: error.message }
+    });
+  }
+});
+
+/**
+ * POST /api/v1/advanced-ranking/passive/apply
+ * Apply pending passive observations to ELO ratings
+ * Body: { limit?, dryRun? }
+ */
+router.post('/passive/apply', async (req, res) => {
+  try {
+    const teamId = req.body.teamId || req.user.activeTeamId;
+    const { limit, dryRun } = req.body;
+
+    if (!teamId) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Team ID required' }
+      });
+    }
+
+    const result = await applyPendingObservations(teamId, { limit, dryRun });
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Apply passive observations error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: error.message }
+    });
+  }
+});
+
+/**
+ * POST /api/v1/advanced-ranking/passive/process-session/:sessionId
+ * Auto-detect and record observations from a completed session
+ * Body: { autoApply? }
+ */
+router.post('/passive/process-session/:sessionId', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const { autoApply } = req.body;
+
+    const result = await processSessionForPassiveTracking(sessionId, { autoApply });
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Process session for passive tracking error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: error.message }
+    });
+  }
+});
+
+/**
+ * GET /api/v1/advanced-ranking/passive/stats
+ * Get passive tracking statistics for the team
+ */
+router.get('/passive/stats', async (req, res) => {
+  try {
+    const teamId = req.query.teamId || req.user.activeTeamId;
+
+    if (!teamId) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Team ID required' }
+      });
+    }
+
+    const stats = await getTeamPassiveStats(teamId);
+
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    console.error('Get passive stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: error.message }
+    });
+  }
+});
+
+/**
+ * GET /api/v1/advanced-ranking/passive/athlete/:athleteId/history
+ * Get passive observation history for a specific athlete
+ */
+router.get('/passive/athlete/:athleteId/history', async (req, res) => {
+  try {
+    const { athleteId } = req.params;
+    const { limit } = req.query;
+
+    const history = await getAthletePassiveHistory(athleteId, {
+      limit: limit ? parseInt(limit, 10) : 50
+    });
+
+    res.json({
+      success: true,
+      data: { history }
+    });
+  } catch (error) {
+    console.error('Get athlete passive history error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: error.message }
     });
   }
 });
