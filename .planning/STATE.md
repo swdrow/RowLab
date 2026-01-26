@@ -2,10 +2,10 @@
 
 ## Current Status
 
-**Milestone:** v2.0 — Core Migration
+**Milestone:** v2.1 — Feature Expansion
 **Phase:** 15 (Feature Toggles & Recruiting) — In Progress
-**Status:** Plan 15-01 complete
-**Last activity:** 2026-01-26 — Completed 15-01-PLAN.md (Feature Preference Store)
+**Status:** Plan 15-09 complete
+**Last activity:** 2026-01-26 — Completed 15-09-PLAN.md (Notification Preferences Foundation)
 
 ## Project Reference
 
@@ -48,7 +48,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 15 | Feature Toggles & Recruiting | In Progress | 1/? |
+| 15 | Feature Toggles & Recruiting | In Progress | 9/? |
 | 16 | Gamification & Engagement | Planned | TBD |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
 | 18 | Lineup & Boat Improvements | Planned | TBD |
@@ -283,8 +283,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-26T20:15:15Z
-**Stopped at:** Completed 15-01-PLAN.md (Feature Preference Store)
+**Last session:** 2026-01-26T20:17:17Z
+**Stopped at:** Completed 15-04-PLAN.md (Recruit Visit Backend)
 **Resume file:** None
 
 ## Known Limitations
@@ -500,6 +500,10 @@ Phase 13 delivered the cross-feature integration layer:
 | 15-01 | Zustand persist middleware with localStorage | Team-level feature preferences persist across sessions without server state |
 | 15-01 | Store actions no-op for core features | Safety mechanism prevents accidental disabling of essential features |
 | 15-01 | Multiple hook abstractions (full/simple/group) | useFeaturePreference (full), useFeature (boolean), useFeatureGroup (bulk) cover different use cases |
+| 15-04 | Share tokens use URL-safe base64 encoding | crypto.randomBytes(24) with base64url prevents URL encoding issues in share links |
+| 15-04 | Public shared endpoint returns limited fields | Protects privacy by excluding internal notes and team details from public view |
+| 15-04 | Host athlete SetNull cascade | Preserves recruit visits when host athlete deleted, prevents data loss |
+| 15-04 | Status as string enum (not Prisma enum) | Follows Phase 6 attendance pattern, flexible for future status additions without migration |
 
 ---
-*Last updated: 2026-01-26 — Phase 15 Plan 01 Complete*
+*Last updated: 2026-01-26 — Phase 15 Plan 04 Complete*
