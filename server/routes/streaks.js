@@ -1,12 +1,23 @@
 import { Router } from 'express';
-import { param } from 'express-validator';
+import { param, validationResult } from 'express-validator';
 import { authenticateToken, requireTeam } from '../middleware/auth.js';
-import { validateRequest } from '../middleware/validation.js';
 import * as streakService from '../services/streakService.js';
 import { prisma } from '../db/connection.js';
 import logger from '../utils/logger.js';
 
 const router = Router();
+
+// Validation middleware for express-validator
+const validateRequest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', details: errors.array() },
+    });
+  }
+  next();
+};
 
 router.use(authenticateToken);
 router.use(requireTeam);
