@@ -1310,3 +1310,43 @@ model RecruitVisit {
   @@index([shareToken])
   @@map("recruit_visits")
 }
+
+// ============================================
+// GAMIFICATION: Achievements and Progress
+// ============================================
+
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  category    String   // "Erg", "Attendance", "Racing"
+  type        String   // "first-time", "volume", "performance", "consistency"
+  rarity      String   // "Common", "Rare", "Epic", "Legendary"
+  criteria    Json     // { "type": "volume", "target": 500000, "metric": "meters" }
+  icon        String?  // Icon name or URL
+  createdAt   DateTime @default(now())
+
+  athletes    AthleteAchievement[]
+
+  @@unique([name, category])
+  @@map("achievements")
+}
+
+model AthleteAchievement {
+  athleteId     String
+  achievementId String
+
+  progress      Int       @default(0)    // Current progress (e.g., 23 out of 50)
+  unlockedAt    DateTime?               // NULL = not yet unlocked
+  isPinned      Boolean   @default(false) // Athlete's pinned badges (max 3-5)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  athlete     Athlete     @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@id([athleteId, achievementId])
+  @@index([athleteId])
+  @@index([unlockedAt])
+  @@map("athlete_achievements")
+}
