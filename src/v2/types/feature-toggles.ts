@@ -48,7 +48,8 @@ export type FeatureId =
   | 'tss-tracking'
   | 'ncaa-compliance'
   | 'racing-regattas'
-  | 'recruiting';
+  | 'recruiting'
+  | 'gamification';
 
 /**
  * Configuration for a single feature
@@ -216,6 +217,14 @@ export const ADVANCED_FEATURES: FeatureConfig[] = [
     description: 'Recruiting pipeline and prospect management',
     group: 'advanced',
     icon: 'UserPlus',
+    defaultEnabled: false,
+  },
+  {
+    id: 'gamification',
+    name: 'Gamification',
+    description: 'Achievements, personal records, team challenges, and engagement features',
+    group: 'advanced',
+    icon: 'Trophy',
     defaultEnabled: false,
   },
 ];
