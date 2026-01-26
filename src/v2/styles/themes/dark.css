@@ -1,0 +1,94 @@
+/**
+ * Dark Theme
+ *
+ * The default theme for RowLab V2.
+ * Optimized for low-light conditions and extended screen time.
+ *
+ * Base palette: Neutral grays from --palette-neutral-*
+ * Interactive: Blue accent (#3b82f6)
+ */
+
+.v2[data-theme="dark"] {
+  /* ========================================
+     BACKGROUND TOKENS
+     ======================================== */
+  --color-bg-base: var(--palette-neutral-950);
+  --color-bg-surface: var(--palette-neutral-900);
+  --color-bg-surface-elevated: var(--palette-neutral-800);
+  --color-bg-overlay: rgba(10, 10, 10, 0.8);
+  --color-bg-hover: var(--palette-neutral-800);
+  --color-bg-active: var(--palette-neutral-700);
+
+  /* ========================================
+     TEXT TOKENS
+     ======================================== */
+  --color-text-primary: var(--palette-neutral-50);
+  --color-text-secondary: var(--palette-neutral-400);
+  --color-text-tertiary: var(--palette-neutral-500);
+  --color-text-muted: var(--palette-neutral-600);
+  --color-text-inverse: var(--palette-neutral-950);
+  --color-text-brand: var(--palette-brand-blue);
+
+  /* ========================================
+     BORDER TOKENS
+     ======================================== */
+  --color-border-default: var(--palette-neutral-700);
+  --color-border-subtle: var(--palette-neutral-800);
+  --color-border-strong: var(--palette-neutral-600);
+  --color-border-brand: var(--palette-brand-blue);
+
+  /* ========================================
+     INTERACTIVE TOKENS
+     ======================================== */
+  --color-interactive-primary: var(--palette-brand-blue);
+  --color-interactive-hover: #2563eb;
+  --color-interactive-active: #1d4ed8;
+  --color-interactive-disabled: var(--palette-neutral-700);
+
+  /* ========================================
+     STATUS TOKENS
+     ======================================== */
+  --color-status-success: var(--palette-status-success);
+  --color-status-warning: var(--palette-status-warning);
+  --color-status-error: var(--palette-status-error);
+  --color-status-info: var(--palette-status-info);
+
+  /* ========================================
+     COMPONENT TOKENS
+     ======================================== */
+  /* Card */
+  --color-card-bg: var(--color-bg-surface-elevated);
+  --color-card-border: var(--color-border-subtle);
+  --color-card-hover: var(--color-bg-active);
+
+  /* Button - Primary */
+  --color-button-primary-bg: var(--color-interactive-primary);
+  --color-button-primary-hover: var(--color-interactive-hover);
+  --color-button-primary-text: var(--palette-neutral-50);
+
+  /* Button - Secondary */
+  --color-button-secondary-bg: var(--palette-neutral-800);
+  --color-button-secondary-hover: var(--palette-neutral-700);
+  --color-button-secondary-text: var(--palette-neutral-200);
+
+  /* Input */
+  --color-input-bg: var(--palette-neutral-900);
+  --color-input-border: var(--color-border-default);
+  --color-input-focus: var(--color-border-brand);
+  --color-input-text: var(--color-text-primary);
+  --color-input-placeholder: var(--color-text-tertiary);
+
+  /* ========================================
+     ACCESSIBILITY TOKENS
+     ======================================== */
+  --color-focus-ring: rgba(59, 130, 246, 0.5);
+  --color-focus-ring-error: rgba(239, 68, 68, 0.5);
+
+  /* ========================================
+     SHADOW TOKENS
+     ======================================== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+}

@@ -11,32 +11,52 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log('🌱 Starting database seed...');
 
-  // Check if admin user exists
-  const existingAdmin = await prisma.user.findFirst({
-    where: { isAdmin: true }
-  });
-
-  if (existingAdmin) {
-    console.log('✅ Admin user already exists:', existingAdmin.email);
-    return;
-  }
-
-  // Create admin user - password MUST be set via environment variable
+  // Admin password MUST be set via environment variable
   const adminPassword = process.env.ADMIN_PASSWORD;
   if (!adminPassword) {
     throw new Error('ADMIN_PASSWORD environment variable is required for seeding. Do not use default passwords.');
   }
   const hashedPassword = await bcrypt.hash(adminPassword, 12);
 
-  const user = await prisma.user.create({
-    data: {
-      email: 'swd@rowlab.net',
-      username: 'swd',
-      name: 'Admin',
-      passwordHash: hashedPassword,
-      isAdmin: true
-    }
+  // Upsert admin user - always ensure password is correct
+  const existingAdmin = await prisma.user.findFirst({
+    where: { OR: [{ username: 'swd' }, { email: 'swd@rowlab.net' }, { isAdmin: true }] }
   });
+
+  let user;
+  if (existingAdmin) {
+    // Update existing admin to ensure password is correct
+    user = await prisma.user.update({
+      where: { id: existingAdmin.id },
+      data: {
+        email: 'swd@rowlab.net',
+        username: 'swd',
+        passwordHash: hashedPassword,
+        isAdmin: true
+      }
+    });
+    console.log('✅ Admin user updated:', user.email);
+
+    // Check if user has a team, if so we're done
+    const membership = await prisma.teamMember.findFirst({
+      where: { userId: user.id }
+    });
+    if (membership) {
+      console.log('✅ Admin already has team membership');
+      return;
+    }
+  } else {
+    user = await prisma.user.create({
+      data: {
+        email: 'swd@rowlab.net',
+        username: 'swd',
+        name: 'Admin',
+        passwordHash: hashedPassword,
+        isAdmin: true
+      }
+    });
+    console.log('✅ Admin user created:', user.email);
+  }
 
   // Create a team for the admin
   const team = await prisma.team.create({

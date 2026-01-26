@@ -1,5 +1,6 @@
-/**
 import logger from '../utils/logger.js';
+
+/**
  * Margin Calculation Service
  *
  * Implements the margin swing formula for seat racing analysis:

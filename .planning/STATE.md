@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.1 — Feature Expansion
-**Phase:** 15 (Feature Toggles & Recruiting) — In Progress
-**Status:** Plan 15-08 complete
-**Last activity:** 2026-01-26 — Completed 15-08-PLAN.md (Host Dashboard & Recruiting Page)
+**Phase:** 15 (Feature Toggles & Recruiting) — Complete ✅
+**Status:** All 10 plans complete, human verified
+**Last activity:** 2026-01-26 — Phase 15 complete
 
 ## Project Reference
 
@@ -44,16 +44,16 @@ v1.0 Progress: 100% Complete
 
 v2.0 Progress: ██████████████ (9 phases complete) ✅
 
-### v2.1 Milestone (Planned)
+### v2.1 Milestone (Active)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 15 | Feature Toggles & Recruiting | In Progress | 10/? |
+| 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Planned | TBD |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
 | 18 | Lineup & Boat Improvements | Planned | TBD |
 
-v2.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
+v2.1 Progress: ██░░░░░░░░░░░░ (1 phase complete)
 
 ### v2.2 Milestone (Planned)
 
