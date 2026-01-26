@@ -527,6 +527,22 @@ Plans:
 
 **Requirements:** INT-01 through INT-08 (to be defined during planning)
 
+**Plans:** 12 plans
+
+Plans:
+- [ ] 13-01-PLAN.md — Dependencies and Prisma Session/Piece models
+- [ ] 13-02-PLAN.md — TypeScript types and TanStack Query hooks for sessions
+- [ ] 13-03-PLAN.md — Sessions API backend (CRUD, live-data, join)
+- [ ] 13-04-PLAN.md — Global search with cmdk CommandPalette
+- [ ] 13-05-PLAN.md — Live Erg dashboard components with polling
+- [ ] 13-06-PLAN.md — Live erg data API endpoint
+- [ ] 13-07-PLAN.md — Automatic attendance recording
+- [ ] 13-08-PLAN.md — Activity feed with infinite scroll
+- [ ] 13-09-PLAN.md — Cross-feature navigation (HoverCard, Breadcrumbs, Header)
+- [ ] 13-10-PLAN.md — Session creation UI (form, pieces, recurrence)
+- [ ] 13-11-PLAN.md — Session pages and route registration
+- [ ] 13-12-PLAN.md — Dashboard widgets with react-grid-layout
+
 **Planned Features:**
 
 1. **Training Data Model Restructure**
@@ -700,7 +716,7 @@ The following requirements apply across all v2.0 phases:
 | 10 | Training Plans & NCAA | 15 | 11 | Complete |
 | 11 | Racing & Regattas | 15 | 10 | Complete |
 | 12 | Settings & Polish | 19 | 17 | Complete |
-| 13 | Cross-Feature Integrations | 8 | — | Pending |
+| 13 | Cross-Feature Integrations | 8 | 12 | Active |
 | 14 | Advanced Seat Racing Analytics ⚡ | 12 | — | Research |
 
 **v2.0 Total:** 108 requirements across 9 phases
@@ -759,4 +775,4 @@ Phase 13 is flagged for extensive pre-implementation research:
 ---
 
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-25 — Phase 12 complete (17 plans, 19 requirements)*
+*Last updated: 2026-01-26 — Phase 13 planned (12 plans, 8 requirements)*
