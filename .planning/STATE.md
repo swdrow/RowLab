@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-08 complete (6 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-08-PLAN.md (Matrix Session Planner UI)
+**Status:** Plan 14-07 complete (11 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-07-PLAN.md (Comparison Graph & Probability Matrix)
 
 ## Project Reference
 
@@ -40,9 +40,9 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | In Progress | 6/14 |
+| 14 | Advanced Seat Racing Analytics | In Progress | 11/14 |
 
-v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 6/14 plans)
+v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 11/14 plans)
 
 ## Quick Context
 
@@ -262,7 +262,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed 14-10-PLAN.md (Bradley-Terry and Side Rankings Components)
+**Stopped at:** Completed 14-07-PLAN.md (Comparison Graph & Probability Matrix)
 **Resume file:** None
 
 ## Known Limitations
@@ -444,6 +444,9 @@ Phase 13 delivered the cross-feature integration layer:
 | 14-09 | Proportional weight redistribution | When adjusting one slider, remaining weight distributed proportionally to other factors maintaining intuitive behavior |
 | 14-09 | Two-tier breakdown visualization | Compact stacked bar for scanning, expanded view with progress bars for deep inspection |
 | 14-09 | Abbreviated confidence indicators | Single letter (H/M/L) in table for space efficiency, full labels in expanded view for clarity |
+| 14-07 | vis-network over Cytoscape.js | Simpler API, sufficient for < 50 node graphs, built-in physics simulation adequate for team roster sizes |
+| 14-07 | Diverging color scale for probability matrix | Blue-orange scale (blue=unlikely to win, orange=likely to win, white=50/50) more intuitive than single gradient |
+| 14-07 | Matrix size limit of 15 athletes | Larger matrices unreadable on typical screens, balances information density with UX |
 
 ---
-*Last updated: 2026-01-26 — Phase 14 Plan 09 Complete*
+*Last updated: 2026-01-26 — Phase 14 Plan 07 Complete*
