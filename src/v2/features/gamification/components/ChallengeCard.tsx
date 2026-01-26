@@ -108,7 +108,7 @@ export function ChallengeCard({ challenge, showLeaderboard = false }: ChallengeC
         </div>
 
         <Link
-          to={`/beta/challenges/${id}`}
+          to={`/app/challenges/${id}`}
           className="px-3 py-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
         >
           View

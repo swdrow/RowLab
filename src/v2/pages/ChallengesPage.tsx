@@ -19,7 +19,7 @@ function ChallengeDetail({ challengeId }: { challengeId: string }) {
     return (
       <div className="text-center py-12">
         <p className="text-txt-secondary">Challenge not found</p>
-        <Link to="/beta/challenges" className="text-primary hover:underline mt-2 inline-block">
+        <Link to="/app/challenges" className="text-primary hover:underline mt-2 inline-block">
           Back to challenges
         </Link>
       </div>
@@ -32,7 +32,7 @@ function ChallengeDetail({ challengeId }: { challengeId: string }) {
     <div className="space-y-6">
       {/* Back button */}
       <Link
-        to="/beta/challenges"
+        to="/app/challenges"
         className="flex items-center gap-2 text-txt-secondary hover:text-txt-primary transition-colors"
       >
         <ArrowLeft size={18} />
