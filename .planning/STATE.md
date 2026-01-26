@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-04 complete (4 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-04-PLAN.md (Composite Ranking & Side-Specific ELO)
+**Status:** Plan 14-03 complete (5 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-03-PLAN.md (Matrix Session Planner)
 
 ## Project Reference
 
@@ -40,9 +40,9 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | In Progress | 4/14 |
+| 14 | Advanced Seat Racing Analytics | In Progress | 5/14 |
 
-v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 4/14 plans)
+v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 5/14 plans)
 
 ## Quick Context
 
@@ -406,3 +406,15 @@ Phase 13 delivered the cross-feature integration layer:
 
 ---
 *Last updated: 2026-01-26 — Phase 13 Plan 05 Complete*
+
+### v2.0 Decisions (Phase 14)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 14-03 | Latin Square rotation for assignment pattern | Formula `(boatIdx * boatSize + seatIdx + pieceNum) % n` ensures systematic rotation through athlete pool for even distribution |
+| 14-03 | Comparison tracking via sorted athlete ID pairs | Key format "a-b" enables efficient duplicate detection and count tracking for variance calculation |
+| 14-03 | Balance score formula: 1 / (1 + variance) | Normalizes variance to 0-1 range for consistent scoring, lower variance = higher balance |
+| 14-03 | Named export for BOAT_SIZES constant | Enables direct import in test files while maintaining backward compatibility with default export |
+
+---
+*Last updated: 2026-01-26 — Phase 14 Plan 03 Complete*
