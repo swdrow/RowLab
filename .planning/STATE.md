@@ -5,7 +5,7 @@
 **Milestone:** v2.0 — Core Migration
 **Phase:** 13 (Cross-Feature Integrations) — In Progress
 **Status:** Executing Phase 13 plans
-**Last activity:** 2026-01-26 — Completed 13-04-PLAN.md (Global Search Command Palette)
+**Last activity:** 2026-01-26 — Completed 13-06-PLAN.md (Live Erg Data API Endpoint)
 
 ## Project Reference
 
