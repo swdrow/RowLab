@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeft } from '@phosphor-icons/react';
 import { MatrixPlanner } from '../components/seat-racing';
 import type { SwapSchedule } from '../types/advancedRanking';
 
@@ -25,7 +25,7 @@ export function MatrixPlannerPage() {
           onClick={() => navigate(-1)}
           className="p-2 text-txt-secondary hover:text-txt-primary rounded-lg hover:bg-surface-hover"
         >
-          <ArrowLeftIcon className="w-5 h-5" />
+          <ArrowLeft size={20} />
         </button>
         <div>
           <h1 className="text-2xl font-bold text-txt-primary">Matrix Session Planner</h1>

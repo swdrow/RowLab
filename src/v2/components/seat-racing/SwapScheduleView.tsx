@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tab } from '@headlessui/react';
-import { TableCellsIcon, ListBulletIcon } from '@heroicons/react/24/outline';
+import { Table, List } from '@phosphor-icons/react';
 import type { SwapSchedule, SwapPiece, SwapBoatAssignment, Side } from '../../types/advancedRanking';
 
 interface SwapScheduleViewProps {
@@ -64,7 +64,7 @@ export function SwapScheduleView({ schedule, onEdit }: SwapScheduleViewProps) {
               : 'text-txt-secondary hover:text-txt-primary'
             }
           `}>
-            <TableCellsIcon className="w-4 h-4" />
+            <Table size={16} />
             Grid View
           </Tab>
           <Tab className={({ selected }) => `
@@ -74,7 +74,7 @@ export function SwapScheduleView({ schedule, onEdit }: SwapScheduleViewProps) {
               : 'text-txt-secondary hover:text-txt-primary'
             }
           `}>
-            <ListBulletIcon className="w-4 h-4" />
+            <List size={16} />
             Timeline View
           </Tab>
         </Tab.List>

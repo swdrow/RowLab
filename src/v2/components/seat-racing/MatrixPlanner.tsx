@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { XMarkIcon, UserGroupIcon, PlayIcon } from '@heroicons/react/24/outline';
+import { X, Users, Play } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAthletes } from '../../hooks/useAthletes';
 import { useGenerateSchedule } from '../../hooks/useMatrixPlanner';
@@ -110,7 +110,7 @@ export function MatrixPlanner({ onScheduleGenerated, onClose }: MatrixPlannerPro
             onClick={onClose}
             className="p-2 text-txt-secondary hover:text-txt-primary rounded-lg hover:bg-surface-hover"
           >
-            <XMarkIcon className="w-5 h-5" />
+            <X size={20} />
           </button>
         )}
       </div>
@@ -262,7 +262,7 @@ export function MatrixPlanner({ onScheduleGenerated, onClose }: MatrixPlannerPro
         ) : (
           <>
             <div className="text-sm text-txt-secondary">
-              <UserGroupIcon className="w-4 h-4 inline mr-1" />
+              <Users size={16} className="inline mr-1" />
               {selectedAthletes.length} selected
             </div>
             <button
@@ -270,7 +270,7 @@ export function MatrixPlanner({ onScheduleGenerated, onClose }: MatrixPlannerPro
               disabled={!hasEnoughAthletes || isGenerating}
               className="flex items-center gap-2 px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <PlayIcon className="w-4 h-4" />
+              <Play size={16} />
               {isGenerating ? 'Generating...' : 'Generate Schedule'}
             </button>
           </>

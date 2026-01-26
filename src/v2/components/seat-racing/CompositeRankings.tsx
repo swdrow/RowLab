@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { CaretRight, CaretDown } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCompositeRankings } from '../../hooks/useCompositeRankings';
 import { WeightProfileSelector } from './WeightProfileSelector';
@@ -169,9 +169,9 @@ function RankingRow({ ranking, isExpanded, onToggle, onClick }: RankingRowProps)
         {/* Expand icon */}
         <div className="col-span-1 flex justify-end">
           {isExpanded ? (
-            <ChevronDownIcon className="w-5 h-5 text-txt-secondary" />
+            <CaretDown size={20} className="text-txt-secondary" />
           ) : (
-            <ChevronRightIcon className="w-5 h-5 text-txt-secondary" />
+            <CaretRight size={20} className="text-txt-secondary" />
           )}
         </div>
       </div>

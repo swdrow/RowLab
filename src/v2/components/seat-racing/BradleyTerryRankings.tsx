@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { Info } from '@phosphor-icons/react';
 import { useBradleyTerryRankings } from '../../hooks/useAdvancedRankings';
 import type { BradleyTerryStrength } from '../../types/advancedRanking';
 
@@ -75,7 +75,7 @@ export function BradleyTerryRankings({
           onClick={() => setShowDetails(!showDetails)}
           className="flex items-center gap-1 text-sm text-accent-primary hover:underline"
         >
-          <InformationCircleIcon className="w-4 h-4" />
+          <Info size={16} />
           {showDetails ? 'Hide methodology' : 'Show methodology'}
         </button>
       </div>

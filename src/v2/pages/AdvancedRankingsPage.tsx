@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ChartBarIcon,
-  ViewColumnsIcon,
-  UserGroupIcon,
-  ShareIcon,
-  CalendarIcon
-} from '@heroicons/react/24/outline';
+  ChartBar,
+  Columns,
+  Users,
+  ShareNetwork,
+  Calendar
+} from '@phosphor-icons/react';
 import {
   BradleyTerryRankings,
   CompositeRankings,
@@ -17,11 +17,11 @@ import {
 } from '../components/seat-racing';
 
 const TABS = [
-  { id: 'composite', label: 'Composite', icon: ChartBarIcon },
-  { id: 'bradley-terry', label: 'Bradley-Terry', icon: ViewColumnsIcon },
-  { id: 'by-side', label: 'By Side', icon: UserGroupIcon },
-  { id: 'comparison-graph', label: 'Comparisons', icon: ShareIcon },
-  { id: 'probability', label: 'Win Probability', icon: CalendarIcon },
+  { id: 'composite', label: 'Composite', icon: ChartBar },
+  { id: 'bradley-terry', label: 'Bradley-Terry', icon: Columns },
+  { id: 'by-side', label: 'By Side', icon: Users },
+  { id: 'comparison-graph', label: 'Comparisons', icon: ShareNetwork },
+  { id: 'probability', label: 'Win Probability', icon: Calendar },
 ];
 
 export function AdvancedRankingsPage() {
@@ -47,7 +47,7 @@ export function AdvancedRankingsPage() {
           href="/app/coach/seat-racing/matrix-planner"
           className="flex items-center gap-2 px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-hover transition-colors"
         >
-          <CalendarIcon className="w-5 h-5" />
+          <Calendar size={20} />
           Plan Matrix Session
         </a>
       </div>
@@ -66,7 +66,7 @@ export function AdvancedRankingsPage() {
                 }
               `}
             >
-              <tab.icon className="w-4 h-4" />
+              <tab.icon size={16} />
               {tab.label}
             </Tab>
           ))}
