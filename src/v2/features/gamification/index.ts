@@ -6,6 +6,8 @@ export { PinnedBadges } from './components/PinnedBadges';
 export { AchievementGrid } from './components/AchievementGrid';
 export { ChallengeCard } from './components/ChallengeCard';
 export { LeaderboardLive } from './components/LeaderboardLive';
+export { CreateChallengeForm } from './components/CreateChallengeForm';
+export { ChallengeList } from './components/ChallengeList';
 export { PRCelebration } from './components/PRCelebration';
 export { PRSparkline } from './components/PRSparkline';
 export { ShareableCard } from './components/ShareableCard';
