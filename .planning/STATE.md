@@ -4,8 +4,8 @@
 
 **Milestone:** v2.0 — Core Migration
 **Phase:** 14 (Advanced Seat Racing Analytics) — In Progress
-**Status:** Plan 14-11 complete (11 of 14 plans)
-**Last activity:** 2026-01-26 — Completed 14-11-PLAN.md (Advanced Rankings & Matrix Planner Pages)
+**Status:** Plan 14-12 complete (12 of 14 plans)
+**Last activity:** 2026-01-26 — Completed 14-12-PLAN.md (Advanced Analytics Navigation Enhancement)
 
 ## Project Reference
 
@@ -40,9 +40,9 @@ v1.0 Progress: 100% Complete
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
 | 13 | Cross-Feature Integrations | Complete | 12/12 |
-| 14 | Advanced Seat Racing Analytics | In Progress | 11/14 |
+| 14 | Advanced Seat Racing Analytics | In Progress | 12/14 |
 
-v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 11/14 plans)
+v2.0 Progress: █████████████░ (8 phases complete, Phase 14 in progress: 12/14 plans)
 
 ## Quick Context
 
