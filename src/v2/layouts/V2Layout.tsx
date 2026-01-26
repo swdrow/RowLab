@@ -8,6 +8,7 @@ import { AuthStoreContext, SettingsStoreContext } from '@v2/hooks/useSharedStore
 import { ThemeToggle } from '@v2/components/shell/ThemeToggle';
 import { VersionToggle } from '@v2/components/shell/VersionToggle';
 import { VersionRedirectGuard } from '@v2/components/shell/VersionRedirectGuard';
+import { ToastProvider } from '@v2/components/common';
 import { queryClient } from '../queryClient';
 import useAuthStore from '../../store/authStore';
 import useSettingsStore from '../../store/settingsStore';
@@ -54,6 +55,7 @@ export default function V2Layout() {
               </div>
             </div>
           </VersionRedirectGuard>
+          <ToastProvider />
           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
         </SettingsStoreContext.Provider>
       </AuthStoreContext.Provider>
