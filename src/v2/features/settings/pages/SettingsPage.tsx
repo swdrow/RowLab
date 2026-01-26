@@ -28,27 +28,9 @@ const validTabs: SettingsTab[] = ['profile', 'preferences', 'security', 'integra
  * - Framer Motion tab transitions
  */
 export const SettingsPage: React.FC = () => {
+  // ALL HOOKS MUST BE CALLED FIRST - before any conditional returns
   const { user, activeTeamRole, isAuthenticated, isInitialized } = useAuthStore();
   const isOwner = activeTeamRole === 'OWNER';
-
-  // Show loading while auth initializes
-  if (!isInitialized) {
-    return (
-      <div className="p-6">
-        <LoadingSkeleton>
-          <div className="space-y-4">
-            <SkeletonLine height={40} />
-            <SkeletonLine height={200} />
-          </div>
-        </LoadingSkeleton>
-      </div>
-    );
-  }
-
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
 
   // URL-synced tab state
   const [searchParams, setSearchParams] = useSearchParams();
@@ -96,6 +78,26 @@ export const SettingsPage: React.FC = () => {
       setActiveTab(tabFromUrl);
     }
   }, [tabFromUrl, activeTab]);
+
+  // CONDITIONAL RETURNS - after all hooks
+  // Show loading while auth initializes
+  if (!isInitialized) {
+    return (
+      <div className="p-6">
+        <LoadingSkeleton>
+          <div className="space-y-4">
+            <SkeletonLine height={40} />
+            <SkeletonLine height={200} />
+          </div>
+        </LoadingSkeleton>
+      </div>
+    );
+  }
+
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   const handleTabChange = (tab: SettingsTab) => {
     setActiveTab(tab);
