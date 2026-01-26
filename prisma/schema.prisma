@@ -36,6 +36,7 @@ model User {
   assignedPlans        WorkoutAssignment[]    @relation("PlanAssigner")
   dashboardPreferences DashboardPreferences?
   whiteboards          Whiteboard[]
+  createdSessions      Session[]              @relation("SessionCreator")
 
   @@map("users")
 }
@@ -74,6 +75,7 @@ model Team {
   attendance         Attendance[]
   checklistTemplates ChecklistTemplate[]
   externalRankings   ExternalRanking[]
+  sessions           Session[]
 
   @@map("teams")
 }
@@ -1111,4 +1113,80 @@ model WorkoutCompletion {
   @@unique([plannedWorkoutId, athleteId])
   @@index([athleteId])
   @@map("workout_completions")
+}
+
+// ============================================
+// SESSIONS: Unified training session model
+// ============================================
+
+enum SessionType {
+  ERG
+  ROW
+  LIFT
+  RUN
+  CROSS_TRAIN
+  RECOVERY
+}
+
+enum SessionStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PieceSegment {
+  WARMUP
+  MAIN
+  COOLDOWN
+}
+
+model Session {
+  id                String        @id @default(cuid())
+  name              String
+  type              SessionType
+  date              DateTime
+  startTime         DateTime?
+  endTime           DateTime?
+  recurrenceRule    String?       // RRULE format for recurring sessions
+  notes             String?       @db.Text
+  status            SessionStatus @default(PLANNED)
+  teamId            String
+  createdById       String
+  sessionCode       String?       @unique // For live session joining
+  athleteVisibility Boolean       @default(true) // Can athletes see each other's data
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  team      Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdBy User    @relation("SessionCreator", fields: [createdById], references: [id])
+  pieces    Piece[]
+
+  @@index([teamId, date])
+  @@map("sessions")
+}
+
+model Piece {
+  id           String       @id @default(cuid())
+  sessionId    String
+  segment      PieceSegment @default(MAIN)
+  name         String       // e.g., "4x2000m", "40' SS"
+  description  String?
+  order        Int
+  distance     Int?         // meters
+  duration     Int?         // seconds
+  targetSplit  Int?         // seconds per 500m (in tenths)
+  targetRate   Int?         // strokes per minute
+  targetWatts  Int?
+  targetHRZone String?
+  targetRPE    Int?
+  notes        String?
+  boatClass    String?      // For ROW sessions
+  sets         Int?         // For LIFT sessions
+  reps         Int?         // For LIFT sessions
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, order])
+  @@map("pieces")
 }
