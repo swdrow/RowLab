@@ -48,6 +48,7 @@ import availabilityRoutes from './routes/availability.js';
 import attendanceRoutes from './routes/attendance.js';
 import sessionRoutes from './routes/sessions.js';
 import recruitVisitsRoutes from './routes/recruitVisits.js';
+import uploadRoutes from './routes/uploads.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
@@ -133,6 +134,7 @@ app.use('/api/v1/availability', apiLimiter, availabilityRoutes);
 app.use('/api/v1/attendance', apiLimiter, attendanceRoutes);
 app.use('/api/v1/sessions', apiLimiter, sessionRoutes);
 app.use('/api/v1/recruit-visits', apiLimiter, recruitVisitsRoutes);
+app.use('/api/v1/uploads', apiLimiter, uploadRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
@@ -262,6 +264,9 @@ if (NODE_ENV === 'production') {
 
   // Serve images
   app.use('/images', express.static(path.join(__dirname, '..', 'public', 'images')));
+
+  // Serve uploaded files
+  app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
   // All other routes serve index.html (SPA)
   app.get('*', (req, res) => {
