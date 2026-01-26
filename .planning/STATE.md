@@ -251,11 +251,15 @@ Key architectural decisions carrying forward:
 | 14-06 | 5-minute stale time for rankings | Stable data that changes only after seat race processing, prevents excessive refetches while ensuring freshness |
 | 14-06 | Split matrix planner into generate/validate hooks | Clear separation of concerns with combined useMatrixPlanner convenience hook for components needing both |
 | 14-06 | Auth-aware query enabling | All hooks check isAuthenticated, isInitialized, activeTeamId before enabling queries, prevents unnecessary API calls during initialization |
+| 14-05 | authenticateToken + requireTeam for all routes | Consistent with existing API patterns in ratings.js and seatRaces.js, ensures proper security and team isolation |
+| 14-05 | Structured error codes for API responses | NO_TEAM, INVALID_INPUT, SERVER_ERROR etc. enable frontend to handle errors programmatically |
+| 14-05 | teamId query param with activeTeamId fallback | Flexibility for admin views while defaulting to current team context |
+| 14-05 | Enrich API responses with athlete details | Reduces frontend API calls by including names/side in ranking responses |
 
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed 14-06-PLAN.md (Frontend Data Hooks)
+**Stopped at:** Completed 14-05-PLAN.md (Advanced Ranking API Endpoints)
 **Resume file:** None
 
 ## Known Limitations
