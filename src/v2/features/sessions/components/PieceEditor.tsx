@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import { Plus, Trash, CaretDown, CaretUp, DotsSixVertical } from '@phosphor-icons/react';
 import type { PieceSegment } from '../../../types/session';
 
@@ -14,7 +14,7 @@ interface PieceEditorProps {
 }
 
 export function PieceEditor({ sessionType }: PieceEditorProps) {
-  const { control, register, watch } = useFormContext();
+  const { control, register } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'pieces',
@@ -30,12 +30,15 @@ export function PieceEditor({ sessionType }: PieceEditorProps) {
     setExpandedSegments((prev) => ({ ...prev, [segment]: !prev[segment] }));
   };
 
+  // Watch all piece segments
+  const pieces = useWatch({ control, name: 'pieces' }) || [];
+
   // Group pieces by segment
   const piecesBySegment = SEGMENTS.map((segment) => ({
     ...segment,
     pieces: fields
       .map((field, index) => ({ ...field, index }))
-      .filter((_, i) => watch(`pieces.${i}.segment`) === segment.value),
+      .filter((_, i) => pieces[i]?.segment === segment.value),
   }));
 
   const addPiece = (segment: PieceSegment) => {
