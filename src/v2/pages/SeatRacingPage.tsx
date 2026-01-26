@@ -1,7 +1,8 @@
 import { useState, Fragment } from 'react';
 import { Tab } from '@headlessui/react';
 import { Dialog, Transition } from '@headlessui/react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, BarChart3, Calendar, Share2, Beaker } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAthleteRatings, useRecalculateRatings } from '@v2/hooks/useAthleteRatings';
 import { useSeatRaceSessions } from '@v2/hooks/useSeatRaceSessions';
 import { useRequireAuth } from '../../hooks/useAuth';
@@ -13,6 +14,39 @@ import {
   SessionWizard,
 } from '@v2/components/seat-racing';
 import type { Side } from '@v2/types/seatRacing';
+
+/**
+ * FeatureCard Component
+ *
+ * Clickable card that links to an advanced analytics feature
+ */
+interface FeatureCardProps {
+  to: string;
+  icon: React.ElementType;
+  title: string;
+  description: string;
+}
+
+function FeatureCard({ to, icon: Icon, title, description }: FeatureCardProps) {
+  return (
+    <Link
+      to={to}
+      className="block p-4 bg-bg-surface rounded-lg border border-bdr-default hover:border-interactive-primary hover:shadow-md transition-all group"
+    >
+      <div className="flex items-start gap-3">
+        <div className="p-2 bg-interactive-primary/10 rounded-lg group-hover:bg-interactive-primary/20 transition-colors">
+          <Icon className="w-5 h-5 text-interactive-primary" />
+        </div>
+        <div>
+          <h3 className="font-medium text-txt-primary group-hover:text-interactive-primary transition-colors">
+            {title}
+          </h3>
+          <p className="text-sm text-txt-secondary mt-1">{description}</p>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 /**
  * SeatRacingPage Component
@@ -227,6 +261,39 @@ export function SeatRacingPage() {
                       isLoading={isLoadingRatings}
                       onRecalculate={recalculate}
                     />
+                  </div>
+
+                  {/* Advanced Analytics Section */}
+                  <div className="mt-8">
+                    <h2 className="text-lg font-semibold text-txt-primary mb-4">
+                      Advanced Analytics
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <FeatureCard
+                        to="/app/coach/seat-racing/advanced-rankings"
+                        icon={BarChart3}
+                        title="Advanced Rankings"
+                        description="Bradley-Terry model, composite rankings, and comparison graphs"
+                      />
+                      <FeatureCard
+                        to="/app/coach/seat-racing/matrix-planner"
+                        icon={Calendar}
+                        title="Matrix Planner"
+                        description="Generate optimal swap schedules for seat racing sessions"
+                      />
+                      <FeatureCard
+                        to="/app/coach/seat-racing/advanced-rankings#comparison-graph"
+                        icon={Share2}
+                        title="Comparison Graph"
+                        description="Visualize which athletes have been compared"
+                      />
+                      <FeatureCard
+                        to="/app/coach/seat-racing/advanced-rankings#probability"
+                        icon={Beaker}
+                        title="Win Probability"
+                        description="Heatmap of predicted head-to-head outcomes"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
