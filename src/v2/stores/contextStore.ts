@@ -16,6 +16,8 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
       { to: '/beta/dashboard', label: 'Dashboard', icon: 'home' },
       { to: '/beta/workouts', label: 'My Workouts', icon: 'activity' },
       { to: '/beta/progress', label: 'Progress', icon: 'trending-up' },
+      { to: '/app/achievements', label: 'Achievements', icon: 'trophy' },
+      { to: '/app/challenges', label: 'Challenges', icon: 'flag' },
     ],
   },
   {

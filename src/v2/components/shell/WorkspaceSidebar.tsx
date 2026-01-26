@@ -59,6 +59,8 @@ const NAV_ITEM_FEATURES: Record<string, FeatureId | null> = {
   '/app/regattas': 'racing-regattas',
   '/app/rankings': 'bradley-terry',
   '/app/recruiting': 'recruiting',
+  '/app/achievements': 'gamification',
+  '/app/challenges': 'gamification',
 };
 
 /**
