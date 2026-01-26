@@ -353,12 +353,12 @@ router.post('/:id/process', requireRole('OWNER', 'COACH'), async (req, res) => {
   try {
     const sessionId = req.params.id;
     const session = await seatRaceService.getSessionById(req.user.activeTeamId, sessionId);
-    const analysis = marginService.analyzeSession(session);
+    const results = marginService.analyzeSession(session);
 
     const ratingUpdates = [];
 
     // Process each result with exactly 2 swapped athletes
-    for (const result of analysis.results) {
+    for (const result of results) {
       if (result.swappedAthletes && result.swappedAthletes.length === 2) {
         const update = await eloService.updateRatingsFromSeatRace(
           result.swappedAthletes[0],
@@ -370,7 +370,7 @@ router.post('/:id/process', requireRole('OWNER', 'COACH'), async (req, res) => {
       }
     }
 
-    res.json({ success: true, data: { analysis, ratingUpdates } });
+    res.json({ success: true, data: { results, ratingUpdates } });
   } catch (err) {
     if (err.message === 'Seat race session not found') {
       return res.status(404).json({
