@@ -14,15 +14,15 @@ datasource db {
 // ============================================
 
 model User {
-  id            String   @id @default(uuid())
-  email         String?  @unique // Optional for admin accounts
-  username      String?  @unique // For admin accounts (non-email login)
-  passwordHash  String
-  name          String
-  isAdmin       Boolean  @default(false) // Admin accounts have special privileges
-  status        String   @default("active") // active, suspended
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  email        String?  @unique // Optional for admin accounts
+  username     String?  @unique // For admin accounts (non-email login)
+  passwordHash String
+  name         String
+  isAdmin      Boolean  @default(false) // Admin accounts have special privileges
+  status       String   @default("active") // active, suspended
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
   memberships          TeamMember[]
@@ -32,11 +32,11 @@ model User {
   concept2Auth         Concept2Auth?
   stravaAuth           StravaAuth?
   boatSessions         BoatSession[]
-  createdPlans         TrainingPlan[]         @relation("PlanCreator")
-  assignedPlans        WorkoutAssignment[]    @relation("PlanAssigner")
+  createdPlans         TrainingPlan[]        @relation("PlanCreator")
+  assignedPlans        WorkoutAssignment[]   @relation("PlanAssigner")
   dashboardPreferences DashboardPreferences?
   whiteboards          Whiteboard[]
-  createdSessions      Session[]              @relation("SessionCreator")
+  createdSessions      Session[]             @relation("SessionCreator")
 
   @@map("users")
 }
@@ -49,7 +49,7 @@ model Team {
   isPublic          Boolean  @default(false)
   visibilitySetting String   @default("coaches_only") // open, coaches_only, opt_in
   settings          Json     @default("{}")
-  aiModel           String?  // Preferred AI model (e.g., "phi4-mini-reasoning:3.8b")
+  aiModel           String? // Preferred AI model (e.g., "phi4-mini-reasoning:3.8b")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -84,11 +84,11 @@ model TeamMember {
   id        String   @id @default(uuid())
   userId    String
   teamId    String
-  role      String   // OWNER, COACH, ATHLETE
+  role      String // OWNER, COACH, ATHLETE
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team               Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
   workoutAssignments WorkoutAssignment[]
   workoutCompletions WorkoutCompletion[]
 
@@ -101,13 +101,13 @@ model TeamMember {
 // ============================================
 
 model RefreshToken {
-  id          String   @id @default(uuid())
-  userId      String
-  tokenHash   String   @unique
-  familyId    String   // For rotation detection
-  expiresAt   DateTime
-  revokedAt   DateTime?
-  createdAt   DateTime @default(now())
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  familyId  String // For rotation detection
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -119,7 +119,7 @@ model RefreshToken {
 model Invitation {
   id        String   @id @default(uuid())
   teamId    String
-  athleteId String?  // For claim flow
+  athleteId String? // For claim flow
   email     String
   tokenHash String   @unique // SHA-256 of actual token
   expiresAt DateTime
@@ -138,23 +138,23 @@ model Invitation {
 // ============================================
 
 model Athlete {
-  id              String   @id @default(uuid())
-  teamId          String
-  userId          String?  // NULL = managed by coach
-  firstName       String
-  lastName        String
-  email           String?  // For invites
-  side            String?  // Port, Starboard, Both, Cox
-  canScull        Boolean  @default(false)
-  canCox          Boolean  @default(false)
-  isManaged       Boolean  @default(true)
-  concept2UserId  String?
-  weightKg        Decimal? @db.Decimal(5, 2)
-  heightCm        Int?
-  country         String?  // ISO 3166-1 alpha-3 country code (e.g., USA, GBR)
-  avatar          String?  @db.Text  // Base64 encoded image data URL
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(uuid())
+  teamId         String
+  userId         String? // NULL = managed by coach
+  firstName      String
+  lastName       String
+  email          String? // For invites
+  side           String? // Port, Starboard, Both, Cox
+  canScull       Boolean  @default(false)
+  canCox         Boolean  @default(false)
+  isManaged      Boolean  @default(true)
+  concept2UserId String?
+  weightKg       Decimal? @db.Decimal(5, 2)
+  heightCm       Int?
+  country        String? // ISO 3166-1 alpha-3 country code (e.g., USA, GBR)
+  avatar         String?  @db.Text // Base64 encoded image data URL
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
   ergTests            ErgTest[]
@@ -178,14 +178,14 @@ model Athlete {
 // ============================================
 
 model Availability {
-  id           String           @id @default(uuid())
-  athleteId    String
-  date         DateTime
-  morningSlot  AvailabilitySlot @default(NOT_SET)
-  eveningSlot  AvailabilitySlot @default(NOT_SET)
-  notes        String?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id          String           @id @default(uuid())
+  athleteId   String
+  date        DateTime
+  morningSlot AvailabilitySlot @default(NOT_SET)
+  eveningSlot AvailabilitySlot @default(NOT_SET)
+  notes       String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
 
@@ -198,7 +198,7 @@ model Availability {
 model DefaultSchedule {
   id        String   @id @default(uuid())
   athleteId String   @unique
-  schedule  Json     // { monday: { morning: "AVAILABLE", evening: "UNAVAILABLE" }, ... }
+  schedule  Json // { monday: { morning: "AVAILABLE", evening: "UNAVAILABLE" }, ... }
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -216,10 +216,10 @@ model Attendance {
   teamId          String
   athleteId       String
   date            DateTime @db.Date
-  status          String   // present, late, excused, unexcused
-  durationMinutes Int?     // For NCAA hour tracking
+  status          String // present, late, excused, unexcused
+  durationMinutes Int? // For NCAA hour tracking
   notes           String?
-  recordedBy      String?  // userId who recorded
+  recordedBy      String? // userId who recorded
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -272,17 +272,17 @@ model DashboardPreferences {
 }
 
 model Activity {
-  id          String         @id @default(uuid())
-  userId      String
-  teamId      String?
-  source      ActivitySource
-  sourceId    String         // Unique ID from source system
-  activityType String?       // erg, row, strength, etc.
-  title       String
-  description String?        @db.Text
-  date        DateTime
-  data        Json?          // Source-specific data
-  createdAt   DateTime       @default(now())
+  id           String         @id @default(uuid())
+  userId       String
+  teamId       String?
+  source       ActivitySource
+  sourceId     String // Unique ID from source system
+  activityType String? // erg, row, strength, etc.
+  title        String
+  description  String?        @db.Text
+  date         DateTime
+  data         Json? // Source-specific data
+  createdAt    DateTime       @default(now())
 
   @@unique([source, sourceId]) // Prevent duplicates from same source
   @@index([userId])
@@ -292,16 +292,16 @@ model Activity {
 }
 
 model Concept2Auth {
-  userId         String   @id
+  userId         String    @id
   c2UserId       String
-  username       String?  // Concept2 username
-  accessToken    String   @db.Text // OAuth access token (encrypted)
-  refreshToken   String   @db.Text // OAuth refresh token (encrypted)
+  username       String? // Concept2 username
+  accessToken    String    @db.Text // OAuth access token (encrypted)
+  refreshToken   String    @db.Text // OAuth refresh token (encrypted)
   tokenExpiresAt DateTime
   lastSyncedAt   DateTime?
-  syncEnabled    Boolean  @default(true) // Auto-sync on webhook
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  syncEnabled    Boolean   @default(true) // Auto-sync on webhook
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -310,22 +310,22 @@ model Concept2Auth {
 }
 
 model StravaAuth {
-  userId         String   @id
-  stravaAthleteId BigInt   // Strava athlete ID
-  username       String?  // Strava username/display name
-  accessToken    String   @db.Text // OAuth access token (encrypted)
-  refreshToken   String   @db.Text // OAuth refresh token (encrypted)
-  tokenExpiresAt DateTime
-  lastSyncedAt   DateTime?
-  syncEnabled    Boolean  @default(true) // Auto-sync from Strava to RowLab
-  scope          String?  // OAuth scopes granted
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  userId          String    @id
+  stravaAthleteId BigInt // Strava athlete ID
+  username        String? // Strava username/display name
+  accessToken     String    @db.Text // OAuth access token (encrypted)
+  refreshToken    String    @db.Text // OAuth refresh token (encrypted)
+  tokenExpiresAt  DateTime
+  lastSyncedAt    DateTime?
+  syncEnabled     Boolean   @default(true) // Auto-sync from Strava to RowLab
+  scope           String? // OAuth scopes granted
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   // C2 to Strava sync settings
-  c2ToStravaEnabled  Boolean @default(false)  // Master toggle for C2→Strava uploads
-  c2ToStravaTypes    Json    @default("{}") // Activity types to sync: {"rower": true, "bikeerg": false, ...}
-  lastC2SyncedAt     DateTime? // Last C2→Strava sync timestamp
+  c2ToStravaEnabled Boolean   @default(false) // Master toggle for C2→Strava uploads
+  c2ToStravaTypes   Json      @default("{}") // Activity types to sync: {"rower": true, "bikeerg": false, ...}
+  lastC2SyncedAt    DateTime? // Last C2→Strava sync timestamp
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -341,7 +341,7 @@ model ErgTest {
   id           String   @id @default(uuid())
   athleteId    String
   teamId       String
-  testType     String   // 2k, 6k, 30min, 500m
+  testType     String // 2k, 6k, 30min, 500m
   testDate     DateTime
   distanceM    Int?
   timeSeconds  Decimal  @db.Decimal(10, 1)
@@ -362,11 +362,11 @@ model ErgTest {
 
 model Workout {
   id               String   @id @default(uuid())
-  athleteId        String?  // Optional - may be synced by user without athlete record
-  userId           String?  // For user-level syncs (Strava, etc.)
+  athleteId        String? // Optional - may be synced by user without athlete record
+  userId           String? // For user-level syncs (Strava, etc.)
   teamId           String
-  source           String   // manual, concept2_sync, strava_sync, csv_import, bluetooth, fit_import
-  type             String?  // on_water, erg, strength, cardio, other
+  source           String // manual, concept2_sync, strava_sync, csv_import, bluetooth, fit_import
+  type             String? // on_water, erg, strength, cardio, other
   c2LogbookId      String?  @unique
   stravaActivityId String?  @unique
   date             DateTime
@@ -430,7 +430,7 @@ model LineupAssignment {
   boatClass  String
   shellName  String?
   seatNumber Int
-  side       String  // Port, Starboard
+  side       String // Port, Starboard
   isCoxswain Boolean @default(false)
 
   lineup  Lineup  @relation(fields: [lineupId], references: [id], onDelete: Cascade)
@@ -508,13 +508,13 @@ model Shell {
 }
 
 model OarSet {
-  id      String          @id @default(uuid())
-  teamId  String
-  name    String
-  type    OarType
-  count   Int
-  status  EquipmentStatus @default(AVAILABLE)
-  notes   String?
+  id     String          @id @default(uuid())
+  teamId String
+  name   String
+  type   OarType
+  count  Int
+  status EquipmentStatus @default(AVAILABLE)
+  notes  String?
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
@@ -525,7 +525,7 @@ model OarSet {
 model BoatConfig {
   id          String  @id @default(uuid())
   teamId      String
-  name        String  // e.g., "Varsity 8+"
+  name        String // e.g., "Varsity 8+"
   numSeats    Int
   hasCoxswain Boolean
 
@@ -546,7 +546,7 @@ model Announcement {
   title     String
   content   String
   priority  String   @default("normal") // normal, important, urgent
-  visibleTo String   @default("all")    // all, athletes, coaches
+  visibleTo String   @default("all") // all, athletes, coaches
   pinned    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -579,8 +579,8 @@ model SeatRaceSession {
   teamId      String
   date        DateTime
   location    String?
-  conditions  String?  // calm, variable, rough
-  boatClass   String   // 8+, 4+, 4-, 2-
+  conditions  String? // calm, variable, rough
+  boatClass   String // 8+, 4+, 4-, 2-
   description String?
   createdAt   DateTime @default(now())
 
@@ -592,12 +592,12 @@ model SeatRaceSession {
 }
 
 model SeatRacePiece {
-  id            String  @id @default(uuid())
-  sessionId     String
-  sequenceOrder Int
+  id             String  @id @default(uuid())
+  sessionId      String
+  sequenceOrder  Int
   distanceMeters Int?
-  direction     String? // upstream, downstream
-  notes         String?
+  direction      String? // upstream, downstream
+  notes          String?
 
   session SeatRaceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   boats   SeatRaceBoat[]
@@ -608,7 +608,7 @@ model SeatRacePiece {
 model SeatRaceBoat {
   id                String   @id @default(uuid())
   pieceId           String
-  name              String   // "Boat A", "Boat B"
+  name              String // "Boat A", "Boat B"
   shellName         String?
   finishTimeSeconds Decimal? @db.Decimal(10, 2)
   handicapSeconds   Decimal  @default(0) @db.Decimal(5, 2)
@@ -623,7 +623,7 @@ model SeatRaceAssignment {
   id         String @id @default(uuid())
   boatId     String
   athleteId  String
-  seatNumber Int    // 1=Bow, 8=Stroke, 9=Cox
+  seatNumber Int // 1=Bow, 8=Stroke, 9=Cox
   side       String // Port, Starboard, Cox
 
   boat    SeatRaceBoat @relation(fields: [boatId], references: [id], onDelete: Cascade)
@@ -633,13 +633,13 @@ model SeatRaceAssignment {
 }
 
 model AthleteRating {
-  id              String   @id @default(uuid())
-  athleteId       String
-  teamId          String
-  ratingType      String   // seat_race_elo, combined
-  ratingValue     Decimal  @default(1000) @db.Decimal(8, 2)
-  confidenceScore Decimal? @db.Decimal(4, 3)
-  racesCount      Int      @default(0)
+  id               String   @id @default(uuid())
+  athleteId        String
+  teamId           String
+  ratingType       String // seat_race_elo, combined
+  ratingValue      Decimal  @default(1000) @db.Decimal(8, 2)
+  confidenceScore  Decimal? @db.Decimal(4, 3)
+  racesCount       Int      @default(0)
   lastCalculatedAt DateTime @default(now())
 
   athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
@@ -656,7 +656,7 @@ model AthleteTelemetry {
   id             String   @id @default(uuid())
   athleteId      String
   sessionDate    DateTime
-  source         String   // empower, peach, nk
+  source         String // empower, peach, nk
   seatNumber     Int?
   avgWatts       Decimal? @db.Decimal(6, 2)
   peakWatts      Decimal? @db.Decimal(6, 2)
@@ -686,19 +686,19 @@ model Regatta {
   location    String?
   date        DateTime
   endDate     DateTime? // For multi-day regattas
-  host        String?   // Hosting organization
-  venueType   String?   // lake, river, etc.
-  courseType  String?   // 2000m, 1500m, head
-  conditions  Json?     // wind, temp, current
+  host        String? // Hosting organization
+  venueType   String? // lake, river, etc.
+  courseType  String? // 2000m, 1500m, head
+  conditions  Json? // wind, temp, current
   description String?
-  externalUrl String?   // RegattaCentral/Row2k link
-  teamGoals   String?   // Pre-regatta notes
+  externalUrl String? // RegattaCentral/Row2k link
+  teamGoals   String? // Pre-regatta notes
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   events Event[]
-  races  Race[]  // Keep for backward compatibility during migration
+  races  Race[] // Keep for backward compatibility during migration
 
   @@index([teamId])
   @@map("regattas")
@@ -707,9 +707,9 @@ model Regatta {
 model Event {
   id           String   @id @default(uuid())
   regattaId    String
-  name         String   // "Varsity 8+", "2V8+", "JV4+", etc.
-  category     String?  // Predefined or custom category
-  scheduledDay Int?     // Day number for multi-day regattas (1, 2, 3)
+  name         String // "Varsity 8+", "2V8+", "JV4+", etc.
+  category     String? // Predefined or custom category
+  scheduledDay Int? // Day number for multi-day regattas (1, 2, 3)
   sortOrder    Int      @default(0)
   createdAt    DateTime @default(now())
 
@@ -722,8 +722,8 @@ model Event {
 
 model Race {
   id             String    @id @default(uuid())
-  regattaId      String    // Keep for backward compatibility
-  eventId        String?   // Optional during migration
+  regattaId      String // Keep for backward compatibility
+  eventId        String? // Optional during migration
   eventName      String
   boatClass      String
   distanceMeters Int       @default(2000)
@@ -748,8 +748,8 @@ model RaceResult {
   finishTimeSeconds Decimal? @db.Decimal(10, 2)
   place             Int?
   marginBackSeconds Decimal? @db.Decimal(8, 2)
-  rawSpeed          Decimal? @db.Decimal(6, 4)    // m/s
-  adjustedSpeed     Decimal? @db.Decimal(6, 4)    // Normalized
+  rawSpeed          Decimal? @db.Decimal(6, 4) // m/s
+  adjustedSpeed     Decimal? @db.Decimal(6, 4) // Normalized
 
   race   Race    @relation(fields: [raceId], references: [id], onDelete: Cascade)
   lineup Lineup? @relation(fields: [lineupId], references: [id])
@@ -761,7 +761,7 @@ model ExternalTeam {
   id         String   @id @default(uuid())
   name       String   @unique
   conference String?
-  division   String?  // D1, D2, D3, Club
+  division   String? // D1, D2, D3, Club
   createdAt  DateTime @default(now())
 
   externalRankings ExternalRanking[]
@@ -776,7 +776,7 @@ model ExternalTeam {
 model ChecklistTemplate {
   id        String   @id @default(uuid())
   teamId    String
-  name      String   // "Home Regatta", "Away Regatta"
+  name      String // "Home Regatta", "Away Regatta"
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
 
@@ -819,7 +819,7 @@ model RaceChecklistItem {
   text        String
   role        String
   completed   Boolean   @default(false)
-  completedBy String?   // User ID who completed
+  completedBy String? // User ID who completed
   completedAt DateTime?
   sortOrder   Int       @default(0)
 
@@ -837,7 +837,7 @@ model ExternalRanking {
   teamId         String
   externalTeamId String
   boatClass      String
-  source         String   // "row2k", "usrowing", "regattacentral", "manual"
+  source         String // "row2k", "usrowing", "regattacentral", "manual"
   ranking        Int
   season         String?
   updatedDate    DateTime
@@ -855,7 +855,7 @@ model TeamSpeedEstimate {
   id               String   @id @default(uuid())
   teamId           String
   boatClass        String
-  season           String?  // "Spring 2025"
+  season           String? // "Spring 2025"
   rawSpeed         Decimal? @db.Decimal(6, 4)
   adjustedSpeed    Decimal? @db.Decimal(6, 4)
   confidenceScore  Decimal? @db.Decimal(4, 3)
@@ -916,10 +916,10 @@ model CalendarEvent {
   teamId      String
   title       String
   description String?
-  eventType   String   // erg-test, erg-pieces, steady-state, water, lift, rest, meeting, regatta
+  eventType   String // erg-test, erg-pieces, steady-state, water, lift, rest, meeting, regatta
   date        DateTime
-  startTime   String?  // HH:MM format
-  endTime     String?  // HH:MM format
+  startTime   String? // HH:MM format
+  endTime     String? // HH:MM format
   location    String?
   completed   Boolean  @default(false)
   notes       String?
@@ -947,7 +947,7 @@ model WaterSession {
   startTime       DateTime?
   endTime         DateTime?
   location        String?
-  conditions      String?   // weather, water conditions
+  conditions      String? // weather, water conditions
   notes           String?
   calendarEventId String?
 
@@ -984,13 +984,13 @@ model BoatSession {
 }
 
 model WaterPiece {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   boatSessionId String
   pieceNumber   Int
-  distance      Int?     // meters
-  timeSeconds   Decimal? @db.Decimal(10, 1)
+  distance      Int? // meters
+  timeSeconds   Decimal?  @db.Decimal(10, 1)
   strokeRate    Int?
-  pieceType     String?  // steady, interval, start, race
+  pieceType     String? // steady, interval, start, race
   notes         String?
   startTime     DateTime?
 
@@ -1036,7 +1036,7 @@ model TrainingPlan {
   createdBy   String
   startDate   DateTime?
   endDate     DateTime?
-  phase       String?   // Base, Build, Peak, Taper
+  phase       String? // Base, Build, Peak, Taper
   isTemplate  Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -1055,17 +1055,17 @@ model PlannedWorkout {
   id              String    @id @default(uuid())
   planId          String
   name            String
-  type            String    // erg, row, cross_train
+  type            String // erg, row, cross_train
   description     String?
   scheduledDate   DateTime?
-  dayOfWeek       Int?      // 0-6 for recurring
-  weekNumber      Int?      // For periodization
-  duration        Int?      // seconds
-  distance        Int?      // meters
-  targetPace      Float?    // seconds per 500m
+  dayOfWeek       Int? // 0-6 for recurring
+  weekNumber      Int? // For periodization
+  duration        Int? // seconds
+  distance        Int? // meters
+  targetPace      Float? // seconds per 500m
   targetHeartRate Int?
-  intensity       String?   // easy, moderate, hard, max
-  recurrenceRule  Json?     // For recurring workouts
+  intensity       String? // easy, moderate, hard, max
+  recurrenceRule  Json? // For recurring workouts
   order           Int       @default(0)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -1101,9 +1101,9 @@ model WorkoutCompletion {
   id               String   @id @default(uuid())
   plannedWorkoutId String
   athleteId        String
-  workoutId        String?  // Link to actual Workout record
+  workoutId        String? // Link to actual Workout record
   completedAt      DateTime @default(now())
-  compliance       Float?   // 0-1, how well targets were met
+  compliance       Float? // 0-1, how well targets were met
   notes            String?
 
   plannedWorkout PlannedWorkout @relation(fields: [plannedWorkoutId], references: [id], onDelete: Cascade)
@@ -1148,7 +1148,7 @@ model Session {
   date              DateTime
   startTime         DateTime?
   endTime           DateTime?
-  recurrenceRule    String?       // RRULE format for recurring sessions
+  recurrenceRule    String? // RRULE format for recurring sessions
   notes             String?       @db.Text
   status            SessionStatus @default(PLANNED)
   teamId            String
@@ -1170,20 +1170,20 @@ model Piece {
   id           String       @id @default(cuid())
   sessionId    String
   segment      PieceSegment @default(MAIN)
-  name         String       // e.g., "4x2000m", "40' SS"
+  name         String // e.g., "4x2000m", "40' SS"
   description  String?
   order        Int
-  distance     Int?         // meters
-  duration     Int?         // seconds
-  targetSplit  Int?         // seconds per 500m (in tenths)
-  targetRate   Int?         // strokes per minute
+  distance     Int? // meters
+  duration     Int? // seconds
+  targetSplit  Int? // seconds per 500m (in tenths)
+  targetRate   Int? // strokes per minute
   targetWatts  Int?
   targetHRZone String?
   targetRPE    Int?
   notes        String?
-  boatClass    String?      // For ROW sessions
-  sets         Int?         // For LIFT sessions
-  reps         Int?         // For LIFT sessions
+  boatClass    String? // For ROW sessions
+  sets         Int? // For LIFT sessions
+  reps         Int? // For LIFT sessions
 
   session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
