@@ -592,19 +592,19 @@ Plans:
 
 ### Phase 14: Advanced Seat Racing Analytics ⚡ DIFFERENTIATOR
 
-**Goal:** World-class, scientifically rigorous athlete ranking system using matrix seat racing, Bradley-Terry statistical models, and optimal swap scheduling.
+**Goal:** World-class, scientifically rigorous athlete ranking system using matrix seat racing, Bradley-Terry statistical models, optimal swap scheduling, and passive ELO tracking from practice data.
 
-**Dependencies:** Phase 9 (basic seat racing infrastructure)
+**Dependencies:** Phase 9 (basic seat racing infrastructure), Phase 13 (Session model for passive tracking)
 
 **Research:** Complete (14-RESEARCH.md)
 
 **Requirements:** MATRIX-01 through MATRIX-12
 
-**Plans:** 12 plans
+**Plans:** 14 plans
 
 Plans:
 - [ ] 14-01-PLAN.md — Dependencies (simple-statistics, jstat, fmin) and TypeScript types
-- [ ] 14-02-PLAN.md — Bradley-Terry model service (TDD: MLE, confidence intervals)
+- [ ] 14-02-PLAN.md — Bradley-Terry model service with boat speed normalization (TDD: MLE, confidence intervals, shell bias correction)
 - [ ] 14-03-PLAN.md — Matrix planner service (Latin Square scheduling)
 - [ ] 14-04-PLAN.md — Composite ranking service and side-specific ELO
 - [ ] 14-05-PLAN.md — API endpoints for all advanced ranking features
@@ -615,15 +615,20 @@ Plans:
 - [ ] 14-10-PLAN.md — Bradley-Terry rankings with confidence visualization
 - [ ] 14-11-PLAN.md — Pages, routing, and component exports
 - [ ] 14-12-PLAN.md — Navigation integration and human verification
+- [ ] 14-13-PLAN.md — Passive ELO tracking service (swap detection, practice observations, 0.5x weight)
+- [ ] 14-14-PLAN.md — Passive tracking API endpoints (record observations, apply to ratings)
 
 **Delivers:**
 - Bradley-Terry ranking algorithm with MLE optimization
+- Boat speed bias correction in Bradley-Terry model
 - Matrix session planner with Latin Square scheduling
 - Comparison graph visualization (vis-network)
 - Probability matrix heatmap (P(A beats B))
 - Composite rankings (on-water + erg + attendance)
 - Side-specific ELO tracking (port/starboard/cox)
 - Weight profile configuration (Performance-First, Balanced, Reliability)
+- **Passive ELO tracking from practice data (unique differentiator)**
+- Background ELO updates with 0.5x weight for practice observations
 - Two new pages: Advanced Rankings, Matrix Planner
 
 **Success Criteria:**
@@ -634,6 +639,7 @@ Plans:
 5. Scientific methodology is documented and defensible to NCAA compliance or coaching staff review
 6. Composite rankings incorporate erg performance and attendance as coach-configurable secondary factors with clear weight breakdown
 7. Coach can view ranking breakdown showing contribution from on-water performance (primary), erg tests, and attendance
+8. Practice observations automatically update ELO rankings with reduced weight (0.5x) when lineup changes with time data are detected
 
 ---
 
@@ -674,7 +680,7 @@ The following requirements apply across all v2.0 phases:
 | 11 | Racing & Regattas | 15 | 10 | Complete |
 | 12 | Settings & Polish | 19 | 17 | Complete |
 | 13 | Cross-Feature Integrations | 8 | 12 | Active |
-| 14 | Advanced Seat Racing Analytics ⚡ | 12 | 12 | Planned |
+| 14 | Advanced Seat Racing Analytics ⚡ | 12 | 14 | Planned |
 
 **v2.0 Total:** 120 requirements across 9 phases
 
@@ -700,4 +706,4 @@ Phases with standard patterns (skip research):
 ---
 
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-26 — Phase 14 planned (12 plans, 5 waves)*
+*Last updated: 2026-01-26 — Phase 14 revised (14 plans, 5 waves) — added passive ELO tracking, boat speed bias correction*
