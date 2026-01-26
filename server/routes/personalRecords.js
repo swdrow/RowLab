@@ -1,12 +1,30 @@
 import { Router } from 'express';
-import { param, query } from 'express-validator';
+import { z } from 'zod';
 import { authenticateToken, teamIsolation } from '../middleware/auth.js';
-import { validateRequest } from '../middleware/validation.js';
+import { validateParams, validateQuery } from '../middleware/validation.js';
 import * as prService from '../services/prDetectionService.js';
 import { prisma } from '../db/connection.js';
 import logger from '../utils/logger.js';
 
 const router = Router();
+
+// Validation schemas
+const athleteIdSchema = z.object({
+  athleteId: z.string().uuid(),
+});
+
+const testIdSchema = z.object({
+  testId: z.string().uuid(),
+});
+
+const trendParamsSchema = z.object({
+  athleteId: z.string().uuid(),
+  testType: z.enum(['2k', '6k', '500m', '30min']),
+});
+
+const trendQuerySchema = z.object({
+  limit: z.string().regex(/^\d+$/).transform(Number).refine(n => n >= 3 && n <= 10).optional(),
+});
 
 router.use(authenticateToken);
 router.use(teamIsolation);
@@ -51,8 +69,7 @@ router.get('/', async (req, res) => {
  */
 router.get(
   '/athlete/:athleteId',
-  [param('athleteId').isUUID()],
-  validateRequest,
+  validateParams(athleteIdSchema),
   async (req, res) => {
     try {
       const { athleteId } = req.params;
@@ -92,8 +109,7 @@ router.get(
  */
 router.get(
   '/history/:athleteId',
-  [param('athleteId').isUUID()],
-  validateRequest,
+  validateParams(athleteIdSchema),
   async (req, res) => {
     try {
       const { athleteId } = req.params;
@@ -143,8 +159,7 @@ router.get('/team-records', async (req, res) => {
  */
 router.get(
   '/detect/:testId',
-  [param('testId').isUUID()],
-  validateRequest,
+  validateParams(testIdSchema),
   async (req, res) => {
     try {
       const { testId } = req.params;
@@ -178,12 +193,8 @@ router.get(
  */
 router.get(
   '/trend/:athleteId/:testType',
-  [
-    param('athleteId').isUUID(),
-    param('testType').isIn(['2k', '6k', '500m', '30min']),
-    query('limit').optional().isInt({ min: 3, max: 10 }),
-  ],
-  validateRequest,
+  validateParams(trendParamsSchema),
+  validateQuery(trendQuerySchema),
   async (req, res) => {
     try {
       const { athleteId, testType } = req.params;
