@@ -1,4 +1,5 @@
 import { prisma } from '../db/connection.js';
+import { processNewErgTest } from './prDetectionService.js';
 
 /**
  * Create a new erg test
@@ -25,7 +26,13 @@ export async function createErgTest(teamId, data) {
     },
   });
 
-  return formatErgTest(test);
+  // Process PR detection
+  const prDetection = await processNewErgTest(test);
+
+  const formattedTest = formatErgTest(test);
+  formattedTest.prDetection = prDetection;
+
+  return formattedTest;
 }
 
 /**
