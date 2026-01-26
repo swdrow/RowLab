@@ -95,6 +95,8 @@
     "stripe-gradient": "^1.0.1",
     "three": "^0.160.1",
     "uuid": "^13.0.0",
+    "vis-data": "^8.0.3",
+    "vis-network": "^10.0.2",
     "winston": "^3.19.0",
     "zod": "^4.3.4",
     "zustand": "^4.4.7"
