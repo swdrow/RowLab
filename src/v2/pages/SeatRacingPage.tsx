@@ -92,13 +92,27 @@ export function SeatRacingPage() {
             </p>
           </div>
 
-          <button
-            onClick={handleOpenWizard}
-            className="flex items-center gap-2 px-4 py-2 bg-interactive-primary text-button-primary-text rounded-md hover:bg-interactive-primary-hover transition-colors"
-          >
-            <Plus size={18} />
-            New Session
-          </button>
+          <div className="flex items-center gap-3">
+            <a
+              href="/app/coach/seat-racing/advanced-rankings"
+              className="px-4 py-2 bg-bg-subtle text-txt-primary rounded-md hover:bg-bg-hover transition-colors text-sm font-medium"
+            >
+              Advanced Rankings
+            </a>
+            <a
+              href="/app/coach/seat-racing/matrix-planner"
+              className="px-4 py-2 bg-bg-subtle text-txt-primary rounded-md hover:bg-bg-hover transition-colors text-sm font-medium"
+            >
+              Matrix Planner
+            </a>
+            <button
+              onClick={handleOpenWizard}
+              className="flex items-center gap-2 px-4 py-2 bg-interactive-primary text-button-primary-text rounded-md hover:bg-interactive-primary-hover transition-colors"
+            >
+              <Plus size={18} />
+              New Session
+            </button>
+          </div>
         </div>
       </div>
 

@@ -53,6 +53,8 @@ const V2SettingsPage = lazy(() => import('@v2/features/settings/pages/SettingsPa
 const SessionsPage = lazy(() => import('@v2/pages/training/SessionsPage'));
 const SessionDetailPage = lazy(() => import('@v2/pages/training/SessionDetailPage'));
 const LiveSessionPage = lazy(() => import('@v2/pages/training/LiveSessionPage'));
+const AdvancedRankingsPage = lazy(() => import('@v2/pages/AdvancedRankingsPage'));
+const MatrixPlannerPage = lazy(() => import('@v2/pages/MatrixPlannerPage'));
 
 // Error Boundary for catching rendering errors
 class ErrorBoundary extends React.Component {
@@ -248,6 +250,22 @@ function App() {
                   element={
                     <Suspense fallback={<LoadingFallback variant="component" message="Loading seat racing..." />}>
                       <V2SeatRacingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/seat-racing/advanced-rankings"
+                  element={
+                    <Suspense fallback={<LoadingFallback variant="component" message="Loading advanced rankings..." />}>
+                      <AdvancedRankingsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/seat-racing/matrix-planner"
+                  element={
+                    <Suspense fallback={<LoadingFallback variant="component" message="Loading matrix planner..." />}>
+                      <MatrixPlannerPage />
                     </Suspense>
                   }
                 />
