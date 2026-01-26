@@ -5,7 +5,7 @@
 **Milestone:** v2.0 — Core Migration
 **Phase:** 13 (Cross-Feature Integrations) — In Progress
 **Status:** Executing Phase 13 plans
-**Last activity:** 2026-01-26 — Completed 13-06-PLAN.md (Live Erg Data API Endpoint)
+**Last activity:** 2026-01-26 — Completed 13-07-PLAN.md (Auto Attendance Recording)
 
 ## Project Reference
 
@@ -39,7 +39,7 @@ v1.0 Progress: 100% Complete
 | 10 | Training Plans & NCAA | Complete | 11/11 |
 | 11 | Racing & Regattas | Complete | 10/10 |
 | 12 | Settings & Polish | Complete | 17/17 |
-| 13 | Cross-Feature Integrations | In Progress | 6/— |
+| 13 | Cross-Feature Integrations | In Progress | 7/— |
 | 14 | Advanced Seat Racing Analytics | Pending | —/— |
 
 v2.0 Progress: ████████████░ (71 phases 6-12 complete, Phase 13 in progress)
@@ -214,11 +214,21 @@ Key architectural decisions carrying forward:
 | 12-15 | CSS overrides for react-big-calendar accessibility | Forking library not needed, scoped .v2 CSS overrides apply design tokens while maintaining library updates |
 | 12-15 | Document but don't fix V1 login accessibility in tests | V1 is legacy, V2 components meet WCAG AA, test auth setup is separate concern |
 
+### Phase 13 Decisions
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 13-07 | Participation thresholds: 75%=Present, 25-75%=Partial, <25%=Absent | Configurable defaults that match coaching expectations for session participation |
+| 13-07 | Override tracking with user and timestamp metadata | Provides audit trail for attendance corrections, accountability for manual changes |
+| 13-07 | Auto-recorded flag distinguishes system vs manual | Frontend can show which records were automatic vs coach-entered for transparency |
+| 13-07 | 24-hour override lock tracked but not enforced | Utility function available for UI warning, backend doesn't block for coaching flexibility |
+| 13-07 | Upsert pattern for attendance recording | Allows re-recording same athlete if participation updates during session |
+
 ## Session Continuity
 
 **Last session:** 2026-01-26
-**Stopped at:** Completed 13-05-PLAN.md (Live Erg Dashboard)
-**Resume file:** .planning/phases/13-cross-feature-integrations/13-06-PLAN.md
+**Stopped at:** Completed 13-07-PLAN.md (Auto Attendance Recording)
+**Resume file:** None - waiting for next plan
 
 ## Known Limitations
 
