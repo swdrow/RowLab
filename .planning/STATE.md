@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 18 (Lineup & Boat Improvements) — In Progress
-**Status:** 1 of 11 plans complete
-**Last activity:** 2026-01-27 — Completed 18-01-PLAN.md
+**Status:** 2 of 11 plans complete
+**Last activity:** 2026-01-27 — Completed 18-04-PLAN.md
 
 ## Project Reference
 
@@ -51,7 +51,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
-| 18 | Lineup & Boat Improvements | In Progress | 1/11 |
+| 18 | Lineup & Boat Improvements | In Progress | 2/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
 
@@ -326,11 +326,15 @@ Key architectural decisions carrying forward:
 | 18-01 | LineupTemplate stores assignments as Json array | Templates are boat-agnostic patterns, Json array simpler than normalized assignment table |
 | 18-01 | EquipmentAssignment tracks equipment with optional sessionId | Links equipment usage to training sessions when available for automatic conflict detection |
 | 18-01 | SetNull cascade on equipment deletions | Preserves historical assignment records even when equipment is removed from inventory |
+| 18-04 | express-validator for template routes | Matches existing V1 route patterns instead of Zod for consistency across codebase |
+| 18-04 | Inline validateRequest in route file | Following v1/lineups.js pattern where validateRequest defined per-file instead of shared middleware |
+| 18-04 | Default template auto-clears other defaults | When setting template as default, automatically clears other defaults for same boat class to prevent conflicts |
+| 18-04 | Apply template returns assignment + unfilled seats | Structured response lets frontend decide how to handle unfilled seats instead of throwing errors |
 
 ## Session Continuity
 
-**Last session:** 2026-01-27T13:00:23Z
-**Stopped at:** Completed 18-01-PLAN.md
+**Last session:** 2026-01-27T13:08:43Z
+**Stopped at:** Completed 18-04-PLAN.md
 **Resume file:** None
 
 ## Known Limitations
