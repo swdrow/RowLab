@@ -11,13 +11,23 @@
  */
 
 import express from 'express';
-import { param, body, query } from 'express-validator';
+import { param, body, query, validationResult } from 'express-validator';
 import { authenticateToken, requireTeam } from '../middleware/auth.js';
-import { validateRequest } from '../middleware/validation.js';
 import * as equipmentService from '../services/equipmentService.js';
-import { logger } from '../utils/logger.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
+
+const validateRequest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', details: errors.array() },
+    });
+  }
+  next();
+};
 
 /**
  * GET /api/v1/equipment/availability
