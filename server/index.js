@@ -53,6 +53,9 @@ import personalRecordsRoutes from './routes/personalRecords.js';
 import challengeRoutes from './routes/challenges.js';
 import achievementRoutes from './routes/achievements.js';
 import streakRoutes from './routes/streaks.js';
+import equipmentRoutes from './routes/equipment.js';
+import riggingRoutes from './routes/rigging.js';
+import lineupTemplateRoutes from './routes/lineupTemplates.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
@@ -114,6 +117,7 @@ app.use('/api/v1/boat-configs', apiLimiter, boatConfigRoutes);
 app.use('/api/v1/shells', apiLimiter, shellRoutes);
 app.use('/api/v1/oar-sets', apiLimiter, oarSetRoutes);
 app.use('/api/v1/lineups', apiLimiter, lineupRoutesV1);
+app.use('/api/v1/lineup-templates', apiLimiter, lineupTemplateRoutes);
 app.use('/api/v1/seat-races', apiLimiter, seatRaceRoutes);
 app.use('/api/v1/ratings', apiLimiter, ratingsRoutes);
 app.use('/api/v1/rankings', apiLimiter, rankingsRoutes);
@@ -144,6 +148,8 @@ app.use('/api/v1/personal-records', apiLimiter, personalRecordsRoutes);
 app.use('/api/v1/challenges', apiLimiter, challengeRoutes);
 app.use('/api/v1/achievements', apiLimiter, achievementRoutes);
 app.use('/api/v1/streaks', apiLimiter, streakRoutes);
+app.use('/api/v1/equipment', apiLimiter, equipmentRoutes);
+app.use('/api/v1/rigging', apiLimiter, riggingRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
