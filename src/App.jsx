@@ -4,7 +4,7 @@ import { LoadingFallback } from './components/LoadingFallback';
 import './App.css';
 
 // Lazy load all pages for code splitting
-const LandingPage = lazy(() => import('./pages/LandingPage'));
+const LandingPage = lazy(() => import('./pages/LandingPage.tsx'));
 const DashboardRouter = lazy(() => import('./components/DashboardRouter'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const AthleteDashboard = lazy(() => import('./pages/AthleteDashboard'));

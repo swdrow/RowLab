@@ -380,6 +380,187 @@
 }
 
 /* ========================================
+   BENTO GRID - Asymmetric Feature Layout
+   ======================================== */
+
+.landing-bento {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  grid-template-areas: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) {
+  .landing-bento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: Full asymmetric layout */
+@media (min-width: 1024px) {
+  .landing-bento {
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, minmax(180px, auto));
+    grid-template-areas:
+      "lineup lineup lineup seat seat train"
+      "lineup lineup lineup seat seat train"
+      "erg erg fleet raceday raceday raceday"
+      "avail avail roster roster gamify gamify";
+  }
+
+  /* Grid area assignments */
+  .bento-lineup { grid-area: lineup; }
+  .bento-seat { grid-area: seat; }
+  .bento-train { grid-area: train; }
+  .bento-erg { grid-area: erg; }
+  .bento-fleet { grid-area: fleet; }
+  .bento-raceday { grid-area: raceday; }
+  .bento-avail { grid-area: avail; }
+  .bento-roster { grid-area: roster; }
+  .bento-gamify { grid-area: gamify; }
+}
+
+/* ========================================
+   HERO SECTION - Editorial Redesign
+   ======================================== */
+
+.landing-hero-editorial {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+  position: relative;
+}
+
+.landing-hero-editorial::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(250, 250, 250, 0.02) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.landing-headline {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.0;
+  color: var(--ink-bright);
+  margin-bottom: 1.5rem;
+  max-width: 900px;
+}
+
+.landing-subheadline {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  color: var(--ink-body);
+  max-width: 600px;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+/* ========================================
+   SECTION LAYOUTS
+   ======================================== */
+
+.landing-section {
+  padding: 6rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.landing-section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.landing-section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  color: var(--ink-bright);
+  margin-bottom: 1rem;
+}
+
+.landing-section-subtitle {
+  color: var(--ink-body);
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.125rem;
+}
+
+/* ========================================
+   TWO-COLUMN SPLIT (Coach/Athlete)
+   ======================================== */
+
+.landing-split {
+  display: grid;
+  gap: 3rem;
+  grid-template-columns: 1fr;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .landing-split {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
+.landing-split-column {
+  padding: 2rem;
+  background: var(--ink-raised);
+  border: 1px solid var(--ink-border);
+  border-radius: 12px;
+}
+
+.landing-split-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink-bright);
+  margin-bottom: 1.5rem;
+}
+
+.landing-split-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.landing-split-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  color: var(--ink-body);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.landing-split-item:last-child {
+  border-bottom: none;
+}
+
+.landing-split-icon {
+  color: var(--ink-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ========================================
    MOBILE RESPONSIVE
    ======================================== */
 
@@ -389,9 +570,15 @@
     padding: 4rem 1.5rem;
   }
 
+  .landing-hero-editorial {
+    min-height: 70vh;
+    padding: 5rem 1.5rem 3rem;
+  }
+
   .landing-features,
   .landing-testimonials,
-  .landing-final-cta {
+  .landing-final-cta,
+  .landing-section {
     padding: 4rem 1.5rem;
   }
 
