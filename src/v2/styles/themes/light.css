@@ -1,40 +1,46 @@
 /**
- * Light Theme
+ * Light Theme - "Rowing Instrument" Aesthetic
  *
- * Optimized for well-lit environments and users who prefer light interfaces.
- * High contrast text on light backgrounds for readability.
+ * Clean, professional theme for well-lit environments.
+ * Same warmth as dark theme, inverted for light surfaces.
+ * Uses warm stone palette for comfortable readability.
  *
- * Base palette: Neutral grays inverted from dark theme
+ * Base: #FAFAF9 (warm white)
+ * Surface: #FFFFFF (pure white cards)
+ * Text: #0F0F0F (warm near-black)
  * Interactive: Blue accent (#3b82f6)
  */
 
 .v2[data-theme="light"] {
   /* ========================================
      BACKGROUND TOKENS
+     Warm stone-based light backgrounds
      ======================================== */
-  --color-bg-base: var(--palette-neutral-50);
-  --color-bg-surface: var(--palette-neutral-100);
+  --color-bg-base: var(--palette-stone-50);            /* #FAFAF9 warm white */
+  --color-bg-surface: var(--palette-stone-100);        /* #F5F5F4 */
   --color-bg-surface-elevated: #ffffff;
-  --color-bg-overlay: rgba(255, 255, 255, 0.9);
-  --color-bg-hover: var(--palette-neutral-200);
-  --color-bg-active: var(--palette-neutral-300);
+  --color-bg-overlay: rgba(250, 250, 249, 0.9);        /* Warm overlay */
+  --color-bg-hover: var(--palette-stone-200);
+  --color-bg-active: var(--palette-stone-300);
 
   /* ========================================
      TEXT TOKENS
+     Warm dark text for light backgrounds
      ======================================== */
-  --color-text-primary: var(--palette-neutral-950);
-  --color-text-secondary: var(--palette-neutral-600);
-  --color-text-tertiary: var(--palette-neutral-500);
-  --color-text-muted: var(--palette-neutral-400);
-  --color-text-inverse: var(--palette-neutral-50);
+  --color-text-primary: var(--palette-stone-950);      /* #0F0F0F warm near-black */
+  --color-text-secondary: var(--palette-stone-600);
+  --color-text-tertiary: var(--palette-stone-500);
+  --color-text-muted: var(--palette-stone-400);
+  --color-text-inverse: var(--palette-stone-50);
   --color-text-brand: #1d4ed8;
 
   /* ========================================
      BORDER TOKENS
+     Warm light borders
      ======================================== */
-  --color-border-default: var(--palette-neutral-300);
-  --color-border-subtle: var(--palette-neutral-200);
-  --color-border-strong: var(--palette-neutral-400);
+  --color-border-default: var(--palette-stone-300);
+  --color-border-subtle: var(--palette-stone-200);
+  --color-border-strong: var(--palette-stone-400);
   --color-border-brand: #1d4ed8;
 
   /* ========================================
@@ -43,7 +49,7 @@
   --color-interactive-primary: var(--palette-brand-blue);
   --color-interactive-hover: #1d4ed8;
   --color-interactive-active: #1e40af;
-  --color-interactive-disabled: var(--palette-neutral-300);
+  --color-interactive-disabled: var(--palette-stone-300);
 
   /* ========================================
      STATUS TOKENS
@@ -57,23 +63,23 @@
      COMPONENT TOKENS
      ======================================== */
   /* Card */
-  --color-card-bg: var(--palette-neutral-50);
-  --color-card-border: var(--color-border-subtle);
-  --color-card-hover: var(--palette-neutral-100);
+  --color-card-bg: #ffffff;
+  --color-card-border: var(--palette-stone-200);
+  --color-card-hover: var(--palette-stone-100);
 
   /* Button - Primary */
   --color-button-primary-bg: var(--color-interactive-primary);
   --color-button-primary-hover: var(--color-interactive-hover);
-  --color-button-primary-text: var(--palette-neutral-50);
+  --color-button-primary-text: var(--palette-stone-50);
 
   /* Button - Secondary */
-  --color-button-secondary-bg: var(--palette-neutral-200);
-  --color-button-secondary-hover: var(--palette-neutral-300);
-  --color-button-secondary-text: var(--palette-neutral-900);
+  --color-button-secondary-bg: var(--palette-stone-200);
+  --color-button-secondary-hover: var(--palette-stone-300);
+  --color-button-secondary-text: var(--palette-stone-900);
 
   /* Input */
-  --color-input-bg: var(--palette-neutral-50);
-  --color-input-border: var(--color-border-default);
+  --color-input-bg: #ffffff;
+  --color-input-border: var(--palette-stone-300);
   --color-input-focus: var(--color-border-brand);
   --color-input-text: var(--color-text-primary);
   --color-input-placeholder: var(--color-text-tertiary);
@@ -86,6 +92,7 @@
 
   /* ========================================
      SHADOW TOKENS
+     Subtle shadows for light backgrounds
      ======================================== */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
