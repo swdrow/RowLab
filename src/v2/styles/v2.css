@@ -19,6 +19,9 @@
 @import './themes/light.css';
 @import './themes/field.css';
 
+/* Animation system (high-impact moments, restrained motion) */
+@import './animations.css';
+
 /* Accessibility styles */
 @import './focus-rings.css';
 @import './reduced-motion.css';
