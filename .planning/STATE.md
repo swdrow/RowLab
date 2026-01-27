@@ -342,11 +342,15 @@ Key architectural decisions carrying forward:
 | 18-10 | Show 'at least N athletes' filter only when 2+ athletes selected | Contextual UI - filter appears only when relevant, reduces visual clutter |
 | 18-10 | FilterPill component for removable filter tags | Clear affordance for active filters with one-click removal |
 | 18-10 | Amber highlighting for comparison-selected lineups | Distinct from primary blue selection, visually separates "active" from "compare" states |
+| 18-11 | Dynamic import for xlsx library | Prevents ~400kb library from bloating main bundle, loads only when export triggered |
+| 18-11 | QR code offscreen rendering | QRCodeCanvas needs DOM to render before conversion to data URL, temporary container cleaned up after extraction |
+| 18-11 | Relative import for types in utils | Avoids potential tsconfig path resolution issues during isolated file compilation |
+| 18-11 | Multi-function PDF API | Three functions (single, multi-boat, simple) for clear use cases and backward compatibility |
 
 ## Session Continuity
 
-**Last session:** 2026-01-27T13:22:43Z
-**Stopped at:** Completed 18-10-PLAN.md
+**Last session:** 2026-01-27T13:22:21Z
+**Stopped at:** Completed 18-11-PLAN.md
 **Resume file:** None
 
 ## Known Limitations
