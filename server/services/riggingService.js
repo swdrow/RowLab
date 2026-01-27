@@ -4,9 +4,7 @@
  * Manages rigging settings per shell with team isolation.
  */
 
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../db/connection.js';
 
 /**
  * Default rigging values by boat class (from World Rowing / Concept2)
