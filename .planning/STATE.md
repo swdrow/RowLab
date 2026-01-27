@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.1 — Feature Expansion
-**Phase:** 18 (Lineup & Boat Improvements) — In Progress
-**Status:** 8 of 11 plans complete
-**Last activity:** 2026-01-27 — Completed 18-08-PLAN.md
+**Phase:** 17 (Complete Design Overhaul) — In Progress
+**Status:** 1 of TBD plans complete
+**Last activity:** 2026-01-27 — Completed 17-02-PLAN.md
 
 ## Project Reference
 
@@ -50,7 +50,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 |-------|------|--------|-------|
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
-| 17 | Complete Design Overhaul 🎨 | Planned | TBD |
+| 17 | Complete Design Overhaul | In Progress | 1/TBD |
 | 18 | Lineup & Boat Improvements | In Progress | 8/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
@@ -352,8 +352,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-27T13:24:09Z
-**Stopped at:** Completed 18-08-PLAN.md
+**Last session:** 2026-01-27
+**Stopped at:** Completed 17-02-PLAN.md (Typography System)
 **Resume file:** None
 
 ## Known Limitations
@@ -623,3 +623,15 @@ Phase 13 delivered the cross-feature integration layer:
 
 ---
 *Last updated: 2026-01-27 — Phase 18 Plan 07 Complete*
+
+### v2.1 Decisions (Phase 17)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 17-02 | Inter for headings and body, Geist Mono for data | Inter provides clean modern titles, Geist Mono gives stroke coach precision feel for numbers |
+| 17-02 | Geist Mono from jsDelivr CDN | Geist Mono is Vercel's font not on Google Fonts, jsDelivr CDN provides official package |
+| 17-02 | Legacy font fallbacks preserved | Backward compatibility for any components still referencing Space Grotesk or DM Sans |
+| 17-02 | All metric classes use tabular-nums | Ensures number alignment in tables and metrics like a SpeedCoach display |
+
+---
+*Last updated: 2026-01-27 — Phase 17 Plan 02 Complete*
