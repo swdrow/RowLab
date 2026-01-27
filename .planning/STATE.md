@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 17 (Complete Design Overhaul) — In Progress
-**Status:** 5 of 9 plans complete
-**Last activity:** 2026-01-27 — Completed 17-05-PLAN.md (Core Component Tactile Updates)
+**Status:** 6 of 9 plans complete
+**Last activity:** 2026-01-27 — Completed 17-06-PLAN.md (Form & Table Components)
 
 ## Project Reference
 
@@ -50,7 +50,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 |-------|------|--------|-------|
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
-| 17 | Complete Design Overhaul | In Progress | 5/9 |
+| 17 | Complete Design Overhaul | In Progress | 6/9 |
 | 18 | Lineup & Boat Improvements | In Progress | 8/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
@@ -353,7 +353,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-01-27
-**Stopped at:** Completed 17-04-PLAN.md (Animation System)
+**Stopped at:** Completed 17-06-PLAN.md (Form & Table Components)
 **Resume file:** None
 
 ## Known Limitations
@@ -646,6 +646,9 @@ Phase 13 delivered the cross-feature integration layer:
 | 17-04 | Animation presets (BUTTON_PRESS, CARD_HOVER, etc.) | Standardize common interaction patterns across components |
 | 17-04 | CSS keyframes for non-spring effects | Success pulse, gold wash, shimmer don't need JS spring physics |
 | 17-04 | Reduced motion via media query AND hook | CSS handles keyframes, JS hook handles Framer Motion springs |
+| 17-06 | Use MODAL_VARIANTS from animations.ts | Consistent animation behavior across all modals, single source of truth |
+| 17-06 | Input uses color-interactive-primary for focus | Clear visual focus indicator with warm palette consistency |
+| 17-06 | DataCell uses tabular-nums and right-alignment | Numbers align properly like SpeedCoach display, data-forward aesthetic |
 
 ---
-*Last updated: 2026-01-27 — Phase 17 Plan 04 Complete*
+*Last updated: 2026-01-27 — Phase 17 Plan 06 Complete*
