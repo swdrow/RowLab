@@ -123,6 +123,69 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ========================================
+   METRIC TYPOGRAPHY - "Stroke Coach" Display
+   Large numbers that feel like precision instruments
+   ======================================== */
+
+/* Metric XL - 72px hero numbers (boat speed, 2k time) */
+.v2 .text-metric-xl {
+  font-family: var(--font-metric);
+  font-size: 4.5rem; /* 72px */
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+/* Metric LG - 48px secondary metrics (split, rate) */
+.v2 .text-metric-lg {
+  font-family: var(--font-metric);
+  font-size: 3rem; /* 48px */
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+/* Metric MD - 32px dashboard widgets */
+.v2 .text-metric-md {
+  font-family: var(--font-metric);
+  font-size: 2rem; /* 32px */
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+/* Metric SM - 24px inline stats */
+.v2 .text-metric-sm {
+  font-family: var(--font-metric);
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+/* Data Table Numbers - Geist Mono for aligned columns */
+.v2 .text-data-lg {
+  font-family: var(--font-mono);
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tabular numbers utility - ensure alignment in tables */
+.v2 .tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 /* Responsive adjustments */
 @media (max-width: 767px) {
   .v2 .text-display {
@@ -140,6 +203,23 @@
   .v2 h2 {
     font-size: 1.25rem;
     line-height: 1.75rem;
+  }
+
+  /* Metric responsive - scale down for mobile */
+  .v2 .text-metric-xl {
+    font-size: 3rem; /* 48px on mobile */
+  }
+
+  .v2 .text-metric-lg {
+    font-size: 2.25rem; /* 36px on mobile */
+  }
+
+  .v2 .text-metric-md {
+    font-size: 1.5rem; /* 24px on mobile */
+  }
+
+  .v2 .text-metric-sm {
+    font-size: 1.25rem; /* 20px on mobile */
   }
 }
 
