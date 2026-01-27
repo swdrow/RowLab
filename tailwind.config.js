@@ -336,34 +336,16 @@ export default {
         'precision': 'cubic-bezier(0.16, 1, 0.3, 1)', // Premium ease-out curve for UI
       },
 
-      // Typography - Precision Instrument system
+      // Typography - Rowing Instrument system (uses CSS variables from tokens.css)
       fontFamily: {
-        // Display font for hero headlines - Space Grotesk
-        'display': [
-          '"Space Grotesk"',
-          'system-ui',
-          'sans-serif',
-        ],
-        // Body font - DM Sans
-        'sans': [
-          '"DM Sans"',
-          'system-ui',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          '"Segoe UI"',
-          'Roboto',
-          'sans-serif',
-        ],
-        // Monospace for times, stats, data
-        'mono': [
-          '"JetBrains Mono"',
-          '"SF Mono"',
-          'ui-monospace',
-          'Menlo',
-          'Monaco',
-          'Consolas',
-          'monospace',
-        ],
+        // Display font for headings - Inter (via CSS variable)
+        'display': ['var(--font-display)', 'system-ui', 'sans-serif'],
+        // Body font - Inter (via CSS variable)
+        'sans': ['var(--font-body)', 'system-ui', 'sans-serif'],
+        // Monospace for times, stats, data - Geist Mono (via CSS variable)
+        'mono': ['var(--font-mono)', 'ui-monospace', 'monospace'],
+        // Metric font for large hero numbers - Inter Black (via CSS variable)
+        'metric': ['var(--font-metric)', 'system-ui', 'sans-serif'],
       },
 
       // Font sizes - Athletic scale
