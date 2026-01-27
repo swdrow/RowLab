@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 18 (Lineup & Boat Improvements) — In Progress
-**Status:** 4 of 11 plans complete
-**Last activity:** 2026-01-27 — Completed 18-06-PLAN.md
+**Status:** 5 of 11 plans complete
+**Last activity:** 2026-01-27 — Completed 18-03-PLAN.md
 
 ## Project Reference
 
@@ -51,7 +51,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
-| 18 | Lineup & Boat Improvements | In Progress | 2/11 |
+| 18 | Lineup & Boat Improvements | In Progress | 5/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
 
@@ -333,11 +333,15 @@ Key architectural decisions carrying forward:
 | 18-04 | Inline validateRequest in route file | Following v1/lineups.js pattern where validateRequest defined per-file instead of shared middleware |
 | 18-04 | Default template auto-clears other defaults | When setting template as default, automatically clears other defaults for same boat class to prevent conflicts |
 | 18-04 | Apply template returns assignment + unfilled seats | Structured response lets frontend decide how to handle unfilled seats instead of throwing errors |
+| 18-03 | World Rowing/Concept2 rigging standards as defaults | Provides immediate value for all shells without requiring manual entry, based on published standards |
+| 18-03 | Service returns defaults when no custom profile exists | Transparent fallback - API always returns valid rigging data, custom profiles optional enhancement |
+| 18-03 | Deletion reverts to defaults | Deleting custom profile doesn't remove rigging capability, just returns shell to standard values |
+| 18-03 | Per-seat overrides stored as JSON | Flexibility for advanced rigging adjustments without separate table per seat |
 
 ## Session Continuity
 
-**Last session:** 2026-01-27T13:09:13Z
-**Stopped at:** Completed 18-06-PLAN.md
+**Last session:** 2026-01-27T13:10:43Z
+**Stopped at:** Completed 18-03-PLAN.md
 **Resume file:** None
 
 ## Known Limitations
