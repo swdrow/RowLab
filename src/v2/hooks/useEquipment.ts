@@ -1,0 +1,176 @@
+/**
+ * Equipment Hooks - Phase 18 BOAT-03, BOAT-04
+ */
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import useAuthStore from '../../store/authStore';
+import type {
+  EquipmentAssignment,
+  EquipmentAssignmentInput,
+  EquipmentConflict,
+  EquipmentAvailability,
+} from '../types/equipment';
+
+// Query key factory
+export const equipmentKeys = {
+  all: ['equipment'] as const,
+  availability: (date: string, excludeLineupId?: string) =>
+    [...equipmentKeys.all, 'availability', date, excludeLineupId] as const,
+  assignments: (date: string) => [...equipmentKeys.all, 'assignments', date] as const,
+  lineupAssignments: (lineupId: string) =>
+    [...equipmentKeys.all, 'lineup-assignments', lineupId] as const,
+};
+
+/**
+ * Get equipment availability for a date
+ */
+export function useEquipmentAvailability(date: string, excludeLineupId?: string) {
+  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
+    useAuthStore();
+
+  return useQuery({
+    queryKey: equipmentKeys.availability(date, excludeLineupId),
+    queryFn: async (): Promise<EquipmentAvailability> => {
+      let url = `/api/v1/equipment/availability?date=${encodeURIComponent(date)}`;
+      if (excludeLineupId) {
+        url += `&excludeLineupId=${encodeURIComponent(excludeLineupId)}`;
+      }
+      const response = await authenticatedFetch(url);
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error?.message || 'Failed to fetch availability');
+      return data.data;
+    },
+    enabled: isAuthenticated && isInitialized && !!activeTeamId && !!date,
+    staleTime: 30 * 1000, // 30 seconds - equipment status can change frequently
+  });
+}
+
+/**
+ * Get assignments for a date
+ */
+export function useEquipmentAssignments(date: string) {
+  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
+    useAuthStore();
+
+  return useQuery({
+    queryKey: equipmentKeys.assignments(date),
+    queryFn: async (): Promise<EquipmentAssignment[]> => {
+      const response = await authenticatedFetch(
+        `/api/v1/equipment/assignments?date=${encodeURIComponent(date)}`
+      );
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error?.message || 'Failed to fetch assignments');
+      return data.data.assignments;
+    },
+    enabled: isAuthenticated && isInitialized && !!activeTeamId && !!date,
+    staleTime: 30 * 1000,
+  });
+}
+
+/**
+ * Get assignments for a lineup
+ */
+export function useLineupEquipmentAssignments(lineupId: string | null) {
+  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
+    useAuthStore();
+
+  return useQuery({
+    queryKey: equipmentKeys.lineupAssignments(lineupId || ''),
+    queryFn: async (): Promise<EquipmentAssignment[]> => {
+      const response = await authenticatedFetch(
+        `/api/v1/equipment/assignments/lineup/${lineupId}`
+      );
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error?.message || 'Failed to fetch assignments');
+      return data.data.assignments;
+    },
+    enabled: isAuthenticated && isInitialized && !!activeTeamId && !!lineupId,
+    staleTime: 30 * 1000,
+  });
+}
+
+/**
+ * Create equipment assignment
+ */
+export function useCreateEquipmentAssignment() {
+  const { authenticatedFetch } = useAuthStore();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: EquipmentAssignmentInput): Promise<EquipmentAssignment> => {
+      const response = await authenticatedFetch('/api/v1/equipment/assignments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error?.message || 'Failed to create assignment');
+      return result.data.assignment;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: equipmentKeys.availability(variables.assignedDate),
+      });
+      queryClient.invalidateQueries({
+        queryKey: equipmentKeys.assignments(variables.assignedDate),
+      });
+      if (variables.lineupId) {
+        queryClient.invalidateQueries({
+          queryKey: equipmentKeys.lineupAssignments(variables.lineupId),
+        });
+      }
+    },
+  });
+}
+
+/**
+ * Delete equipment assignment
+ */
+export function useDeleteEquipmentAssignment() {
+  const { authenticatedFetch } = useAuthStore();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (assignmentId: string): Promise<void> => {
+      const response = await authenticatedFetch(`/api/v1/equipment/assignments/${assignmentId}`, {
+        method: 'DELETE',
+      });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error?.message || 'Failed to delete assignment');
+    },
+    onSuccess: () => {
+      // Invalidate all equipment queries since we don't know the date/lineup
+      queryClient.invalidateQueries({ queryKey: equipmentKeys.all });
+    },
+  });
+}
+
+/**
+ * Check for equipment conflicts
+ */
+export function useCheckConflicts() {
+  const { authenticatedFetch } = useAuthStore();
+
+  return useMutation({
+    mutationFn: async ({
+      date,
+      shellIds,
+      oarSetIds,
+      excludeLineupId,
+    }: {
+      date: string;
+      shellIds?: string[];
+      oarSetIds?: string[];
+      excludeLineupId?: string;
+    }): Promise<{ conflicts: EquipmentConflict[]; hasConflicts: boolean }> => {
+      const response = await authenticatedFetch('/api/v1/equipment/check-conflicts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date, shellIds, oarSetIds, excludeLineupId }),
+      });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error?.message || 'Failed to check conflicts');
+      return result.data;
+    },
+  });
+}
