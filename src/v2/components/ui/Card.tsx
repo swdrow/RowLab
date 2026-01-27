@@ -30,19 +30,24 @@ export interface CardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   children: React.ReactNode;
 }
 
+/**
+ * Dark Editorial Card Variants
+ *
+ * All variants use monochrome Inkwell palette
+ * No colored accents or left borders
+ */
 const variantStyles: Record<CardVariant, string> = {
   default: `
-    bg-[var(--color-bg-surface)]
-    border border-[var(--color-border-subtle)]
+    bg-ink-raised
+    border border-ink-border
   `,
   elevated: `
-    bg-[var(--color-bg-surface-elevated)]
-    border border-[var(--color-border-subtle)]
-    shadow-lg
+    bg-ink-raised
+    border border-ink-border
   `,
   outline: `
     bg-transparent
-    border border-[var(--color-border-default)]
+    border border-ink-border
   `,
 };
 
@@ -72,24 +77,18 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
     const baseStyles = 'rounded-lg';
 
+    // Dark Editorial: Hover changes border only, no lift animation (too playful)
     const hoverableStyles = isHoverable
       ? `
         cursor-pointer
-        transition-colors duration-150
-        hover:bg-[var(--color-bg-hover)]
-        hover:border-[var(--color-border-strong)]
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]
+        transition-colors duration-200 ease-out
+        hover:border-ink-border-strong
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep
       `
       : '';
 
-    const motionProps =
-      isHoverable && !prefersReducedMotion
-        ? {
-            whileHover: { scale: 1.01, y: -2 },
-            whileTap: { scale: 0.99 },
-            transition: SPRING_CONFIG,
-          }
-        : {};
+    // Dark Editorial: No scale/lift animations on cards - precise, editorial feel
+    const motionProps = {};
 
     return (
       <motion.div
@@ -129,7 +128,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
     <div
       className={cn(
         'flex items-center justify-between gap-4 pb-4',
-        'border-b border-[var(--color-border-subtle)]',
+        'border-b border-ink-border',
         '-mx-4 px-4 -mt-4 pt-4', // Extend to card edges
         className
       )}
@@ -155,10 +154,11 @@ export const CardTitle: React.FC<CardTitleProps> = ({
   className,
   as: Component = 'h3',
 }) => {
+  // Dark Editorial: Card titles use serif display font, bright luminance
   return (
     <Component
       className={cn(
-        'text-base font-semibold text-[var(--color-text-primary)]',
+        'text-base font-semibold text-ink-bright font-display',
         className
       )}
     >
@@ -202,7 +202,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
     <div
       className={cn(
         'flex items-center gap-3 pt-4 mt-4',
-        'border-t border-[var(--color-border-subtle)]',
+        'border-t border-ink-border',
         '-mx-4 px-4 -mb-4 pb-4', // Extend to card edges
         className
       )}

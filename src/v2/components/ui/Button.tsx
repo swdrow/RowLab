@@ -35,40 +35,46 @@ export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'size'> {
   children?: React.ReactNode;
 }
 
+/**
+ * Dark Editorial Button Variants
+ *
+ * Primary: White on dark (inverted from typical SaaS)
+ * Secondary: Ghost with border
+ * All variants are MONOCHROME - no colored backgrounds
+ * Danger is the only exception (uses data-poor for destructive actions)
+ */
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-[var(--color-interactive-primary)] text-white
-    hover:bg-[var(--color-interactive-hover)]
-    active:bg-[var(--color-interactive-active)]
-    disabled:bg-[var(--color-interactive-disabled)] disabled:text-[var(--color-text-muted)]
-    shadow-sm hover:shadow-md
+    bg-ink-bright text-ink-deep
+    hover:bg-ink-primary
+    active:bg-ink-body
+    disabled:bg-ink-muted disabled:text-ink-tertiary
   `,
   secondary: `
-    bg-[var(--color-bg-surface-elevated)] text-[var(--color-text-primary)]
-    border border-[var(--color-border-default)]
-    hover:bg-[var(--color-bg-hover)] hover:border-[var(--color-border-strong)]
-    active:bg-[var(--color-bg-active)]
-    disabled:bg-[var(--color-bg-surface)] disabled:text-[var(--color-text-muted)] disabled:border-[var(--color-border-subtle)]
+    bg-transparent text-ink-primary
+    border border-ink-border
+    hover:bg-ink-raised hover:border-ink-border-strong
+    active:bg-ink-border
+    disabled:text-ink-muted disabled:border-ink-muted disabled:bg-transparent
   `,
   ghost: `
-    bg-transparent text-[var(--color-text-primary)]
-    hover:bg-[var(--color-bg-hover)]
-    active:bg-[var(--color-bg-active)]
-    disabled:text-[var(--color-text-muted)] disabled:bg-transparent
+    bg-transparent text-ink-primary
+    hover:bg-ink-raised
+    active:bg-ink-border
+    disabled:text-ink-muted disabled:bg-transparent
   `,
   danger: `
-    bg-[var(--color-status-error)] text-white
+    bg-data-poor text-white
     hover:brightness-110
     active:brightness-90
-    disabled:bg-[var(--color-interactive-disabled)] disabled:text-[var(--color-text-muted)]
-    shadow-sm hover:shadow-md
+    disabled:bg-ink-muted disabled:text-ink-tertiary
   `,
   outline: `
-    bg-transparent text-[var(--color-interactive-primary)]
-    border border-[var(--color-interactive-primary)]
-    hover:bg-[var(--color-interactive-primary)]/10
-    active:bg-[var(--color-interactive-primary)]/20
-    disabled:text-[var(--color-text-muted)] disabled:border-[var(--color-border-subtle)] disabled:bg-transparent
+    bg-transparent text-ink-primary
+    border border-ink-border
+    hover:bg-ink-raised hover:border-ink-border-strong
+    active:bg-ink-border
+    disabled:text-ink-muted disabled:border-ink-muted disabled:bg-transparent
   `,
 };
 
@@ -103,20 +109,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const prefersReducedMotion = usePrefersReducedMotion();
     const isDisabled = disabled || loading;
 
+    // Dark Editorial: White focus ring, precise transitions
     const baseStyles = `
       inline-flex items-center justify-center
       rounded-lg font-medium
-      transition-colors duration-150
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]
+      transition-all duration-150 ease-out
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep
       disabled:cursor-not-allowed
     `;
 
+    // Dark Editorial: Precise scale(0.98) on press, no hover scale (too playful)
     const motionProps = prefersReducedMotion
       ? {}
       : {
-          whileHover: isDisabled ? {} : { scale: 1.02 },
-          whileTap: isDisabled ? {} : { scale: 0.96 }, // Tactile press per CONTEXT.md
-          transition: SPRING_FAST,
+          whileTap: isDisabled ? {} : { scale: 0.98 },
+          transition: { duration: 0.1, ease: 'easeOut' },
         };
 
     return (
@@ -182,20 +189,21 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     const prefersReducedMotion = usePrefersReducedMotion();
     const isDisabled = disabled || loading;
 
+    // Dark Editorial: White focus ring, precise transitions
     const baseStyles = `
       inline-flex items-center justify-center
       rounded-lg
-      transition-colors duration-150
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]
+      transition-all duration-150 ease-out
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep
       disabled:cursor-not-allowed
     `;
 
+    // Dark Editorial: Precise scale(0.98) on press, no hover scale
     const motionProps = prefersReducedMotion
       ? {}
       : {
-          whileHover: isDisabled ? {} : { scale: 1.1 },
-          whileTap: isDisabled ? {} : { scale: 0.96 }, // Tactile press per CONTEXT.md
-          transition: SPRING_FAST,
+          whileTap: isDisabled ? {} : { scale: 0.98 },
+          transition: { duration: 0.1, ease: 'easeOut' },
         };
 
     return (
