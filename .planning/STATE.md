@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 18 (Lineup & Boat Improvements) — In Progress
-**Status:** 2 of 11 plans complete
-**Last activity:** 2026-01-27 — Completed 18-04-PLAN.md
+**Status:** 4 of 11 plans complete
+**Last activity:** 2026-01-27 — Completed 18-06-PLAN.md
 
 ## Project Reference
 
@@ -326,6 +326,9 @@ Key architectural decisions carrying forward:
 | 18-01 | LineupTemplate stores assignments as Json array | Templates are boat-agnostic patterns, Json array simpler than normalized assignment table |
 | 18-01 | EquipmentAssignment tracks equipment with optional sessionId | Links equipment usage to training sessions when available for automatic conflict detection |
 | 18-01 | SetNull cascade on equipment deletions | Preserves historical assignment records even when equipment is removed from inventory |
+| 18-06 | Two-step filtering for complex lineup searches | Prisma query handles basic filters, post-processing checks "at least N athletes" requirement that Prisma can't express efficiently |
+| 18-06 | Metadata enrichment in search results | Include athleteCount, boatClasses, shellNames in results to avoid additional API calls during result browsing |
+| 18-06 | Search route before :id route | Express matches routes in order, /search must be registered before /:id to avoid treating "search" as ID parameter |
 | 18-04 | express-validator for template routes | Matches existing V1 route patterns instead of Zod for consistency across codebase |
 | 18-04 | Inline validateRequest in route file | Following v1/lineups.js pattern where validateRequest defined per-file instead of shared middleware |
 | 18-04 | Default template auto-clears other defaults | When setting template as default, automatically clears other defaults for same boat class to prevent conflicts |
@@ -333,8 +336,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-27T13:08:43Z
-**Stopped at:** Completed 18-04-PLAN.md
+**Last session:** 2026-01-27T13:09:13Z
+**Stopped at:** Completed 18-06-PLAN.md
 **Resume file:** None
 
 ## Known Limitations
