@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { SPRING_FAST, usePrefersReducedMotion } from '../../utils/animations';
+import { SPRING_CONFIG, CARD_HOVER, usePrefersReducedMotion } from '../../utils/animations';
 
 /**
  * Card - Polished card component with optional interactivity
@@ -22,7 +22,10 @@ export type CardVariant = 'default' | 'elevated' | 'outline';
 
 export interface CardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   variant?: CardVariant;
+  /** @deprecated Use hoverable instead */
   interactive?: boolean;
+  /** Enable hover lift animation for clickable cards */
+  hoverable?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
@@ -55,6 +58,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     {
       variant = 'default',
       interactive = false,
+      hoverable,
       padding = 'md',
       children,
       className,
@@ -63,24 +67,27 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     ref
   ) => {
     const prefersReducedMotion = usePrefersReducedMotion();
+    // Support both interactive (deprecated) and hoverable props
+    const isHoverable = hoverable ?? interactive;
 
     const baseStyles = 'rounded-lg';
 
-    const interactiveStyles = interactive
+    const hoverableStyles = isHoverable
       ? `
         cursor-pointer
         transition-colors duration-150
         hover:bg-[var(--color-bg-hover)]
+        hover:border-[var(--color-border-strong)]
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]
       `
       : '';
 
     const motionProps =
-      interactive && !prefersReducedMotion
+      isHoverable && !prefersReducedMotion
         ? {
             whileHover: { scale: 1.01, y: -2 },
             whileTap: { scale: 0.99 },
-            transition: SPRING_FAST,
+            transition: SPRING_CONFIG,
           }
         : {};
 
@@ -91,10 +98,10 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
           baseStyles,
           variantStyles[variant],
           paddingStyles[padding],
-          interactiveStyles,
+          hoverableStyles,
           className
         )}
-        tabIndex={interactive ? 0 : undefined}
+        tabIndex={isHoverable ? 0 : undefined}
         {...motionProps}
         {...props}
       >
