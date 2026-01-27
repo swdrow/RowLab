@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 18 (Lineup & Boat Improvements) — In Progress
-**Status:** 8 of 11 plans complete
-**Last activity:** 2026-01-27 — Completed 18-11-PLAN.md
+**Status:** 9 of 11 plans complete
+**Last activity:** 2026-01-27 — Completed 18-09-PLAN.md
 
 ## Project Reference
 
@@ -51,7 +51,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
-| 18 | Lineup & Boat Improvements | In Progress | 8/11 |
+| 18 | Lineup & Boat Improvements | In Progress | 9/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
 
