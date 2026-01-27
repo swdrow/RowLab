@@ -16,3 +16,12 @@ export { RichTextToolbar } from './RichTextToolbar';
 export { RichTextDisplay } from './RichTextDisplay';
 export { FeatureGuard } from './FeatureGuard';
 export { FeatureDiscoveryHint } from './FeatureDiscoveryHint';
+export {
+  MobileCard,
+  MobileCardField,
+  MobileCardHeader,
+  type MobileCardProps,
+  type MobileCardAction,
+  type MobileCardFieldProps,
+  type MobileCardHeaderProps,
+} from './MobileCard';
