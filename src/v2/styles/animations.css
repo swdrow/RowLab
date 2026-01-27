@@ -1,0 +1,367 @@
+/**
+ * CSS Keyframe Animations
+ * Non-spring animations for effects like shimmer, pulse, and live data updates
+ *
+ * Philosophy (per DESIGN-04):
+ * - High-impact moments: Success confirmations, PRs, achievements
+ * - Always restrained: No parallax, no auto-playing backgrounds
+ * - Respect reduced motion preferences
+ */
+
+/* ========================================
+   SUCCESS ANIMATIONS
+   High-impact moments for confirmations
+   ======================================== */
+
+/* Success pulse - subtle green glow for confirmations */
+@keyframes success-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.v2 .animate-success-pulse {
+  animation: success-pulse 0.6s ease-out;
+}
+
+/* Gold wash for PRs/achievements - rowing gold (#f59e0b) */
+@keyframes gold-wash {
+  0% {
+    background-color: transparent;
+  }
+  20% {
+    background-color: rgba(245, 158, 11, 0.15);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.v2 .animate-gold-wash {
+  animation: gold-wash 1.5s ease-out;
+}
+
+/* Error pulse - subtle red glow for error states */
+@keyframes error-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.v2 .animate-error-pulse {
+  animation: error-pulse 0.5s ease-out;
+}
+
+/* ========================================
+   LOADING ANIMATIONS
+   Clean, single shimmer - no excessive movement
+   ======================================== */
+
+/* Single shimmer effect for skeletons */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.v2 .animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.v2 .animate-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* Light theme shimmer - darker gradient for visibility */
+.v2[data-theme="light"] .animate-shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.04),
+    transparent
+  );
+}
+
+/* Field theme shimmer - high contrast */
+.v2[data-theme="field"] .animate-shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(180, 83, 9, 0.08),
+    transparent
+  );
+}
+
+/* ========================================
+   LIVE DATA ANIMATIONS
+   Rolling digits, color flashes for changes
+   ======================================== */
+
+/* Number change flash - gold highlight for any data update */
+@keyframes number-flash {
+  0% {
+    color: var(--palette-rowing-gold, #f59e0b);
+    transform: scale(1.05);
+  }
+  100% {
+    color: inherit;
+    transform: scale(1);
+  }
+}
+
+.v2 .animate-number-flash {
+  animation: number-flash 0.4s ease-out;
+}
+
+/* Improvement indicator (starboard green - positive change) */
+@keyframes improvement-flash {
+  0% {
+    color: var(--palette-rowing-starboard, #10b981);
+    transform: scale(1.1);
+  }
+  100% {
+    color: inherit;
+    transform: scale(1);
+  }
+}
+
+.v2 .animate-improvement {
+  animation: improvement-flash 0.5s ease-out;
+}
+
+/* Decline indicator (port red - needs attention) */
+@keyframes decline-flash {
+  0% {
+    color: var(--palette-rowing-port, #ef4444);
+    transform: scale(0.95);
+  }
+  100% {
+    color: inherit;
+    transform: scale(1);
+  }
+}
+
+.v2 .animate-decline {
+  animation: decline-flash 0.5s ease-out;
+}
+
+/* Rolling digit animation for live counters */
+@keyframes digit-roll-up {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes digit-roll-down {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.v2 .animate-digit-up {
+  animation: digit-roll-up 0.3s ease-out;
+}
+
+.v2 .animate-digit-down {
+  animation: digit-roll-down 0.3s ease-out;
+}
+
+/* ========================================
+   ATTENTION ANIMATIONS
+   Drawing user attention intentionally
+   ======================================== */
+
+/* Subtle bounce for drawing attention */
+@keyframes attention-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.v2 .animate-attention-bounce {
+  animation: attention-bounce 0.5s ease-in-out;
+}
+
+/* Badge pop for achievements - uses cubic-bezier for overshoot */
+@keyframes badge-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.v2 .animate-badge-pop {
+  animation: badge-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Number pop for PRs - emphasizes the achievement */
+@keyframes number-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.v2 .animate-number-pop {
+  animation: number-pop 0.3s ease-out;
+}
+
+/* Gentle ring pulse for notification indicators */
+@keyframes ring-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.v2 .animate-ring-pulse {
+  animation: ring-pulse 2s ease-in-out infinite;
+}
+
+/* ========================================
+   DRAG-DROP ANIMATIONS
+   Physical feel with lift and shadows
+   ======================================== */
+
+/* Drag start - subtle lift indication */
+@keyframes drag-lift {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 1px 3px rgba(15, 15, 15, 0.1);
+  }
+  100% {
+    transform: scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(15, 15, 15, 0.3);
+  }
+}
+
+.v2 .animate-drag-lift {
+  animation: drag-lift 0.2s ease-out forwards;
+}
+
+/* Drop complete - settling animation */
+@keyframes drop-settle {
+  0% {
+    transform: scale(1.02);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.v2 .animate-drop-settle {
+  animation: drop-settle 0.25s ease-out;
+}
+
+/* ========================================
+   TRANSITION UTILITIES
+   For CSS-only state transitions
+   ======================================== */
+
+.v2 .transition-colors-fast {
+  transition: color var(--transition-fast, 100ms) var(--ease-smooth),
+              background-color var(--transition-fast, 100ms) var(--ease-smooth),
+              border-color var(--transition-fast, 100ms) var(--ease-smooth);
+}
+
+.v2 .transition-transform-fast {
+  transition: transform var(--transition-fast, 100ms) var(--ease-smooth);
+}
+
+.v2 .transition-opacity-fast {
+  transition: opacity var(--transition-fast, 100ms) var(--ease-smooth);
+}
+
+.v2 .transition-all-fast {
+  transition: all var(--transition-fast, 100ms) var(--ease-smooth);
+}
+
+/* ========================================
+   REDUCED MOTION SUPPORT
+   Respects user preferences per WCAG
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations for users who prefer reduced motion */
+  .v2 .animate-success-pulse,
+  .v2 .animate-gold-wash,
+  .v2 .animate-error-pulse,
+  .v2 .animate-shimmer::after,
+  .v2 .animate-number-flash,
+  .v2 .animate-improvement,
+  .v2 .animate-decline,
+  .v2 .animate-digit-up,
+  .v2 .animate-digit-down,
+  .v2 .animate-attention-bounce,
+  .v2 .animate-badge-pop,
+  .v2 .animate-number-pop,
+  .v2 .animate-ring-pulse,
+  .v2 .animate-drag-lift,
+  .v2 .animate-drop-settle {
+    animation: none !important;
+  }
+
+  /* Reduce transitions to near-instant */
+  .v2 .transition-colors-fast,
+  .v2 .transition-transform-fast,
+  .v2 .transition-opacity-fast,
+  .v2 .transition-all-fast {
+    transition-duration: 0.01ms !important;
+  }
+}
