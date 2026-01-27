@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 18 (Lineup & Boat Improvements) — In Progress
-**Status:** 9 of 11 plans complete
-**Last activity:** 2026-01-27 — Completed 18-09-PLAN.md
+**Status:** 8 of 11 plans complete
+**Last activity:** 2026-01-27 — Completed 18-08-PLAN.md
 
 ## Project Reference
 
@@ -51,7 +51,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
-| 18 | Lineup & Boat Improvements | In Progress | 9/11 |
+| 18 | Lineup & Boat Improvements | In Progress | 8/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
 
@@ -337,6 +337,9 @@ Key architectural decisions carrying forward:
 | 18-03 | Service returns defaults when no custom profile exists | Transparent fallback - API always returns valid rigging data, custom profiles optional enhancement |
 | 18-03 | Deletion reverts to defaults | Deleting custom profile doesn't remove rigging capability, just returns shell to standard values |
 | 18-03 | Per-seat overrides stored as JSON | Flexibility for advanced rigging adjustments without separate table per seat |
+| 18-08 | Optional chaining for rigging defaults | Rigging defaults could be undefined during loading, prevents TypeScript errors with safe access |
+| 18-08 | Equipment conflict inline display | Show conflicts directly on equipment cards with amber borders for immediate visibility |
+| 18-08 | Automatic oar set filtering by boat class | Filter to SWEEP/SCULL based on boat class pattern prevents incompatible selections |
 | 18-10 | Animated filter panel using framer-motion | Better UX with smooth expand/collapse transition for filter options |
 | 18-10 | Support up to 2 lineups for comparison selection | Limit prevents UI confusion, matches typical comparison use case of A vs B |
 | 18-10 | Show 'at least N athletes' filter only when 2+ athletes selected | Contextual UI - filter appears only when relevant, reduces visual clutter |
@@ -349,8 +352,8 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-27T13:22:21Z
-**Stopped at:** Completed 18-11-PLAN.md
+**Last session:** 2026-01-27T13:24:09Z
+**Stopped at:** Completed 18-08-PLAN.md
 **Resume file:** None
 
 ## Known Limitations
