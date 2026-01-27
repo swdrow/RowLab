@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Description } from '@headlessui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { SPRING_CONFIG, usePrefersReducedMotion, TRANSITION_DURATION } from '../../utils/animations';
+import { SPRING_CONFIG, MODAL_VARIANTS, usePrefersReducedMotion, TRANSITION_DURATION } from '../../utils/animations';
 import { IconButton } from './Button';
 
 /**
@@ -68,23 +68,14 @@ export const Modal: React.FC<ModalProps> = ({
         visible: { opacity: 1 },
       };
 
+  // Use centralized MODAL_VARIANTS from animations.ts for consistent enter/exit
   const panelVariants = prefersReducedMotion
     ? {
         hidden: { opacity: 0 },
         visible: { opacity: 1 },
+        exit: { opacity: 0 },
       }
-    : {
-        hidden: {
-          opacity: 0,
-          scale: 0.95,
-          y: 20,
-        },
-        visible: {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-        },
-      };
+    : MODAL_VARIANTS;
 
   const transitionConfig = prefersReducedMotion
     ? { duration: 0 }
@@ -239,3 +230,73 @@ export const ModalContent: React.FC<ModalContentProps> = ({
 };
 
 ModalContent.displayName = 'ModalContent';
+
+/**
+ * ModalHeader - Standalone header component for custom modal layouts
+ *
+ * Use when you need a header separate from the main Modal's built-in header.
+ * Provides consistent styling with close button support.
+ */
+export interface ModalHeaderProps {
+  title: string;
+  onClose?: () => void;
+  className?: string;
+}
+
+export const ModalHeader: React.FC<ModalHeaderProps> = ({
+  title,
+  onClose,
+  className,
+}) => {
+  return (
+    <div
+      className={cn(
+        'flex items-center justify-between',
+        'px-6 py-4',
+        'border-b border-[var(--color-border-subtle)]',
+        className
+      )}
+    >
+      <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+        {title}
+      </h2>
+      {onClose && (
+        <IconButton
+          icon={<X className="w-4 h-4" />}
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          aria-label="Close modal"
+        />
+      )}
+    </div>
+  );
+};
+
+ModalHeader.displayName = 'ModalHeader';
+
+/**
+ * ModalBody - Body content wrapper for custom modal layouts
+ *
+ * Provides consistent padding and scrollable content area.
+ */
+export interface ModalBodyProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+export const ModalBody: React.FC<ModalBodyProps> = ({
+  children,
+  className,
+  ...props
+}) => {
+  return (
+    <div
+      className={cn('px-6 py-4 flex-1 overflow-y-auto', className)}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
+
+ModalBody.displayName = 'ModalBody';
