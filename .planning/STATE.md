@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 18 (Lineup & Boat Improvements) — In Progress
-**Status:** 7 of 11 plans complete
-**Last activity:** 2026-01-27 — Completed 18-07-PLAN.md
+**Status:** 8 of 11 plans complete
+**Last activity:** 2026-01-27 — Completed 18-11-PLAN.md
 
 ## Project Reference
 
@@ -51,7 +51,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
 | 17 | Complete Design Overhaul 🎨 | Planned | TBD |
-| 18 | Lineup & Boat Improvements | In Progress | 7/11 |
+| 18 | Lineup & Boat Improvements | In Progress | 8/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
 
@@ -337,11 +337,16 @@ Key architectural decisions carrying forward:
 | 18-03 | Service returns defaults when no custom profile exists | Transparent fallback - API always returns valid rigging data, custom profiles optional enhancement |
 | 18-03 | Deletion reverts to defaults | Deleting custom profile doesn't remove rigging capability, just returns shell to standard values |
 | 18-03 | Per-seat overrides stored as JSON | Flexibility for advanced rigging adjustments without separate table per seat |
+| 18-10 | Animated filter panel using framer-motion | Better UX with smooth expand/collapse transition for filter options |
+| 18-10 | Support up to 2 lineups for comparison selection | Limit prevents UI confusion, matches typical comparison use case of A vs B |
+| 18-10 | Show 'at least N athletes' filter only when 2+ athletes selected | Contextual UI - filter appears only when relevant, reduces visual clutter |
+| 18-10 | FilterPill component for removable filter tags | Clear affordance for active filters with one-click removal |
+| 18-10 | Amber highlighting for comparison-selected lineups | Distinct from primary blue selection, visually separates "active" from "compare" states |
 
 ## Session Continuity
 
-**Last session:** 2026-01-27T13:10:43Z
-**Stopped at:** Completed 18-03-PLAN.md
+**Last session:** 2026-01-27T13:22:43Z
+**Stopped at:** Completed 18-10-PLAN.md
 **Resume file:** None
 
 ## Known Limitations
