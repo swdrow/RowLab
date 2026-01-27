@@ -18,17 +18,17 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { activeContext } = useContextStore();
 
   return (
-    <header className="flex-shrink-0 h-14 flex items-center justify-between px-4 bg-bg-surface border-b border-bdr-default">
+    <header className="flex-shrink-0 h-14 flex items-center justify-between px-4 bg-ink-base/80 backdrop-blur-md border-b border-ink-border">
       <button
         onClick={onMenuClick}
-        className="p-2 -ml-2 rounded-lg hover:bg-bg-hover transition-colors"
+        className="p-2 -ml-2 rounded-lg hover:bg-ink-raised transition-colors"
         aria-label="Open menu"
       >
-        <Menu size={24} className="text-txt-primary" />
+        <Menu size={24} className="text-ink-primary" />
       </button>
 
       <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-txt-secondary capitalize">
+        <span className="text-sm font-medium text-ink-secondary capitalize">
           {activeContext}
         </span>
 

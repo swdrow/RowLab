@@ -37,11 +37,11 @@ export default function V2Layout() {
                 className="v2"
                 data-theme={theme}
               >
-                <div className="min-h-screen bg-bg-surface">
-                <header className="bg-bg-surface-elevated border-b border-bdr-default px-4 py-3">
+                <div className="min-h-screen bg-ink-deep">
+                <header className="bg-ink-base/80 backdrop-blur-md border-b border-ink-border px-4 py-3">
                   <div className="flex items-center justify-between max-w-7xl mx-auto">
                     <div className="flex items-center gap-3">
-                      <h1 className="text-xl font-display text-txt-primary">
+                      <h1 className="text-xl font-display text-ink-bright">
                         RowLab
                       </h1>
                     </div>

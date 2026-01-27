@@ -118,7 +118,7 @@ export function WorkspaceSidebar({ onNavigate }: WorkspaceSidebarProps = {}) {
   return (
     <nav
       aria-label={`${activeContext} workspace navigation`}
-      className="workspace-sidebar flex flex-col gap-1 p-4 w-64 h-full bg-bg-surface border-r border-bdr-default"
+      className="workspace-sidebar flex flex-col gap-1 p-4 w-64 h-full bg-ink-base border-r border-ink-border"
     >
       {visibleNavItems.map((item) => {
         const isActive = location.pathname === item.to;
@@ -134,8 +134,8 @@ export function WorkspaceSidebar({ onNavigate }: WorkspaceSidebarProps = {}) {
               'flex items-center gap-3 px-3 py-2 rounded-lg',
               'transition-colors duration-150',
               isActive
-                ? 'bg-interactive-primary text-button-primary-text'
-                : 'text-txt-secondary hover:bg-bg-hover hover:text-txt-primary'
+                ? 'text-ink-bright bg-ink-raised'
+                : 'text-ink-secondary hover:text-ink-primary hover:bg-ink-raised/50'
             )}
           >
             {IconComponent && <IconComponent className="w-5 h-5" />}
