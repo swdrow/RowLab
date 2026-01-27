@@ -81,6 +81,9 @@ model Team {
   passiveObservations PassiveObservation[]
   recruitVisits       RecruitVisit[]
   challenges          Challenge[]
+  riggingProfiles     RiggingProfile[]
+  lineupTemplates     LineupTemplate[]
+  equipmentAssignments EquipmentAssignment[]
 
   @@map("teams")
 }
@@ -428,9 +431,10 @@ model Lineup {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  team        Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  assignments LineupAssignment[]
-  raceResults RaceResult[]
+  team                 Team                  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  assignments          LineupAssignment[]
+  raceResults          RaceResult[]
+  equipmentAssignments EquipmentAssignment[]
 
   @@index([teamId])
   @@map("lineups")
@@ -514,7 +518,9 @@ model Shell {
   status      EquipmentStatus @default(AVAILABLE)
   notes       String?
 
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team            Team                  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  riggingProfile  RiggingProfile?
+  assignments     EquipmentAssignment[]
 
   @@unique([teamId, name])
   @@map("shells")
@@ -529,7 +535,8 @@ model OarSet {
   status EquipmentStatus @default(AVAILABLE)
   notes  String?
 
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team        Team                  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  assignments EquipmentAssignment[]
 
   @@unique([teamId, name])
   @@map("oar_sets")
@@ -1439,4 +1446,65 @@ model PersonalRecord {
   @@index([teamId])
   @@index([testType])
   @@map("personal_records")
+}
+
+// ============================================
+// BOAT CONFIGURATION: Rigging and Templates
+// ============================================
+
+model RiggingProfile {
+  id        String   @id @default(cuid())
+  shellId   String   @unique
+  teamId    String
+  defaults  Json     // { spread, span, catchAngle, finishAngle, oarLength, inboard, pitch, gateHeight }
+  perSeat   Json?    // Optional per-seat overrides: { "1": { spread: 86 }, ... }
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shell Shell @relation(fields: [shellId], references: [id], onDelete: Cascade)
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@map("rigging_profiles")
+}
+
+model LineupTemplate {
+  id          String   @id @default(cuid())
+  teamId      String
+  name        String
+  description String?
+  boatClass   String
+  assignments Json     // Array of { seatNumber, side, preferredAthleteId? }
+  rigging     Json?    // Optional rigging snapshot
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, name])
+  @@index([teamId])
+  @@map("lineup_templates")
+}
+
+model EquipmentAssignment {
+  id           String   @id @default(cuid())
+  teamId       String
+  lineupId     String?
+  sessionId    String?  // Link to Session if used in practice
+  shellId      String?
+  oarSetId     String?
+  assignedDate DateTime @db.Date
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  team   Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  lineup Lineup?  @relation(fields: [lineupId], references: [id], onDelete: SetNull)
+  shell  Shell?   @relation(fields: [shellId], references: [id], onDelete: SetNull)
+  oarSet OarSet?  @relation(fields: [oarSetId], references: [id], onDelete: SetNull)
+
+  @@index([teamId, assignedDate])
+  @@index([shellId, assignedDate])
+  @@map("equipment_assignments")
 }
