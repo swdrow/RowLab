@@ -1,55 +1,177 @@
 /**
- * V2 Design Tokens - Three-Level Token System
+ * V2 Design Tokens - Dark Editorial System
  *
- * Level 1: Base Palette (raw color values)
- * Level 2: Semantic Tokens (context-aware mappings)
- * Level 3: Component Tokens (component-specific)
+ * "A rowing publication printed on obsidian paper"
  *
- * Default theme: Dark
- * Override themes: Light, Field
+ * Level 1: Inkwell Palette (monochrome UI)
+ * Level 2: Data Colors (the ONLY chromatic elements)
+ * Level 3: Luminance Hierarchy (glow → recede)
+ * Level 4: Component Tokens
+ *
+ * Default theme: Dark (dark-first design)
  */
 
 :root {
   /* ========================================
-     FONT TOKENS
-     "Rowing Instrument" Typography System
+     FONT TOKENS - Dark Editorial Typography
      ======================================== */
 
-  /* Display/Headings: Inter Bold for clean, modern titles */
-  --font-display: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Display/Headlines: Fraunces serif for editorial authority */
+  --font-display: "Fraunces", "Source Serif Pro", Georgia, serif;
 
-  /* Body: Inter Regular for readable content */
+  /* Body: Inter for clean readability */
   --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Data/Mono: Geist Mono for stroke coach precision numbers */
+  /* Data/Mono: Geist Mono for precision numbers */
   --font-mono: "Geist Mono", "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
 
-  /* Large metrics: Inter Black for hero numbers */
-  --font-metric: "Inter", system-ui, sans-serif;
-
-  /* Legacy fallbacks (keep for backwards compat) */
-  --font-display-legacy: "Space Grotesk", system-ui, sans-serif;
-  --font-body-legacy: "DM Sans", system-ui, sans-serif;
+  /* Metrics: Geist Mono for large hero numbers */
+  --font-metric: "Geist Mono", "Inter", system-ui, sans-serif;
 
   /* ========================================
-     LEVEL 1: BASE PALETTE
-     Raw color values - never use directly
+     LEVEL 1: INKWELL PALETTE
+     Monochrome only - UI uses ONLY these
      ======================================== */
 
-  /* Warm Stone Neutrals - "Rowing Instrument" palette */
-  --palette-stone-950: #0F0F0F;   /* Base: warm near-black */
-  --palette-stone-900: #171717;   /* Surface */
-  --palette-stone-800: #1F1F1F;   /* Elevated */
-  --palette-stone-700: #292524;   /* Borders dark */
-  --palette-stone-600: #44403c;   /* Text muted */
-  --palette-stone-500: #78716c;   /* Text tertiary */
-  --palette-stone-400: #a8a29e;   /* Text secondary */
-  --palette-stone-300: #d6d3d1;   /* Light borders */
-  --palette-stone-200: #e7e5e4;   /* Light surface */
-  --palette-stone-100: #f5f5f4;   /* Light elevated - warm off-white */
-  --palette-stone-50: #fafaf9;    /* Light base */
+  --ink-deep: #0A0A0A;        /* Deepest black - void/base */
+  --ink-base: #121212;        /* Primary surface - "paper" */
+  --ink-raised: #1A1A1A;      /* Elevated surfaces - cards */
+  --ink-float: #1F1F1F;       /* Floating elements - modals */
+  --ink-border: #262626;      /* Subtle borders */
+  --ink-border-strong: #333333; /* Emphasized borders */
+  --ink-muted: #404040;       /* Muted/disabled elements */
+  --ink-tertiary: #525252;    /* Tertiary text */
+  --ink-secondary: #737373;   /* Secondary text */
+  --ink-body: #A3A3A3;        /* Body text */
+  --ink-primary: #E5E5E5;     /* Primary text */
+  --ink-bright: #FAFAFA;      /* Brightest - headlines, emphasis */
 
-  /* Neutrals - Backwards compatible aliases to stone palette */
+  /* ========================================
+     LEVEL 2: DATA COLORS
+     The ONLY chromatic elements in the UI
+     ======================================== */
+
+  /* Performance Spectrum - for metrics, status */
+  --data-excellent: #22C55E;   /* Green - above target, success */
+  --data-good: #3B82F6;        /* Blue - on target, info */
+  --data-warning: #F59E0B;     /* Amber - below target, caution */
+  --data-poor: #EF4444;        /* Red - needs attention, error */
+
+  /* Chart Palette - for multi-series visualization */
+  --chart-1: #3B82F6;          /* Blue - primary series */
+  --chart-2: #8B5CF6;          /* Purple - secondary */
+  --chart-3: #06B6D4;          /* Cyan - tertiary */
+  --chart-4: #F59E0B;          /* Amber - quaternary */
+  --chart-5: #EC4899;          /* Pink - fifth */
+  --chart-6: #10B981;          /* Emerald - sixth */
+
+  /* Glow variants for Night Shift effect */
+  --glow-excellent: rgba(34, 197, 94, 0.3);
+  --glow-good: rgba(59, 130, 246, 0.3);
+  --glow-warning: rgba(245, 158, 11, 0.3);
+  --glow-poor: rgba(239, 68, 68, 0.3);
+  --glow-white: rgba(250, 250, 250, 0.15);
+
+  /* ========================================
+     LEVEL 3: LUMINANCE HIERARCHY
+     Night Shift influence - brightness = importance
+     ======================================== */
+
+  /* Text Luminance Levels */
+  --lum-glow: var(--ink-bright);      /* Level 1: Critical - glows */
+  --lum-lit: var(--ink-primary);      /* Level 2: Important - bright */
+  --lum-visible: var(--ink-body);     /* Level 3: Normal - readable */
+  --lum-receded: var(--ink-secondary); /* Level 4: Supporting - faded */
+  --lum-shadow: var(--ink-muted);     /* Level 5: Background - near-invisible */
+
+  /* ========================================
+     SEMANTIC TOKENS (mapped to Inkwell)
+     ======================================== */
+
+  /* Background Tokens */
+  --color-bg-base: var(--ink-deep);
+  --color-bg-surface: var(--ink-base);
+  --color-bg-surface-elevated: var(--ink-raised);
+  --color-bg-float: var(--ink-float);
+  --color-bg-overlay: rgba(10, 10, 10, 0.8);
+  --color-bg-hover: var(--ink-raised);
+  --color-bg-active: var(--ink-border);
+
+  /* Text Tokens */
+  --color-text-primary: var(--lum-lit);
+  --color-text-secondary: var(--lum-receded);
+  --color-text-tertiary: var(--ink-tertiary);
+  --color-text-muted: var(--lum-shadow);
+  --color-text-inverse: var(--ink-deep);
+  --color-text-headline: var(--lum-glow);
+  --color-text-brand: var(--ink-bright);
+
+  /* Border Tokens */
+  --color-border-default: var(--ink-border);
+  --color-border-subtle: var(--ink-raised);
+  --color-border-strong: var(--ink-border-strong);
+  --color-border-brand: var(--ink-bright);
+
+  /* Interactive Tokens - monochrome! */
+  --color-interactive-primary: var(--ink-bright);
+  --color-interactive-hover: var(--ink-primary);
+  --color-interactive-active: var(--ink-body);
+  --color-interactive-disabled: var(--ink-muted);
+
+  /* Status Tokens - use data colors */
+  --color-status-success: var(--data-excellent);
+  --color-status-warning: var(--data-warning);
+  --color-status-error: var(--data-poor);
+  --color-status-info: var(--data-good);
+
+  /* ========================================
+     COMPONENT TOKENS
+     ======================================== */
+
+  /* Card Component */
+  --color-card-bg: var(--ink-raised);
+  --color-card-border: var(--ink-border);
+  --color-card-hover: var(--ink-border-strong);
+
+  /* Button Component - monochrome primary */
+  --color-button-primary-bg: var(--ink-bright);
+  --color-button-primary-hover: var(--ink-primary);
+  --color-button-primary-text: var(--ink-deep);
+  --color-button-secondary-bg: transparent;
+  --color-button-secondary-hover: var(--ink-raised);
+  --color-button-secondary-text: var(--ink-primary);
+  --color-button-secondary-border: var(--ink-border);
+
+  /* Input Component */
+  --color-input-bg: var(--ink-base);
+  --color-input-border: var(--ink-border);
+  --color-input-focus: var(--ink-bright);
+  --color-input-text: var(--ink-primary);
+  --color-input-placeholder: var(--ink-secondary);
+
+  /* Focus Ring - white glow */
+  --color-focus-ring: rgba(250, 250, 250, 0.3);
+  --color-focus-ring-error: var(--glow-poor);
+
+  /* ========================================
+     LEGACY COMPATIBILITY
+     Keep old token names working
+     ======================================== */
+
+  /* Old palette references → Inkwell */
+  --palette-stone-950: var(--ink-deep);
+  --palette-stone-900: var(--ink-base);
+  --palette-stone-800: var(--ink-raised);
+  --palette-stone-700: var(--ink-border);
+  --palette-stone-600: var(--ink-muted);
+  --palette-stone-500: var(--ink-tertiary);
+  --palette-stone-400: var(--ink-secondary);
+  --palette-stone-300: #D4D4D4;
+  --palette-stone-200: #E5E5E5;
+  --palette-stone-100: var(--ink-primary);
+  --palette-stone-50: var(--ink-bright);
+
+  /* Neutral aliases */
   --palette-neutral-950: var(--palette-stone-950);
   --palette-neutral-900: var(--palette-stone-900);
   --palette-neutral-800: var(--palette-stone-800);
@@ -62,255 +184,189 @@
   --palette-neutral-100: var(--palette-stone-100);
   --palette-neutral-50: var(--palette-stone-50);
 
-  /* Rowing Semantic Accents */
-  --palette-rowing-water: #3b82f6;     /* Blue: Water/Erg related */
-  --palette-rowing-starboard: #10b981; /* Green: Starboard side / Success */
-  --palette-rowing-port: #ef4444;      /* Red: Port side / Attention */
-  --palette-rowing-gold: #f59e0b;      /* Gold: Achievements, PRs */
-  --palette-rowing-premium: #a855f7;   /* Purple: Premium features */
+  /* Rowing semantic colors - map to data colors */
+  --palette-rowing-water: var(--data-good);
+  --palette-rowing-starboard: var(--data-excellent);
+  --palette-rowing-port: var(--data-poor);
+  --palette-rowing-gold: var(--data-warning);
+  --palette-rowing-premium: #8B5CF6;
 
-  /* Brand Colors */
-  --palette-brand-red: #ef4444;
-  --palette-brand-blue: #3b82f6;
-  --palette-brand-green: #10b981;
-  --palette-brand-yellow: #f59e0b;
-
-  /* Accent Colors */
-  --palette-accent-purple: #a855f7;
-  --palette-accent-cyan: #06b6d4;
-  --palette-accent-orange: #f97316;
-
-  /* Status Colors */
-  --palette-status-success: #22c55e;
-  --palette-status-warning: #eab308;
-  --palette-status-error: #ef4444;
-  --palette-status-info: #3b82f6;
-
-  /* ========================================
-     LEVEL 2: SEMANTIC TOKENS
-     Context-aware color mappings
-     ======================================== */
-
-  /* Background Tokens */
-  --color-bg-base: var(--palette-stone-950);
-  --color-bg-surface: var(--palette-stone-900);
-  --color-bg-surface-elevated: var(--palette-stone-800);
-  --color-bg-overlay: rgba(15, 15, 15, 0.8);
-  --color-bg-hover: var(--palette-stone-800);
-  --color-bg-active: var(--palette-stone-700);
-
-  /* Text Tokens */
-  --color-text-primary: var(--palette-stone-100);
-  --color-text-secondary: var(--palette-stone-400);
-  --color-text-tertiary: var(--palette-stone-500);
-  --color-text-muted: var(--palette-stone-600);
-  --color-text-inverse: var(--palette-stone-950);
-  --color-text-brand: var(--palette-rowing-water);
-
-  /* Border Tokens */
-  --color-border-default: var(--palette-stone-700);
-  --color-border-subtle: var(--palette-stone-800);
-  --color-border-strong: var(--palette-stone-600);
-  --color-border-brand: var(--palette-rowing-water);
-
-  /* Interactive Tokens */
-  --color-interactive-primary: var(--palette-brand-blue);
-  --color-interactive-hover: #2563eb;
-  --color-interactive-active: #1d4ed8;
-  --color-interactive-disabled: var(--palette-neutral-700);
-
-  /* Status Tokens */
-  --color-status-success: var(--palette-status-success);
-  --color-status-warning: var(--palette-status-warning);
-  --color-status-error: var(--palette-status-error);
-  --color-status-info: var(--palette-status-info);
-
-  /* ========================================
-     LEVEL 3: COMPONENT TOKENS
-     Component-specific mappings
-     ======================================== */
-
-  /* Card Component */
-  --color-card-bg: var(--color-bg-surface-elevated);
-  --color-card-border: var(--color-border-subtle);
-  --color-card-hover: var(--color-bg-active);
-
-  /* Button Component */
-  --color-button-primary-bg: var(--color-interactive-primary);
-  --color-button-primary-hover: var(--color-interactive-hover);
-  --color-button-primary-text: var(--palette-neutral-50);
-  --color-button-secondary-bg: var(--palette-neutral-800);
-  --color-button-secondary-hover: var(--palette-neutral-700);
-  --color-button-secondary-text: var(--palette-neutral-200);
-
-  /* Input Component */
-  --color-input-bg: var(--palette-neutral-900);
-  --color-input-border: var(--color-border-default);
-  --color-input-focus: var(--color-border-brand);
-  --color-input-text: var(--color-text-primary);
-  --color-input-placeholder: var(--color-text-tertiary);
-
-  /* Field Conditions (Outdoor) */
-  --color-field-sky: #60a5fa;
-  --color-field-grass: #22c55e;
-  --color-field-weather: #f59e0b;
-
-  /* ========================================
-     FOCUS & ACCESSIBILITY TOKENS
-     ======================================== */
-
-  /* Focus Ring Colors */
-  --color-focus-ring: rgba(59, 130, 246, 0.5);
-  --color-focus-ring-error: rgba(239, 68, 68, 0.5);
+  /* Brand colors */
+  --palette-brand-red: var(--data-poor);
+  --palette-brand-blue: var(--data-good);
+  --palette-brand-green: var(--data-excellent);
+  --palette-brand-yellow: var(--data-warning);
 
   /* ========================================
      TRANSITION TOKENS
+     Editorial precision - no bouncy physics
      ======================================== */
 
-  /* Duration Scale */
-  --transition-fast: 100ms;
-  --transition-normal: 150ms;
-  --transition-slow: 200ms;
+  --transition-fast: 100ms ease-out;
+  --transition-normal: 200ms ease-out;
+  --transition-slow: 300ms ease-out;
 
-  /* Timing Functions */
+  /* Timing functions */
+  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-snap: cubic-bezier(0, 0, 0.2, 1);
   --ease-precision: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ========================================
+     SPACING TOKENS
+     Editorial generosity
+     ======================================== */
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* ========================================
+     RADIUS TOKENS
+     Subtle, not rounded
+     ======================================== */
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
 }
 
 /* ========================================
-   THEME: DARK (Default)
+   THEME: DARK (Default - designed dark-first)
    ======================================== */
+
+.v2,
 .v2[data-theme="dark"] {
-  /* Background Tokens */
-  --color-bg-base: var(--palette-stone-950);
-  --color-bg-surface: var(--palette-stone-900);
-  --color-bg-surface-elevated: var(--palette-stone-800);
-  --color-bg-overlay: rgba(15, 15, 15, 0.8);
-  --color-bg-hover: var(--palette-stone-800);
-  --color-bg-active: var(--palette-stone-700);
+  color-scheme: dark;
 
-  /* Text Tokens */
-  --color-text-primary: var(--palette-stone-100);
-  --color-text-secondary: var(--palette-stone-400);
-  --color-text-tertiary: var(--palette-stone-500);
-  --color-text-muted: var(--palette-stone-600);
-  --color-text-inverse: var(--palette-stone-950);
-  --color-text-brand: var(--palette-rowing-water);
-
-  /* Border Tokens */
-  --color-border-default: var(--palette-stone-700);
-  --color-border-subtle: var(--palette-stone-800);
-  --color-border-strong: var(--palette-stone-600);
-  --color-border-brand: var(--palette-rowing-water);
-
-  /* Interactive Tokens */
-  --color-interactive-primary: var(--palette-rowing-water);
-  --color-interactive-hover: #2563eb;
-  --color-interactive-active: #1d4ed8;
-  --color-interactive-disabled: var(--palette-stone-700);
+  /* All tokens already set for dark in :root */
+  /* This selector ensures dark is default */
 }
 
 /* ========================================
    THEME: LIGHT
+   Inverted inkwell for light mode
    ======================================== */
 
 .v2[data-theme="light"] {
-  /* Background Tokens */
-  --color-bg-base: var(--palette-stone-50);
-  --color-bg-surface: var(--palette-stone-100);
-  --color-bg-surface-elevated: #ffffff;
-  --color-bg-overlay: rgba(250, 250, 249, 0.9);
-  --color-bg-hover: var(--palette-stone-200);
-  --color-bg-active: var(--palette-stone-300);
+  color-scheme: light;
 
-  /* Text Tokens */
-  --color-text-primary: var(--palette-stone-950);
-  --color-text-secondary: var(--palette-stone-600);
-  --color-text-tertiary: var(--palette-stone-500);
-  --color-text-muted: var(--palette-stone-400);
-  --color-text-inverse: var(--palette-stone-50);
-  --color-text-brand: #1d4ed8;
+  /* Inverted Inkwell */
+  --ink-deep: #FAFAFA;
+  --ink-base: #F5F5F5;
+  --ink-raised: #FFFFFF;
+  --ink-float: #FFFFFF;
+  --ink-border: #E5E5E5;
+  --ink-border-strong: #D4D4D4;
+  --ink-muted: #A3A3A3;
+  --ink-tertiary: #737373;
+  --ink-secondary: #525252;
+  --ink-body: #404040;
+  --ink-primary: #1A1A1A;
+  --ink-bright: #0A0A0A;
 
-  /* Border Tokens */
-  --color-border-default: var(--palette-stone-300);
-  --color-border-subtle: var(--palette-stone-200);
-  --color-border-strong: var(--palette-stone-400);
-  --color-border-brand: #1d4ed8;
+  /* Background overrides */
+  --color-bg-overlay: rgba(250, 250, 250, 0.9);
 
-  /* Interactive Tokens */
-  --color-interactive-primary: var(--palette-rowing-water);
-  --color-interactive-hover: #1d4ed8;
-  --color-interactive-active: #1e40af;
-  --color-interactive-disabled: var(--palette-stone-300);
+  /* Button inverts */
+  --color-button-primary-bg: var(--ink-bright);
+  --color-button-primary-text: var(--ink-deep);
 
-  /* Component Tokens */
-  --color-card-bg: var(--palette-stone-50);
-  --color-card-border: var(--color-border-subtle);
-  --color-card-hover: var(--palette-stone-100);
+  /* Focus ring for light */
+  --color-focus-ring: rgba(10, 10, 10, 0.2);
 
-  --color-button-secondary-bg: var(--palette-stone-200);
-  --color-button-secondary-hover: var(--palette-stone-300);
-  --color-button-secondary-text: var(--palette-stone-900);
-
-  --color-input-bg: var(--palette-stone-50);
-  --color-input-border: var(--color-border-default);
-  --color-input-text: var(--color-text-primary);
+  /* Legacy palette updates for light */
+  --palette-stone-950: var(--ink-bright);
+  --palette-stone-900: var(--ink-primary);
+  --palette-stone-100: var(--ink-base);
+  --palette-stone-50: var(--ink-deep);
 }
 
 /* ========================================
    THEME: FIELD (High Contrast Outdoor)
+   Maximum readability in sunlight
    ======================================== */
 
 .v2[data-theme="field"] {
-  /* High contrast for outdoor visibility */
-  /* Background Tokens - high contrast yellows/ambers */
-  --color-bg-base: #fef3c7; /* amber-100 */
-  --color-bg-surface: #fffbeb; /* amber-50 */
-  --color-bg-surface-elevated: #ffffff;
-  --color-bg-overlay: rgba(255, 251, 235, 0.95);
-  --color-bg-hover: #fde68a; /* amber-200 */
-  --color-bg-active: #fcd34d; /* amber-300 */
+  color-scheme: light;
 
-  /* Text Tokens - dark for max contrast */
-  --color-text-primary: #1c1917; /* stone-900 */
-  --color-text-secondary: #44403c; /* stone-700 */
-  --color-text-tertiary: #57534e; /* stone-600 */
-  --color-text-muted: #78716c; /* stone-500 */
-  --color-text-inverse: #fafaf9; /* stone-50 */
-  --color-text-brand: #b45309; /* amber-700 */
+  /* High contrast warm palette */
+  --ink-deep: #FFFBEB;        /* amber-50 */
+  --ink-base: #FEF3C7;        /* amber-100 */
+  --ink-raised: #FFFFFF;
+  --ink-float: #FFFFFF;
+  --ink-border: #D6D3D1;      /* stone-300 */
+  --ink-border-strong: #A8A29E; /* stone-400 */
+  --ink-muted: #78716C;       /* stone-500 */
+  --ink-tertiary: #57534E;    /* stone-600 */
+  --ink-secondary: #44403C;   /* stone-700 */
+  --ink-body: #292524;        /* stone-800 */
+  --ink-primary: #1C1917;     /* stone-900 */
+  --ink-bright: #0C0A09;      /* stone-950 */
 
-  /* Border Tokens - visible borders */
-  --color-border-default: #d6d3d1; /* stone-300 */
-  --color-border-subtle: #e7e5e4; /* stone-200 */
-  --color-border-strong: #a8a29e; /* stone-400 */
-  --color-border-brand: #b45309; /* amber-700 */
+  /* High contrast data colors */
+  --data-excellent: #15803D;  /* green-700 */
+  --data-good: #1D4ED8;       /* blue-700 */
+  --data-warning: #A16207;    /* yellow-700 */
+  --data-poor: #B91C1C;       /* red-700 */
 
-  /* Interactive Tokens - high contrast */
-  --color-interactive-primary: #b45309; /* amber-700 */
-  --color-interactive-hover: #92400e; /* amber-800 */
-  --color-interactive-active: #78350f; /* amber-900 */
-  --color-interactive-disabled: #d6d3d1; /* stone-300 */
+  /* Background */
+  --color-bg-overlay: rgba(254, 243, 199, 0.95);
 
-  /* Status Colors - high contrast versions */
-  --color-status-success: #15803d; /* green-700 */
-  --color-status-warning: #a16207; /* yellow-700 */
-  --color-status-error: #b91c1c; /* red-700 */
-  --color-status-info: #1d4ed8; /* blue-700 */
+  /* Focus ring - high visibility */
+  --color-focus-ring: rgba(180, 83, 9, 0.5);
+}
 
-  /* Component Tokens - Field theme overrides */
-  --color-card-bg: #ffffff;
-  --color-card-border: #e7e5e4; /* stone-200 */
-  --color-card-hover: #fef3c7; /* amber-100 */
+/* ========================================
+   UTILITY CLASSES - Luminance Hierarchy
+   ======================================== */
 
-  --color-button-secondary-bg: #e7e5e4; /* stone-200 */
-  --color-button-secondary-hover: #d6d3d1; /* stone-300 */
-  --color-button-secondary-text: #1c1917; /* stone-900 */
+.text-glow {
+  color: var(--lum-glow);
+  text-shadow: 0 0 20px var(--glow-white);
+}
 
-  --color-input-bg: #ffffff;
-  --color-input-border: #d6d3d1; /* stone-300 */
-  --color-input-text: #1c1917; /* stone-900 */
+.text-lit {
+  color: var(--lum-lit);
+}
 
-  /* Focus Ring - high visibility for outdoor */
-  --color-focus-ring: rgba(180, 83, 9, 0.5); /* amber-700 */
+.text-visible {
+  color: var(--lum-visible);
+}
+
+.text-receded {
+  color: var(--lum-receded);
+}
+
+.text-shadow-level {
+  color: var(--lum-shadow);
+}
+
+/* Data glow utilities */
+.glow-excellent {
+  text-shadow: 0 0 20px var(--glow-excellent);
+}
+
+.glow-good {
+  text-shadow: 0 0 20px var(--glow-good);
+}
+
+.glow-warning {
+  text-shadow: 0 0 20px var(--glow-warning);
+}
+
+.glow-poor {
+  text-shadow: 0 0 20px var(--glow-poor);
+}
+
+/* Headline glow for hero elements */
+.headline-glow {
+  color: var(--ink-bright);
+  text-shadow: 0 0 60px rgba(250, 250, 250, 0.1);
 }

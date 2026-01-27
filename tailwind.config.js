@@ -15,15 +15,59 @@ export default {
 
       colors: {
         // ============================================
-        // PRECISION INSTRUMENT DESIGN SYSTEM
-        // Void + Neon (Raycast/Linear aesthetic)
+        // DARK EDITORIAL DESIGN SYSTEM
+        // Inkwell Palette + Chromatic Data
+        // "A rowing publication printed on obsidian paper"
         // ============================================
 
-        // Void Scale - Warm black backgrounds (matches stone palette)
+        // Inkwell Scale - Monochrome UI (CSS variable-backed)
+        'ink': {
+          'deep': 'var(--ink-deep)',           // #0A0A0A - Void/base
+          'base': 'var(--ink-base)',           // #121212 - Primary surface
+          'raised': 'var(--ink-raised)',       // #1A1A1A - Elevated surfaces
+          'float': 'var(--ink-float)',         // #1F1F1F - Floating elements
+          'border': 'var(--ink-border)',       // #262626 - Subtle borders
+          'border-strong': 'var(--ink-border-strong)', // #333333 - Emphasized borders
+          'muted': 'var(--ink-muted)',         // #404040 - Muted/disabled
+          'tertiary': 'var(--ink-tertiary)',   // #525252 - Tertiary text
+          'secondary': 'var(--ink-secondary)', // #737373 - Secondary text
+          'body': 'var(--ink-body)',           // #A3A3A3 - Body text
+          'primary': 'var(--ink-primary)',     // #E5E5E5 - Primary text
+          'bright': 'var(--ink-bright)',       // #FAFAFA - Headlines, emphasis
+        },
+
+        // Data Colors - The ONLY chromatic elements in the UI
+        'data': {
+          'excellent': 'var(--data-excellent)', // #22C55E - Above target
+          'good': 'var(--data-good)',           // #3B82F6 - On target
+          'warning': 'var(--data-warning)',     // #F59E0B - Below target
+          'poor': 'var(--data-poor)',           // #EF4444 - Needs attention
+        },
+
+        // Chart Palette - Multi-series visualization
+        'chart': {
+          '1': 'var(--chart-1)',  // Blue
+          '2': 'var(--chart-2)',  // Purple
+          '3': 'var(--chart-3)',  // Cyan
+          '4': 'var(--chart-4)',  // Amber
+          '5': 'var(--chart-5)',  // Pink
+          '6': 'var(--chart-6)',  // Emerald
+        },
+
+        // Luminance hierarchy (Night Shift)
+        'lum': {
+          'glow': 'var(--lum-glow)',       // Brightest - critical
+          'lit': 'var(--lum-lit)',         // Important
+          'visible': 'var(--lum-visible)', // Normal
+          'receded': 'var(--lum-receded)', // Supporting
+          'shadow': 'var(--lum-shadow)',   // Background
+        },
+
+        // Void Scale - Legacy aliases pointing to Inkwell
         'void': {
-          'deep': '#0F0F0F',      // Main app background (warm near-black, matches stone-950)
-          'surface': '#171717',   // Input backgrounds (matches stone-900)
-          'elevated': '#1F1F1F',  // Card surfaces (matches stone-800)
+          'deep': 'var(--ink-deep)',
+          'surface': 'var(--ink-base)',
+          'elevated': 'var(--ink-raised)',
         },
 
         // Text Hierarchy (WCAG 2.1 AA compliant on void-deep)
@@ -336,16 +380,18 @@ export default {
         'precision': 'cubic-bezier(0.16, 1, 0.3, 1)', // Premium ease-out curve for UI
       },
 
-      // Typography - Rowing Instrument system (uses CSS variables from tokens.css)
+      // Typography - Dark Editorial system (uses CSS variables from tokens.css)
       fontFamily: {
-        // Display font for headings - Inter (via CSS variable)
-        'display': ['var(--font-display)', 'system-ui', 'sans-serif'],
+        // Display font for headlines - Fraunces serif (via CSS variable)
+        'display': ['var(--font-display)', 'Georgia', 'serif'],
+        // Serif alias for headlines
+        'serif': ['var(--font-display)', 'Georgia', 'serif'],
         // Body font - Inter (via CSS variable)
         'sans': ['var(--font-body)', 'system-ui', 'sans-serif'],
         // Monospace for times, stats, data - Geist Mono (via CSS variable)
         'mono': ['var(--font-mono)', 'ui-monospace', 'monospace'],
-        // Metric font for large hero numbers - Inter Black (via CSS variable)
-        'metric': ['var(--font-metric)', 'system-ui', 'sans-serif'],
+        // Metric font for large hero numbers - Geist Mono (via CSS variable)
+        'metric': ['var(--font-metric)', 'ui-monospace', 'monospace'],
       },
 
       // Font sizes - Athletic scale
