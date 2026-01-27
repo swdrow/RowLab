@@ -94,23 +94,17 @@ const AnimatedSection: React.FC<{ children: React.ReactNode; className?: string 
 export const LandingPage: React.FC = () => {
   return (
     <div className="landing-page">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 backdrop-blur-md bg-[#0F0F0F]/80 border-b border-[#292524]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="text-xl font-bold tracking-tight">
+      {/* Navigation - Monochrome */}
+      <nav className="landing-nav">
+        <div className="landing-nav-content">
+          <Link to="/" className="landing-nav-logo">
             RowLab
           </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              to="/login"
-              className="text-sm text-[#A8A29E] hover:text-white transition-colors"
-            >
+          <div className="landing-nav-links">
+            <Link to="/login" className="landing-nav-link">
               Sign In
             </Link>
-            <Link
-              to="/signup"
-              className="text-sm px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
-            >
+            <Link to="/signup" className="landing-nav-cta">
               Get Started
             </Link>
           </div>
@@ -165,13 +159,15 @@ export const LandingPage: React.FC = () => {
       {/* Features */}
       <section className="landing-features">
         <AnimatedSection>
-          <h2 className="text-3xl font-bold text-center mb-4">
-            Everything You Need to Win
-          </h2>
-          <p className="text-[#A8A29E] text-center max-w-2xl mx-auto mb-12">
-            From daily roster management to race day strategy, RowLab gives coaches
-            the tools they need to make better decisions, faster.
-          </p>
+          <div className="landing-features-header">
+            <h2 className="landing-features-title">
+              Everything You Need to Win
+            </h2>
+            <p className="landing-features-subtitle">
+              From daily roster management to race day strategy, RowLab gives coaches
+              the tools they need to make better decisions, faster.
+            </p>
+          </div>
         </AnimatedSection>
 
         <motion.div
@@ -214,7 +210,7 @@ export const LandingPage: React.FC = () => {
           <h2 className="landing-final-cta-title">
             Ready to Build Better Lineups?
           </h2>
-          <p className="text-[#A8A29E] mb-8 max-w-xl mx-auto">
+          <p className="landing-final-cta-subtitle">
             Join hundreds of teams using RowLab to make data-driven decisions.
             Start your free trial today - no credit card required.
           </p>
@@ -226,19 +222,13 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-[#292524]">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[#A8A29E]">
+      <footer className="landing-footer">
+        <div className="landing-footer-content">
           <p>&copy; {new Date().getFullYear()} RowLab. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="/privacy" className="hover:text-white transition-colors">
-              Privacy
-            </Link>
-            <Link to="/terms" className="hover:text-white transition-colors">
-              Terms
-            </Link>
-            <a href="mailto:support@rowlab.app" className="hover:text-white transition-colors">
-              Support
-            </a>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+            <a href="mailto:support@rowlab.app">Support</a>
           </div>
         </div>
       </footer>
