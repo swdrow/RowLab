@@ -1,12 +1,14 @@
 /**
- * Field Theme (High Contrast Outdoor)
+ * Field Theme - "Rowing Instrument" Outdoor Mode
  *
- * Optimized for outdoor use in bright sunlight.
- * Maximum contrast with amber/yellow backgrounds and dark text.
+ * High-contrast theme optimized for outdoor use in bright sunlight.
+ * Maximum contrast with amber/yellow backgrounds and dark stone text.
  * Designed for coaches using tablets/phones at practice or regattas.
  *
- * Base palette: Amber/stone for high visibility
- * Interactive: Amber-700 for touch targets
+ * Base: #fef3c7 (amber-100 for high visibility)
+ * Surface: #fffbeb (amber-50)
+ * Text: #1c1917 (stone-900 for max contrast)
+ * Interactive: amber-700 for visible touch targets
  */
 
 .v2[data-theme="field"] {
@@ -14,82 +16,91 @@
      BACKGROUND TOKENS
      High contrast yellows/ambers for outdoor visibility
      ======================================== */
-  --color-bg-base: #fef3c7; /* amber-100 */
-  --color-bg-surface: #fffbeb; /* amber-50 */
+  --color-bg-base: #fef3c7;                            /* amber-100 */
+  --color-bg-surface: #fffbeb;                         /* amber-50 */
   --color-bg-surface-elevated: #ffffff;
   --color-bg-overlay: rgba(255, 251, 235, 0.95);
-  --color-bg-hover: #fde68a; /* amber-200 */
-  --color-bg-active: #fcd34d; /* amber-300 */
+  --color-bg-hover: #fde68a;                           /* amber-200 */
+  --color-bg-active: #fcd34d;                          /* amber-300 */
 
   /* ========================================
      TEXT TOKENS
-     Dark text for maximum contrast on amber
+     Dark stone text for maximum contrast on amber
      ======================================== */
-  --color-text-primary: #1c1917; /* stone-900 */
-  --color-text-secondary: #44403c; /* stone-700 */
-  --color-text-tertiary: #57534e; /* stone-600 */
-  --color-text-muted: #78716c; /* stone-500 */
-  --color-text-inverse: #fafaf9; /* stone-50 */
-  --color-text-brand: #b45309; /* amber-700 */
+  --color-text-primary: #1c1917;                       /* stone-900 */
+  --color-text-secondary: #44403c;                     /* stone-700 */
+  --color-text-tertiary: #57534e;                      /* stone-600 */
+  --color-text-muted: #78716c;                         /* stone-500 */
+  --color-text-inverse: #fafaf9;                       /* stone-50 */
+  --color-text-brand: #b45309;                         /* amber-700 */
 
   /* ========================================
      BORDER TOKENS
      Visible borders for outdoor readability
      ======================================== */
-  --color-border-default: #d6d3d1; /* stone-300 */
-  --color-border-subtle: #e7e5e4; /* stone-200 */
-  --color-border-strong: #a8a29e; /* stone-400 */
-  --color-border-brand: #b45309; /* amber-700 */
+  --color-border-default: #d6d3d1;                     /* stone-300 */
+  --color-border-subtle: #e7e5e4;                      /* stone-200 */
+  --color-border-strong: #a8a29e;                      /* stone-400 */
+  --color-border-brand: #b45309;                       /* amber-700 */
 
   /* ========================================
      INTERACTIVE TOKENS
      High contrast for touch targets in sunlight
      ======================================== */
-  --color-interactive-primary: #b45309; /* amber-700 */
-  --color-interactive-hover: #92400e; /* amber-800 */
-  --color-interactive-active: #78350f; /* amber-900 */
-  --color-interactive-disabled: #d6d3d1; /* stone-300 */
+  --color-interactive-primary: #b45309;                /* amber-700 */
+  --color-interactive-hover: #92400e;                  /* amber-800 */
+  --color-interactive-active: #78350f;                 /* amber-900 */
+  --color-interactive-disabled: #d6d3d1;               /* stone-300 */
 
   /* ========================================
      STATUS TOKENS
      High contrast versions for outdoor visibility
      ======================================== */
-  --color-status-success: #15803d; /* green-700 */
-  --color-status-warning: #a16207; /* yellow-700 */
-  --color-status-error: #b91c1c; /* red-700 */
-  --color-status-info: #1d4ed8; /* blue-700 */
+  --color-status-success: #15803d;                     /* green-700 */
+  --color-status-warning: #a16207;                     /* yellow-700 */
+  --color-status-error: #b91c1c;                       /* red-700 */
+  --color-status-info: #1d4ed8;                        /* blue-700 */
+
+  /* ========================================
+     ROWING SEMANTIC ACCENTS
+     High contrast versions for field visibility
+     ======================================== */
+  --palette-rowing-water-field: #1d4ed8;               /* blue-700 */
+  --palette-rowing-starboard-field: #15803d;           /* green-700 */
+  --palette-rowing-port-field: #b91c1c;                /* red-700 */
+  --palette-rowing-gold-field: #b45309;                /* amber-700 */
 
   /* ========================================
      COMPONENT TOKENS
      ======================================== */
   /* Card */
   --color-card-bg: #ffffff;
-  --color-card-border: #e7e5e4; /* stone-200 */
-  --color-card-hover: #fef3c7; /* amber-100 */
+  --color-card-border: var(--palette-stone-200);
+  --color-card-hover: #fef3c7;                         /* amber-100 */
 
   /* Button - Primary */
   --color-button-primary-bg: var(--color-interactive-primary);
   --color-button-primary-hover: var(--color-interactive-hover);
-  --color-button-primary-text: #fafaf9; /* stone-50 */
+  --color-button-primary-text: #fafaf9;                /* stone-50 */
 
   /* Button - Secondary */
-  --color-button-secondary-bg: #e7e5e4; /* stone-200 */
-  --color-button-secondary-hover: #d6d3d1; /* stone-300 */
-  --color-button-secondary-text: #1c1917; /* stone-900 */
+  --color-button-secondary-bg: #e7e5e4;                /* stone-200 */
+  --color-button-secondary-hover: #d6d3d1;             /* stone-300 */
+  --color-button-secondary-text: #1c1917;              /* stone-900 */
 
   /* Input */
   --color-input-bg: #ffffff;
-  --color-input-border: #d6d3d1; /* stone-300 */
+  --color-input-border: var(--palette-stone-300);
   --color-input-focus: var(--color-border-brand);
-  --color-input-text: #1c1917; /* stone-900 */
-  --color-input-placeholder: #78716c; /* stone-500 */
+  --color-input-text: #1c1917;                         /* stone-900 */
+  --color-input-placeholder: #78716c;                  /* stone-500 */
 
   /* ========================================
      ACCESSIBILITY TOKENS
      High visibility focus rings for outdoor use
      ======================================== */
-  --color-focus-ring: rgba(180, 83, 9, 0.5); /* amber-700 */
-  --color-focus-ring-error: rgba(185, 28, 28, 0.5); /* red-700 */
+  --color-focus-ring: rgba(180, 83, 9, 0.5);           /* amber-700 */
+  --color-focus-ring-error: rgba(185, 28, 28, 0.5);    /* red-700 */
 
   /* ========================================
      SHADOW TOKENS
