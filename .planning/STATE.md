@@ -4,8 +4,8 @@
 
 **Milestone:** v2.1 — Feature Expansion
 **Phase:** 17 (Complete Design Overhaul) — In Progress
-**Status:** 4 of 9 plans complete
-**Last activity:** 2026-01-27 — Completed 17-04-PLAN.md (Animation System)
+**Status:** 5 of 9 plans complete
+**Last activity:** 2026-01-27 — Completed 17-05-PLAN.md (Core Component Tactile Updates)
 
 ## Project Reference
 
@@ -50,7 +50,7 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 |-------|------|--------|-------|
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
-| 17 | Complete Design Overhaul | In Progress | 4/9 |
+| 17 | Complete Design Overhaul | In Progress | 5/9 |
 | 18 | Lineup & Boat Improvements | In Progress | 8/11 |
 
 v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
