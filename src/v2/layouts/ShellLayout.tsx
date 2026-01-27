@@ -111,7 +111,7 @@ export function ShellLayout() {
   // Show loading state while auth is being verified
   if (isAuthLoading) {
     return (
-      <div className="v2 h-screen flex items-center justify-center bg-bg-surface">
+      <div className="v2 h-screen flex items-center justify-center bg-ink-deep">
         <LoadingSkeleton>
           <div className="space-y-4 w-64">
             <SkeletonLine height={40} />
@@ -126,7 +126,7 @@ export function ShellLayout() {
   // Mobile layout
   if (isMobile) {
     return (
-      <div className="v2 h-screen flex flex-col">
+      <div className="v2 h-screen flex flex-col bg-ink-deep">
         {/* Global command palette (keyboard shortcut: Cmd/Ctrl+K) */}
         <CommandPalette />
 
@@ -146,7 +146,7 @@ export function ShellLayout() {
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
         {/* Main content - full width */}
-        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto bg-bg-surface outline-none">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto bg-ink-deep outline-none">
           <Outlet />
         </main>
 
@@ -160,7 +160,7 @@ export function ShellLayout() {
             />
 
             {/* Menu panel */}
-            <div className="relative flex h-full w-80 max-w-[calc(100%-3rem)] bg-bg-base">
+            <div className="relative flex h-full w-80 max-w-[calc(100%-3rem)] bg-ink-base">
               {/* Rail */}
               <aside className="w-16 h-full flex-shrink-0">
                 <ContextRail />
@@ -174,10 +174,10 @@ export function ShellLayout() {
               {/* Close button */}
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="absolute top-3 right-3 p-2 rounded-lg hover:bg-bg-hover transition-colors"
+                className="absolute top-3 right-3 p-2 rounded-lg hover:bg-ink-raised transition-colors"
                 aria-label="Close menu"
               >
-                <X size={20} className="text-txt-secondary" />
+                <X size={20} className="text-ink-secondary" />
               </button>
             </div>
           </div>
@@ -188,7 +188,7 @@ export function ShellLayout() {
 
   // Desktop layout
   return (
-    <div className="v2 h-screen grid grid-cols-[auto_1fr]">
+    <div className="v2 h-screen grid grid-cols-[auto_1fr] bg-ink-deep">
       {/* Global command palette (keyboard shortcut: Cmd/Ctrl+K) */}
       <CommandPalette />
 
@@ -217,7 +217,7 @@ export function ShellLayout() {
         </aside>
 
         {/* Main content area */}
-        <main id="main-content" tabIndex={-1} className="h-full overflow-y-auto p-6 bg-bg-surface outline-none">
+        <main id="main-content" tabIndex={-1} className="h-full overflow-y-auto p-8 bg-ink-deep outline-none">
           <Outlet />
         </main>
       </div>
