@@ -3,9 +3,9 @@
 ## Current Status
 
 **Milestone:** v2.1 — Feature Expansion
-**Phase:** 17 (Complete Design Overhaul) — In Progress
-**Status:** 7 of 9 plans complete
-**Last activity:** 2026-01-27 — Completed 17-07-PLAN.md (Mobile Responsive Overhaul)
+**Phase:** 19 (Penpot Design System & Visual Identity) — In Progress
+**Status:** 1 plan complete (foundation specification)
+**Last activity:** 2026-01-28 — Completed 19-01 (Design System Foundation Specification)
 
 ## Project Reference
 
@@ -50,19 +50,20 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 |-------|------|--------|-------|
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
-| 17 | Complete Design Overhaul | In Progress | 6/9 |
-| 18 | Lineup & Boat Improvements | In Progress | 8/11 |
+| 17 | Complete Design Overhaul | In Progress | 7/8 |
+| 18 | Lineup & Boat Improvements | Complete | 11/11 |
+| 19 | Penpot Design System & Visual Identity | In Progress | 1/? |
 
-v2.1 Progress: ██████░░░░░░░░ (2 phases complete)
+v2.1 Progress: ████████░░░░░░ (3 phases complete, 2 in progress/planned)
 
 ### v2.2 Milestone (Planned)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 19 | Telemetry & Combined Scoring | Planned | TBD |
-| 20 | AI Lineup Optimizer (v2) | Planned | TBD |
-| 21 | Predictive Analytics | Planned | TBD |
-| 22 | Coxswain Mobile View | Planned | TBD |
+| 20 | Telemetry & Combined Scoring | Planned | TBD |
+| 21 | AI Lineup Optimizer (v2) | Planned | TBD |
+| 22 | Predictive Analytics | Planned | TBD |
+| 23 | Coxswain Mobile View | Planned | TBD |
 
 v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 
@@ -352,9 +353,15 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-01-27
-**Stopped at:** Completed 17-07-PLAN.md (Mobile Responsive Overhaul)
+**Last session:** 2026-01-28
+**Stopped at:** Completed Phase 19 Plan 01 (Design System Foundation Specification)
 **Resume file:** None
+
+## Roadmap Evolution
+
+- 2026-01-28: Phase 19 added to v2.1 (Penpot Design System & Visual Identity)
+- 2026-01-28: Phase 17 reduced from 9 to 8 plans (landing page moved to Phase 19)
+- 2026-01-28: v2.2 phases renumbered (19→20, 20→21, 21→22, 22→23)
 
 ## Known Limitations
 
@@ -362,23 +369,24 @@ None - all v2.0 foundation issues resolved.
 
 ## Next Action
 
-**v2.1 Milestone: Feature Expansion** (Ready to Start)
+**v2.1 Milestone: Feature Expansion** (In Progress)
 
-Phase 14 (Advanced Seat Racing Analytics) is complete. The roadmap now extends through Phase 22:
+Phase 17 needs 1 more plan (17-08 verification checkpoint), then Phase 19 is the new Penpot-based design phase.
 
 **v2.1 — Feature Expansion:**
-- Phase 15: Feature Toggles & Recruiting
-- Phase 16: Gamification & Engagement
-- Phase 17: Complete Design Overhaul 🎨
-- Phase 18: Lineup & Boat Improvements
+- Phase 15: Feature Toggles & Recruiting ✅
+- Phase 16: Gamification & Engagement ✅
+- Phase 17: Complete Design Overhaul 🎨 (7/8 plans complete)
+- Phase 18: Lineup & Boat Improvements ✅
+- Phase 19: Penpot Design System & Visual Identity 🎨 (NEW)
 
 **v2.2 — Advanced Analytics:**
-- Phase 19: Telemetry & Combined Scoring
-- Phase 20: AI Lineup Optimizer (v2)
-- Phase 21: Predictive Analytics
-- Phase 22: Coxswain Mobile View
+- Phase 20: Telemetry & Combined Scoring
+- Phase 21: AI Lineup Optimizer (v2)
+- Phase 22: Predictive Analytics
+- Phase 23: Coxswain Mobile View
 
-To begin v2.1, run `/gsd:plan-phase` for Phase 15.
+To plan Phase 19, run `/gsd:plan-phase 19`.
 
 Phase 13 delivered the cross-feature integration layer:
 
@@ -657,3 +665,15 @@ Phase 13 delivered the cross-feature integration layer:
 
 ---
 *Last updated: 2026-01-27 — Phase 17 Plan 07 Complete*
+
+### v2.1 Decisions (Phase 19)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 19-01 | Specification-first approach for Penpot design system | Penpot MCP tools unavailable, comprehensive specification enables manual implementation while maintaining full traceability |
+| 19-01 | 28-color palette with hierarchical slash notation | Ink/Deep, Data/Excellent pattern creates auto-grouped Asset Library for clean navigation |
+| 19-01 | JetBrains Mono as Geist Mono fallback | Geist Mono may be unavailable in Penpot (Vercel proprietary), JetBrains Mono provides equivalent monospace aesthetic |
+| 19-01 | All Phase 17 color tokens in foundation | Complete palette upfront (Inkwell, Data, Chart, Rowing) prevents incremental additions during component design |
+
+---
+*Last updated: 2026-01-28 — Phase 19 Plan 01 Complete*
