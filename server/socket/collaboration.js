@@ -19,9 +19,18 @@ const userSockets = new Map(); // socketId -> { userId, sessionId, color }
 // Generate a random color for user cursor
 const generateUserColor = () => {
   const colors = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
-    '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F',
-    '#BB8FCE', '#85C1E9', '#F8B500', '#00CED1',
+    '#FF6B6B',
+    '#4ECDC4',
+    '#45B7D1',
+    '#96CEB4',
+    '#FFEAA7',
+    '#DDA0DD',
+    '#98D8C8',
+    '#F7DC6F',
+    '#BB8FCE',
+    '#85C1E9',
+    '#F8B500',
+    '#00CED1',
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 };
@@ -33,9 +42,10 @@ const generateUserColor = () => {
 export function initializeWebSocket(httpServer) {
   const io = new Server(httpServer, {
     cors: {
-      origin: process.env.NODE_ENV === 'production'
-        ? ['https://rowlab.net']
-        : ['http://localhost:3001', 'http://localhost:3002', 'http://10.0.0.17:3001'],
+      origin:
+        process.env.NODE_ENV === 'production'
+          ? ['https://rowlab.net']
+          : ['http://localhost:3001', 'http://localhost:3002', 'http://10.0.0.17:3001'],
       methods: ['GET', 'POST'],
       credentials: true,
     },
@@ -54,7 +64,7 @@ export function initializeWebSocket(httpServer) {
     }
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'rowlab-jwt-secret');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       socket.user = decoded;
       next();
     } catch (err) {
@@ -273,17 +283,20 @@ export function initializeWebSocket(httpServer) {
   }
 
   // Periodic cleanup of stale sessions
-  setInterval(() => {
-    const now = Date.now();
-    const staleThreshold = 30 * 60 * 1000; // 30 minutes
+  setInterval(
+    () => {
+      const now = Date.now();
+      const staleThreshold = 30 * 60 * 1000; // 30 minutes
 
-    for (const [sessionId, session] of sessions.entries()) {
-      if (session.users.size === 0 && now - session.lastActivity > staleThreshold) {
-        sessions.delete(sessionId);
-        logger.info('Stale session removed', { sessionId });
+      for (const [sessionId, session] of sessions.entries()) {
+        if (session.users.size === 0 && now - session.lastActivity > staleThreshold) {
+          sessions.delete(sessionId);
+          logger.info('Stale session removed', { sessionId });
+        }
       }
-    }
-  }, 5 * 60 * 1000); // Check every 5 minutes
+    },
+    5 * 60 * 1000
+  ); // Check every 5 minutes
 
   logger.info('WebSocket server initialized');
 

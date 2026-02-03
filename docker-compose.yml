@@ -18,10 +18,10 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - PORT=3002
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-rowlab_secret}@db:5432/${POSTGRES_DB:-rowlab}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-rowlab}
       - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=${JWT_SECRET:-change_me_in_production}
-      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-change_me_in_production_refresh}
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
       - APP_URL=${APP_URL:-http://localhost:3002}
@@ -52,7 +52,7 @@ services:
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-rowlab}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-rowlab_secret}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
       - "${DB_PORT:-5432}:5432"
     networks:
@@ -93,7 +93,7 @@ services:
     container_name: rowlab-migrate
     command: npx prisma migrate deploy
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-rowlab_secret}@db:5432/${POSTGRES_DB:-rowlab}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-rowlab}
     depends_on:
       db:
         condition: service_healthy
