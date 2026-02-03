@@ -44,6 +44,9 @@ logs/*.log
 .claude/
 CLAUDE.md
 
+# GSD planning docs (private workflow state)
+.planning/
+
 # Database files (contain user data)
 *.db
 *.sqlite
@@ -123,3 +126,12 @@ yarn-error.log*
 
 # Development worktrees (isolated workspaces)
 .worktrees/
+
+# ===========================================
+# SCREENSHOTS & WORKING IMAGES
+# ===========================================
+
+# Working screenshots (keep public/ assets)
+*.png
+!public/**/*.png
+!src/**/*.png
