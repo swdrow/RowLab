@@ -508,7 +508,6 @@ RowLab/
 ├── vite.config.js            # Vite configuration
 ├── tailwind.config.js        # Tailwind configuration
 ├── vitest.config.js          # Vitest configuration
-├── ROADMAP.md                # Product roadmap
 ├── CONTRIBUTING.md           # Contribution guidelines
 ├── LICENSE                   # MIT License
 └── README.md                 # This file
@@ -634,48 +633,50 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## Roadmap
 
-RowLab is actively developed with a clear roadmap for 2026 and beyond.
+RowLab is actively developed across milestone releases. Here's where we are and where we're headed.
 
-### Recently Completed (January 2026) ✅
+### v1.0 — Full UX Redesign ✅
 
-- ✅ Precision Instrument UI redesign
-- ✅ Multi-tenant team management
-- ✅ Seat racing with Elo ratings system
-- ✅ AI lineup recommendations (genetic algorithm)
-- ✅ Concept2 and Strava integrations
-- ✅ Training plans with periodization
-- ✅ Race day mode with live timing
-- ✅ Real-time collaboration features
-- ✅ 40+ CodeRabbit security and quality fixes
+Ground-up rebuild with multi-persona Workspace/Context architecture.
 
-### Short Term (Q1 2026) 🚀
+- [x] V2 foundation with design tokens and CSS isolation
+- [x] Application shell with context-aware navigation (Me/Coach/Admin)
+- [x] Personal dashboard with Concept2 and Strava integration
+- [x] Coach features migration (whiteboard, fleet, availability)
+- [x] V2 default at `/app`, V1 fallback at `/legacy`
 
-- [ ] App layout redesign with sidebar navigation
-- [ ] Command palette (Cmd+K) for quick actions
-- [ ] Mobile-responsive optimization
-- [ ] Enhanced analytics dashboard
-- [ ] Garmin Connect integration
-- [ ] Video analysis tools (stretch goal)
+### v2.0 — Core Migration ✅
 
-### Medium Term (Q2-Q3 2026) 📈
+Complete V1-to-V2 feature migration with "Precision Instrument" design philosophy.
 
-- [ ] Stripe billing implementation
-- [ ] Advanced telemetry import (SpeedCoach, NK)
-- [ ] Weather integration for training conditions
-- [ ] Recruitment analytics tools
-- [ ] Alumni network features
-- [ ] Public API for third-party integrations
+- [x] Athletes and roster management with bulk CSV import
+- [x] Erg data tracking with trend charts and Concept2 sync
+- [x] Drag-and-drop lineup builder with undo/redo and PDF export
+- [x] Seat racing with Elo rankings and confidence intervals
+- [x] Training plans with periodization and NCAA 20-hour compliance
+- [x] Racing and regattas with race day command center
+- [x] Settings, photo uploads, and design polish (WCAG 2.1 AA)
+- [x] Cross-feature integrations (global search, live erg, unified activity feed)
+- [x] Advanced seat racing analytics (Bradley-Terry model, matrix planner, passive Elo)
 
-### Long Term (Q4 2026+) 🔮
+### v2.1 — Feature Expansion (In Progress)
 
-- [ ] React Native mobile app (iOS/Android)
-- [ ] Native PM5 companion app for live erg streaming
-- [ ] Shell margin visualization
-- [ ] Race prediction ML model
-- [ ] Integration marketplace
-- [ ] Multi-language support
+Feature toggles, gamification, design overhaul, and lineup improvements.
 
-See [ROADMAP.md](ROADMAP.md) for the complete roadmap with detailed planning.
+- [x] Feature toggles and recruit visit management
+- [x] Gamification (achievements, PRs, team challenges, streaks)
+- [x] Lineup and boat configuration improvements (rigging, templates, comparison)
+- [ ] Complete design overhaul (warm color system, tactile interactions, mobile responsive)
+- [ ] Warm color design system and landing page rebuild
+
+### v2.2 — Advanced Analytics (Planned)
+
+Telemetry, AI optimization, predictive modeling, and mobile coxswain experience.
+
+- [ ] Telemetry import (Empower, Peach, NK SpeedCoach) with force curve visualization
+- [ ] AI lineup optimizer v2 with constraint configuration and explanation system
+- [ ] Predictive analytics (2k predictions, injury risk, progress projections)
+- [ ] Coxswain mobile view with offline support and piece timer
 
 ### Feature Comparison
 
@@ -686,12 +687,13 @@ See [ROADMAP.md](ROADMAP.md) for the complete roadmap with detailed planning.
 | Seat Racing Analytics | ✅ | ❌ | ⚠️ | ❌ |
 | Real-Time Collaboration | ✅ | ❌ | ❌ | ❌ |
 | Concept2 Integration | ✅ | ❌ | ❌ | ❌ |
-| Training Plans | ✅ | ❌ | ❌ | ❌ |
-| Video Analysis | 🚧 Planned | ❌ | ✅ | ❌ |
-| Mobile App | 🚧 Planned | ❌ | ⚠️ | ❌ |
+| Training Plans + NCAA | ✅ | ❌ | ❌ | ❌ |
+| Gamification | ✅ | ❌ | ❌ | ❌ |
+| Telemetry Import | 🚧 Planned | ❌ | ✅ | ❌ |
+| Coxswain Mobile | 🚧 Planned | ❌ | ⚠️ | ❌ |
 | Self-Hosted | ✅ | ❌ | ❌ | ❌ |
 
-**RowLab is the only platform with AI-powered lineup optimization and modern real-time collaboration.**
+**RowLab is the only platform with AI-powered lineup optimization, Bradley-Terry seat racing analytics, and modern real-time collaboration.**
 
 ---
 
@@ -706,7 +708,7 @@ Comprehensive documentation is available in the `/docs` directory:
 | [Component Guide](docs/components/README.md) | React component documentation and usage |
 | [Services Guide](docs/services/README.md) | Backend service layer documentation |
 | [Self-Hosted Setup](docs/self-hosted-setup.md) | Production deployment instructions |
-| [Design System](.claude/design-standard.md) | Precision Instrument design guidelines |
+| Design System | Precision Instrument aesthetic (see Design System section below) |
 
 ---
 
@@ -722,7 +724,7 @@ Comprehensive documentation is available in the `/docs` directory:
 
 - **Star this repository** to get updates
 - **Watch releases** for new versions
-- **Follow the roadmap** in [ROADMAP.md](ROADMAP.md)
+- **Follow the roadmap** in the [Roadmap section](#roadmap) above
 
 ---
 
