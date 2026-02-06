@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { Users, CheckCircle, XCircle } from '@phosphor-icons/react';
 import { useQuery } from '@tanstack/react-query';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-import useAuthStore from '../../../../../store/authStore';
 
 interface AttendanceSummary {
   totalAthletes: number;
@@ -12,8 +11,8 @@ interface AttendanceSummary {
 }
 
 export function AttendanceSummaryWidget() {
-  const accessToken = useAuthStore((state: any) => state.accessToken);
-  const activeTeamId = useAuthStore((state: any) => state.activeTeamId);
+  const accessToken = useAuth().accessToken);
+  const activeTeamId = useAuth().activeTeamId);
 
   const { data, isLoading } = useQuery({
     queryKey: ['attendance-summary', activeTeamId],

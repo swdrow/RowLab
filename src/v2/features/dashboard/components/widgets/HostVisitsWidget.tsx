@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Calendar, Users, Clock } from 'lucide-react';
 import { useHostAthleteVisits } from '@v2/hooks/useRecruitVisits';
-import useAuthStore from '@/store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ interface HostVisitsWidgetProps {
  * Returns null if athlete has no upcoming visits.
  */
 export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps) {
-  const { user } = useAuthStore();
+  const { user } = useAuth();
 
   // Use provided athleteId or try to get from user
   // Note: In RowLab, athletes and coaches are in the User model, athleteId might need to be derived

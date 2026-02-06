@@ -3,7 +3,6 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-import useAuthStore from '../../../../store/authStore';
 import api from '../../../utils/api';
 import type { ActivityFeedResponse } from '../../../types/activity';
 
@@ -72,9 +71,9 @@ async function fetchActivityFeed(
  * @param athleteId - Optional athlete ID to filter activities
  */
 export function useUnifiedActivityFeed(athleteId?: string) {
-  const isAuthenticated = useAuthStore((state: AuthState) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state: AuthState) => state.isInitialized);
-  const activeTeamId = useAuthStore((state: AuthState) => state.activeTeamId);
+  const isAuthenticated = useAuth().isAuthenticated);
+  const isInitialized = useAuth().isInitialized);
+  const activeTeamId = useAuth().activeTeamId);
 
   return useInfiniteQuery({
     queryKey: activityKeys.feed(athleteId),

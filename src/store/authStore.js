@@ -7,6 +7,10 @@ const API_URL = '/api/v1';
 /**
  * Auth Store - Manages authentication state with JWT refresh token rotation
  *
+ * DEPRECATED: V2 uses useAuth() from src/v2/contexts/AuthContext.tsx
+ * This file exists only for V1 legacy code compatibility.
+ * New code should NOT import this - use AuthContext instead.
+ *
  * Features:
  * - Access token stored in memory (not persisted for security)
  * - Refresh token stored in HTTP-only cookie (handled by server)

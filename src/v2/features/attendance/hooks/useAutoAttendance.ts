@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '../../../../store/authStore';
 
 // Attendance statuses
 export type AttendanceStatus = 'Present' | 'Late' | 'Partial' | 'Absent' | 'Injured' | 'Class';
@@ -28,7 +27,7 @@ export const attendanceKeys = {
 
 // Fetch session attendance
 export function useSessionAttendance(sessionId: string) {
-  const { accessToken, teamId } = useAuthStore();
+  const { accessToken, teamId } = useAuth();
 
   return useQuery({
     queryKey: attendanceKeys.session(sessionId),
@@ -51,7 +50,7 @@ export function useSessionAttendance(sessionId: string) {
 // Record attendance (called when athlete participates)
 export function useRecordAttendance() {
   const queryClient = useQueryClient();
-  const { accessToken, teamId } = useAuthStore();
+  const { accessToken, teamId } = useAuth();
 
   return useMutation({
     mutationFn: async ({
@@ -85,7 +84,7 @@ export function useRecordAttendance() {
 // Override attendance
 export function useAttendanceOverride() {
   const queryClient = useQueryClient();
-  const { accessToken, teamId } = useAuthStore();
+  const { accessToken, teamId } = useAuth();
 
   return useMutation({
     mutationFn: async ({

@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import useAuthStore from '../../../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import api from '../../../utils/api';
 import type { LiveSessionData, PollingConfig } from '../../../types/live-erg';
 import { DEFAULT_POLLING_INTERVAL } from '../../../types/live-erg';
@@ -64,9 +64,9 @@ export function useLiveErgPolling({
   config = {},
 }: UseLiveErgPollingOptions) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isAuthenticated = useAuthStore((state: any) => state.isAuthenticated);
+  const isAuthenticated = useAuth().isAuthenticated);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isInitialized = useAuthStore((state: any) => state.isInitialized);
+  const isInitialized = useAuth().isInitialized);
 
   const pollingConfig: PollingConfig = {
     interval: config.interval ?? DEFAULT_POLLING_INTERVAL,
