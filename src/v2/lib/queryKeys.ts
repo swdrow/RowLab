@@ -23,6 +23,7 @@ export const queryKeys = {
       [...queryKeys.athletes.lists(), { filters }] as const,
     details: () => [...queryKeys.athletes.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.athletes.details(), id] as const,
+    count: (teamId: string) => [...queryKeys.athletes.all, 'count', teamId] as const,
   },
 
   // Erg Tests
@@ -113,6 +114,7 @@ export const queryKeys = {
     details: () => [...queryKeys.sessions.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.sessions.details(), id] as const,
     live: (id: string) => [...queryKeys.sessions.all, 'live', id] as const,
+    count: (teamId: string) => [...queryKeys.sessions.all, 'count', teamId] as const,
   },
 
   // Regattas
