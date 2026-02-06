@@ -1,0 +1,312 @@
+/**
+ * Coach Dashboard Layout
+ * Phase 27-03: Complete coach dashboard with bento grid, exception banner, and widgets
+ */
+
+import React, { useMemo } from 'react';
+import { Responsive, WidthProvider, Layout as RGLLayout } from 'react-grid-layout';
+import { GripVertical, XCircle } from '@phosphor-icons/react';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useDashboardLayout } from '../hooks/useDashboardLayout';
+import { useExceptions } from '../hooks/useExceptions';
+import { getWidgetConfig } from '../config/widgetRegistry';
+import { ExceptionBanner, ExceptionBadge } from './ExceptionBanner';
+import { EmptyStateAnimated } from '../empty-states/EmptyStateAnimated';
+import type { WidgetInstance } from '../types';
+
+// Import CSS for react-grid-layout
+import 'react-grid-layout/css/styles.css';
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+/**
+ * CoachDashboard - Complete coach dashboard layout
+ *
+ * Features:
+ * - Exception banner at top (auto-hides when no issues)
+ * - Bento grid with react-grid-layout Responsive
+ * - Edit mode with iOS-style jiggle animation
+ * - Quick actions integrated in hero card (TodaysPracticeSummary)
+ * - Per-widget exception badges
+ *
+ * Per CONTEXT.md: "Edit mode should feel like iOS home screen — widgets jiggle"
+ */
+export const CoachDashboard: React.FC = () => {
+  const { activeTeamId, isAuthenticated, isInitialized } = useAuth();
+  const { layout, isEditing, setIsEditing, updateLayout, changeWidgetSize, removeWidget } =
+    useDashboardLayout('coach');
+
+  const { summary: exceptionSummary, widgetExceptions } = useExceptions(activeTeamId || '');
+
+  // Convert layout to react-grid-layout format
+  const gridLayout = useMemo((): RGLLayout[] => {
+    return layout.widgets.map((widget) => ({
+      i: widget.id,
+      x: widget.position.x,
+      y: widget.position.y,
+      w: widget.position.w,
+      h: widget.position.h,
+      minW: 2,
+      minH: 2,
+      maxW: 12,
+      maxH: 8,
+    }));
+  }, [layout.widgets]);
+
+  // Handle layout change from drag/drop
+  const handleLayoutChange = (newLayout: RGLLayout[]) => {
+    if (!isEditing) return;
+
+    // Update widget positions
+    const updatedWidgets = layout.widgets.map((widget) => {
+      const gridItem = newLayout.find((item) => item.i === widget.id);
+      if (!gridItem) return widget;
+
+      return {
+        ...widget,
+        position: {
+          x: gridItem.x,
+          y: gridItem.y,
+          w: gridItem.w,
+          h: gridItem.h,
+        },
+      };
+    });
+
+    updateLayout({
+      ...layout,
+      widgets: updatedWidgets,
+    });
+  };
+
+  // Loading state
+  if (!isInitialized || !isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-[var(--color-interactive-primary)] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-[var(--color-text-secondary)]">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!activeTeamId) {
+    return (
+      <div className="p-6">
+        <EmptyStateAnimated
+          title="No Active Team"
+          description="Please select or create a team to view your dashboard."
+          action={{
+            label: 'Go to Teams',
+            to: '/app/settings/teams',
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--color-bg-base)] p-6">
+      {/* Page Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">Dashboard</h1>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+            Your team overview and quick actions
+          </p>
+        </div>
+
+        {/* Edit Layout Toggle */}
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] ${
+            isEditing
+              ? 'bg-[var(--color-interactive-primary)] text-white hover:bg-[var(--color-interactive-hover)]'
+              : 'border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)]'
+          }`}
+        >
+          {isEditing ? 'Done' : 'Edit Layout'}
+        </button>
+      </div>
+
+      {/* Exception Banner */}
+      <ExceptionBanner summary={exceptionSummary} />
+
+      {/* Bento Grid */}
+      <ResponsiveGridLayout
+        className="dashboard-grid"
+        layouts={{ lg: gridLayout, md: gridLayout, sm: gridLayout }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768 }}
+        cols={{ lg: 12, md: 10, sm: 6 }}
+        rowHeight={60}
+        margin={[16, 16]}
+        isDraggable={isEditing}
+        isResizable={false} // Use size presets only
+        draggableHandle=".widget-drag-handle"
+        onLayoutChange={handleLayoutChange}
+      >
+        {layout.widgets.map((widget) => (
+          <div key={widget.id} className={`widget-container ${isEditing ? 'widget-editing' : ''}`}>
+            <WidgetCard
+              widget={widget}
+              isEditing={isEditing}
+              exceptions={widgetExceptions[widget.id] || []}
+              onSizeChange={(newSize) => changeWidgetSize(widget.id, newSize)}
+              onRemove={() => removeWidget(widget.id)}
+            />
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+
+      {/* Edit Mode Instructions */}
+      {isEditing && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
+          <p className="text-sm text-[var(--color-text-secondary)]">
+            <strong className="text-[var(--color-text-primary)]">Drag</strong> widgets to rearrange.{' '}
+            <strong className="text-[var(--color-text-primary)]">Click size</strong> to resize.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ============================================
+// WIDGET CARD WRAPPER
+// ============================================
+
+interface WidgetCardProps {
+  widget: WidgetInstance;
+  isEditing: boolean;
+  exceptions: any[];
+  onSizeChange: (newSize: 'compact' | 'normal' | 'expanded') => void;
+  onRemove: () => void;
+}
+
+/**
+ * WidgetCard - Wrapper for individual dashboard widgets
+ *
+ * Handles:
+ * - Widget component rendering
+ * - Edit mode UI (drag handle, size selector, remove button)
+ * - Exception badge overlay
+ * - Glass card styling
+ */
+const WidgetCard: React.FC<WidgetCardProps> = ({
+  widget,
+  isEditing,
+  exceptions,
+  onSizeChange,
+  onRemove,
+}) => {
+  const config = getWidgetConfig(widget.widgetType);
+
+  if (!config) {
+    return (
+      <div className="h-full glass-card p-4 flex items-center justify-center">
+        <p className="text-sm text-[var(--color-text-secondary)]">Widget not found</p>
+      </div>
+    );
+  }
+
+  const WidgetComponent = config.component;
+
+  // Determine exception severity
+  const criticalCount = exceptions.filter((e) => e.severity === 'critical').length;
+  const warningCount = exceptions.filter((e) => e.severity === 'warning').length;
+  const exceptionSeverity = criticalCount > 0 ? 'critical' : warningCount > 0 ? 'warning' : 'ok';
+  const exceptionCount = criticalCount + warningCount;
+
+  // Available sizes for this widget
+  const availableSizes = Object.keys(config.sizes) as ('compact' | 'normal' | 'expanded')[];
+
+  return (
+    <div className="h-full relative glass-card bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-xl overflow-hidden transition-all hover:border-[var(--color-border-hover)]">
+      {/* Edit Mode Header */}
+      {isEditing && (
+        <div className="flex items-center justify-between px-3 py-2 bg-[var(--color-bg-base)] border-b border-[var(--color-border-default)]">
+          {/* Drag Handle */}
+          <div className="flex items-center gap-2">
+            <div className="widget-drag-handle cursor-grab active:cursor-grabbing">
+              <GripVertical className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+            </div>
+            <span className="text-sm font-medium text-[var(--color-text-primary)]">
+              {config.title}
+            </span>
+          </div>
+
+          {/* Size Selector */}
+          <div className="flex items-center gap-1">
+            {availableSizes.map((size) => (
+              <button
+                key={size}
+                onClick={() => onSizeChange(size)}
+                className={`px-2 py-1 text-xs rounded transition-colors ${
+                  widget.size === size
+                    ? 'bg-[var(--color-interactive-primary)] text-white'
+                    : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-surface-elevated)]'
+                }`}
+              >
+                {size[0].toUpperCase()}
+              </button>
+            ))}
+
+            {/* Remove Button */}
+            <button
+              onClick={onRemove}
+              className="ml-2 p-1 text-[var(--color-status-error)] hover:bg-status-error/10 rounded transition-colors"
+              title="Remove widget"
+            >
+              <XCircle className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Widget Content */}
+      <div className={`${isEditing ? 'h-[calc(100%-48px)]' : 'h-full'} overflow-auto`}>
+        <WidgetComponent widgetId={widget.id} size={widget.size} isEditing={isEditing} />
+      </div>
+
+      {/* Exception Badge Overlay */}
+      {!isEditing && exceptionCount > 0 && (
+        <ExceptionBadge severity={exceptionSeverity} count={exceptionCount} />
+      )}
+    </div>
+  );
+};
+
+// ============================================
+// CSS ANIMATIONS
+// ============================================
+
+// Inject jiggle animation for edit mode
+const styles = `
+@keyframes widget-jiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.5deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
+}
+
+.widget-editing {
+  animation: widget-jiggle 0.3s ease-in-out infinite;
+}
+
+.widget-editing:hover {
+  animation: none;
+}
+`;
+
+if (typeof document !== 'undefined' && !document.getElementById('dashboard-widget-styles')) {
+  const styleSheet = document.createElement('style');
+  styleSheet.id = 'dashboard-widget-styles';
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
+}
