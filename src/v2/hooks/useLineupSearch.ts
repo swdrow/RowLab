@@ -3,7 +3,8 @@
  */
 
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import type { LineupSearchFilters, LineupSearchResult } from '../types/equipment';
 
 // Query key factory
@@ -23,8 +24,8 @@ interface SearchResult {
  * Search historical lineups with multi-criteria filtering
  */
 export function useLineupSearch(filters: LineupSearchFilters, enabled = true) {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } =
+    useAuth();
 
   return useQuery({
     queryKey: lineupSearchKeys.search(filters),
@@ -59,8 +60,8 @@ export function useLineupSearch(filters: LineupSearchFilters, enabled = true) {
         params.append('sortDirection', filters.sortDirection);
       }
 
-      const response = await authenticatedFetch(`/api/v1/lineups/search?${params.toString()}`);
-      const data = await response.json();
+      const response = await api.get(`/api/v1/lineups/search?${params.toString()}`);
+      const data = await response.data;
       if (!data.success) throw new Error(data.error?.message || 'Search failed');
       return data.data;
     },

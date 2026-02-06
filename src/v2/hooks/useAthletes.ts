@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { Athlete, AthleteFilters, ApiResponse, CSVImportResult } from '../types/athletes';
 
 /**
@@ -19,7 +19,9 @@ async function fetchAthletes(): Promise<Athlete[]> {
 /**
  * Create a new athlete
  */
-async function createAthlete(data: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>): Promise<Athlete> {
+async function createAthlete(
+  data: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>
+): Promise<Athlete> {
   const response = await api.post<ApiResponse<{ athlete: Athlete }>>('/api/v1/athletes', data);
 
   if (!response.data.success || !response.data.data) {
@@ -33,7 +35,10 @@ async function createAthlete(data: Omit<Athlete, 'id' | 'teamId' | 'createdAt' |
  * Update an existing athlete
  */
 async function updateAthlete(data: Partial<Athlete> & { id: string }): Promise<Athlete> {
-  const response = await api.put<ApiResponse<{ athlete: Athlete }>>(`/api/v1/athletes/${data.id}`, data);
+  const response = await api.put<ApiResponse<{ athlete: Athlete }>>(
+    `/api/v1/athletes/${data.id}`,
+    data
+  );
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to update athlete');
@@ -56,8 +61,12 @@ async function deleteAthlete(id: string): Promise<void> {
 /**
  * Bulk import athletes from CSV
  */
-async function bulkImportAthletes(athletes: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>[]): Promise<CSVImportResult> {
-  const response = await api.post<ApiResponse<CSVImportResult>>('/api/v1/athletes/bulk', { athletes });
+async function bulkImportAthletes(
+  athletes: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>[]
+): Promise<CSVImportResult> {
+  const response = await api.post<ApiResponse<CSVImportResult>>('/api/v1/athletes/bulk', {
+    athletes,
+  });
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to import athletes');
@@ -102,8 +111,7 @@ function filterAthletes(athletes: Athlete[], filters: AthleteFilters): Athlete[]
  */
 export function useAthletes(filters?: AthleteFilters) {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['athletes'],
@@ -113,9 +121,8 @@ export function useAthletes(filters?: AthleteFilters) {
   });
 
   // Apply client-side filters
-  const filteredAthletes = query.data && filters
-    ? filterAthletes(query.data, filters)
-    : query.data || [];
+  const filteredAthletes =
+    query.data && filters ? filterAthletes(query.data, filters) : query.data || [];
 
   const createMutation = useMutation({
     mutationFn: createAthlete,
@@ -125,7 +132,13 @@ export function useAthletes(filters?: AthleteFilters) {
 
       queryClient.setQueryData<Athlete[]>(['athletes'], (old = []) => [
         ...old,
-        { ...newAthlete, id: 'temp-' + Date.now(), teamId: 'temp', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } as Athlete,
+        {
+          ...newAthlete,
+          id: 'temp-' + Date.now(),
+          teamId: 'temp',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        } as Athlete,
       ]);
 
       return { previousAthletes };

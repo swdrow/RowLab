@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type {
   C2Status,
   StravaStatus,
@@ -85,8 +85,7 @@ async function syncC2(): Promise<{ newWorkouts: number }> {
  * Hook for Concept2 connection status
  */
 export function useC2Status() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: integrationKeys.c2.status(),
@@ -233,8 +232,7 @@ async function syncStrava(): Promise<{ newActivities: number }> {
  * Hook for Strava connection status
  */
 export function useStravaStatus() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: integrationKeys.strava.status(),
@@ -369,8 +367,7 @@ async function syncC2ToStrava(): Promise<C2ToStravaSyncResult> {
  * Hook for C2 to Strava sync configuration
  */
 export function useC2SyncConfig() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: integrationKeys.c2.syncConfig(),

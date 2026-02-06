@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { AthleteAvailability, AvailabilityDay, ApiResponse } from '../types/coach';
 
 // Format date for query key stability
@@ -13,8 +13,7 @@ function formatDate(date: Date): string {
  * Waits for auth to be initialized before fetching
  */
 export function useTeamAvailability(startDate: Date, endDate: Date) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
     queryKey: ['availability', 'team', formatDate(startDate), formatDate(endDate)],
@@ -43,9 +42,12 @@ export function useTeamAvailability(startDate: Date, endDate: Date) {
  * Fetch single athlete's availability
  * Waits for auth to be initialized before fetching
  */
-export function useAthleteAvailability(athleteId: string | undefined, startDate: Date, endDate: Date) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+export function useAthleteAvailability(
+  athleteId: string | undefined,
+  startDate: Date,
+  endDate: Date
+) {
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
     queryKey: ['availability', 'athlete', athleteId, formatDate(startDate), formatDate(endDate)],
@@ -77,7 +79,13 @@ export function useUpdateAvailability() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ athleteId, availability }: { athleteId: string; availability: AvailabilityDay[] }) => {
+    mutationFn: async ({
+      athleteId,
+      availability,
+    }: {
+      athleteId: string;
+      availability: AvailabilityDay[];
+    }) => {
       const response = await api.put<ApiResponse<{ availability: AvailabilityDay[] }>>(
         `/api/v1/availability/${athleteId}`,
         { availability }

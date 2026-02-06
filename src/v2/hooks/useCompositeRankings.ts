@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type {
   CompositeRankingsResponse,
   RankingWeightProfile,
   SideSpecificRating,
-  Side
+  Side,
 } from '../types/advancedRanking';
 import type { ApiResponse } from '../types/dashboard';
 
@@ -60,17 +60,22 @@ async function fetchWeightProfiles(): Promise<RankingWeightProfile[]> {
   return response.data.data.profiles;
 }
 
-async function fetchRankingsBySide(teamId: string, side: Side | null): Promise<{
+async function fetchRankingsBySide(
+  teamId: string,
+  side: Side | null
+): Promise<{
   rankings: Array<{ rank: number; athleteId: string; ratingValue: number; athlete: any }>;
   side: Side | null;
 }> {
   let url = `/api/v1/advanced-ranking/by-side?teamId=${teamId}`;
   if (side) url += `&side=${side}`;
 
-  const response = await api.get<ApiResponse<{
-    rankings: Array<{ rank: number; athleteId: string; ratingValue: number; athlete: any }>;
-    side: Side | null;
-  }>>(url);
+  const response = await api.get<
+    ApiResponse<{
+      rankings: Array<{ rank: number; athleteId: string; ratingValue: number; athlete: any }>;
+      side: Side | null;
+    }>
+  >(url);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to fetch side rankings');
@@ -79,7 +84,10 @@ async function fetchRankingsBySide(teamId: string, side: Side | null): Promise<{
   return response.data.data;
 }
 
-async function fetchAthleteSideRatings(athleteId: string, teamId: string): Promise<SideSpecificRating & { athlete: any }> {
+async function fetchAthleteSideRatings(
+  athleteId: string,
+  teamId: string
+): Promise<SideSpecificRating & { athlete: any }> {
   const response = await api.get<ApiResponse<SideSpecificRating & { athlete: any }>>(
     `/api/v1/advanced-ranking/athlete/${athleteId}/sides?teamId=${teamId}`
   );
@@ -109,9 +117,8 @@ export function useCompositeRankings(
   profileId: string = 'balanced',
   customWeights?: { onWater: number; erg: number; attendance: number }
 ) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
-  const activeTeamId = useAuthStore((state) => state.activeTeamId);
+  const { isAuthenticated, isInitialized } = useAuth();
+  const { activeTeamId } = useAuth();
 
   const query = useQuery({
     queryKey: compositeRankingKeys.rankings(activeTeamId || '', profileId),
@@ -139,8 +146,7 @@ export function useCompositeRankings(
  * // profiles includes: Performance-First, Balanced, Reliability-Focus
  */
 export function useWeightProfiles() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: compositeRankingKeys.profiles(),
@@ -166,9 +172,8 @@ export function useWeightProfiles() {
  * // Rankings only include port-side ratings
  */
 export function useSideRankings(side: Side | null = null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
-  const activeTeamId = useAuthStore((state) => state.activeTeamId);
+  const { isAuthenticated, isInitialized } = useAuth();
+  const { activeTeamId } = useAuth();
 
   const query = useQuery({
     queryKey: compositeRankingKeys.bySide(activeTeamId || '', side),
@@ -196,9 +201,8 @@ export function useSideRankings(side: Side | null = null) {
  * // sideRatings has port, starboard, cox ratings separately
  */
 export function useAthleteSideRatings(athleteId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
-  const activeTeamId = useAuthStore((state) => state.activeTeamId);
+  const { isAuthenticated, isInitialized } = useAuth();
+  const { activeTeamId } = useAuth();
 
   const query = useQuery({
     queryKey: compositeRankingKeys.athleteSides(athleteId || ''),

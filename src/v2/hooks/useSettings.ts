@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { UserSettings, UpdateSettingsPayload, ApiResponse } from '../types/settings';
 
 /**
@@ -41,8 +41,7 @@ async function updateSettings(payload: UpdateSettingsPayload): Promise<UserSetti
  * Hook to fetch user settings
  */
 export function useSettings() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: settingsKeys.user(),

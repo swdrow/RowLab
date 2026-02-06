@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { OarSet, ApiResponse } from '../types/coach';
 
 /**
@@ -19,9 +19,7 @@ async function fetchOarSets(): Promise<OarSet[]> {
 /**
  * Create a new oar set
  */
-async function createOarSet(
-  data: Omit<OarSet, 'id' | 'teamId'>
-): Promise<OarSet> {
+async function createOarSet(data: Omit<OarSet, 'id' | 'teamId'>): Promise<OarSet> {
   const response = await api.post<ApiResponse<OarSet>>('/api/v1/oar-sets', data);
 
   if (!response.data.success || !response.data.data) {
@@ -34,9 +32,7 @@ async function createOarSet(
 /**
  * Update an existing oar set
  */
-async function updateOarSet(
-  data: OarSet
-): Promise<OarSet> {
+async function updateOarSet(data: OarSet): Promise<OarSet> {
   const response = await api.put<ApiResponse<OarSet>>(`/api/v1/oar-sets/${data.id}`, data);
 
   if (!response.data.success || !response.data.data) {
@@ -62,8 +58,7 @@ async function deleteOarSet(id: string): Promise<void> {
  */
 export function useOarSets() {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['oar-sets'],

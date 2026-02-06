@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type {
   ErgTest,
   ErgTestFilters,
@@ -116,10 +116,9 @@ async function fetchLeaderboard(
  * Bulk import erg tests from CSV
  */
 async function bulkImportTests(tests: CreateErgTestInput[]): Promise<BulkImportResult> {
-  const response = await api.post<ApiResponse<BulkImportResult>>(
-    '/api/v1/erg-tests/bulk-import',
-    { tests }
-  );
+  const response = await api.post<ApiResponse<BulkImportResult>>('/api/v1/erg-tests/bulk-import', {
+    tests,
+  });
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to import erg tests');
@@ -133,8 +132,7 @@ async function bulkImportTests(tests: CreateErgTestInput[]): Promise<BulkImportR
  */
 export function useErgTests(filters?: ErgTestFilters) {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['ergTests', filters],
@@ -180,11 +178,7 @@ export function useErgTests(filters?: ErgTestFilters) {
 
       // Optimistic update
       queryClient.setQueryData<ErgTest[]>(['ergTests', filters], (old = []) =>
-        old.map((test) =>
-          test.id === updatedTest.id
-            ? { ...test, ...updatedTest }
-            : test
-        )
+        old.map((test) => (test.id === updatedTest.id ? { ...test, ...updatedTest } : test))
       );
 
       return { previousTests };
@@ -250,8 +244,7 @@ export function useErgTests(filters?: ErgTestFilters) {
  * Hook for athlete's erg test history with personal bests
  */
 export function useAthleteErgHistory(athleteId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['ergTests', 'athlete', athleteId],
@@ -274,8 +267,7 @@ export function useAthleteErgHistory(athleteId: string) {
  * Hook for erg test leaderboard
  */
 export function useErgLeaderboard(testType: TestType, limit: number = 20) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['ergTests', 'leaderboard', testType, limit],

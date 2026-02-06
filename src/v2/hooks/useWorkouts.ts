@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 
 // ============================================
 // TYPES
@@ -254,8 +254,7 @@ async function rescheduleWorkout(data: {
  * Hook for fetching workouts (optionally filtered by plan or date range)
  */
 export function useWorkouts(options?: WorkoutListOptions) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['workouts', options],
@@ -277,8 +276,7 @@ export function useWorkouts(options?: WorkoutListOptions) {
  * Expands recurring workouts into individual calendar events
  */
 export function useCalendarEvents(startDate: Date, endDate: Date, planId?: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['calendarEvents', formatISO(startDate), formatISO(endDate), planId],
@@ -317,8 +315,7 @@ export function useCalendarEvents(startDate: Date, endDate: Date, planId?: strin
  * Hook for fetching single workout
  */
 export function useWorkout(planId: string | null, workoutId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['workout', planId, workoutId],

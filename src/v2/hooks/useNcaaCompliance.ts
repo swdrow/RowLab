@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 
 // ============================================
 // TYPES
@@ -168,8 +168,7 @@ async function fetchAttendanceTrainingLink(date: Date): Promise<any[]> {
  * Hook for fetching weekly NCAA compliance data
  */
 export function useNcaaWeeklyHours(weekStart?: Date, athleteId?: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const effectiveWeekStart = weekStart || startOfWeek(new Date(), { weekStartsOn: 1 });
 
   const query = useQuery({
@@ -196,8 +195,7 @@ export function useNcaaWeeklyHours(weekStart?: Date, athleteId?: string) {
  * Hook for fetching NCAA compliance audit report
  */
 export function useNcaaComplianceReport(weekStart: Date) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['ncaaCompliance', 'report', format(weekStart, 'yyyy-MM-dd')],
@@ -218,8 +216,7 @@ export function useNcaaComplianceReport(weekStart: Date) {
  * Hook for fetching training load (TSS/volume) over time
  */
 export function useTrainingLoad(startDate: Date, endDate: Date, athleteId?: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: [
@@ -246,8 +243,7 @@ export function useTrainingLoad(startDate: Date, endDate: Date, athleteId?: stri
  * Shows which athletes attended which scheduled training sessions
  */
 export function useAttendanceTrainingLink(date: Date) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['attendanceTrainingLink', format(date, 'yyyy-MM-dd')],

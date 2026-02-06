@@ -3,7 +3,8 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import type {
   EquipmentAssignment,
   EquipmentAssignmentInput,
@@ -25,8 +26,7 @@ export const equipmentKeys = {
  * Get equipment availability for a date
  */
 export function useEquipmentAvailability(date: string, excludeLineupId?: string) {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   return useQuery({
     queryKey: equipmentKeys.availability(date, excludeLineupId),
@@ -35,10 +35,10 @@ export function useEquipmentAvailability(date: string, excludeLineupId?: string)
       if (excludeLineupId) {
         url += `&excludeLineupId=${encodeURIComponent(excludeLineupId)}`;
       }
-      const response = await authenticatedFetch(url);
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error?.message || 'Failed to fetch availability');
-      return data.data;
+      const response = await api.get(url);
+      if (!response.data.success)
+        throw new Error(response.data.error?.message || 'Failed to fetch availability');
+      return response.data.data;
     },
     enabled: isAuthenticated && isInitialized && !!activeTeamId && !!date,
     staleTime: 30 * 1000, // 30 seconds - equipment status can change frequently
@@ -49,18 +49,17 @@ export function useEquipmentAvailability(date: string, excludeLineupId?: string)
  * Get assignments for a date
  */
 export function useEquipmentAssignments(date: string) {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   return useQuery({
     queryKey: equipmentKeys.assignments(date),
     queryFn: async (): Promise<EquipmentAssignment[]> => {
-      const response = await authenticatedFetch(
+      const response = await api.get(
         `/api/v1/equipment/assignments?date=${encodeURIComponent(date)}`
       );
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error?.message || 'Failed to fetch assignments');
-      return data.data.assignments;
+      if (!response.data.success)
+        throw new Error(response.data.error?.message || 'Failed to fetch assignments');
+      return response.data.data.assignments;
     },
     enabled: isAuthenticated && isInitialized && !!activeTeamId && !!date,
     staleTime: 30 * 1000,
@@ -71,18 +70,15 @@ export function useEquipmentAssignments(date: string) {
  * Get assignments for a lineup
  */
 export function useLineupEquipmentAssignments(lineupId: string | null) {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   return useQuery({
     queryKey: equipmentKeys.lineupAssignments(lineupId || ''),
     queryFn: async (): Promise<EquipmentAssignment[]> => {
-      const response = await authenticatedFetch(
-        `/api/v1/equipment/assignments/lineup/${lineupId}`
-      );
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error?.message || 'Failed to fetch assignments');
-      return data.data.assignments;
+      const response = await api.get(`/api/v1/equipment/assignments/lineup/${lineupId}`);
+      if (!response.data.success)
+        throw new Error(response.data.error?.message || 'Failed to fetch assignments');
+      return response.data.data.assignments;
     },
     enabled: isAuthenticated && isInitialized && !!activeTeamId && !!lineupId,
     staleTime: 30 * 1000,
@@ -93,12 +89,12 @@ export function useLineupEquipmentAssignments(lineupId: string | null) {
  * Create equipment assignment
  */
 export function useCreateEquipmentAssignment() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data: EquipmentAssignmentInput): Promise<EquipmentAssignment> => {
-      const response = await authenticatedFetch('/api/v1/equipment/assignments', {
+      const response = await api.get('/api/v1/equipment/assignments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -127,12 +123,12 @@ export function useCreateEquipmentAssignment() {
  * Delete equipment assignment
  */
 export function useDeleteEquipmentAssignment() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (assignmentId: string): Promise<void> => {
-      const response = await authenticatedFetch(`/api/v1/equipment/assignments/${assignmentId}`, {
+      const response = await api.get(`/api/v1/equipment/assignments/${assignmentId}`, {
         method: 'DELETE',
       });
       const result = await response.json();
@@ -149,7 +145,7 @@ export function useDeleteEquipmentAssignment() {
  * Check for equipment conflicts
  */
 export function useCheckConflicts() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
 
   return useMutation({
     mutationFn: async ({
@@ -163,7 +159,7 @@ export function useCheckConflicts() {
       oarSetIds?: string[];
       excludeLineupId?: string;
     }): Promise<{ conflicts: EquipmentConflict[]; hasConflicts: boolean }> => {
-      const response = await authenticatedFetch('/api/v1/equipment/check-conflicts', {
+      const response = await api.get('/api/v1/equipment/check-conflicts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date, shellIds, oarSetIds, excludeLineupId }),

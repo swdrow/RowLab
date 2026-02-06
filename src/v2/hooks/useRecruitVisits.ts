@@ -2,7 +2,7 @@
 // TanStack Query hooks for Recruit Visit CRUD operations
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
 import type {
   RecruitVisit,
@@ -133,8 +133,7 @@ async function generateShareToken(visitId: string): Promise<string> {
  * Fetch recruit visits with optional filters
  */
 export function useRecruitVisits(filters: RecruitVisitFilters = {}) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: recruitVisitKeys.list(filters),
@@ -156,8 +155,7 @@ export function useRecruitVisits(filters: RecruitVisitFilters = {}) {
  * Fetch single recruit visit by ID
  */
 export function useRecruitVisit(visitId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: recruitVisitKeys.detail(visitId!),
@@ -178,8 +176,7 @@ export function useRecruitVisit(visitId: string | null) {
  * Fetch upcoming recruit visits (scheduled status, from today onwards)
  */
 export function useUpcomingRecruitVisits() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const today = new Date().toISOString().split('T')[0];
   const filters: RecruitVisitFilters = {
@@ -207,8 +204,7 @@ export function useUpcomingRecruitVisits() {
  * Fetch recruit visits for a specific host athlete
  */
 export function useHostAthleteVisits(athleteId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const filters: RecruitVisitFilters = {
     hostAthleteId: athleteId!,

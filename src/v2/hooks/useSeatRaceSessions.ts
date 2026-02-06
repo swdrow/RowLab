@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type {
   SeatRaceSession,
   SessionWithDetails,
@@ -25,9 +25,7 @@ interface SessionListOptions {
 /**
  * Fetch all seat race sessions for active team
  */
-async function fetchSeatRaceSessions(
-  options: SessionListOptions = {}
-): Promise<SeatRaceSession[]> {
+async function fetchSeatRaceSessions(options: SessionListOptions = {}): Promise<SeatRaceSession[]> {
   const params = new URLSearchParams();
 
   if (options.limit) params.append('limit', options.limit.toString());
@@ -77,9 +75,7 @@ async function createSession(data: SessionCreateInput): Promise<SeatRaceSession>
 /**
  * Update seat race session
  */
-async function updateSession(
-  data: SessionUpdateInput & { id: string }
-): Promise<SeatRaceSession> {
+async function updateSession(data: SessionUpdateInput & { id: string }): Promise<SeatRaceSession> {
   const { id, ...updateData } = data;
   const response = await api.patch<ApiResponse<{ session: SeatRaceSession }>>(
     `/api/v1/seat-races/${id}`,
@@ -144,9 +140,7 @@ async function updatePiece(
  * Delete piece
  */
 async function deletePiece(data: { pieceId: string; sessionId: string }): Promise<void> {
-  const response = await api.delete<ApiResponse<void>>(
-    `/api/v1/seat-races/pieces/${data.pieceId}`
-  );
+  const response = await api.delete<ApiResponse<void>>(`/api/v1/seat-races/pieces/${data.pieceId}`);
 
   if (!response.data.success) {
     throw new Error(response.data.error?.message || 'Failed to delete piece');
@@ -156,7 +150,9 @@ async function deletePiece(data: { pieceId: string; sessionId: string }): Promis
 /**
  * Add boat to piece
  */
-async function addBoat(data: BoatCreateInput & { pieceId: string; sessionId: string }): Promise<any> {
+async function addBoat(
+  data: BoatCreateInput & { pieceId: string; sessionId: string }
+): Promise<any> {
   const { pieceId, sessionId, ...boatData } = data;
   const response = await api.post<ApiResponse<{ boat: any }>>(
     `/api/v1/seat-races/pieces/${pieceId}/boats`,
@@ -193,9 +189,7 @@ async function updateBoat(
  * Delete boat
  */
 async function deleteBoat(data: { boatId: string; sessionId: string }): Promise<void> {
-  const response = await api.delete<ApiResponse<void>>(
-    `/api/v1/seat-races/boats/${data.boatId}`
-  );
+  const response = await api.delete<ApiResponse<void>>(`/api/v1/seat-races/boats/${data.boatId}`);
 
   if (!response.data.success) {
     throw new Error(response.data.error?.message || 'Failed to delete boat');
@@ -205,9 +199,11 @@ async function deleteBoat(data: { boatId: string; sessionId: string }): Promise<
 /**
  * Set all assignments for a boat
  */
-async function setAssignments(
-  data: { boatId: string; sessionId: string; assignments: AssignmentInput[] }
-): Promise<any> {
+async function setAssignments(data: {
+  boatId: string;
+  sessionId: string;
+  assignments: AssignmentInput[];
+}): Promise<any> {
   const { boatId, sessionId, assignments } = data;
   const response = await api.put<ApiResponse<{ boat: any }>>(
     `/api/v1/seat-races/boats/${boatId}/assignments`,
@@ -225,9 +221,7 @@ async function setAssignments(
  * Process session and calculate ratings
  */
 async function processSession(data: { sessionId: string }): Promise<any> {
-  const response = await api.post<ApiResponse<any>>(
-    `/api/v1/seat-races/${data.sessionId}/process`
-  );
+  const response = await api.post<ApiResponse<any>>(`/api/v1/seat-races/${data.sessionId}/process`);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to process session');
@@ -244,8 +238,7 @@ async function processSession(data: { sessionId: string }): Promise<any> {
  * Hook for fetching all seat race sessions
  */
 export function useSeatRaceSessions(options?: SessionListOptions) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['seatRaceSessions', options],
@@ -266,8 +259,7 @@ export function useSeatRaceSessions(options?: SessionListOptions) {
  * Hook for fetching single seat race session with details
  */
 export function useSeatRaceSession(sessionId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['seatRaceSession', sessionId],

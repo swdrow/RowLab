@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { TeamSettings, TeamVisibility, ApiResponse } from '../types/settings';
 
 /**
@@ -43,8 +43,7 @@ async function updateTeamVisibility(visibility: TeamVisibility): Promise<TeamSet
  * @param enabled - Whether to enable the query (typically based on role check)
  */
 export function useTeamSettings(enabled: boolean = true) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: teamSettingsKeys.all,

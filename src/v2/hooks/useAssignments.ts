@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type {
   WorkoutAssignment,
   PlannedWorkout,
@@ -156,8 +156,7 @@ async function markWorkoutComplete(data: {
  * Hook for fetching assignments (for coaches)
  */
 export function useAssignments(options?: AssignmentListOptions) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['assignments', options],
@@ -178,8 +177,7 @@ export function useAssignments(options?: AssignmentListOptions) {
  * Hook for fetching athlete's assigned workouts (for athlete view)
  */
 export function useAthleteAssignments(athleteId: string | null, startDate?: Date, endDate?: Date) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['athleteWorkouts', athleteId, startDate?.toISOString(), endDate?.toISOString()],

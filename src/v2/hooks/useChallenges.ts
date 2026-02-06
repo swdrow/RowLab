@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useShowGamification } from './useGamificationPreference';
 import type {
   Challenge,
@@ -26,8 +26,7 @@ export const challengeKeys = {
  * Hook for all challenges (with optional status filter)
  */
 export function useChallenges(status?: 'active' | 'completed' | 'cancelled') {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -51,8 +50,7 @@ export function useChallenges(status?: 'active' | 'completed' | 'cancelled') {
  * Hook for active challenges
  */
 export function useActiveChallenges() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -75,8 +73,7 @@ export function useActiveChallenges() {
  * Hook for challenge templates
  */
 export function useChallengeTemplates() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
     queryKey: challengeKeys.templates(),
@@ -98,8 +95,7 @@ export function useChallengeTemplates() {
  * Hook for single challenge details
  */
 export function useChallenge(challengeId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -123,8 +119,7 @@ export function useChallenge(challengeId: string) {
  * Uses 5s refetchInterval and staleTime: 0 per RESEARCH.md
  */
 export function useLeaderboard(challengeId: string, isActive: boolean = true) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({

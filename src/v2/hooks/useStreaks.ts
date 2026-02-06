@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useShowGamification } from './useGamificationPreference';
 import type { Streak, StreakSummaryResponse, GamificationApiResponse } from '../types/gamification';
 
@@ -18,8 +18,7 @@ export const streakKeys = {
  * Hook for current user's streaks
  */
 export function useStreaks() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -42,8 +41,7 @@ export function useStreaks() {
  * Hook for a specific athlete's streaks
  */
 export function useAthleteStreaks(athleteId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -66,8 +64,7 @@ export function useAthleteStreaks(athleteId: string) {
  * Hook for streak configuration
  */
 export function useStreakConfig() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
     queryKey: streakKeys.config(),

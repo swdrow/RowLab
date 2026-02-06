@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type {
   Attendance,
   AttendanceRecord,
@@ -104,8 +104,7 @@ async function bulkRecordAttendance(data: {
  */
 export function useAttendance(date: string) {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['attendance', date],
@@ -200,8 +199,7 @@ export function useAthleteAttendance(
   athleteId: string | null,
   options?: { startDate?: string; endDate?: string }
 ) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
     queryKey: ['athlete-attendance', athleteId, options?.startDate, options?.endDate],
@@ -215,8 +213,7 @@ export function useAthleteAttendance(
  * Hook for team attendance summary
  */
 export function useAttendanceSummary(startDate: string, endDate: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
     queryKey: ['attendance-summary', startDate, endDate],

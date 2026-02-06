@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 
 // ============================================
 // TYPES
@@ -134,8 +134,7 @@ async function duplicatePlan(id: string): Promise<TrainingPlan> {
  * Hook for fetching all training plans for active team
  */
 export function useTrainingPlans(options?: PlanListOptions) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['trainingPlans', options],
@@ -156,8 +155,7 @@ export function useTrainingPlans(options?: PlanListOptions) {
  * Hook for fetching single training plan with workouts
  */
 export function useTrainingPlan(planId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['trainingPlan', planId],

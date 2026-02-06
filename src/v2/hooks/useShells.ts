@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { Shell, ApiResponse } from '../types/coach';
 
 /**
@@ -19,9 +19,7 @@ async function fetchShells(): Promise<Shell[]> {
 /**
  * Create a new shell
  */
-async function createShell(
-  data: Omit<Shell, 'id' | 'teamId'>
-): Promise<Shell> {
+async function createShell(data: Omit<Shell, 'id' | 'teamId'>): Promise<Shell> {
   const response = await api.post<ApiResponse<Shell>>('/api/v1/shells', data);
 
   if (!response.data.success || !response.data.data) {
@@ -34,9 +32,7 @@ async function createShell(
 /**
  * Update an existing shell
  */
-async function updateShell(
-  data: Shell
-): Promise<Shell> {
+async function updateShell(data: Shell): Promise<Shell> {
   const response = await api.put<ApiResponse<Shell>>(`/api/v1/shells/${data.id}`, data);
 
   if (!response.data.success || !response.data.data) {
@@ -62,8 +58,7 @@ async function deleteShell(id: string): Promise<void> {
  */
 export function useShells() {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['shells'],

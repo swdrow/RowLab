@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '@/store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { Regatta, RegattaFormData } from '../types/regatta';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -111,7 +111,7 @@ async function deleteRegatta(token: string, id: string): Promise<void> {
  * Fetch list of regattas
  */
 export function useRegattas(options?: { season?: string; limit?: number }) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: regattaKeys.list(options || {}),
@@ -125,7 +125,7 @@ export function useRegattas(options?: { season?: string; limit?: number }) {
  * Fetch single regatta with full hierarchy
  */
 export function useRegatta(id: string | undefined) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: regattaKeys.detail(id!),
@@ -139,7 +139,7 @@ export function useRegatta(id: string | undefined) {
  * Create a new regatta
  */
 export function useCreateRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -154,7 +154,7 @@ export function useCreateRegatta() {
  * Update an existing regatta
  */
 export function useUpdateRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -171,7 +171,7 @@ export function useUpdateRegatta() {
  * Delete a regatta
  */
 export function useDeleteRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -187,7 +187,7 @@ export function useDeleteRegatta() {
  * Duplicate a regatta (copy metadata, clear results)
  */
 export function useDuplicateRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({

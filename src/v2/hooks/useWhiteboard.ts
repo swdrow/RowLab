@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { Whiteboard, ApiResponse } from '../types/coach';
 
 /**
@@ -27,9 +27,7 @@ async function fetchWhiteboard(): Promise<Whiteboard | null> {
 /**
  * Save whiteboard (create or update)
  */
-async function saveWhiteboard(
-  data: Pick<Whiteboard, 'date' | 'content'>
-): Promise<Whiteboard> {
+async function saveWhiteboard(data: Pick<Whiteboard, 'date' | 'content'>): Promise<Whiteboard> {
   const response = await api.post<ApiResponse<Whiteboard>>('/api/v1/whiteboards', data);
 
   if (!response.data.success || !response.data.data) {
@@ -55,8 +53,7 @@ async function deleteWhiteboard(id: string): Promise<void> {
  */
 export function useWhiteboard() {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['whiteboard', 'latest'],

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { ApiResponse } from '../types/athletes';
 
 /**
@@ -97,7 +97,10 @@ async function saveLineup(data: SaveLineupInput): Promise<Lineup> {
  */
 async function updateLineup(data: UpdateLineupInput & { id: string }): Promise<Lineup> {
   const { id, ...updateData } = data;
-  const response = await api.patch<ApiResponse<{ lineup: Lineup }>>(`/api/v1/lineups/${id}`, updateData);
+  const response = await api.patch<ApiResponse<{ lineup: Lineup }>>(
+    `/api/v1/lineups/${id}`,
+    updateData
+  );
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to update lineup');
@@ -111,7 +114,10 @@ async function updateLineup(data: UpdateLineupInput & { id: string }): Promise<L
  */
 async function duplicateLineup(data: DuplicateLineupInput & { id: string }): Promise<Lineup> {
   const { id, name } = data;
-  const response = await api.post<ApiResponse<{ lineup: Lineup }>>(`/api/v1/lineups/${id}/duplicate`, { name });
+  const response = await api.post<ApiResponse<{ lineup: Lineup }>>(
+    `/api/v1/lineups/${id}/duplicate`,
+    { name }
+  );
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to duplicate lineup');
@@ -135,8 +141,7 @@ async function deleteLineup(id: string): Promise<void> {
  * Hook for fetching all lineups
  */
 export function useLineups() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['lineups'],
@@ -157,8 +162,7 @@ export function useLineups() {
  * Hook for fetching single lineup by ID
  */
 export function useLineup(lineupId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: ['lineups', lineupId],

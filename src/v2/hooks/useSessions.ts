@@ -2,7 +2,7 @@
 // TanStack Query hooks for Session CRUD operations
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
 import type {
   Session,
@@ -155,8 +155,7 @@ async function endSession(sessionId: string): Promise<Session> {
  * Fetch sessions with optional filters
  */
 export function useSessions(filters: SessionFilters = {}) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: sessionKeys.list(filters),
@@ -178,8 +177,7 @@ export function useSessions(filters: SessionFilters = {}) {
  * Fetch single session by ID
  */
 export function useSession(sessionId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: sessionKeys.detail(sessionId!),
@@ -200,8 +198,7 @@ export function useSession(sessionId: string | null) {
  * Fetch active live session (for joining)
  */
 export function useActiveSession() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: sessionKeys.active(),
@@ -222,8 +219,7 @@ export function useActiveSession() {
  * Fetch upcoming sessions for the next N days
  */
 export function useUpcomingSessions(days: number = 7) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const startDate = new Date().toISOString().split('T')[0];
   const endDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000)

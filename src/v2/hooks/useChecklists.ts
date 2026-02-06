@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '@/store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { ChecklistTemplate, ChecklistTemplateFormData, RaceChecklist } from '../types/regatta';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -131,7 +131,7 @@ async function toggleChecklistItem(
  * Fetch all checklist templates
  */
 export function useChecklistTemplates() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: checklistKeys.templates(),
@@ -145,7 +145,7 @@ export function useChecklistTemplates() {
  * Create a new checklist template
  */
 export function useCreateChecklistTemplate() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -161,7 +161,7 @@ export function useCreateChecklistTemplate() {
  * Update an existing checklist template
  */
 export function useUpdateChecklistTemplate() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -182,7 +182,7 @@ export function useUpdateChecklistTemplate() {
  * Delete a checklist template
  */
 export function useDeleteChecklistTemplate() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -201,7 +201,7 @@ export function useDeleteChecklistTemplate() {
  * Fetch checklist for a specific race
  */
 export function useRaceChecklist(raceId: string | undefined) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: checklistKeys.raceChecklist(raceId!),
@@ -215,7 +215,7 @@ export function useRaceChecklist(raceId: string | undefined) {
  * Fetch checklist progress for a specific race
  */
 export function useChecklistProgress(raceId: string | undefined) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: checklistKeys.progress(raceId!),
@@ -229,7 +229,7 @@ export function useChecklistProgress(raceId: string | undefined) {
  * Create a race checklist from a template
  */
 export function useCreateRaceChecklist() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -246,7 +246,7 @@ export function useCreateRaceChecklist() {
  * Toggle a checklist item
  */
 export function useToggleChecklistItem() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({

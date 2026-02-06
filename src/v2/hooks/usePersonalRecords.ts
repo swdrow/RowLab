@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useShowGamification } from './useGamificationPreference';
 import type {
   PersonalRecord,
@@ -26,8 +26,7 @@ export const prKeys = {
  * Hook for current user's PRs
  */
 export function usePersonalRecords() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -50,8 +49,7 @@ export function usePersonalRecords() {
  * Hook for a specific athlete's PRs
  */
 export function useAthletePRs(athleteId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -74,8 +72,7 @@ export function useAthletePRs(athleteId: string) {
  * Hook for team records
  */
 export function useTeamRecords() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -98,8 +95,7 @@ export function useTeamRecords() {
  * Hook for PR celebration data (for specific test)
  */
 export function usePRCelebration(testId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
@@ -122,8 +118,7 @@ export function usePRCelebration(testId: string) {
  * Hook for result trend (for sparkline)
  */
 export function useResultTrend(athleteId: string, testType: string, limit: number = 5) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({

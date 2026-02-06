@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '@/store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { Event, EventFormData, Race, RaceFormData, RaceResult, RaceResultFormData } from '../types/regatta';
 import { regattaKeys } from './useRegattas';
 
@@ -186,7 +186,7 @@ async function updateResult(
 // ============================================
 
 export function useCreateEvent() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -199,7 +199,7 @@ export function useCreateEvent() {
 }
 
 export function useUpdateEvent() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -212,7 +212,7 @@ export function useUpdateEvent() {
 }
 
 export function useDeleteEvent() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -228,7 +228,7 @@ export function useDeleteEvent() {
 // ============================================
 
 export function useCreateRace() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -241,7 +241,7 @@ export function useCreateRace() {
 }
 
 export function useUpdateRace() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -254,7 +254,7 @@ export function useUpdateRace() {
 }
 
 export function useDeleteRace() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -270,7 +270,7 @@ export function useDeleteRace() {
 // ============================================
 
 export function useAddResult() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -283,7 +283,7 @@ export function useAddResult() {
 }
 
 export function useBatchAddResults() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -296,7 +296,7 @@ export function useBatchAddResults() {
 }
 
 export function useUpdateResult() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({

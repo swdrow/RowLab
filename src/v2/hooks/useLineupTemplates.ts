@@ -3,7 +3,8 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import type {
   LineupTemplate,
   LineupTemplateInput,
@@ -24,8 +25,8 @@ export const templateKeys = {
  * Get all templates, optionally filtered by boat class
  */
 export function useLineupTemplates(boatClass?: string) {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } =
+    useAuth();
 
   return useQuery({
     queryKey: templateKeys.list(boatClass),
@@ -33,8 +34,8 @@ export function useLineupTemplates(boatClass?: string) {
       const url = boatClass
         ? `/api/v1/lineup-templates?boatClass=${encodeURIComponent(boatClass)}`
         : '/api/v1/lineup-templates';
-      const response = await authenticatedFetch(url);
-      const data = await response.json();
+      const response = await api.get(url);
+      const data = await response.data;
       if (!data.success) throw new Error(data.error?.message || 'Failed to fetch templates');
       return data.data.templates;
     },
@@ -47,14 +48,14 @@ export function useLineupTemplates(boatClass?: string) {
  * Get a single template
  */
 export function useLineupTemplate(templateId: string | null) {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } =
+    useAuth();
 
   return useQuery({
     queryKey: templateKeys.detail(templateId || ''),
     queryFn: async (): Promise<LineupTemplate> => {
-      const response = await authenticatedFetch(`/api/v1/lineup-templates/${templateId}`);
-      const data = await response.json();
+      const response = await api.get(`/api/v1/lineup-templates/${templateId}`);
+      const data = await response.data;
       if (!data.success) throw new Error(data.error?.message || 'Failed to fetch template');
       return data.data.template;
     },
@@ -67,17 +68,17 @@ export function useLineupTemplate(templateId: string | null) {
  * Create a new template
  */
 export function useCreateTemplate() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data: LineupTemplateInput): Promise<LineupTemplate> => {
-      const response = await authenticatedFetch('/api/v1/lineup-templates', {
+      const response = await api.get('/api/v1/lineup-templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      const result = await response.json();
+      const result = await response.data;
       if (!result.success) throw new Error(result.error?.message || 'Failed to create template');
       return result.data.template;
     },
@@ -91,7 +92,7 @@ export function useCreateTemplate() {
  * Create template from existing lineup
  */
 export function useCreateTemplateFromLineup() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -104,12 +105,12 @@ export function useCreateTemplateFromLineup() {
       name: string;
       isDefault?: boolean;
     }): Promise<LineupTemplate> => {
-      const response = await authenticatedFetch('/api/v1/lineup-templates/from-lineup', {
+      const response = await api.get('/api/v1/lineup-templates/from-lineup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lineupId, name, isDefault }),
       });
-      const result = await response.json();
+      const result = await response.data;
       if (!result.success) throw new Error(result.error?.message || 'Failed to create template');
       return result.data.template;
     },
@@ -123,7 +124,7 @@ export function useCreateTemplateFromLineup() {
  * Update a template
  */
 export function useUpdateTemplate() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -134,12 +135,12 @@ export function useUpdateTemplate() {
       templateId: string;
       data: LineupTemplateUpdateInput;
     }): Promise<LineupTemplate> => {
-      const response = await authenticatedFetch(`/api/v1/lineup-templates/${templateId}`, {
+      const response = await api.get(`/api/v1/lineup-templates/${templateId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      const result = await response.json();
+      const result = await response.data;
       if (!result.success) throw new Error(result.error?.message || 'Failed to update template');
       return result.data.template;
     },
@@ -154,15 +155,15 @@ export function useUpdateTemplate() {
  * Delete a template
  */
 export function useDeleteTemplate() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (templateId: string): Promise<void> => {
-      const response = await authenticatedFetch(`/api/v1/lineup-templates/${templateId}`, {
+      const response = await api.get(`/api/v1/lineup-templates/${templateId}`, {
         method: 'DELETE',
       });
-      const result = await response.json();
+      const result = await response.data;
       if (!result.success) throw new Error(result.error?.message || 'Failed to delete template');
     },
     onSuccess: () => {
@@ -175,14 +176,14 @@ export function useDeleteTemplate() {
  * Apply a template to get assignments
  */
 export function useApplyTemplate() {
-  const { authenticatedFetch } = useAuthStore();
+  const { authenticatedFetch } = useAuth();
 
   return useMutation({
     mutationFn: async (templateId: string): Promise<AppliedTemplate> => {
-      const response = await authenticatedFetch(`/api/v1/lineup-templates/${templateId}/apply`, {
+      const response = await api.get(`/api/v1/lineup-templates/${templateId}/apply`, {
         method: 'POST',
       });
-      const result = await response.json();
+      const result = await response.data;
       if (!result.success) throw new Error(result.error?.message || 'Failed to apply template');
       return result.data;
     },

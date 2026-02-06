@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useFeature } from './useFeaturePreference';
 import type { GamificationApiResponse } from '../types/gamification';
 
@@ -11,8 +11,7 @@ import type { GamificationApiResponse } from '../types/gamification';
  * @returns Object with enabled status and loading state
  */
 export function useGamificationEnabled() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   // Team-level feature toggle
   const teamEnabled = useFeature('gamification');

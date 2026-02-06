@@ -1,28 +1,22 @@
 import { createContext, useContext } from 'react';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import useSettingsStore from '../../store/settingsStore';
 
 /**
  * Shared Store Integration for V1/V2 Bridging
  *
- * This module enables V2 components to access V1 Zustand stores without causing
- * re-render loops. The key pattern is sharing store INSTANCES via React Context,
- * not store values.
+ * DEPRECATED: Auth now uses AuthContext (useAuth from ../contexts/AuthContext)
+ * This module exists only for Settings store bridging.
  *
- * CRITICAL: Share store *instances*, NOT store values
- * - CORRECT: createContext(useAuthStore) - shares hook function
- * - WRONG: createContext(useAuthStore()) - shares current values (causes re-render loops)
+ * Settings Store Pattern:
+ * - Shares store INSTANCE via React Context, not store values
+ * - CORRECT: createContext(useSettingsStore) - shares hook function
+ * - WRONG: createContext(useSettingsStore()) - shares current values (causes re-render loops)
  *
  * Usage in V2 components:
- *   const authStore = useV2Auth();
- *   const user = authStore((state) => state.user); // Use selectors as normal
+ *   const settingsStore = useV2Settings();
+ *   const sidebarCollapsed = settingsStore((state) => state.sidebarCollapsed);
  */
-
-/**
- * Context for V1 Auth Store
- * Shares the store instance (hook function), not the store values
- */
-export const AuthStoreContext = createContext(useAuthStore);
 
 /**
  * Context for V1 Settings Store
@@ -31,16 +25,12 @@ export const AuthStoreContext = createContext(useAuthStore);
 export const SettingsStoreContext = createContext(useSettingsStore);
 
 /**
- * Hook to access V1 Auth Store from V2 components
- *
- * @returns The Zustand store hook (use with selectors)
- * @example
- *   const authStore = useV2Auth();
- *   const user = authStore((state) => state.user);
- *   const isAuthenticated = authStore((state) => state.isAuthenticated);
+ * Hook to access Auth from V2 components
+ * @deprecated Use `useAuth()` from '../contexts/AuthContext' directly
+ * This re-export exists for backward compatibility during migration
  */
 export function useV2Auth() {
-  return useContext(AuthStoreContext);
+  return useAuth();
 }
 
 /**

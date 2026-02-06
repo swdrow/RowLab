@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useShowGamification } from './useGamificationPreference';
 import type {
   AchievementWithProgress,
@@ -37,8 +37,7 @@ async function fetchAchievements(): Promise<AchievementsResponse> {
  * Hook for all achievements with progress
  */
 export function useAchievements() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   const query = useQuery({
@@ -62,8 +61,7 @@ export function useAchievements() {
  * Fetch achievements for a specific athlete
  */
 export function useAthleteAchievements(athleteId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   const query = useQuery({
@@ -94,8 +92,7 @@ export function useAthleteAchievements(athleteId: string) {
  * Fetch pinned achievements for display on profile
  */
 export function usePinnedAchievements(athleteId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
