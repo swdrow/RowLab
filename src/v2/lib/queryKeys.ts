@@ -115,6 +115,8 @@ export const queryKeys = {
     detail: (id: string) => [...queryKeys.sessions.details(), id] as const,
     live: (id: string) => [...queryKeys.sessions.all, 'live', id] as const,
     count: (teamId: string) => [...queryKeys.sessions.all, 'count', teamId] as const,
+    active: () => [...queryKeys.sessions.all, 'active'] as const,
+    upcoming: (days: number) => [...queryKeys.sessions.all, 'upcoming', days] as const,
   },
 
   // Regattas
@@ -181,6 +183,7 @@ export const queryKeys = {
   // Settings
   settings: {
     all: ['settings'] as const,
+    user: () => [...queryKeys.settings.all, 'user'] as const,
     team: () => [...queryKeys.settings.all, 'team'] as const,
     integrations: () => [...queryKeys.settings.all, 'integrations'] as const,
     subscription: () => [...queryKeys.settings.all, 'subscription'] as const,
@@ -189,28 +192,41 @@ export const queryKeys = {
   // Achievements
   achievements: {
     all: ['achievements'] as const,
+    list: () => [...queryKeys.achievements.all, 'list'] as const,
     athlete: (id: string) => [...queryKeys.achievements.all, 'athlete', id] as const,
+    pinned: (athleteId: string) => [...queryKeys.achievements.all, 'pinned', athleteId] as const,
     definitions: () => [...queryKeys.achievements.all, 'definitions'] as const,
   },
 
   // Personal Records
   personalRecords: {
     all: ['personalRecords'] as const,
+    mine: () => [...queryKeys.personalRecords.all, 'mine'] as const,
     athlete: (id: string) => [...queryKeys.personalRecords.all, 'athlete', id] as const,
     ranks: () => [...queryKeys.personalRecords.all, 'ranks'] as const,
+    teamRecords: () => [...queryKeys.personalRecords.all, 'teamRecords'] as const,
+    celebration: (testId: string) =>
+      [...queryKeys.personalRecords.all, 'celebration', testId] as const,
+    trend: (athleteId: string, testType: string) =>
+      [...queryKeys.personalRecords.all, 'trend', athleteId, testType] as const,
   },
 
   // Challenges
   challenges: {
     all: ['challenges'] as const,
     lists: () => [...queryKeys.challenges.all, 'list'] as const,
+    list: (status?: string) => [...queryKeys.challenges.all, 'list', status] as const,
     detail: (id: string) => [...queryKeys.challenges.all, 'detail', id] as const,
     leaderboard: (id: string) => [...queryKeys.challenges.all, 'leaderboard', id] as const,
+    active: () => [...queryKeys.challenges.all, 'active'] as const,
+    templates: () => [...queryKeys.challenges.all, 'templates'] as const,
   },
 
   // Streaks
   streaks: {
     all: ['streaks'] as const,
+    mine: () => [...queryKeys.streaks.all, 'mine'] as const,
+    config: () => [...queryKeys.streaks.all, 'config'] as const,
     athlete: (id: string) => [...queryKeys.streaks.all, 'athlete', id] as const,
   },
 
@@ -218,14 +234,31 @@ export const queryKeys = {
   recruitVisits: {
     all: ['recruitVisits'] as const,
     lists: () => [...queryKeys.recruitVisits.all, 'list'] as const,
+    list: (filters?: Record<string, unknown>) =>
+      [...queryKeys.recruitVisits.all, 'list', { filters }] as const,
     detail: (id: string) => [...queryKeys.recruitVisits.all, 'detail', id] as const,
     upcoming: () => [...queryKeys.recruitVisits.all, 'upcoming'] as const,
+    byHost: (athleteId: string) => [...queryKeys.recruitVisits.all, 'byHost', athleteId] as const,
+  },
+
+  // Singular alias used by useRecruitVisits hook
+  get recruitVisit() {
+    return queryKeys.recruitVisits;
   },
 
   // Checklists
   checklists: {
     all: ['checklists'] as const,
     regatta: (id: string) => [...queryKeys.checklists.all, 'regatta', id] as const,
+    templates: () => [...queryKeys.checklists.all, 'templates'] as const,
+    raceChecklist: (raceId: string) =>
+      [...queryKeys.checklists.all, 'raceChecklist', raceId] as const,
+    progress: (raceId: string) => [...queryKeys.checklists.all, 'progress', raceId] as const,
+  },
+
+  // Singular alias used by useChecklists hook
+  get checklist() {
+    return queryKeys.checklists;
   },
 
   // Team Rankings
@@ -245,16 +278,25 @@ export const queryKeys = {
   // Rigging
   rigging: {
     all: ['rigging'] as const,
+    profiles: () => [...queryKeys.rigging.all, 'profiles'] as const,
     profile: (shellId: string) => [...queryKeys.rigging.all, 'profile', shellId] as const,
-    defaults: (boatClass: string) => [...queryKeys.rigging.all, 'defaults', boatClass] as const,
+    defaults: (boatClass?: string) =>
+      boatClass
+        ? ([...queryKeys.rigging.all, 'defaults', boatClass] as const)
+        : ([...queryKeys.rigging.all, 'defaults'] as const),
   },
 
   // Equipment
   equipment: {
     all: ['equipment'] as const,
-    assignments: (lineupId: string) =>
-      [...queryKeys.equipment.all, 'assignments', lineupId] as const,
-    availability: () => [...queryKeys.equipment.all, 'availability'] as const,
+    availability: (date?: string, excludeLineupId?: string) =>
+      date
+        ? ([...queryKeys.equipment.all, 'availability', date, excludeLineupId] as const)
+        : ([...queryKeys.equipment.all, 'availability'] as const),
+    assignments: (dateOrLineupId: string) =>
+      [...queryKeys.equipment.all, 'assignments', dateOrLineupId] as const,
+    lineupAssignments: (lineupId: string) =>
+      [...queryKeys.equipment.all, 'lineupAssignments', lineupId] as const,
   },
 
   // Lineup Templates
@@ -267,6 +309,8 @@ export const queryKeys = {
   // Lineup Search
   lineupSearch: {
     all: ['lineupSearch'] as const,
+    search: (filters?: Record<string, unknown>) =>
+      [...queryKeys.lineupSearch.all, 'search', { filters }] as const,
     results: (filters?: Record<string, unknown>) =>
       [...queryKeys.lineupSearch.all, 'results', { filters }] as const,
   },
