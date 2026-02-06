@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { useSettings, useUpdateSettings } from '@v2/hooks/useSettings';
 import { SettingsLayout } from '../components/SettingsLayout';
 import { ProfileSection } from '../components/ProfileSection';

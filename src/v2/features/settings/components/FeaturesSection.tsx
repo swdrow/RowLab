@@ -1,6 +1,6 @@
 import React from 'react';
 import { Info } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { useFeaturePreferenceStore } from '@v2/stores/featurePreferenceStore';
 import { FEATURE_GROUPS, ALL_FEATURES } from '@v2/types/feature-toggles';
 import { FeatureGroupCard } from './FeatureGroupCard';

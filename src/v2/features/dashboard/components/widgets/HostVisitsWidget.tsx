@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Calendar, Users, Clock } from 'lucide-react';
 import { useHostAthleteVisits } from '@v2/hooks/useRecruitVisits';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../../../contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 
@@ -33,7 +33,7 @@ export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const upcomingVisits = visits.filter(v => {
+  const upcomingVisits = visits.filter((v) => {
     if (v.status !== 'scheduled') return false;
     const visitDate = new Date(v.date);
     return visitDate >= today;
@@ -44,7 +44,9 @@ export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps
 
   if (isLoading) {
     return (
-      <div className={`bg-surface-elevated rounded-xl border border-bdr-default p-4 ${className || ''}`}>
+      <div
+        className={`bg-surface-elevated rounded-xl border border-bdr-default p-4 ${className || ''}`}
+      >
         <div className="animate-pulse space-y-3">
           <div className="h-6 w-48 bg-surface-default rounded" />
           <div className="h-16 bg-surface-default rounded" />
@@ -65,7 +67,7 @@ export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps
       </div>
 
       <div className="space-y-3">
-        {upcomingVisits.slice(0, 3).map(visit => (
+        {upcomingVisits.slice(0, 3).map((visit) => (
           <Link
             key={visit.id}
             to={`/app/recruiting?visit=${visit.id}`}
@@ -78,7 +80,9 @@ export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps
                   <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>{new Date(visit.date).toLocaleDateString()}</span>
                   <Clock className="w-3.5 h-3.5 ml-2 flex-shrink-0" />
-                  <span>{visit.startTime} - {visit.endTime}</span>
+                  <span>
+                    {visit.startTime} - {visit.endTime}
+                  </span>
                 </div>
               </div>
               <span className="text-xs text-violet-500 bg-violet-500/10 px-2 py-1 rounded whitespace-nowrap ml-2">
