@@ -5,13 +5,15 @@
 
 import React, { useMemo } from 'react';
 import { Responsive, WidthProvider, Layout as RGLLayout } from 'react-grid-layout';
-import { GripVertical, XCircle } from '@phosphor-icons/react';
+import { DotsSixVertical, X } from '@phosphor-icons/react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useDashboardLayout } from '../hooks/useDashboardLayout';
 import { useExceptions } from '../hooks/useExceptions';
+import { useTour } from '../hooks/useTour';
 import { getWidgetConfig } from '../config/widgetRegistry';
 import { ExceptionBanner, ExceptionBadge } from './ExceptionBanner';
 import { EmptyStateAnimated } from '../empty-states/EmptyStateAnimated';
+import { TourLauncher } from './TourLauncher';
 import type { WidgetInstance } from '../types';
 
 // Import CSS for react-grid-layout
@@ -37,6 +39,24 @@ export const CoachDashboard: React.FC = () => {
     useDashboardLayout('coach');
 
   const { summary: exceptionSummary, widgetExceptions } = useExceptions(activeTeamId || '');
+
+  // Container width measurement
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(1200);
+
+  useEffect(() => {
+    const measureWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    measureWidth();
+    window.addEventListener('resize', measureWidth);
+    return () => window.removeEventListener('resize', measureWidth);
+  }, []);
+
+  // Auto-launch tour on first visit
+  useTour('coach-dashboard', { autoStart: true, delay: 800 });
 
   // Convert layout to react-grid-layout format
   const gridLayout = useMemo((): RGLLayout[] => {
@@ -107,7 +127,7 @@ export const CoachDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-base)] p-6">
+    <div ref={containerRef} className="min-h-screen bg-[var(--color-bg-base)] p-6">
       {/* Page Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -117,21 +137,29 @@ export const CoachDashboard: React.FC = () => {
           </p>
         </div>
 
-        {/* Edit Layout Toggle */}
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] ${
-            isEditing
-              ? 'bg-[var(--color-interactive-primary)] text-white hover:bg-[var(--color-interactive-hover)]'
-              : 'border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)]'
-          }`}
-        >
-          {isEditing ? 'Done' : 'Edit Layout'}
-        </button>
+        {/* Header Actions */}
+        <div className="flex items-center gap-3">
+          <TourLauncher tourId="coach-dashboard" variant="button" />
+
+          {/* Edit Layout Toggle */}
+          <button
+            data-tour="edit-layout"
+            onClick={() => setIsEditing(!isEditing)}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] ${
+              isEditing
+                ? 'bg-[var(--color-interactive-primary)] text-white hover:bg-[var(--color-interactive-hover)]'
+                : 'border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)]'
+            }`}
+          >
+            {isEditing ? 'Done' : 'Edit Layout'}
+          </button>
+        </div>
       </div>
 
       {/* Exception Banner */}
-      <ExceptionBanner summary={exceptionSummary} />
+      <div data-tour="exception-banner">
+        <ExceptionBanner summary={exceptionSummary} />
+      </div>
 
       {/* Bento Grid */}
       <ResponsiveGridLayout
@@ -140,6 +168,7 @@ export const CoachDashboard: React.FC = () => {
         breakpoints={{ lg: 1200, md: 996, sm: 768 }}
         cols={{ lg: 12, md: 10, sm: 6 }}
         rowHeight={60}
+        width={containerWidth}
         margin={[16, 16]}
         isDraggable={isEditing}
         isResizable={false} // Use size presets only
@@ -221,15 +250,25 @@ const WidgetCard: React.FC<WidgetCardProps> = ({
   // Available sizes for this widget
   const availableSizes = Object.keys(config.sizes) as ('compact' | 'normal' | 'expanded')[];
 
+  // Map widget types to tour targets
+  const getTourAttribute = () => {
+    if (widget.widgetType === 'todays-practice') return 'todays-practice';
+    if (config.category === 'metrics') return 'metric-cards';
+    return undefined;
+  };
+
   return (
-    <div className="h-full relative glass-card bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-xl overflow-hidden transition-all hover:border-[var(--color-border-hover)]">
+    <div
+      data-tour={getTourAttribute()}
+      className="h-full relative glass-card bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-xl overflow-hidden transition-all hover:border-[var(--color-border-hover)]"
+    >
       {/* Edit Mode Header */}
       {isEditing && (
         <div className="flex items-center justify-between px-3 py-2 bg-[var(--color-bg-base)] border-b border-[var(--color-border-default)]">
           {/* Drag Handle */}
           <div className="flex items-center gap-2">
             <div className="widget-drag-handle cursor-grab active:cursor-grabbing">
-              <GripVertical className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+              <DotsSixVertical className="w-5 h-5 text-[var(--color-text-tertiary)]" />
             </div>
             <span className="text-sm font-medium text-[var(--color-text-primary)]">
               {config.title}
@@ -258,7 +297,7 @@ const WidgetCard: React.FC<WidgetCardProps> = ({
               className="ml-2 p-1 text-[var(--color-status-error)] hover:bg-status-error/10 rounded transition-colors"
               title="Remove widget"
             >
-              <XCircle className="w-4 h-4" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>

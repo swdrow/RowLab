@@ -8,22 +8,20 @@
  * - "Athlete dashboard should feel motivating, not clinical"
  */
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowsOut, Gear } from '@phosphor-icons/react';
-import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useDashboardLayout } from '../hooks/useDashboardLayout';
 import { useAthleteMultiTeamData } from '../hooks/useAthleteMultiTeamData';
+import { useTour } from '../hooks/useTour';
 import { PersonalStatsWidget } from './widgets/PersonalStatsWidget';
 import { TeamContextCard } from './widgets/TeamContextCard';
+import { TourLauncher } from './TourLauncher';
 import { EmptyDashboardState } from '../empty-states';
 import { SPRING_CONFIG } from '../../../utils/animations';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-
-const ResponsiveGridLayout = WidthProvider(Responsive);
 
 /**
  * Athlete dashboard page component
@@ -35,6 +33,9 @@ export function AthleteDashboard() {
 
   const { layout, isEditing, setIsEditing, updateLayout } = useDashboardLayout('athlete');
   const { teams, teamData, personalStats, isLoading } = useAthleteMultiTeamData(athleteId);
+
+  // Auto-launch tour on first visit
+  useTour('athlete-dashboard', { autoStart: true, delay: 800 });
 
   // Loading state
   if (isLoading) {
@@ -94,27 +95,33 @@ export function AthleteDashboard() {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-txt-primary">My Dashboard</h1>
 
-          {/* Edit mode toggle */}
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
-              isEditing
-                ? 'bg-accent-primary/10 border-accent-primary/20 text-accent-primary'
-                : 'border-bdr-default text-txt-secondary hover:text-txt-primary hover:border-bdr-focus'
-            }`}
-          >
-            {isEditing ? (
-              <>
-                <Gear className="w-5 h-5" />
-                Done Editing
-              </>
-            ) : (
-              <>
-                <ArrowsOut className="w-5 h-5" />
-                Edit Layout
-              </>
-            )}
-          </button>
+          {/* Header actions */}
+          <div className="flex items-center gap-3">
+            <TourLauncher tourId="athlete-dashboard" variant="button" />
+
+            {/* Edit mode toggle */}
+            <button
+              data-tour="edit-layout"
+              onClick={() => setIsEditing(!isEditing)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
+                isEditing
+                  ? 'bg-accent-primary/10 border-accent-primary/20 text-accent-primary'
+                  : 'border-bdr-default text-txt-secondary hover:text-txt-primary hover:border-bdr-focus'
+              }`}
+            >
+              {isEditing ? (
+                <>
+                  <Gear className="w-5 h-5" />
+                  Done Editing
+                </>
+              ) : (
+                <>
+                  <ArrowsOut className="w-5 h-5" />
+                  Edit Layout
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Dashboard content */}
@@ -140,7 +147,7 @@ export function AthleteDashboard() {
           // Single team: Side-by-side layout
           <div className="grid grid-cols-12 gap-6">
             {/* Personal stats (left 6 cols) */}
-            <div className="col-span-6">
+            <div className="col-span-6" data-tour="personal-stats">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -158,7 +165,7 @@ export function AthleteDashboard() {
             </div>
 
             {/* Team context (right 6 cols) */}
-            <div className="col-span-6">
+            <div className="col-span-6" data-tour="team-context">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -181,6 +188,7 @@ export function AthleteDashboard() {
           <div className="space-y-6">
             {/* Personal stats hero (full width) */}
             <motion.div
+              data-tour="personal-stats"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={SPRING_CONFIG}
@@ -192,7 +200,7 @@ export function AthleteDashboard() {
             </motion.div>
 
             {/* Team context cards side-by-side */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-6" data-tour="team-context">
               {teams.map((team, index) => (
                 <motion.div
                   key={team.teamId}

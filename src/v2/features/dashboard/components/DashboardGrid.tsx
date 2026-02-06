@@ -1,173 +1,350 @@
-import { useState, useCallback } from 'react';
-import ReactGridLayout from 'react-grid-layout';
-import { DotsSixVertical, Gear, ArrowsOut } from '@phosphor-icons/react';
-import { UpcomingSessionsWidget } from './widgets/UpcomingSessionsWidget';
-import { RecentActivityWidget } from './widgets/RecentActivityWidget';
-import { AttendanceSummaryWidget } from './widgets/AttendanceSummaryWidget';
-import { HostVisitsWidget } from './widgets/HostVisitsWidget';
+/**
+ * Dashboard Grid Component
+ * Phase 27-05: Complete rewrite using widget registry, catalog, and edit mode
+ */
+
+import { useState, useRef, useEffect } from 'react';
+import { Responsive as ResponsiveGridLayout, Layout as RGLLayout } from 'react-grid-layout';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, ArrowCounterClockwise, DotsSixVertical, X } from '@phosphor-icons/react';
+import { useDashboardLayout } from '../hooks/useDashboardLayout';
+import { getWidgetConfig } from '../config/widgetRegistry';
+import { WidgetCatalog } from './WidgetCatalog';
+import { WidgetSizeSelector } from './WidgetSizeSelector';
+import { SPRING_CONFIG } from '../../../utils/animations';
+import type { WidgetInstance, UserRole, WidgetSize } from '../types';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-type Layout = ReactGridLayout.Layout;
-
-// Widget definitions
-const WIDGETS = {
-  upcomingSessions: {
-    title: 'Upcoming Sessions',
-    component: UpcomingSessionsWidget,
-    defaultSize: { w: 6, h: 4 },
-  },
-  recentActivity: {
-    title: 'Recent Activity',
-    component: RecentActivityWidget,
-    defaultSize: { w: 6, h: 6 },
-  },
-  attendanceSummary: {
-    title: "Today's Attendance",
-    component: AttendanceSummaryWidget,
-    defaultSize: { w: 4, h: 4 },
-  },
-  hostVisits: {
-    title: 'Host Visits',
-    component: HostVisitsWidget,
-    defaultSize: { w: 6, h: 4 },
-  },
-};
-
-type WidgetId = keyof typeof WIDGETS;
-
-// Default layout
-const DEFAULT_LAYOUT: Layout[] = [
-  { i: 'upcomingSessions', x: 0, y: 0, w: 6, h: 4 },
-  { i: 'attendanceSummary', x: 6, y: 0, w: 4, h: 4 },
-  { i: 'hostVisits', x: 0, y: 4, w: 6, h: 4 },
-  { i: 'recentActivity', x: 0, y: 8, w: 10, h: 6 },
-];
-
-// Local storage key
-const LAYOUT_STORAGE_KEY = 'rowlab_dashboard_layout';
-
-function loadLayout(): Layout[] {
-  try {
-    const stored = localStorage.getItem(LAYOUT_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : DEFAULT_LAYOUT;
-  } catch {
-    return DEFAULT_LAYOUT;
-  }
-}
-
-function saveLayout(layout: Layout[]): void {
-  try {
-    localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layout));
-  } catch {
-    // Ignore storage errors
-  }
-}
-
 interface DashboardGridProps {
-  editable?: boolean;
+  role: 'coach' | 'athlete';
+  children?: React.ReactNode; // optional header content (exception banner, etc.)
 }
 
-export function DashboardGrid({ editable = false }: DashboardGridProps) {
-  const [layout, setLayout] = useState<Layout[]>(loadLayout);
-  const [isEditing, setIsEditing] = useState(editable);
+/**
+ * DashboardGrid - Enhanced grid with catalog, sizing, and edit mode
+ *
+ * Features:
+ * - react-grid-layout Responsive with proper breakpoints
+ * - Widget catalog modal for adding/removing widgets
+ * - Size preset selector per widget
+ * - Edit mode with iOS-style jiggle animation
+ * - localStorage + debounced DB sync via useDashboardLayout
+ */
+export function DashboardGrid({ role, children }: DashboardGridProps) {
+  const {
+    layout,
+    isEditing,
+    setIsEditing,
+    updateLayout,
+    addWidget,
+    removeWidget,
+    changeWidgetSize,
+    resetLayout,
+  } = useDashboardLayout(role);
 
-  const handleLayoutChange = useCallback((newLayout: Layout[]) => {
-    setLayout(newLayout);
-    saveLayout(newLayout);
+  const [catalogOpen, setCatalogOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(1200);
+
+  // Wait for mount and measure container width
+  useEffect(() => {
+    setMounted(true);
+
+    const measureWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    measureWidth();
+    window.addEventListener('resize', measureWidth);
+    return () => window.removeEventListener('resize', measureWidth);
   }, []);
 
-  const handleResetLayout = useCallback(() => {
-    setLayout(DEFAULT_LAYOUT);
-    saveLayout(DEFAULT_LAYOUT);
-  }, []);
+  // Convert layout to react-grid-layout format
+  const gridLayouts = {
+    lg: layout.widgets.map((w) => ({
+      i: w.id,
+      x: w.position.x,
+      y: w.position.y,
+      w: w.position.w,
+      h: w.position.h,
+      minW: 2,
+      minH: 2,
+    })),
+    md: layout.widgets.map((w) => ({
+      i: w.id,
+      x: w.position.x,
+      y: w.position.y,
+      w: w.position.w,
+      h: w.position.h,
+      minW: 2,
+      minH: 2,
+    })),
+    sm: layout.widgets.map((w) => ({
+      i: w.id,
+      x: w.position.x,
+      y: w.position.y,
+      w: w.position.w,
+      h: w.position.h,
+      minW: 2,
+      minH: 2,
+    })),
+  };
+
+  // Handle layout change from drag
+  const handleLayoutChange = (newLayout: RGLLayout[], layouts: any) => {
+    if (!isEditing) return;
+
+    // Update widget positions
+    const updatedWidgets = layout.widgets.map((widget) => {
+      const gridItem = newLayout.find((item) => item.i === widget.id);
+      if (!gridItem) return widget;
+
+      return {
+        ...widget,
+        position: {
+          x: gridItem.x,
+          y: gridItem.y,
+          w: gridItem.w,
+          h: gridItem.h,
+        },
+      };
+    });
+
+    updateLayout({
+      ...layout,
+      widgets: updatedWidgets,
+    });
+  };
+
+  // Get active widget types for catalog
+  const activeWidgetTypes = layout.widgets.map((w) => w.widgetType);
+
+  // Handle catalog add
+  const handleAddWidget = (widgetType: string) => {
+    addWidget(widgetType);
+    setCatalogOpen(false);
+  };
+
+  // Handle catalog remove
+  const handleRemoveWidget = (widgetType: string) => {
+    const widget = layout.widgets.find((w) => w.widgetType === widgetType);
+    if (widget) {
+      removeWidget(widget.id);
+    }
+  };
+
+  if (!mounted) {
+    return <div ref={containerRef} className="min-h-screen" />;
+  }
 
   return (
-    <div className="relative">
-      {/* Edit controls */}
-      <div className="flex items-center justify-end gap-2 mb-4">
-        {isEditing && (
+    <div ref={containerRef} className="space-y-4">
+      {/* Header content (exception banner, etc.) */}
+      {children}
+
+      {/* Edit mode toolbar */}
+      {isEditing && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={SPRING_CONFIG}
+          className="flex items-center gap-3 p-4 bg-surface-elevated border border-bdr-default rounded-lg"
+        >
           <button
-            onClick={handleResetLayout}
-            className="px-3 py-1.5 rounded-lg border border-bdr-default text-txt-secondary
-              hover:text-txt-primary hover:border-bdr-focus transition-colors text-sm"
+            onClick={() => setCatalogOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-hover transition-colors font-medium"
           >
+            <Plus className="w-4 h-4" />
+            Add Widget
+          </button>
+
+          <button
+            onClick={resetLayout}
+            className="flex items-center gap-2 px-4 py-2 border border-bdr-default text-txt-secondary hover:text-txt-primary hover:border-bdr-focus rounded-lg transition-colors"
+          >
+            <ArrowCounterClockwise className="w-4 h-4" />
             Reset Layout
           </button>
-        )}
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors text-sm ${
-            isEditing
-              ? 'bg-accent-primary/10 border-accent-primary/20 text-accent-primary'
-              : 'border-bdr-default text-txt-secondary hover:text-txt-primary'
-          }`}
-        >
-          {isEditing ? (
-            <>
-              <Gear className="w-4 h-4" />
-              Done Editing
-            </>
-          ) : (
-            <>
-              <ArrowsOut className="w-4 h-4" />
-              Edit Layout
-            </>
-          )}
-        </button>
-      </div>
 
-      {/* Grid */}
-      <ReactGridLayout
-        className="layout"
-        layout={layout}
-        cols={12}
-        rowHeight={60}
-        width={1200}
-        margin={[16, 16]}
-        onLayoutChange={handleLayoutChange as any}
-        isDraggable={isEditing}
-        isResizable={isEditing}
-        draggableHandle=".drag-handle"
-      >
-        {layout.map((item) => {
-          const widget = WIDGETS[item.i as WidgetId];
-          if (!widget) return null;
+          <div className="flex-1" />
 
-          const WidgetComponent = widget.component;
+          <button
+            onClick={() => setIsEditing(false)}
+            className="px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-hover transition-colors font-medium"
+          >
+            Done
+          </button>
+        </motion.div>
+      )}
 
-          return (
-            <div
-              key={item.i}
-              className="bg-surface-elevated rounded-xl border border-bdr-default overflow-hidden"
-            >
-              {/* Widget header (shown in edit mode) */}
-              {isEditing && (
-                <div className="drag-handle flex items-center justify-between px-4 py-2 bg-surface-default border-b border-bdr-default cursor-move">
-                  <span className="flex items-center gap-2 text-sm text-txt-secondary">
-                    <DotsSixVertical className="w-4 h-4" />
-                    {widget.title}
-                  </span>
-                </div>
-              )}
-
-              {/* Widget content */}
-              <div className="p-4 h-full">
-                <WidgetComponent />
-              </div>
-            </div>
-          );
-        })}
-      </ReactGridLayout>
-
-      {/* Edit mode overlay instruction */}
-      {isEditing && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg bg-surface-elevated
-          border border-bdr-default shadow-lg text-sm text-txt-secondary">
-          Drag widgets to rearrange. Resize from edges.
+      {/* Toggle edit mode when not editing */}
+      {!isEditing && (
+        <div className="flex justify-end">
+          <button
+            onClick={() => setIsEditing(true)}
+            className="px-4 py-2 border border-bdr-default text-txt-secondary hover:text-txt-primary hover:border-bdr-focus rounded-lg transition-colors text-sm"
+          >
+            Edit Layout
+          </button>
         </div>
       )}
+
+      {/* Grid */}
+      <ResponsiveGridLayout
+        className="dashboard-grid"
+        layouts={gridLayouts}
+        breakpoints={{ lg: 1200, md: 996, sm: 768 }}
+        cols={{ lg: 12, md: 10, sm: 6 }}
+        rowHeight={60}
+        width={containerWidth}
+        margin={[16, 16]}
+        isDraggable={isEditing}
+        isResizable={false} // Size via presets only
+        draggableHandle=".widget-drag-handle"
+        onLayoutChange={handleLayoutChange}
+      >
+        {layout.widgets.map((widget) => (
+          <div key={widget.id} className={isEditing ? 'widget-editing' : ''}>
+            <WidgetCard
+              widget={widget}
+              role={role}
+              isEditing={isEditing}
+              onSizeChange={(newSize) => changeWidgetSize(widget.id, newSize)}
+              onRemove={() => removeWidget(widget.id)}
+            />
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+
+      {/* Edit mode instruction */}
+      {isEditing && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-surface-elevated border border-bdr-default rounded-lg shadow-xl"
+        >
+          <p className="text-sm text-txt-secondary">
+            <strong className="text-txt-primary">Drag</strong> widgets to rearrange.{' '}
+            <strong className="text-txt-primary">Click size</strong> to resize.
+          </p>
+        </motion.div>
+      )}
+
+      {/* Widget Catalog Modal */}
+      <WidgetCatalog
+        isOpen={catalogOpen}
+        onClose={() => setCatalogOpen(false)}
+        role={role}
+        activeWidgets={activeWidgetTypes}
+        onAddWidget={handleAddWidget}
+        onRemoveWidget={handleRemoveWidget}
+      />
     </div>
   );
+}
+
+// ============================================
+// WIDGET CARD WRAPPER
+// ============================================
+
+interface WidgetCardProps {
+  widget: WidgetInstance;
+  role: UserRole;
+  isEditing: boolean;
+  onSizeChange: (newSize: WidgetSize) => void;
+  onRemove: () => void;
+}
+
+function WidgetCard({ widget, role, isEditing, onSizeChange, onRemove }: WidgetCardProps) {
+  const config = getWidgetConfig(widget.widgetType);
+
+  if (!config) {
+    return (
+      <div className="h-full bg-surface-elevated border border-bdr-default rounded-xl p-4 flex items-center justify-center">
+        <p className="text-sm text-txt-secondary">Widget not found: {widget.widgetType}</p>
+      </div>
+    );
+  }
+
+  const WidgetComponent = config.component;
+
+  return (
+    <div className="h-full bg-surface-elevated border border-bdr-default rounded-xl overflow-hidden transition-all hover:border-bdr-focus">
+      {/* Edit mode header */}
+      {isEditing && (
+        <div className="flex items-center justify-between px-3 py-2 bg-surface-default border-b border-bdr-default">
+          {/* Drag handle */}
+          <div className="flex items-center gap-2">
+            <div className="widget-drag-handle cursor-grab active:cursor-grabbing">
+              <DotsSixVertical className="w-5 h-5 text-txt-tertiary" />
+            </div>
+            <span className="text-sm font-medium text-txt-primary">{config.title}</span>
+          </div>
+
+          {/* Size selector + Remove button */}
+          <div className="flex items-center gap-2">
+            <WidgetSizeSelector
+              widgetType={widget.widgetType}
+              currentSize={widget.size}
+              onSizeChange={onSizeChange}
+            />
+
+            <button
+              onClick={onRemove}
+              className="p-1 text-status-error hover:bg-status-error/10 rounded transition-colors"
+              title="Remove widget"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Widget content */}
+      <div className={`${isEditing ? 'h-[calc(100%-48px)]' : 'h-full'} overflow-auto`}>
+        <WidgetComponent widgetId={widget.id} size={widget.size} isEditing={isEditing} />
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// CSS ANIMATIONS
+// ============================================
+
+// Inject jiggle animation for edit mode
+const styles = `
+@keyframes widget-jiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.5deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
+}
+
+.widget-editing {
+  animation: widget-jiggle 0.3s ease-in-out infinite;
+}
+
+.widget-editing:hover {
+  animation: none;
+}
+`;
+
+if (typeof document !== 'undefined' && !document.getElementById('dashboard-grid-styles')) {
+  const styleSheet = document.createElement('style');
+  styleSheet.id = 'dashboard-grid-styles';
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
 }

@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, ArrowRight } from '@phosphor-icons/react';
+import { CaretDown, CaretUp, ArrowRight } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { SPRING_GENTLE } from '../../../utils/animations';
 import { getExceptionColor } from '../hooks/useExceptions';
@@ -92,7 +92,7 @@ export const ExceptionBanner: React.FC<ExceptionBannerProps> = ({ summary }) => 
             className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)]"
           >
             {isExpanded ? 'Hide details' : 'View details'}
-            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {isExpanded ? <CaretUp className="w-4 h-4" /> : <CaretDown className="w-4 h-4" />}
           </button>
         </div>
 

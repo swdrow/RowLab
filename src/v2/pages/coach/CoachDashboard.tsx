@@ -1,25 +1,18 @@
-import { DashboardGrid } from '../../features/dashboard/components/DashboardGrid';
+/**
+ * CoachDashboard Page
+ * Phase 27-05: Wires the CoachDashboard feature component into routing
+ */
+
+import { CoachDashboard as CoachDashboardFeature } from '../../features/dashboard/components/CoachDashboard';
 
 /**
- * CoachDashboard - Coach-specific dashboard page
+ * CoachDashboard - Coach-specific dashboard page at /app/coach/dashboard
  *
- * Displays cross-feature widgets:
- * - Upcoming Sessions
- * - Recent Activity
- * - Today's Attendance
- *
- * Uses react-grid-layout for drag-and-drop widget arrangement
+ * Renders the feature component directly.
+ * All logic handled by CoachDashboard feature component.
  */
 export function CoachDashboard() {
-  return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-txt-primary">Dashboard</h1>
-        <p className="text-txt-secondary">Overview of your team's training and activities</p>
-      </div>
-      <DashboardGrid />
-    </div>
-  );
+  return <CoachDashboardFeature />;
 }
 
 export default CoachDashboard;
