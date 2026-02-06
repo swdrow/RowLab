@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type {
   Attendance,
   AttendanceRecord,
@@ -107,7 +108,7 @@ export function useAttendance(date: string) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['attendance', date],
+    queryKey: queryKeys.attendance.date(date),
     queryFn: () => fetchAttendanceByDate(date),
     enabled: isInitialized && isAuthenticated && !!date,
     staleTime: 1 * 60 * 1000, // 1 minute
@@ -125,11 +126,11 @@ export function useAttendance(date: string) {
   const recordMutation = useMutation({
     mutationFn: recordAttendance,
     onMutate: async (newRecord) => {
-      await queryClient.cancelQueries({ queryKey: ['attendance', date] });
-      const previous = queryClient.getQueryData<Attendance[]>(['attendance', date]);
+      await queryClient.cancelQueries({ queryKey: queryKeys.attendance.all });
+      const previous = queryClient.getQueryData<Attendance[]>(queryKeys.attendance.date(date));
 
       // Optimistic update
-      queryClient.setQueryData<Attendance[]>(['attendance', date], (old = []) => {
+      queryClient.setQueryData<Attendance[]>(queryKeys.attendance.date(date), (old = []) => {
         const existing = old.find((a) => a.athleteId === newRecord.athleteId);
         if (existing) {
           return old.map((a) =>
@@ -158,18 +159,18 @@ export function useAttendance(date: string) {
     },
     onError: (_err, _newRecord, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(['attendance', date], context.previous);
+        queryClient.setQueryData(queryKeys.attendance.date(date), context.previous);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['attendance', date] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.attendance.all });
     },
   });
 
   const bulkMutation = useMutation({
     mutationFn: bulkRecordAttendance,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['attendance', date] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.attendance.all });
     },
   });
 
@@ -202,7 +203,7 @@ export function useAthleteAttendance(
   const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
-    queryKey: ['athlete-attendance', athleteId, options?.startDate, options?.endDate],
+    queryKey: queryKeys.attendance.athlete(athleteId || ''),
     queryFn: () => fetchAthleteAttendance(athleteId!, options?.startDate, options?.endDate),
     enabled: isInitialized && isAuthenticated && !!athleteId,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -216,7 +217,7 @@ export function useAttendanceSummary(startDate: string, endDate: string) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
-    queryKey: ['attendance-summary', startDate, endDate],
+    queryKey: queryKeys.attendance.summary({ startDate, endDate }),
     queryFn: () => fetchAttendanceSummary(startDate, endDate),
     enabled: isInitialized && isAuthenticated && !!startDate && !!endDate,
     staleTime: 5 * 60 * 1000, // 5 minutes

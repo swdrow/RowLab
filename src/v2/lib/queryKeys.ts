@@ -60,6 +60,12 @@ export const queryKeys = {
     list: () => [...queryKeys.boatConfigs.all, 'list'] as const,
   },
 
+  // Oar Sets
+  oarSets: {
+    all: ['oarSets'] as const,
+    list: () => [...queryKeys.oarSets.all, 'list'] as const,
+  },
+
   // Seat Races
   seatRaces: {
     all: ['seatRaces'] as const,

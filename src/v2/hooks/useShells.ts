@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { Shell, ApiResponse } from '../types/coach';
 
 /**
@@ -61,7 +62,7 @@ export function useShells() {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['shells'],
+    queryKey: queryKeys.shells.list(),
     queryFn: fetchShells,
     enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes - equipment doesn't change often
@@ -71,13 +72,13 @@ export function useShells() {
     mutationFn: createShell,
     onMutate: async (newShell) => {
       // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['shells'] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.shells.list() });
 
       // Snapshot previous value
-      const previousShells = queryClient.getQueryData<Shell[]>(['shells']);
+      const previousShells = queryClient.getQueryData<Shell[]>(queryKeys.shells.list());
 
       // Optimistically update with temporary ID
-      queryClient.setQueryData<Shell[]>(['shells'], (old = []) => [
+      queryClient.setQueryData<Shell[]>(queryKeys.shells.list(), (old = []) => [
         ...old,
         { ...newShell, id: 'temp-' + Date.now(), teamId: 'temp' } as Shell,
       ]);
@@ -87,23 +88,23 @@ export function useShells() {
     onError: (err, newShell, context) => {
       // Rollback on error
       if (context?.previousShells) {
-        queryClient.setQueryData(['shells'], context.previousShells);
+        queryClient.setQueryData(queryKeys.shells.list(), context.previousShells);
       }
     },
     onSettled: () => {
       // Refetch to get server state
-      queryClient.invalidateQueries({ queryKey: ['shells'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shells.list() });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: updateShell,
     onMutate: async (updatedShell) => {
-      await queryClient.cancelQueries({ queryKey: ['shells'] });
-      const previousShells = queryClient.getQueryData<Shell[]>(['shells']);
+      await queryClient.cancelQueries({ queryKey: queryKeys.shells.list() });
+      const previousShells = queryClient.getQueryData<Shell[]>(queryKeys.shells.list());
 
       // Optimistically update
-      queryClient.setQueryData<Shell[]>(['shells'], (old = []) =>
+      queryClient.setQueryData<Shell[]>(queryKeys.shells.list(), (old = []) =>
         old.map((shell) => (shell.id === updatedShell.id ? updatedShell : shell))
       );
 
@@ -111,22 +112,22 @@ export function useShells() {
     },
     onError: (err, updatedShell, context) => {
       if (context?.previousShells) {
-        queryClient.setQueryData(['shells'], context.previousShells);
+        queryClient.setQueryData(queryKeys.shells.list(), context.previousShells);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['shells'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shells.list() });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteShell,
     onMutate: async (deletedId) => {
-      await queryClient.cancelQueries({ queryKey: ['shells'] });
-      const previousShells = queryClient.getQueryData<Shell[]>(['shells']);
+      await queryClient.cancelQueries({ queryKey: queryKeys.shells.list() });
+      const previousShells = queryClient.getQueryData<Shell[]>(queryKeys.shells.list());
 
       // Optimistically remove
-      queryClient.setQueryData<Shell[]>(['shells'], (old = []) =>
+      queryClient.setQueryData<Shell[]>(queryKeys.shells.list(), (old = []) =>
         old.filter((shell) => shell.id !== deletedId)
       );
 
@@ -134,11 +135,11 @@ export function useShells() {
     },
     onError: (err, deletedId, context) => {
       if (context?.previousShells) {
-        queryClient.setQueryData(['shells'], context.previousShells);
+        queryClient.setQueryData(queryKeys.shells.list(), context.previousShells);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['shells'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shells.list() });
     },
   });
 

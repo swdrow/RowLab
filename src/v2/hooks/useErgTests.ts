@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type {
   ErgTest,
   ErgTestFilters,
@@ -135,7 +136,7 @@ export function useErgTests(filters?: ErgTestFilters) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['ergTests', filters],
+    queryKey: queryKeys.ergTests.list(filters),
     queryFn: () => fetchErgTests(filters),
     enabled: isInitialized && isAuthenticated,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -144,11 +145,11 @@ export function useErgTests(filters?: ErgTestFilters) {
   const createMutation = useMutation({
     mutationFn: createErgTest,
     onMutate: async (newTest) => {
-      await queryClient.cancelQueries({ queryKey: ['ergTests'] });
-      const previousTests = queryClient.getQueryData<ErgTest[]>(['ergTests', filters]);
+      await queryClient.cancelQueries({ queryKey: queryKeys.ergTests.all });
+      const previousTests = queryClient.getQueryData<ErgTest[]>(queryKeys.ergTests.list(filters));
 
       // Optimistic update
-      queryClient.setQueryData<ErgTest[]>(['ergTests', filters], (old = []) => [
+      queryClient.setQueryData<ErgTest[]>(queryKeys.ergTests.list(filters), (old = []) => [
         {
           ...newTest,
           id: 'temp-' + Date.now(),
@@ -162,22 +163,22 @@ export function useErgTests(filters?: ErgTestFilters) {
     },
     onError: (_err, _newTest, context) => {
       if (context?.previousTests) {
-        queryClient.setQueryData(['ergTests', filters], context.previousTests);
+        queryClient.setQueryData(queryKeys.ergTests.list(filters), context.previousTests);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['ergTests'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.ergTests.all });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: updateErgTest,
     onMutate: async (updatedTest) => {
-      await queryClient.cancelQueries({ queryKey: ['ergTests'] });
-      const previousTests = queryClient.getQueryData<ErgTest[]>(['ergTests', filters]);
+      await queryClient.cancelQueries({ queryKey: queryKeys.ergTests.all });
+      const previousTests = queryClient.getQueryData<ErgTest[]>(queryKeys.ergTests.list(filters));
 
       // Optimistic update
-      queryClient.setQueryData<ErgTest[]>(['ergTests', filters], (old = []) =>
+      queryClient.setQueryData<ErgTest[]>(queryKeys.ergTests.list(filters), (old = []) =>
         old.map((test) => (test.id === updatedTest.id ? { ...test, ...updatedTest } : test))
       );
 
@@ -185,22 +186,22 @@ export function useErgTests(filters?: ErgTestFilters) {
     },
     onError: (_err, _updatedTest, context) => {
       if (context?.previousTests) {
-        queryClient.setQueryData(['ergTests', filters], context.previousTests);
+        queryClient.setQueryData(queryKeys.ergTests.list(filters), context.previousTests);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['ergTests'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.ergTests.all });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteErgTest,
     onMutate: async (deletedId) => {
-      await queryClient.cancelQueries({ queryKey: ['ergTests'] });
-      const previousTests = queryClient.getQueryData<ErgTest[]>(['ergTests', filters]);
+      await queryClient.cancelQueries({ queryKey: queryKeys.ergTests.all });
+      const previousTests = queryClient.getQueryData<ErgTest[]>(queryKeys.ergTests.list(filters));
 
       // Optimistic update
-      queryClient.setQueryData<ErgTest[]>(['ergTests', filters], (old = []) =>
+      queryClient.setQueryData<ErgTest[]>(queryKeys.ergTests.list(filters), (old = []) =>
         old.filter((test) => test.id !== deletedId)
       );
 
@@ -208,11 +209,11 @@ export function useErgTests(filters?: ErgTestFilters) {
     },
     onError: (_err, _deletedId, context) => {
       if (context?.previousTests) {
-        queryClient.setQueryData(['ergTests', filters], context.previousTests);
+        queryClient.setQueryData(queryKeys.ergTests.list(filters), context.previousTests);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['ergTests'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.ergTests.all });
     },
   });
 
@@ -247,7 +248,7 @@ export function useAthleteErgHistory(athleteId: string) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['ergTests', 'athlete', athleteId],
+    queryKey: queryKeys.ergTests.detail(athleteId),
     queryFn: () => fetchAthleteHistory(athleteId),
     enabled: isInitialized && isAuthenticated && !!athleteId,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -270,7 +271,7 @@ export function useErgLeaderboard(testType: TestType, limit: number = 20) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['ergTests', 'leaderboard', testType, limit],
+    queryKey: queryKeys.ergTests.leaderboard({ testType, limit }),
     queryFn: () => fetchLeaderboard(testType, limit),
     enabled: isInitialized && isAuthenticated,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -293,7 +294,7 @@ export function useBulkImportErgTests() {
   const importMutation = useMutation({
     mutationFn: bulkImportTests,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['ergTests'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.ergTests.all });
     },
   });
 

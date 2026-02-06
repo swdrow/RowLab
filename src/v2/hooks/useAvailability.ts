@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { AthleteAvailability, AvailabilityDay, ApiResponse } from '../types/coach';
 
 // Format date for query key stability
@@ -16,7 +17,10 @@ export function useTeamAvailability(startDate: Date, endDate: Date) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
-    queryKey: ['availability', 'team', formatDate(startDate), formatDate(endDate)],
+    queryKey: queryKeys.availability.team({
+      startDate: formatDate(startDate),
+      endDate: formatDate(endDate),
+    }),
     queryFn: async () => {
       const response = await api.get<ApiResponse<{ availability: AthleteAvailability[] }>>(
         '/api/v1/availability/team',
@@ -34,7 +38,7 @@ export function useTeamAvailability(startDate: Date, endDate: Date) {
     },
     // Only fetch when auth is initialized and user is authenticated
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 }
 
@@ -50,7 +54,7 @@ export function useAthleteAvailability(
   const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
-    queryKey: ['availability', 'athlete', athleteId, formatDate(startDate), formatDate(endDate)],
+    queryKey: queryKeys.availability.athlete(athleteId || ''),
     queryFn: async () => {
       if (!athleteId) return [];
       const response = await api.get<ApiResponse<{ availability: AvailabilityDay[] }>>(
@@ -68,7 +72,7 @@ export function useAthleteAvailability(
       return response.data.data?.availability || [];
     },
     enabled: !!athleteId && isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
   });
 }
 
@@ -95,10 +99,35 @@ export function useUpdateAvailability() {
       }
       return response.data.data?.availability;
     },
-    onSuccess: (_, variables) => {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.availability.all });
+      const previousTeam = queryClient.getQueryData(queryKeys.availability.team({}));
+      const previousAthlete = queryClient.getQueryData(
+        queryKeys.availability.athlete(variables.athleteId)
+      );
+
+      // Optimistic update for athlete query
+      queryClient.setQueryData(
+        queryKeys.availability.athlete(variables.athleteId),
+        variables.availability
+      );
+
+      return { previousTeam, previousAthlete };
+    },
+    onError: (_err, variables, context) => {
+      if (context?.previousAthlete !== undefined) {
+        queryClient.setQueryData(
+          queryKeys.availability.athlete(variables.athleteId),
+          context.previousAthlete
+        );
+      }
+      if (context?.previousTeam !== undefined) {
+        queryClient.setQueryData(queryKeys.availability.team({}), context.previousTeam);
+      }
+    },
+    onSettled: () => {
       // Invalidate both team and athlete queries to refresh
-      queryClient.invalidateQueries({ queryKey: ['availability', 'team'] });
-      queryClient.invalidateQueries({ queryKey: ['availability', 'athlete', variables.athleteId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.availability.all });
     },
   });
 }

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { Athlete, AthleteFilters, ApiResponse, CSVImportResult } from '../types/athletes';
 
 /**
@@ -114,7 +115,7 @@ export function useAthletes(filters?: AthleteFilters) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['athletes'],
+    queryKey: queryKeys.athletes.list(filters),
     queryFn: fetchAthletes,
     enabled: isInitialized && isAuthenticated,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -127,10 +128,12 @@ export function useAthletes(filters?: AthleteFilters) {
   const createMutation = useMutation({
     mutationFn: createAthlete,
     onMutate: async (newAthlete) => {
-      await queryClient.cancelQueries({ queryKey: ['athletes'] });
-      const previousAthletes = queryClient.getQueryData<Athlete[]>(['athletes']);
+      await queryClient.cancelQueries({ queryKey: queryKeys.athletes.all });
+      const previousAthletes = queryClient.getQueryData<Athlete[]>(
+        queryKeys.athletes.list(filters)
+      );
 
-      queryClient.setQueryData<Athlete[]>(['athletes'], (old = []) => [
+      queryClient.setQueryData<Athlete[]>(queryKeys.athletes.list(filters), (old = []) => [
         ...old,
         {
           ...newAthlete,
@@ -145,21 +148,23 @@ export function useAthletes(filters?: AthleteFilters) {
     },
     onError: (_err, _newAthlete, context) => {
       if (context?.previousAthletes) {
-        queryClient.setQueryData(['athletes'], context.previousAthletes);
+        queryClient.setQueryData(queryKeys.athletes.list(filters), context.previousAthletes);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: updateAthlete,
     onMutate: async (updatedAthlete) => {
-      await queryClient.cancelQueries({ queryKey: ['athletes'] });
-      const previousAthletes = queryClient.getQueryData<Athlete[]>(['athletes']);
+      await queryClient.cancelQueries({ queryKey: queryKeys.athletes.all });
+      const previousAthletes = queryClient.getQueryData<Athlete[]>(
+        queryKeys.athletes.list(filters)
+      );
 
-      queryClient.setQueryData<Athlete[]>(['athletes'], (old = []) =>
+      queryClient.setQueryData<Athlete[]>(queryKeys.athletes.list(filters), (old = []) =>
         old.map((athlete) =>
           athlete.id === updatedAthlete.id
             ? { ...athlete, ...updatedAthlete, updatedAt: new Date().toISOString() }
@@ -171,21 +176,23 @@ export function useAthletes(filters?: AthleteFilters) {
     },
     onError: (_err, _updatedAthlete, context) => {
       if (context?.previousAthletes) {
-        queryClient.setQueryData(['athletes'], context.previousAthletes);
+        queryClient.setQueryData(queryKeys.athletes.list(filters), context.previousAthletes);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteAthlete,
     onMutate: async (deletedId) => {
-      await queryClient.cancelQueries({ queryKey: ['athletes'] });
-      const previousAthletes = queryClient.getQueryData<Athlete[]>(['athletes']);
+      await queryClient.cancelQueries({ queryKey: queryKeys.athletes.all });
+      const previousAthletes = queryClient.getQueryData<Athlete[]>(
+        queryKeys.athletes.list(filters)
+      );
 
-      queryClient.setQueryData<Athlete[]>(['athletes'], (old = []) =>
+      queryClient.setQueryData<Athlete[]>(queryKeys.athletes.list(filters), (old = []) =>
         old.filter((athlete) => athlete.id !== deletedId)
       );
 
@@ -193,18 +200,18 @@ export function useAthletes(filters?: AthleteFilters) {
     },
     onError: (_err, _deletedId, context) => {
       if (context?.previousAthletes) {
-        queryClient.setQueryData(['athletes'], context.previousAthletes);
+        queryClient.setQueryData(queryKeys.athletes.list(filters), context.previousAthletes);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 
   const importMutation = useMutation({
     mutationFn: bulkImportAthletes,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 
