@@ -1,22 +1,23 @@
 import { useState } from 'react';
 import { useWhiteboard } from '../hooks/useWhiteboard';
 import { WhiteboardView, WhiteboardEditor } from '../components/whiteboard';
-import { useV2Auth } from '../hooks/useSharedStores';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function CoachWhiteboard() {
   const [isEditing, setIsEditing] = useState(false);
   const { whiteboard, isLoading, saveWhiteboard, isSaving } = useWhiteboard();
 
-  // Get user role from auth store
-  const authStore = useV2Auth();
-  const activeTeamRole = authStore((state) => state.activeTeamRole);
+  const { activeTeamRole } = useAuth();
   const canEdit = activeTeamRole === 'COACH' || activeTeamRole === 'OWNER';
 
   const handleSave = (content: string) => {
     const today = new Date().toISOString().split('T')[0];
-    saveWhiteboard({ date: today, content }, {
-      onSuccess: () => setIsEditing(false),
-    });
+    saveWhiteboard(
+      { date: today, content },
+      {
+        onSuccess: () => setIsEditing(false),
+      }
+    );
   };
 
   if (isLoading) {

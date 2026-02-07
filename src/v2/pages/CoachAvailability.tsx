@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTeamAvailability, useUpdateAvailability } from '../hooks/useAvailability';
 import { AvailabilityGrid, AvailabilityEditor } from '../components/availability';
 import { CrudModal } from '../components/common';
-import { useV2Auth } from '../hooks/useSharedStores';
+import { useAuth } from '../contexts/AuthContext';
 import type { AvailabilityDay, AthleteAvailability } from '../types/coach';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -31,9 +31,7 @@ export default function CoachAvailability() {
   const updateMutation = useUpdateAvailability();
 
   // Auth
-  const authStore = useV2Auth();
-  const activeTeamRole = authStore((state) => state.activeTeamRole);
-  const user = authStore((state) => state.user);
+  const { activeTeamRole, user } = useAuth();
   const isCoach = activeTeamRole === 'COACH' || activeTeamRole === 'OWNER';
 
   // Navigation
