@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import api from '../../../utils/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import type { DashboardLayout, WidgetInstance, WidgetSize } from '../types';

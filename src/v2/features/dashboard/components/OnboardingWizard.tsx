@@ -44,7 +44,10 @@ const WelcomeStep: React.FC<{ onNext: () => void }> = ({ onNext }) => {
   return (
     <div className="text-center space-y-6">
       {/* Rocket animation */}
-      <GeometricAnimation {...EMPTY_STATE_ANIMATIONS.onboarding} className="w-32 h-32 mx-auto" />
+      <GeometricAnimation
+        config={EMPTY_STATE_ANIMATIONS.onboarding}
+        className="w-32 h-32 mx-auto"
+      />
 
       <div>
         <h2 className="text-2xl font-semibold text-txt-primary mb-2">Welcome to RowLab</h2>

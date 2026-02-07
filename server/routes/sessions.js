@@ -84,7 +84,7 @@ router.get('/', async (req, res) => {
           orderBy: { order: 'asc' },
         },
         createdBy: {
-          select: { id: true, firstName: true, lastName: true },
+          select: { id: true, name: true },
         },
       },
       orderBy: { date: 'desc' },
@@ -118,7 +118,7 @@ router.get('/active', async (req, res) => {
           orderBy: { order: 'asc' },
         },
         createdBy: {
-          select: { id: true, firstName: true, lastName: true },
+          select: { id: true, name: true },
         },
       },
     });
@@ -151,7 +151,7 @@ router.get('/:id', async (req, res) => {
           orderBy: { order: 'asc' },
         },
         createdBy: {
-          select: { id: true, firstName: true, lastName: true },
+          select: { id: true, name: true },
         },
       },
     });
@@ -179,7 +179,17 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
   try {
-    const { name, type, date, startTime, endTime, recurrenceRule, notes, athleteVisibility, pieces } = req.body;
+    const {
+      name,
+      type,
+      date,
+      startTime,
+      endTime,
+      recurrenceRule,
+      notes,
+      athleteVisibility,
+      pieces,
+    } = req.body;
 
     // Validate required fields
     if (!name || !type || !date) {
@@ -194,7 +204,10 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
     if (!validTypes.includes(type)) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: `type must be one of: ${validTypes.join(', ')}` },
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: `type must be one of: ${validTypes.join(', ')}`,
+        },
       });
     }
 
@@ -211,34 +224,35 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
         teamId: req.user.activeTeamId,
         createdById: req.user.id,
         // Create nested pieces if provided
-        ...(pieces && pieces.length > 0 && {
-          pieces: {
-            create: pieces.map((piece, index) => ({
-              name: piece.name,
-              segment: piece.segment || 'MAIN',
-              description: piece.description,
-              order: piece.order ?? index,
-              distance: piece.distance,
-              duration: piece.duration,
-              targetSplit: piece.targetSplit,
-              targetRate: piece.targetRate,
-              targetWatts: piece.targetWatts,
-              targetHRZone: piece.targetHRZone,
-              targetRPE: piece.targetRPE,
-              notes: piece.notes,
-              boatClass: piece.boatClass,
-              sets: piece.sets,
-              reps: piece.reps,
-            })),
-          },
-        }),
+        ...(pieces &&
+          pieces.length > 0 && {
+            pieces: {
+              create: pieces.map((piece, index) => ({
+                name: piece.name,
+                segment: piece.segment || 'MAIN',
+                description: piece.description,
+                order: piece.order ?? index,
+                distance: piece.distance,
+                duration: piece.duration,
+                targetSplit: piece.targetSplit,
+                targetRate: piece.targetRate,
+                targetWatts: piece.targetWatts,
+                targetHRZone: piece.targetHRZone,
+                targetRPE: piece.targetRPE,
+                notes: piece.notes,
+                boatClass: piece.boatClass,
+                sets: piece.sets,
+                reps: piece.reps,
+              })),
+            },
+          }),
       },
       include: {
         pieces: {
           orderBy: { order: 'asc' },
         },
         createdBy: {
-          select: { id: true, firstName: true, lastName: true },
+          select: { id: true, name: true },
         },
       },
     });
@@ -261,7 +275,17 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
 router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
   try {
     const sessionId = req.params.id;
-    const { name, type, date, startTime, endTime, recurrenceRule, notes, status, athleteVisibility } = req.body;
+    const {
+      name,
+      type,
+      date,
+      startTime,
+      endTime,
+      recurrenceRule,
+      notes,
+      status,
+      athleteVisibility,
+    } = req.body;
 
     // Check session exists and belongs to team
     const existing = await prisma.session.findFirst({
@@ -284,7 +308,10 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
       if (!validTypes.includes(type)) {
         return res.status(400).json({
           success: false,
-          error: { code: 'VALIDATION_ERROR', message: `type must be one of: ${validTypes.join(', ')}` },
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: `type must be one of: ${validTypes.join(', ')}`,
+          },
         });
       }
     }
@@ -295,7 +322,10 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
       if (!validStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
-          error: { code: 'VALIDATION_ERROR', message: `status must be one of: ${validStatuses.join(', ')}` },
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: `status must be one of: ${validStatuses.join(', ')}`,
+          },
         });
       }
     }
@@ -330,7 +360,7 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
           orderBy: { order: 'asc' },
         },
         createdBy: {
-          select: { id: true, firstName: true, lastName: true },
+          select: { id: true, name: true },
         },
       },
     });
@@ -411,7 +441,7 @@ router.post('/join/:code', async (req, res) => {
           select: { id: true, name: true },
         },
         createdBy: {
-          select: { id: true, firstName: true, lastName: true },
+          select: { id: true, name: true },
         },
       },
     });
@@ -444,7 +474,23 @@ router.post('/join/:code', async (req, res) => {
 router.post('/:sessionId/pieces', requireRole('OWNER', 'COACH'), async (req, res) => {
   try {
     const sessionId = req.params.sessionId;
-    const { name, segment, description, order, distance, duration, targetSplit, targetRate, targetWatts, targetHRZone, targetRPE, notes, boatClass, sets, reps } = req.body;
+    const {
+      name,
+      segment,
+      description,
+      order,
+      distance,
+      duration,
+      targetSplit,
+      targetRate,
+      targetWatts,
+      targetHRZone,
+      targetRPE,
+      notes,
+      boatClass,
+      sets,
+      reps,
+    } = req.body;
 
     // Check session exists and belongs to team
     const session = await prisma.session.findFirst({
@@ -531,7 +577,23 @@ router.patch('/pieces/:pieceId', requireRole('OWNER', 'COACH'), async (req, res)
       });
     }
 
-    const { name, segment, description, order, distance, duration, targetSplit, targetRate, targetWatts, targetHRZone, targetRPE, notes, boatClass, sets, reps } = req.body;
+    const {
+      name,
+      segment,
+      description,
+      order,
+      distance,
+      duration,
+      targetSplit,
+      targetRate,
+      targetWatts,
+      targetHRZone,
+      targetRPE,
+      notes,
+      boatClass,
+      sets,
+      reps,
+    } = req.body;
 
     const updateData = {};
     if (name !== undefined) updateData.name = name;
@@ -684,9 +746,7 @@ router.get('/:id/live-data', param('id').isString(), async (req, res) => {
 
             // Get most recent workout from today
             const today = new Date().toISOString().split('T')[0];
-            const todayWorkouts = c2Data.data?.filter((w) =>
-              w.date?.startsWith(today)
-            ) || [];
+            const todayWorkouts = c2Data.data?.filter((w) => w.date?.startsWith(today)) || [];
 
             if (todayWorkouts.length > 0) {
               const latest = todayWorkouts[0];
@@ -695,9 +755,7 @@ router.get('/:id/live-data', param('id').isString(), async (req, res) => {
                 ...baseData,
                 distance: latest.distance || 0,
                 time: latest.time || 0,
-                pace: latest.time && latest.distance
-                  ? (latest.time / (latest.distance / 500))
-                  : 0,
+                pace: latest.time && latest.distance ? latest.time / (latest.distance / 500) : 0,
                 watts: latest.watts_avg || 0,
                 strokeRate: latest.stroke_rate || 0,
                 heartRate: latest.heart_rate_avg || null,

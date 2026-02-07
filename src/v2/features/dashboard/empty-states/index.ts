@@ -105,8 +105,8 @@ export const EmptyDashboardState: React.FC = () => {
     description:
       "Your rowing management platform is ready. Let's get started by setting up your team.",
     action: {
-      label: 'Get Started',
-      to: '/app/onboarding',
+      label: 'Import Roster',
+      to: '/app/athletes?import=true',
     },
   });
 };

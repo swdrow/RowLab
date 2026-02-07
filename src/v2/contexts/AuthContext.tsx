@@ -81,17 +81,20 @@ async function fetchCurrentUser(): Promise<{
   activeTeamId: string | null;
 }> {
   const response = await api.get('/api/v1/auth/me');
-  const { user, teams, activeTeamId } = response.data.data;
+  const rawUser = response.data.data.user;
+  // teams may be at top level (from login) or nested inside user (from /me)
+  const teams: Team[] = response.data.data.teams || rawUser.teams || [];
+  const activeTeamId: string | null = response.data.data.activeTeamId || teams[0]?.id || null;
   return {
     user: {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      name: user.name,
-      isAdmin: user.isAdmin,
+      id: rawUser.id,
+      email: rawUser.email,
+      username: rawUser.username,
+      name: rawUser.name,
+      isAdmin: rawUser.isAdmin,
     },
-    teams: teams || [],
-    activeTeamId: activeTeamId || null,
+    teams,
+    activeTeamId,
   };
 }
 
@@ -134,20 +137,34 @@ export function AuthProvider({ children }: AuthProviderProps) {
     enabled: false, // Don't auto-fetch on mount, we'll trigger manually
   });
 
-  // Initialize auth on mount - try to refresh token and fetch user
+  // Initialize auth on mount - use existing token if available, otherwise try refresh
   useEffect(() => {
     async function initialize() {
       try {
-        // Try to refresh token to check if session is valid
-        const refreshResponse = await api.post('/api/v1/auth/refresh');
-        if (refreshResponse.data?.data?.accessToken) {
-          const token = refreshResponse.data.data.accessToken;
-          setAccessToken(token);
-          // Now fetch user data
+        // Check if a valid access token already exists (e.g. set by dev-login or V1 login).
+        // Using the existing token avoids a redundant /auth/refresh call that would
+        // rotate the refresh token and race with the token the login flow just set.
+        const existingToken = (window as any).__rowlab_access_token;
+        if (existingToken) {
+          setAccessToken(existingToken);
+          // Token is already on window, so the api interceptor will attach it.
+          // Fetch user data to populate the context.
           await queryClient.fetchQuery({
             queryKey: queryKeys.auth.user(),
             queryFn: fetchCurrentUser,
           });
+        } else {
+          // No token in memory — try to refresh from the HTTP-only refresh cookie
+          const refreshResponse = await api.post('/api/v1/auth/refresh');
+          if (refreshResponse.data?.data?.accessToken) {
+            const token = refreshResponse.data.data.accessToken;
+            setAccessToken(token);
+            // Now fetch user data
+            await queryClient.fetchQuery({
+              queryKey: queryKeys.auth.user(),
+              queryFn: fetchCurrentUser,
+            });
+          }
         }
       } catch (err) {
         // No valid session, that's ok
@@ -184,6 +201,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     mutationFn: () => logoutUser(accessToken),
     onSuccess: () => {
       setAccessToken(null);
+      delete (window as any).__rowlab_access_token;
       setError(null);
       // Clear all queries
       queryClient.clear();
@@ -192,6 +210,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('Logout error:', err);
       // Clear state regardless
       setAccessToken(null);
+      delete (window as any).__rowlab_access_token;
       setError(null);
       queryClient.clear();
     },
@@ -225,11 +244,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Sync accessToken to api.ts axios instance (it reads from authStore currently)
   // We'll expose it via context for now, api.ts will be updated in Plan 03
   useEffect(() => {
-    // Store token for api interceptor to access
+    // Only SET the window token when we have one. Never delete it here — it may
+    // have been set by dev-login before this provider mounted, and deleting it
+    // on the initial render (when accessToken is still null) would race with the
+    // init effect. Logout clears the token explicitly via queryClient.clear().
     if (accessToken) {
       (window as any).__rowlab_access_token = accessToken;
-    } else {
-      delete (window as any).__rowlab_access_token;
     }
   }, [accessToken]);
 

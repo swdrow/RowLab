@@ -333,4 +333,16 @@ export const queryKeys = {
     all: ['gamification'] as const,
     preferences: () => [...queryKeys.gamification.all, 'preferences'] as const,
   },
+
+  // Integrations
+  integration: {
+    all: ['integration'] as const,
+    c2: {
+      status: () => [...queryKeys.integration.all, 'c2', 'status'] as const,
+      syncConfig: () => [...queryKeys.integration.all, 'c2', 'syncConfig'] as const,
+    },
+    strava: {
+      status: () => [...queryKeys.integration.all, 'strava', 'status'] as const,
+    },
+  },
 } as const;
