@@ -1,6 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '@/store/authStore';
-import type { TeamSpeedEstimate, HeadToHeadComparison, ExternalRanking, ExternalRankingFormData, ExternalTeam } from '../types/regatta';
+import { useAuth } from '../contexts/AuthContext';
+import type {
+  TeamSpeedEstimate,
+  HeadToHeadComparison,
+  ExternalRanking,
+  ExternalRankingFormData,
+  ExternalTeam,
+} from '../types/regatta';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -117,7 +123,7 @@ async function deleteExternalRanking(token: string, rankingId: string): Promise<
  * Fetch available boat classes with race data
  */
 export function useBoatClasses(season?: string) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: rankingKeys.boatClasses(),
@@ -131,7 +137,7 @@ export function useBoatClasses(season?: string) {
  * Fetch rankings for a specific boat class
  */
 export function useBoatClassRankings(boatClass: string | undefined, season?: string) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: rankingKeys.boatClass(boatClass!, season),
@@ -149,7 +155,7 @@ export function useHeadToHead(
   boatClass: string | undefined,
   season?: string
 ) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: rankingKeys.headToHead(opponent!, boatClass!),
@@ -163,7 +169,7 @@ export function useHeadToHead(
  * Fetch list of external teams
  */
 export function useExternalTeams() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: rankingKeys.externalTeams(),
@@ -176,8 +182,12 @@ export function useExternalTeams() {
 /**
  * Fetch external rankings with optional filters
  */
-export function useExternalRankings(filters?: { boatClass?: string; source?: string; season?: string }) {
-  const { accessToken } = useAuthStore();
+export function useExternalRankings(filters?: {
+  boatClass?: string;
+  source?: string;
+  season?: string;
+}) {
+  const { accessToken } = useAuth();
 
   return useQuery({
     queryKey: rankingKeys.external(filters),
@@ -191,12 +201,11 @@ export function useExternalRankings(filters?: { boatClass?: string; source?: str
  * Add an external ranking
  */
 export function useAddExternalRanking() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (ranking: ExternalRankingFormData) =>
-      addExternalRanking(accessToken!, ranking),
+    mutationFn: (ranking: ExternalRankingFormData) => addExternalRanking(accessToken!, ranking),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rankingKeys.external() });
     },
@@ -207,7 +216,7 @@ export function useAddExternalRanking() {
  * Delete an external ranking
  */
 export function useDeleteExternalRanking() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -222,7 +231,7 @@ export function useDeleteExternalRanking() {
  * Trigger team speed calculation
  */
 export function useCalculateTeamSpeed() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({

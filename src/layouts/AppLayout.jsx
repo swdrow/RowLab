@@ -12,10 +12,16 @@ import RegisterModal from '../components/Auth/RegisterModal';
 import AdminPanel from '../components/Auth/AdminPanel';
 import LineupAssistant, { AIAssistantButton } from '../components/AI/LineupAssistant';
 import { Sidebar } from '../components/compound/Sidebar';
-import { TopNav, MobileDock, Breadcrumbs, WorkspaceSwitcher, CommandPalette, CollaborationPresence } from '../components/Layout';
+import {
+  TopNav,
+  MobileDock,
+  Breadcrumbs,
+  WorkspaceSwitcher,
+  CommandPalette,
+  CollaborationPresence,
+} from '../components/Layout';
 import { useCollaboration } from '../hooks/useCollaboration';
 import { useRouteAnalytics } from '../v2/hooks/useRouteAnalytics';
-import { VersionToggle } from '../v2/components/shell/VersionToggle';
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -33,13 +39,7 @@ function AppLayout() {
   // Track V1 route views
   useRouteAnalytics('v1');
 
-  const {
-    setAthletes,
-    setBoatConfigs,
-    setShells,
-    setErgData,
-    setHeadshotMap,
-  } = useLineupStore();
+  const { setAthletes, setBoatConfigs, setShells, setErgData, setHeadshotMap } = useLineupStore();
 
   const { user, accessToken: token, initialize, logout } = useAuthStore();
   const { features } = useSettingsStore();
@@ -100,7 +100,7 @@ function AppLayout() {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setShowCommandPalette(prev => !prev);
+        setShowCommandPalette((prev) => !prev);
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -195,8 +195,6 @@ function AppLayout() {
           }
         >
           <div className="flex items-center gap-3">
-            {/* Version Toggle */}
-            <VersionToggle currentVersion="v1" />
             {/* Workspace Switcher (hidden on mobile) */}
             <div className="hidden md:block">
               <WorkspaceSwitcher />
@@ -234,9 +232,7 @@ function AppLayout() {
       </div>
 
       {/* Mobile Bottom Dock */}
-      <MobileDock
-        onMoreClick={() => setSidebarOpen(true)}
-      />
+      <MobileDock onMoreClick={() => setSidebarOpen(true)} />
 
       {/* Modals */}
       <LoginModal
@@ -258,10 +254,7 @@ function AppLayout() {
       />
 
       {/* Admin Panel */}
-      <AdminPanel
-        isOpen={showAdminPanel}
-        onClose={() => setShowAdminPanel(false)}
-      />
+      <AdminPanel isOpen={showAdminPanel} onClose={() => setShowAdminPanel(false)} />
 
       {/* AI Assistant */}
       <AnimatePresence>
@@ -281,10 +274,7 @@ function AppLayout() {
       )}
 
       {/* Command Palette */}
-      <CommandPalette
-        isOpen={showCommandPalette}
-        onClose={() => setShowCommandPalette(false)}
-      />
+      <CommandPalette isOpen={showCommandPalette} onClose={() => setShowCommandPalette(false)} />
     </div>
   );
 }

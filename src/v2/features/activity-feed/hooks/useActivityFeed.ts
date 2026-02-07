@@ -3,16 +3,10 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-import useAuthStore from '../../../../store/authStore';
 import api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
+import { queryKeys } from '../../../lib/queryKeys';
 import type { ActivityFeedResponse } from '../../../types/activity';
-
-// Auth store state type (store is JS, so we define types here)
-interface AuthState {
-  isAuthenticated: boolean;
-  isInitialized: boolean;
-  activeTeamId: string | null;
-}
 
 // ============================================
 // API TYPES
@@ -26,15 +20,6 @@ interface ApiResponse<T> {
     message: string;
   };
 }
-
-// ============================================
-// QUERY KEYS
-// ============================================
-
-export const activityKeys = {
-  all: ['activities-feed'] as const,
-  feed: (athleteId?: string) => [...activityKeys.all, 'unified', athleteId] as const,
-};
 
 // ============================================
 // API FUNCTION
@@ -72,16 +57,14 @@ async function fetchActivityFeed(
  * @param athleteId - Optional athlete ID to filter activities
  */
 export function useUnifiedActivityFeed(athleteId?: string) {
-  const isAuthenticated = useAuthStore((state: AuthState) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state: AuthState) => state.isInitialized);
-  const activeTeamId = useAuthStore((state: AuthState) => state.activeTeamId);
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   return useInfiniteQuery({
-    queryKey: activityKeys.feed(athleteId),
+    queryKey: [...queryKeys.dashboard.activityFeed(), athleteId],
     queryFn: ({ pageParam }) => fetchActivityFeed(athleteId, pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: isInitialized && isAuthenticated && !!activeTeamId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 30 * 1000, // 30 seconds
   });
 }

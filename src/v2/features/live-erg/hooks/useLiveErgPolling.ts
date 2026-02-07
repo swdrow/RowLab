@@ -3,19 +3,11 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import useAuthStore from '../../../../store/authStore';
+import { useAuth } from '../../../contexts/AuthContext';
+import { queryKeys } from '../../../lib/queryKeys';
 import api from '../../../utils/api';
 import type { LiveSessionData, PollingConfig } from '../../../types/live-erg';
 import { DEFAULT_POLLING_INTERVAL } from '../../../types/live-erg';
-
-// ============================================
-// QUERY KEYS
-// ============================================
-
-export const liveErgKeys = {
-  all: ['live-erg'] as const,
-  session: (sessionId: string) => [...liveErgKeys.all, 'session', sessionId] as const,
-};
 
 // ============================================
 // API TYPES
@@ -59,14 +51,8 @@ interface UseLiveErgPollingOptions {
  * Fetches live erg data with configurable polling interval
  * Uses TanStack Query's refetchInterval for automatic polling
  */
-export function useLiveErgPolling({
-  sessionId,
-  config = {},
-}: UseLiveErgPollingOptions) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isAuthenticated = useAuthStore((state: any) => state.isAuthenticated);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isInitialized = useAuthStore((state: any) => state.isInitialized);
+export function useLiveErgPolling({ sessionId, config = {} }: UseLiveErgPollingOptions) {
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const pollingConfig: PollingConfig = {
     interval: config.interval ?? DEFAULT_POLLING_INTERVAL,
@@ -74,7 +60,7 @@ export function useLiveErgPolling({
   };
 
   const query = useQuery({
-    queryKey: liveErgKeys.session(sessionId),
+    queryKey: queryKeys.sessions.live(sessionId),
     queryFn: () => fetchLiveErgData(sessionId),
     enabled: isInitialized && isAuthenticated && !!sessionId && pollingConfig.enabled,
     // Poll at configured interval when enabled

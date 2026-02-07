@@ -1,29 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useShowGamification } from './useGamificationPreference';
 import type { Streak, StreakSummaryResponse, GamificationApiResponse } from '../types/gamification';
 
 /**
  * Query key factory for streaks
  */
-export const streakKeys = {
-  all: ['streaks'] as const,
-  mine: () => [...streakKeys.all, 'mine'] as const,
-  athlete: (athleteId: string) => [...streakKeys.all, 'athlete', athleteId] as const,
-  config: () => [...streakKeys.all, 'config'] as const,
-};
 
 /**
  * Hook for current user's streaks
  */
 export function useStreaks() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: streakKeys.mine(),
+    queryKey: queryKeys.streaks.mine(),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<StreakSummaryResponse>>(
         '/api/v1/streaks'
@@ -42,12 +36,11 @@ export function useStreaks() {
  * Hook for a specific athlete's streaks
  */
 export function useAthleteStreaks(athleteId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: streakKeys.athlete(athleteId),
+    queryKey: queryKeys.streaks.athlete(athleteId),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<StreakSummaryResponse>>(
         `/api/v1/streaks/athlete/${athleteId}`
@@ -66,11 +59,10 @@ export function useAthleteStreaks(athleteId: string) {
  * Hook for streak configuration
  */
 export function useStreakConfig() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
-    queryKey: streakKeys.config(),
+    queryKey: queryKeys.streaks.config(),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ config: Record<string, number> }>>(
         '/api/v1/streaks/config'

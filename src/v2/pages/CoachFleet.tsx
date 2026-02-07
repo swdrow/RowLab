@@ -3,7 +3,7 @@ import { useShells } from '../hooks/useShells';
 import { useOarSets } from '../hooks/useOarSets';
 import { ShellsTable, OarsTable, ShellForm, OarSetForm } from '../components/fleet';
 import { CrudModal } from '../components/common';
-import { useV2Auth } from '../hooks/useSharedStores';
+import { useAuth } from '../contexts/AuthContext';
 import type { Shell, OarSet } from '../types/coach';
 import { Plus } from 'lucide-react';
 
@@ -20,23 +20,41 @@ export default function CoachFleet() {
   const [activeTab, setActiveTab] = useState<'shells' | 'oars'>('shells');
 
   // Hooks
-  const { shells, isLoading: shellsLoading, createShell, updateShell, deleteShell, isCreating: shellCreating, isUpdating: shellUpdating } = useShells();
-  const { oarSets, isLoading: oarsLoading, createOarSet, updateOarSet, deleteOarSet, isCreating: oarCreating, isUpdating: oarUpdating } = useOarSets();
+  const {
+    shells,
+    isLoading: shellsLoading,
+    createShell,
+    updateShell,
+    deleteShell,
+    isCreating: shellCreating,
+    isUpdating: shellUpdating,
+  } = useShells();
+  const {
+    oarSets,
+    isLoading: oarsLoading,
+    createOarSet,
+    updateOarSet,
+    deleteOarSet,
+    isCreating: oarCreating,
+    isUpdating: oarUpdating,
+  } = useOarSets();
 
   // Auth
-  const authStore = useV2Auth();
-  const activeTeamRole = authStore((state) => state.activeTeamRole);
+  const { activeTeamRole } = useAuth();
   const canEdit = activeTeamRole === 'COACH' || activeTeamRole === 'OWNER';
 
   // Shell handlers
   const handleShellSubmit = (data: any) => {
     if (editingShell) {
-      updateShell({ id: editingShell.id, ...data }, {
-        onSuccess: () => {
-          setIsShellModalOpen(false);
-          setEditingShell(null);
-        },
-      });
+      updateShell(
+        { id: editingShell.id, ...data },
+        {
+          onSuccess: () => {
+            setIsShellModalOpen(false);
+            setEditingShell(null);
+          },
+        }
+      );
     } else {
       createShell(data, {
         onSuccess: () => setIsShellModalOpen(false),
@@ -58,12 +76,15 @@ export default function CoachFleet() {
   // Oar set handlers (same pattern)
   const handleOarSubmit = (data: any) => {
     if (editingOarSet) {
-      updateOarSet({ id: editingOarSet.id, ...data }, {
-        onSuccess: () => {
-          setIsOarModalOpen(false);
-          setEditingOarSet(null);
-        },
-      });
+      updateOarSet(
+        { id: editingOarSet.id, ...data },
+        {
+          onSuccess: () => {
+            setIsOarModalOpen(false);
+            setEditingOarSet(null);
+          },
+        }
+      );
     } else {
       createOarSet(data, {
         onSuccess: () => setIsOarModalOpen(false),
@@ -88,7 +109,9 @@ export default function CoachFleet() {
         <h1 className="text-2xl font-bold text-txt-primary">Fleet Management</h1>
         {canEdit && (
           <button
-            onClick={() => activeTab === 'shells' ? setIsShellModalOpen(true) : setIsOarModalOpen(true)}
+            onClick={() =>
+              activeTab === 'shells' ? setIsShellModalOpen(true) : setIsOarModalOpen(true)
+            }
             className="flex items-center gap-2 px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-primary/90 transition-colors"
           >
             <Plus size={18} />
@@ -102,7 +125,9 @@ export default function CoachFleet() {
         <button
           onClick={() => setActiveTab('shells')}
           className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-            activeTab === 'shells' ? 'bg-accent-primary text-white' : 'text-txt-secondary hover:text-txt-primary'
+            activeTab === 'shells'
+              ? 'bg-accent-primary text-white'
+              : 'text-txt-secondary hover:text-txt-primary'
           }`}
         >
           Shells ({shells?.length || 0})
@@ -110,7 +135,9 @@ export default function CoachFleet() {
         <button
           onClick={() => setActiveTab('oars')}
           className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-            activeTab === 'oars' ? 'bg-accent-primary text-white' : 'text-txt-secondary hover:text-txt-primary'
+            activeTab === 'oars'
+              ? 'bg-accent-primary text-white'
+              : 'text-txt-secondary hover:text-txt-primary'
           }`}
         >
           Oars ({oarSets?.length || 0})
@@ -130,17 +157,15 @@ export default function CoachFleet() {
               onDelete={handleDeleteShell}
             />
           )
+        ) : oarsLoading ? (
+          <div className="animate-pulse h-48 bg-surface rounded" />
         ) : (
-          oarsLoading ? (
-            <div className="animate-pulse h-48 bg-surface rounded" />
-          ) : (
-            <OarsTable
-              oarSets={oarSets || []}
-              canEdit={canEdit}
-              onEdit={handleEditOarSet}
-              onDelete={handleDeleteOarSet}
-            />
-          )
+          <OarsTable
+            oarSets={oarSets || []}
+            canEdit={canEdit}
+            onEdit={handleEditOarSet}
+            onDelete={handleDeleteOarSet}
+          />
         )}
       </div>
 

@@ -10,6 +10,8 @@ import {
   duplicateLineup,
   exportLineupData,
   searchLineups,
+  updateDraft,
+  publishLineup,
 } from '../../services/lineupService.js';
 import { authenticateToken, requireRole, teamIsolation } from '../../middleware/auth.js';
 
@@ -34,9 +36,7 @@ router.get(
   '/',
   authenticateToken,
   teamIsolation,
-  [
-    query('includeAssignments').optional().isBoolean(),
-  ],
+  [query('includeAssignments').optional().isBoolean()],
   validateRequest,
   async (req, res) => {
     try {
@@ -95,18 +95,10 @@ router.get(
   async (req, res) => {
     try {
       const filters = {
-        athleteIds: req.query.athleteIds
-          ? req.query.athleteIds.split(',').filter(Boolean)
-          : [],
-        minAthletes: req.query.minAthletes
-          ? parseInt(req.query.minAthletes, 10)
-          : 1,
-        boatClasses: req.query.boatClasses
-          ? req.query.boatClasses.split(',').filter(Boolean)
-          : [],
-        shellNames: req.query.shellNames
-          ? req.query.shellNames.split(',').filter(Boolean)
-          : [],
+        athleteIds: req.query.athleteIds ? req.query.athleteIds.split(',').filter(Boolean) : [],
+        minAthletes: req.query.minAthletes ? parseInt(req.query.minAthletes, 10) : 1,
+        boatClasses: req.query.boatClasses ? req.query.boatClasses.split(',').filter(Boolean) : [],
+        shellNames: req.query.shellNames ? req.query.shellNames.split(',').filter(Boolean) : [],
         startDate: req.query.startDate || null,
         endDate: req.query.endDate || null,
         nameSearch: req.query.nameSearch || null,
@@ -242,18 +234,11 @@ router.post(
   authenticateToken,
   teamIsolation,
   requireRole('OWNER', 'COACH'),
-  [
-    param('id').isUUID(),
-    body('name').optional().trim().isLength({ min: 1, max: 100 }),
-  ],
+  [param('id').isUUID(), body('name').optional().trim().isLength({ min: 1, max: 100 })],
   validateRequest,
   async (req, res) => {
     try {
-      const lineup = await duplicateLineup(
-        req.user.activeTeamId,
-        req.params.id,
-        req.body.name
-      );
+      const lineup = await duplicateLineup(req.user.activeTeamId, req.params.id, req.body.name);
       res.status(201).json({
         success: true,
         data: { lineup },
@@ -347,6 +332,103 @@ router.delete(
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to delete lineup' },
+      });
+    }
+  }
+);
+
+/**
+ * PATCH /api/v1/lineups/:id/draft
+ * Update lineup draft - Phase 25-06
+ */
+router.patch(
+  '/:id/draft',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  [
+    param('id').isUUID(),
+    body('name').optional().trim().isLength({ min: 1, max: 100 }),
+    body('notes').optional().trim().isLength({ max: 500 }),
+    body('assignments').optional().isArray(),
+    body('assignments.*.athleteId').optional().isUUID(),
+    body('assignments.*.boatClass').optional().trim().isLength({ min: 1, max: 20 }),
+    body('assignments.*.seatNumber').optional().isInt({ min: 1, max: 8 }),
+    body('assignments.*.side').optional().isIn(['Port', 'Starboard']),
+    body('assignments.*.isCoxswain').optional().isBoolean(),
+  ],
+  validateRequest,
+  async (req, res) => {
+    try {
+      const lineup = await updateDraft(
+        req.user.activeTeamId,
+        req.params.id,
+        req.user.userId,
+        req.body
+      );
+      res.json({
+        success: true,
+        data: { lineup },
+      });
+    } catch (error) {
+      if (error.message === 'Lineup not found') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: error.message },
+        });
+      }
+      logger.error('Update draft error', { error: error.message });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to update draft' },
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/v1/lineups/:id/publish
+ * Publish lineup with conflict detection - Phase 25-06
+ */
+router.post(
+  '/:id/publish',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  [param('id').isUUID(), body('lastKnownUpdatedAt').optional().isISO8601()],
+  validateRequest,
+  async (req, res) => {
+    try {
+      const lineup = await publishLineup(
+        req.user.activeTeamId,
+        req.params.id,
+        req.body.lastKnownUpdatedAt
+      );
+      res.json({
+        success: true,
+        data: { lineup },
+      });
+    } catch (error) {
+      if (error.message === 'Lineup not found') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: error.message },
+        });
+      }
+      if (error.code === 'CONFLICT') {
+        return res.status(409).json({
+          success: false,
+          error: {
+            code: 'CONFLICT',
+            message: error.message,
+            currentLineup: error.currentLineup,
+          },
+        });
+      }
+      logger.error('Publish lineup error', { error: error.message });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to publish lineup' },
       });
     }
   }

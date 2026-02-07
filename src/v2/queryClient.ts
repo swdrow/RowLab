@@ -1,5 +1,20 @@
 import { QueryClient } from '@tanstack/react-query';
 
+/**
+ * Global TanStack Query Client
+ *
+ * Configuration:
+ * - 5-minute stale time (data stays fresh)
+ * - 10-minute garbage collection (unused data cleanup)
+ * - Single retry on query failure
+ * - No refetch on window focus (reduces unnecessary requests)
+ *
+ * Multi-tab sync:
+ * - BroadcastChannel synchronization enabled via initBroadcastSync() (called in V2Layout)
+ * - Auth queries filtered out for security
+ * - See: src/v2/lib/broadcastSync.ts
+ */
+
 // Create client outside component to avoid recreation on render
 export const queryClient = new QueryClient({
   defaultOptions: {

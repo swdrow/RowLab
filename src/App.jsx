@@ -1,27 +1,11 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoadingFallback } from './components/LoadingFallback';
+import { LegacyRedirect } from './components/LegacyRedirect';
 import './App.css';
 
 // Lazy load all pages for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage.tsx'));
-const DashboardRouter = lazy(() => import('./components/DashboardRouter'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const AthleteDashboard = lazy(() => import('./pages/AthleteDashboard'));
-const LineupBuilder = lazy(() => import('./pages/LineupBuilder'));
-const BoatViewPage = lazy(() => import('./pages/BoatViewPage'));
-const AthletesPage = lazy(() => import('./pages/AthletesPage'));
-const ErgDataPage = lazy(() => import('./pages/ErgDataPage'));
-const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
-const SettingsPage = lazy(() => import('./pages/SettingsPage'));
-const SeatRacingPage = lazy(() => import('./pages/SeatRacingPage'));
-const RacingPage = lazy(() => import('./pages/RacingPage'));
-const TrainingPlanPage = lazy(() => import('./pages/TrainingPlanPage'));
-const CommunicationPage = lazy(() => import('./pages/CommunicationPage'));
-const AdvancedPage = lazy(() => import('./pages/AdvancedPage'));
-const BillingPage = lazy(() => import('./pages/BillingPage'));
-const CoxswainView = lazy(() => import('./pages/CoxswainView'));
-const AppLayout = lazy(() => import('./layouts/AppLayout'));
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -80,13 +64,21 @@ class ErrorBoundary extends React.Component {
         <div className="min-h-screen bg-gradient-to-br from-light-bg via-white to-light-bg dark:from-dark-bg dark:via-dark-card dark:to-dark-bg flex items-center justify-center p-4">
           <div className="glass-card p-8 max-w-lg text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-              <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg
+                className="w-8 h-8 text-red-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
             </div>
-            <h1 className="text-xl font-semibold text-text-primary mb-2">
-              Something went wrong
-            </h1>
+            <h1 className="text-xl font-semibold text-text-primary mb-2">Something went wrong</h1>
             <p className="text-text-secondary mb-4">
               {this.state.error?.message || 'An unexpected error occurred'}
             </p>
@@ -163,7 +155,9 @@ function App() {
               {/* Routes with shell (rail + sidebar + content) */}
               <Route
                 element={
-                  <Suspense fallback={<LoadingFallback variant="component" message="Loading shell..." />}>
+                  <Suspense
+                    fallback={<LoadingFallback variant="component" message="Loading shell..." />}
+                  >
                     <ShellLayout />
                   </Suspense>
                 }
@@ -171,7 +165,11 @@ function App() {
                 <Route
                   index
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading dashboard..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading dashboard..." />
+                      }
+                    >
                       <MeDashboard />
                     </Suspense>
                   }
@@ -179,7 +177,11 @@ function App() {
                 <Route
                   path="me"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading dashboard..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading dashboard..." />
+                      }
+                    >
                       <MeDashboard />
                     </Suspense>
                   }
@@ -187,7 +189,11 @@ function App() {
                 <Route
                   path="coach/dashboard"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading coach dashboard..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading coach dashboard..." />
+                      }
+                    >
                       <CoachDashboard />
                     </Suspense>
                   }
@@ -195,7 +201,11 @@ function App() {
                 <Route
                   path="coach/whiteboard"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading whiteboard..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading whiteboard..." />
+                      }
+                    >
                       <CoachWhiteboard />
                     </Suspense>
                   }
@@ -203,7 +213,9 @@ function App() {
                 <Route
                   path="coach/fleet"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading fleet..." />}>
+                    <Suspense
+                      fallback={<LoadingFallback variant="component" message="Loading fleet..." />}
+                    >
                       <CoachFleet />
                     </Suspense>
                   }
@@ -211,7 +223,11 @@ function App() {
                 <Route
                   path="coach/availability"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading availability..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading availability..." />
+                      }
+                    >
                       <CoachAvailability />
                     </Suspense>
                   }
@@ -219,7 +235,11 @@ function App() {
                 <Route
                   path="athletes"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading athletes..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading athletes..." />
+                      }
+                    >
                       <V2AthletesPage />
                     </Suspense>
                   }
@@ -227,7 +247,11 @@ function App() {
                 <Route
                   path="attendance"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading attendance..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading attendance..." />
+                      }
+                    >
                       <V2AttendancePage />
                     </Suspense>
                   }
@@ -235,7 +259,11 @@ function App() {
                 <Route
                   path="erg-tests"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading erg tests..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading erg tests..." />
+                      }
+                    >
                       <V2ErgTestsPage />
                     </Suspense>
                   }
@@ -243,7 +271,11 @@ function App() {
                 <Route
                   path="coach/lineup-builder"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading lineup builder..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading lineup builder..." />
+                      }
+                    >
                       <V2LineupBuilderPage />
                     </Suspense>
                   }
@@ -251,7 +283,11 @@ function App() {
                 <Route
                   path="coach/seat-racing"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading seat racing..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading seat racing..." />
+                      }
+                    >
                       <V2SeatRacingPage />
                     </Suspense>
                   }
@@ -259,7 +295,14 @@ function App() {
                 <Route
                   path="coach/seat-racing/advanced-rankings"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading advanced rankings..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback
+                          variant="component"
+                          message="Loading advanced rankings..."
+                        />
+                      }
+                    >
                       <AdvancedRankingsPage />
                     </Suspense>
                   }
@@ -267,7 +310,11 @@ function App() {
                 <Route
                   path="coach/seat-racing/matrix-planner"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading matrix planner..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading matrix planner..." />
+                      }
+                    >
                       <MatrixPlannerPage />
                     </Suspense>
                   }
@@ -275,7 +322,11 @@ function App() {
                 <Route
                   path="coach/training"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading training..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading training..." />
+                      }
+                    >
                       <CoachTrainingPage />
                     </Suspense>
                   }
@@ -283,7 +334,11 @@ function App() {
                 <Route
                   path="regattas"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading regattas..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading regattas..." />
+                      }
+                    >
                       <RegattasPage />
                     </Suspense>
                   }
@@ -291,7 +346,11 @@ function App() {
                 <Route
                   path="regattas/:regattaId"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading regatta..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading regatta..." />
+                      }
+                    >
                       <RegattasPage />
                     </Suspense>
                   }
@@ -299,7 +358,11 @@ function App() {
                 <Route
                   path="regattas/:regattaId/race-day"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading race day..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading race day..." />
+                      }
+                    >
                       <RaceDayCommandCenter />
                     </Suspense>
                   }
@@ -307,7 +370,11 @@ function App() {
                 <Route
                   path="rankings"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading rankings..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading rankings..." />
+                      }
+                    >
                       <RankingsPage />
                     </Suspense>
                   }
@@ -315,7 +382,11 @@ function App() {
                 <Route
                   path="training/sessions"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading sessions..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading sessions..." />
+                      }
+                    >
                       <SessionsPage />
                     </Suspense>
                   }
@@ -323,7 +394,11 @@ function App() {
                 <Route
                   path="training/sessions/:sessionId"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading session..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading session..." />
+                      }
+                    >
                       <SessionDetailPage />
                     </Suspense>
                   }
@@ -331,7 +406,11 @@ function App() {
                 <Route
                   path="training/sessions/:sessionId/live"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading live session..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading live session..." />
+                      }
+                    >
                       <LiveSessionPage />
                     </Suspense>
                   }
@@ -339,7 +418,11 @@ function App() {
                 <Route
                   path="settings"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading settings..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading settings..." />
+                      }
+                    >
                       <V2SettingsPage />
                     </Suspense>
                   }
@@ -347,7 +430,11 @@ function App() {
                 <Route
                   path="recruiting"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading recruiting..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading recruiting..." />
+                      }
+                    >
                       <RecruitingPage />
                     </Suspense>
                   }
@@ -355,7 +442,11 @@ function App() {
                 <Route
                   path="achievements"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading achievements..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading achievements..." />
+                      }
+                    >
                       <AchievementsPage />
                     </Suspense>
                   }
@@ -363,7 +454,11 @@ function App() {
                 <Route
                   path="challenges"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading challenges..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading challenges..." />
+                      }
+                    >
                       <ChallengesPage />
                     </Suspense>
                   }
@@ -371,7 +466,11 @@ function App() {
                 <Route
                   path="challenges/:id"
                   element={
-                    <Suspense fallback={<LoadingFallback variant="component" message="Loading challenge..." />}>
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading challenge..." />
+                      }
+                    >
                       <ChallengesPage />
                     </Suspense>
                   }
@@ -381,136 +480,11 @@ function App() {
               {/* Routes without shell (future: onboarding, etc.) can go here */}
             </Route>
 
-            {/* V1 legacy routes at /legacy */}
-            <Route path="/legacy" element={<AppLayout />}>
-              <Route
-                index
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <DashboardRouter />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="athlete-dashboard"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <AthleteDashboard />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="lineup"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <LineupBuilder />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="boat-view"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" message="Loading 3D viewer..." />}>
-                    <BoatViewPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="athletes"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <AthletesPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="athletes/:id"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <AthleteDashboard />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="erg"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <ErgDataPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="analytics"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <AnalyticsPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="settings"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <SettingsPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="seat-racing"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <SeatRacingPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="training-plans"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <TrainingPlanPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="racing"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <RacingPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="communication"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <CommunicationPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="advanced"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <AdvancedPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="billing"
-                element={<Navigate to="/legacy/settings?tab=billing" replace />}
-              />
-              <Route
-                path="coxswain"
-                element={
-                  <Suspense fallback={<LoadingFallback variant="component" />}>
-                    <CoxswainView />
-                  </Suspense>
-                }
-              />
-            </Route>
+            {/* Legacy V1 routes — redirect to /app equivalents */}
+            <Route path="/legacy/*" element={<LegacyRedirect />} />
 
-            {/* Redirect /beta to /app for bookmark compatibility */}
-            <Route path="/beta/*" element={<Navigate to="/app" replace />} />
+            {/* Beta routes — redirect to /app for bookmark compatibility */}
+            <Route path="/beta/*" element={<LegacyRedirect />} />
 
             {/* 404 fallback */}
             <Route
@@ -519,12 +493,8 @@ function App() {
                 <div className="min-h-screen bg-gradient-to-br from-light-bg via-white to-light-bg dark:from-dark-bg dark:via-dark-card dark:to-dark-bg flex items-center justify-center p-4">
                   <div className="glass-card p-8 text-center max-w-md">
                     <div className="text-6xl mb-4">🚣</div>
-                    <h1 className="text-2xl font-bold text-text-primary mb-2">
-                      Page Not Found
-                    </h1>
-                    <p className="text-text-secondary mb-4">
-                      Looks like you've rowed off course!
-                    </p>
+                    <h1 className="text-2xl font-bold text-text-primary mb-2">Page Not Found</h1>
+                    <p className="text-text-secondary mb-4">Looks like you've rowed off course!</p>
                     <a
                       href="/app"
                       className="inline-block px-4 py-2 bg-blade-blue text-white rounded-lg hover:bg-blade-blue/90 transition-colors"

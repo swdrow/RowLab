@@ -1,3 +1,17 @@
+/**
+ * @deprecated Phase 25-04
+ *
+ * This V1 Zustand store has been replaced by V2 TanStack Query hooks:
+ * - useTrainingPlans (src/v2/hooks/useTrainingPlans.ts)
+ * - useWorkouts (src/v2/hooks/useWorkouts.ts)
+ * - useAssignments (src/v2/hooks/useAssignments.ts)
+ *
+ * V1 legacy components still reference this store. Do NOT add new functionality here.
+ * New training plan features should use the V2 hooks.
+ *
+ * TODO(phase-25-08): Complete V1 → V2 migration and delete this file
+ */
+
 import { create } from 'zustand';
 
 /**

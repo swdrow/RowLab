@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { Athlete, AthleteFilters, ApiResponse, CSVImportResult } from '../types/athletes';
 
 /**
@@ -19,7 +20,9 @@ async function fetchAthletes(): Promise<Athlete[]> {
 /**
  * Create a new athlete
  */
-async function createAthlete(data: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>): Promise<Athlete> {
+async function createAthlete(
+  data: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>
+): Promise<Athlete> {
   const response = await api.post<ApiResponse<{ athlete: Athlete }>>('/api/v1/athletes', data);
 
   if (!response.data.success || !response.data.data) {
@@ -33,7 +36,10 @@ async function createAthlete(data: Omit<Athlete, 'id' | 'teamId' | 'createdAt' |
  * Update an existing athlete
  */
 async function updateAthlete(data: Partial<Athlete> & { id: string }): Promise<Athlete> {
-  const response = await api.put<ApiResponse<{ athlete: Athlete }>>(`/api/v1/athletes/${data.id}`, data);
+  const response = await api.put<ApiResponse<{ athlete: Athlete }>>(
+    `/api/v1/athletes/${data.id}`,
+    data
+  );
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to update athlete');
@@ -56,8 +62,12 @@ async function deleteAthlete(id: string): Promise<void> {
 /**
  * Bulk import athletes from CSV
  */
-async function bulkImportAthletes(athletes: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>[]): Promise<CSVImportResult> {
-  const response = await api.post<ApiResponse<CSVImportResult>>('/api/v1/athletes/bulk', { athletes });
+async function bulkImportAthletes(
+  athletes: Omit<Athlete, 'id' | 'teamId' | 'createdAt' | 'updatedAt'>[]
+): Promise<CSVImportResult> {
+  const response = await api.post<ApiResponse<CSVImportResult>>('/api/v1/athletes/bulk', {
+    athletes,
+  });
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to import athletes');
@@ -102,51 +112,57 @@ function filterAthletes(athletes: Athlete[], filters: AthleteFilters): Athlete[]
  */
 export function useAthletes(filters?: AthleteFilters) {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['athletes'],
+    queryKey: queryKeys.athletes.list(filters),
     queryFn: fetchAthletes,
     enabled: isInitialized && isAuthenticated,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   // Apply client-side filters
-  const filteredAthletes = query.data && filters
-    ? filterAthletes(query.data, filters)
-    : query.data || [];
+  const filteredAthletes =
+    query.data && filters ? filterAthletes(query.data, filters) : query.data || [];
 
   const createMutation = useMutation({
     mutationFn: createAthlete,
     onMutate: async (newAthlete) => {
-      await queryClient.cancelQueries({ queryKey: ['athletes'] });
-      const previousAthletes = queryClient.getQueryData<Athlete[]>(['athletes']);
+      const queryKey = queryKeys.athletes.list(filters);
+      await queryClient.cancelQueries({ queryKey: queryKeys.athletes.all });
+      const previousAthletes = queryClient.getQueryData<Athlete[]>(queryKey);
 
-      queryClient.setQueryData<Athlete[]>(['athletes'], (old = []) => [
+      queryClient.setQueryData<Athlete[]>(queryKey, (old = []) => [
         ...old,
-        { ...newAthlete, id: 'temp-' + Date.now(), teamId: 'temp', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } as Athlete,
+        {
+          ...newAthlete,
+          id: 'temp-' + Date.now(),
+          teamId: 'temp',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        } as Athlete,
       ]);
 
-      return { previousAthletes };
+      return { previousAthletes, queryKey };
     },
     onError: (_err, _newAthlete, context) => {
-      if (context?.previousAthletes) {
-        queryClient.setQueryData(['athletes'], context.previousAthletes);
+      if (context?.previousAthletes && context?.queryKey) {
+        queryClient.setQueryData(context.queryKey, context.previousAthletes);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: updateAthlete,
     onMutate: async (updatedAthlete) => {
-      await queryClient.cancelQueries({ queryKey: ['athletes'] });
-      const previousAthletes = queryClient.getQueryData<Athlete[]>(['athletes']);
+      const queryKey = queryKeys.athletes.list(filters);
+      await queryClient.cancelQueries({ queryKey: queryKeys.athletes.all });
+      const previousAthletes = queryClient.getQueryData<Athlete[]>(queryKey);
 
-      queryClient.setQueryData<Athlete[]>(['athletes'], (old = []) =>
+      queryClient.setQueryData<Athlete[]>(queryKey, (old = []) =>
         old.map((athlete) =>
           athlete.id === updatedAthlete.id
             ? { ...athlete, ...updatedAthlete, updatedAt: new Date().toISOString() }
@@ -154,44 +170,45 @@ export function useAthletes(filters?: AthleteFilters) {
         )
       );
 
-      return { previousAthletes };
+      return { previousAthletes, queryKey };
     },
     onError: (_err, _updatedAthlete, context) => {
-      if (context?.previousAthletes) {
-        queryClient.setQueryData(['athletes'], context.previousAthletes);
+      if (context?.previousAthletes && context?.queryKey) {
+        queryClient.setQueryData(context.queryKey, context.previousAthletes);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteAthlete,
     onMutate: async (deletedId) => {
-      await queryClient.cancelQueries({ queryKey: ['athletes'] });
-      const previousAthletes = queryClient.getQueryData<Athlete[]>(['athletes']);
+      const queryKey = queryKeys.athletes.list(filters);
+      await queryClient.cancelQueries({ queryKey: queryKeys.athletes.all });
+      const previousAthletes = queryClient.getQueryData<Athlete[]>(queryKey);
 
-      queryClient.setQueryData<Athlete[]>(['athletes'], (old = []) =>
+      queryClient.setQueryData<Athlete[]>(queryKey, (old = []) =>
         old.filter((athlete) => athlete.id !== deletedId)
       );
 
-      return { previousAthletes };
+      return { previousAthletes, queryKey };
     },
     onError: (_err, _deletedId, context) => {
-      if (context?.previousAthletes) {
-        queryClient.setQueryData(['athletes'], context.previousAthletes);
+      if (context?.previousAthletes && context?.queryKey) {
+        queryClient.setQueryData(context.queryKey, context.previousAthletes);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 
   const importMutation = useMutation({
     mutationFn: bulkImportAthletes,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['athletes'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.athletes.all });
     },
   });
 

@@ -39,6 +39,7 @@ model User {
   createdSessions        Session[]             @relation("SessionCreator")
   attendanceOverrides    SessionAttendance[]   @relation("AttendanceOverrides")
   createdRecruitVisits   RecruitVisit[]
+  draftedLineups         Lineup[]              @relation("lineupDrafts")
 
   @@map("users")
 }
@@ -424,19 +425,24 @@ model WorkoutTelemetry {
 // ============================================
 
 model Lineup {
-  id        String   @id @default(uuid())
-  teamId    String
-  name      String
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String    @id @default(uuid())
+  teamId      String
+  name        String
+  notes       String?
+  status      String    @default("published") // "draft" or "published"
+  draftedBy   String? // userId of coach who last edited the draft
+  publishedAt DateTime? // when lineup was last published
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   team                 Team                  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  draftedByUser        User?                 @relation("lineupDrafts", fields: [draftedBy], references: [id], onDelete: SetNull)
   assignments          LineupAssignment[]
   raceResults          RaceResult[]
   equipmentAssignments EquipmentAssignment[]
 
   @@index([teamId])
+  @@index([teamId, status])
   @@map("lineups")
 }
 

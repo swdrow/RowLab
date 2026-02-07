@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import useAuthStore from '@/store/authStore';
+import { useAuth } from '../../../contexts/AuthContext';
 import { useSettings, useUpdateSettings } from '@v2/hooks/useSettings';
 import { SettingsLayout } from '../components/SettingsLayout';
 import { ProfileSection } from '../components/ProfileSection';
@@ -12,11 +12,21 @@ import { NotificationsSection } from '../components/NotificationsSection';
 import { FeaturesSection } from '../components/FeaturesSection';
 import { TeamSection } from '../components/TeamSection';
 import { BillingSection } from '../components/BillingSection';
+import { SetupChecklist } from '../components/SetupChecklist';
 import { LoadingSkeleton, SkeletonLine } from '@v2/components/common';
 import { ErrorState } from '@v2/components/common/ErrorState';
 import type { SettingsTab, UserProfile, UserPreferences } from '@v2/types/settings';
 
-const validTabs: SettingsTab[] = ['profile', 'preferences', 'security', 'integrations', 'notifications', 'features', 'team', 'billing'];
+const validTabs: SettingsTab[] = [
+  'profile',
+  'preferences',
+  'security',
+  'integrations',
+  'notifications',
+  'features',
+  'team',
+  'billing',
+];
 
 /**
  * SettingsPage - Main settings page with URL-synced tabs
@@ -31,7 +41,7 @@ const validTabs: SettingsTab[] = ['profile', 'preferences', 'security', 'integra
  */
 export const SettingsPage: React.FC = () => {
   // ALL HOOKS MUST BE CALLED FIRST - before any conditional returns
-  const { user, activeTeamRole, isAuthenticated, isInitialized } = useAuthStore();
+  const { user, activeTeamRole, isAuthenticated, isInitialized, logout } = useAuth();
   const isOwner = activeTeamRole === 'OWNER';
 
   // URL-synced tab state
@@ -138,8 +148,6 @@ export const SettingsPage: React.FC = () => {
   };
 
   const handleSignOut = () => {
-    // Use the auth store's logout method
-    const { logout } = useAuthStore.getState();
     logout();
   };
 
@@ -171,12 +179,7 @@ export const SettingsPage: React.FC = () => {
   }
 
   if (error) {
-    return (
-      <ErrorState
-        message="Failed to load settings. Please try again."
-        onRetry={refetch}
-      />
-    );
+    return <ErrorState message="Failed to load settings. Please try again." onRetry={refetch} />;
   }
 
   return (
@@ -197,7 +200,10 @@ export const SettingsPage: React.FC = () => {
         transition={{ duration: 0.2 }}
       >
         {activeTab === 'profile' && profile && (
-          <ProfileSection profile={profile} onChange={handleProfileChange} />
+          <>
+            <SetupChecklist />
+            <ProfileSection profile={profile} onChange={handleProfileChange} />
+          </>
         )}
         {activeTab === 'preferences' && preferences && (
           <PreferencesSection preferences={preferences} onChange={handlePreferencesChange} />
@@ -210,28 +216,16 @@ export const SettingsPage: React.FC = () => {
             onDeleteAccount={handleDeleteAccount}
           />
         )}
-        {activeTab === 'integrations' && (
-          <IntegrationsSection />
-        )}
-        {activeTab === 'notifications' && (
-          <NotificationsSection />
-        )}
-        {activeTab === 'features' && (
-          <FeaturesSection />
-        )}
-        {activeTab === 'team' && isOwner && (
-          <TeamSection isOwner={isOwner} />
-        )}
+        {activeTab === 'integrations' && <IntegrationsSection />}
+        {activeTab === 'notifications' && <NotificationsSection />}
+        {activeTab === 'features' && <FeaturesSection />}
+        {activeTab === 'team' && isOwner && <TeamSection isOwner={isOwner} />}
         {activeTab === 'team' && !isOwner && (
           <div className="rounded-xl bg-surface-elevated border border-status-warning/20 p-8 text-center">
-            <p className="text-txt-secondary">
-              Team settings are only available to team owners.
-            </p>
+            <p className="text-txt-secondary">Team settings are only available to team owners.</p>
           </div>
         )}
-        {activeTab === 'billing' && (
-          <BillingSection isOwner={isOwner} />
-        )}
+        {activeTab === 'billing' && <BillingSection isOwner={isOwner} />}
       </motion.div>
     </SettingsLayout>
   );

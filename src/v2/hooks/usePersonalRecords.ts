@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useShowGamification } from './useGamificationPreference';
 import type {
   PersonalRecord,
@@ -12,26 +13,16 @@ import type {
 /**
  * Query key factory for personal records
  */
-export const prKeys = {
-  all: ['personalRecords'] as const,
-  mine: () => [...prKeys.all, 'mine'] as const,
-  athlete: (athleteId: string) => [...prKeys.all, 'athlete', athleteId] as const,
-  history: (athleteId: string) => [...prKeys.all, 'history', athleteId] as const,
-  teamRecords: () => [...prKeys.all, 'team-records'] as const,
-  celebration: (testId: string) => [...prKeys.all, 'celebration', testId] as const,
-  trend: (athleteId: string, testType: string) => [...prKeys.all, 'trend', athleteId, testType] as const,
-};
 
 /**
  * Hook for current user's PRs
  */
 export function usePersonalRecords() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: prKeys.mine(),
+    queryKey: queryKeys.personalRecords.mine(),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ prs: PersonalRecord[] }>>(
         '/api/v1/personal-records'
@@ -50,12 +41,11 @@ export function usePersonalRecords() {
  * Hook for a specific athlete's PRs
  */
 export function useAthletePRs(athleteId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: prKeys.athlete(athleteId),
+    queryKey: queryKeys.personalRecords.athlete(athleteId),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ prs: PersonalRecord[] }>>(
         `/api/v1/personal-records/athlete/${athleteId}`
@@ -74,12 +64,11 @@ export function useAthletePRs(athleteId: string) {
  * Hook for team records
  */
 export function useTeamRecords() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: prKeys.teamRecords(),
+    queryKey: queryKeys.personalRecords.teamRecords(),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ records: TeamRecord[] }>>(
         '/api/v1/personal-records/team-records'
@@ -98,12 +87,11 @@ export function useTeamRecords() {
  * Hook for PR celebration data (for specific test)
  */
 export function usePRCelebration(testId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: prKeys.celebration(testId),
+    queryKey: queryKeys.personalRecords.celebration(testId),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<PRCelebrationData>>(
         `/api/v1/personal-records/detect/${testId}`
@@ -122,12 +110,11 @@ export function usePRCelebration(testId: string) {
  * Hook for result trend (for sparkline)
  */
 export function useResultTrend(athleteId: string, testType: string, limit: number = 5) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: prKeys.trend(athleteId, testType),
+    queryKey: queryKeys.personalRecords.trend(athleteId, testType),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ trend: { result: number; date: string }[] }>>(
         `/api/v1/personal-records/trend/${athleteId}/${testType}?limit=${limit}`

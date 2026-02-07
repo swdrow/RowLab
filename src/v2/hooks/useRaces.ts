@@ -1,26 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '@/store/authStore';
-import type { Event, EventFormData, Race, RaceFormData, RaceResult, RaceResultFormData } from '../types/regatta';
-import { regattaKeys } from './useRegattas';
+import { useAuth } from '../contexts/AuthContext';
+import type {
+  Event,
+  EventFormData,
+  Race,
+  RaceFormData,
+  RaceResult,
+  RaceResultFormData,
+} from '../types/regatta';
+import { queryKeys } from '../lib/queryKeys';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Query keys
-export const raceKeys = {
-  all: ['races'] as const,
-  events: (regattaId: string) => [...raceKeys.all, 'events', regattaId] as const,
-  race: (raceId: string) => [...raceKeys.all, 'race', raceId] as const,
-};
 
 // ============================================
 // Event API Functions
 // ============================================
 
-async function createEvent(
-  token: string,
-  regattaId: string,
-  event: EventFormData
-): Promise<Event> {
+async function createEvent(token: string, regattaId: string, event: EventFormData): Promise<Event> {
   const res = await fetch(`${API_URL}/api/v1/regattas/${regattaId}/events`, {
     method: 'POST',
     headers: {
@@ -70,11 +68,7 @@ async function deleteEvent(token: string, eventId: string): Promise<void> {
 // Race API Functions
 // ============================================
 
-async function createRace(
-  token: string,
-  eventId: string,
-  race: RaceFormData
-): Promise<Race> {
+async function createRace(token: string, eventId: string, race: RaceFormData): Promise<Race> {
   const res = await fetch(`${API_URL}/api/v1/regattas/events/${eventId}/races`, {
     method: 'POST',
     headers: {
@@ -186,39 +180,41 @@ async function updateResult(
 // ============================================
 
 export function useCreateEvent() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ regattaId, event }: { regattaId: string; event: EventFormData }) =>
-      createEvent(accessToken!, regattaId, event),
+    mutationFn: ({ regattaId, event }: { regattaId: string; event: EventFormData }) => {
+      if (!accessToken) throw new Error('Authentication required');
+      return createEvent(accessToken, regattaId, event);
+    },
     onSuccess: (_, { regattaId }) => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.detail(regattaId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.detail(regattaId) });
     },
   });
 }
 
 export function useUpdateEvent() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ eventId, updates }: { eventId: string; updates: Partial<EventFormData> }) =>
       updateEvent(accessToken!, eventId, updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }
 
 export function useDeleteEvent() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (eventId: string) => deleteEvent(accessToken!, eventId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }
@@ -228,39 +224,39 @@ export function useDeleteEvent() {
 // ============================================
 
 export function useCreateRace() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ eventId, race }: { eventId: string; race: RaceFormData }) =>
       createRace(accessToken!, eventId, race),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }
 
 export function useUpdateRace() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ raceId, updates }: { raceId: string; updates: Partial<RaceFormData> }) =>
       updateRace(accessToken!, raceId, updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }
 
 export function useDeleteRace() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (raceId: string) => deleteRace(accessToken!, raceId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }
@@ -270,40 +266,45 @@ export function useDeleteRace() {
 // ============================================
 
 export function useAddResult() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ raceId, result }: { raceId: string; result: RaceResultFormData }) =>
       addResult(accessToken!, raceId, result),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }
 
 export function useBatchAddResults() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ raceId, results }: { raceId: string; results: RaceResultFormData[] }) =>
       batchAddResults(accessToken!, raceId, results),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }
 
 export function useUpdateResult() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ resultId, updates }: { resultId: string; updates: Partial<RaceResultFormData> }) =>
-      updateResult(accessToken!, resultId, updates),
+    mutationFn: ({
+      resultId,
+      updates,
+    }: {
+      resultId: string;
+      updates: Partial<RaceResultFormData>;
+    }) => updateResult(accessToken!, resultId, updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.all });
     },
   });
 }

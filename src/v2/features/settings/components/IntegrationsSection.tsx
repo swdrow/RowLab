@@ -13,8 +13,8 @@ import {
   useConnectStrava,
   useDisconnectStrava,
   useSyncStrava,
-  integrationKeys,
 } from '@v2/hooks/useIntegrations';
+import { queryKeys } from '@v2/lib/queryKeys';
 
 /**
  * IntegrationsSection - Main integrations tab content for Settings page
@@ -94,12 +94,12 @@ export function IntegrationsSection() {
 
       // Handle C2 OAuth success
       if (event.data?.type === 'c2_oauth_success') {
-        queryClient.invalidateQueries({ queryKey: integrationKeys.c2.status() });
+        queryClient.invalidateQueries({ queryKey: queryKeys.integration.c2.status() });
       }
 
       // Handle Strava OAuth success
       if (event.data?.type === 'strava_oauth_success') {
-        queryClient.invalidateQueries({ queryKey: integrationKeys.strava.status() });
+        queryClient.invalidateQueries({ queryKey: queryKeys.integration.strava.status() });
       }
     };
 

@@ -3,7 +3,7 @@ import { Lightning } from '@phosphor-icons/react';
 import { useUnifiedActivityFeed } from '../../../activity-feed/hooks/useActivityFeed';
 import { ActivityCard } from '../../../activity-feed/components/ActivityCard';
 
-export function RecentActivityWidget() {
+export function RecentActivityWidget(_props: import('../../types').WidgetProps) {
   const { data, isLoading } = useUnifiedActivityFeed();
 
   // Get first 5 activities
@@ -17,10 +17,7 @@ export function RecentActivityWidget() {
           <Lightning className="w-5 h-5 text-accent-primary" />
           Recent Activity
         </h3>
-        <Link
-          to="/app/activity"
-          className="text-sm text-accent-primary hover:underline"
-        >
+        <Link to="/app/activity" className="text-sm text-accent-primary hover:underline">
           View all
         </Link>
       </div>

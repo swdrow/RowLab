@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../utils/api';
-import useAuthStore from '../../../store/authStore';
+import { useAuth } from '../../contexts/AuthContext';
 import type { ApiResponse } from '../../types/seatRacing';
 
 /**
@@ -60,10 +60,13 @@ function ParameterRow({ label, value, description }: ParameterRowProps) {
  * For Phase 9 MVP, this is informational only - editing will be added in future phases.
  */
 export function ParametersPanel() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
-  const { data: parameters, isLoading, error } = useQuery({
+  const {
+    data: parameters,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['ratingParameters'],
     queryFn: fetchRatingParameters,
     enabled: isInitialized && isAuthenticated,

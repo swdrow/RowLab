@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 
 // ============================================
 // TYPES
@@ -90,9 +91,7 @@ interface ComplianceOptions {
   athleteId?: string;
 }
 
-async function fetchWeeklyCompliance(
-  options: ComplianceOptions = {}
-): Promise<NCAAAuditEntry[]> {
+async function fetchWeeklyCompliance(options: ComplianceOptions = {}): Promise<NCAAAuditEntry[]> {
   const params = new URLSearchParams();
   const weekStart = options.weekStart || startOfWeek(new Date(), { weekStartsOn: 1 });
   params.append('weekStart', format(weekStart, 'yyyy-MM-dd'));
@@ -168,20 +167,17 @@ async function fetchAttendanceTrainingLink(date: Date): Promise<any[]> {
  * Hook for fetching weekly NCAA compliance data
  */
 export function useNcaaWeeklyHours(weekStart?: Date, athleteId?: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const effectiveWeekStart = weekStart || startOfWeek(new Date(), { weekStartsOn: 1 });
 
   const query = useQuery({
-    queryKey: [
-      'ncaaCompliance',
-      'weekly',
-      format(effectiveWeekStart, 'yyyy-MM-dd'),
+    queryKey: queryKeys.ncaaCompliance.weekly({
+      weekStart: format(effectiveWeekStart, 'yyyy-MM-dd'),
       athleteId,
-    ],
+    }),
     queryFn: () => fetchWeeklyCompliance({ weekStart: effectiveWeekStart, athleteId }),
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   return {
@@ -196,14 +192,13 @@ export function useNcaaWeeklyHours(weekStart?: Date, athleteId?: string) {
  * Hook for fetching NCAA compliance audit report
  */
 export function useNcaaComplianceReport(weekStart: Date) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['ncaaCompliance', 'report', format(weekStart, 'yyyy-MM-dd')],
+    queryKey: queryKeys.ncaaCompliance.daily({ weekStart: format(weekStart, 'yyyy-MM-dd') }),
     queryFn: () => fetchComplianceReport(weekStart),
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   return {
@@ -218,19 +213,19 @@ export function useNcaaComplianceReport(weekStart: Date) {
  * Hook for fetching training load (TSS/volume) over time
  */
 export function useTrainingLoad(startDate: Date, endDate: Date, athleteId?: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
     queryKey: [
-      'trainingLoad',
+      ...queryKeys.trainingPlans.all,
+      'load',
       format(startDate, 'yyyy-MM-dd'),
       format(endDate, 'yyyy-MM-dd'),
       athleteId,
     ],
     queryFn: () => fetchTrainingLoad({ startDate, endDate, athleteId }),
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   return {
@@ -246,14 +241,13 @@ export function useTrainingLoad(startDate: Date, endDate: Date, athleteId?: stri
  * Shows which athletes attended which scheduled training sessions
  */
 export function useAttendanceTrainingLink(date: Date) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['attendanceTrainingLink', format(date, 'yyyy-MM-dd')],
+    queryKey: [...queryKeys.attendance.all, 'trainingLink', format(date, 'yyyy-MM-dd')],
     queryFn: () => fetchAttendanceTrainingLink(date),
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   return {

@@ -2,8 +2,9 @@
 // TanStack Query hooks for Session CRUD operations
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import api from '../utils/api';
+import { queryKeys } from '../lib/queryKeys';
 import type {
   Session,
   SessionsResponse,
@@ -24,18 +25,6 @@ interface ApiResponse<T> {
     message: string;
   };
 }
-
-// ============================================
-// QUERY KEYS
-// ============================================
-
-export const sessionKeys = {
-  all: ['sessions'] as const,
-  list: (filters: SessionFilters = {}) => [...sessionKeys.all, 'list', filters] as const,
-  detail: (id: string) => [...sessionKeys.all, 'detail', id] as const,
-  active: () => [...sessionKeys.all, 'active'] as const,
-  upcoming: (days: number) => [...sessionKeys.all, 'upcoming', days] as const,
-};
 
 // ============================================
 // API FUNCTIONS
@@ -71,9 +60,8 @@ async function fetchSession(sessionId: string): Promise<Session> {
 }
 
 async function fetchActiveSession(): Promise<Session | null> {
-  const response = await api.get<ApiResponse<{ session: Session | null }>>(
-    '/api/v1/sessions/active'
-  );
+  const response =
+    await api.get<ApiResponse<{ session: Session | null }>>('/api/v1/sessions/active');
 
   if (!response.data.success) {
     // 404 means no active session - that's OK
@@ -87,10 +75,7 @@ async function fetchActiveSession(): Promise<Session | null> {
 }
 
 async function createSession(input: CreateSessionInput): Promise<Session> {
-  const response = await api.post<ApiResponse<{ session: Session }>>(
-    '/api/v1/sessions',
-    input
-  );
+  const response = await api.post<ApiResponse<{ session: Session }>>('/api/v1/sessions', input);
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to create session');
@@ -99,9 +84,10 @@ async function createSession(input: CreateSessionInput): Promise<Session> {
   return response.data.data.session;
 }
 
-async function updateSession(
-  data: { sessionId: string; input: UpdateSessionInput }
-): Promise<Session> {
+async function updateSession(data: {
+  sessionId: string;
+  input: UpdateSessionInput;
+}): Promise<Session> {
   const { sessionId, input } = data;
   const response = await api.patch<ApiResponse<{ session: Session }>>(
     `/api/v1/sessions/${sessionId}`,
@@ -155,14 +141,13 @@ async function endSession(sessionId: string): Promise<Session> {
  * Fetch sessions with optional filters
  */
 export function useSessions(filters: SessionFilters = {}) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: sessionKeys.list(filters),
+    queryKey: queryKeys.sessions.list(filters),
     queryFn: () => fetchSessions(filters),
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 1 * 60 * 1000, // 1 minute
   });
 
   return {
@@ -178,14 +163,13 @@ export function useSessions(filters: SessionFilters = {}) {
  * Fetch single session by ID
  */
 export function useSession(sessionId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: sessionKeys.detail(sessionId!),
+    queryKey: queryKeys.sessions.detail(sessionId!),
     queryFn: () => fetchSession(sessionId!),
     enabled: isInitialized && isAuthenticated && !!sessionId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 1 * 60 * 1000, // 1 minute
   });
 
   return {
@@ -200,11 +184,10 @@ export function useSession(sessionId: string | null) {
  * Fetch active live session (for joining)
  */
 export function useActiveSession() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: sessionKeys.active(),
+    queryKey: queryKeys.sessions.active(),
     queryFn: fetchActiveSession,
     enabled: isInitialized && isAuthenticated,
     staleTime: 30 * 1000, // 30 seconds for active sessions (more frequent updates)
@@ -222,21 +205,18 @@ export function useActiveSession() {
  * Fetch upcoming sessions for the next N days
  */
 export function useUpcomingSessions(days: number = 7) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const startDate = new Date().toISOString().split('T')[0];
-  const endDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0];
+  const endDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const filters: SessionFilters = { startDate, endDate };
 
   const query = useQuery({
-    queryKey: sessionKeys.upcoming(days),
+    queryKey: queryKeys.sessions.upcoming(days),
     queryFn: () => fetchSessions(filters),
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 1 * 60 * 1000, // 1 minute
   });
 
   return {
@@ -261,7 +241,7 @@ export function useCreateSession() {
   const mutation = useMutation({
     mutationFn: createSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: sessionKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all });
     },
   });
 
@@ -282,8 +262,8 @@ export function useUpdateSession() {
   const mutation = useMutation({
     mutationFn: updateSession,
     onSuccess: (updatedSession) => {
-      queryClient.invalidateQueries({ queryKey: sessionKeys.all });
-      queryClient.setQueryData(sessionKeys.detail(updatedSession.id), updatedSession);
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all });
+      queryClient.setQueryData(queryKeys.sessions.detail(updatedSession.id), updatedSession);
     },
   });
 
@@ -304,7 +284,7 @@ export function useDeleteSession() {
   const mutation = useMutation({
     mutationFn: deleteSession,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: sessionKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all });
     },
   });
 
@@ -325,9 +305,9 @@ export function useStartSession() {
   const mutation = useMutation({
     mutationFn: startSession,
     onSuccess: (startedSession) => {
-      queryClient.invalidateQueries({ queryKey: sessionKeys.all });
-      queryClient.setQueryData(sessionKeys.detail(startedSession.id), startedSession);
-      queryClient.invalidateQueries({ queryKey: sessionKeys.active() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all });
+      queryClient.setQueryData(queryKeys.sessions.detail(startedSession.id), startedSession);
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.active() });
     },
   });
 
@@ -348,9 +328,9 @@ export function useEndSession() {
   const mutation = useMutation({
     mutationFn: endSession,
     onSuccess: (endedSession) => {
-      queryClient.invalidateQueries({ queryKey: sessionKeys.all });
-      queryClient.setQueryData(sessionKeys.detail(endedSession.id), endedSession);
-      queryClient.invalidateQueries({ queryKey: sessionKeys.active() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all });
+      queryClient.setQueryData(queryKeys.sessions.detail(endedSession.id), endedSession);
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.active() });
     },
   });
 

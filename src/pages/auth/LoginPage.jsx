@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layers, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
@@ -8,7 +8,17 @@ import SpotlightCard from '../../components/ui/SpotlightCard';
 // ============================================
 // INPUT COMPONENT - Precision style
 // ============================================
-const InputField = ({ label, type = 'text', name, value, onChange, error, placeholder, autoComplete, autoFocus }) => {
+const InputField = ({
+  label,
+  type = 'text',
+  name,
+  value,
+  onChange,
+  error,
+  placeholder,
+  autoComplete,
+  autoFocus,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === 'password';
   const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
@@ -18,7 +28,10 @@ const InputField = ({ label, type = 'text', name, value, onChange, error, placeh
 
   return (
     <div className="space-y-2">
-      <label htmlFor={inputId} className="block text-xs font-mono font-medium text-text-muted uppercase tracking-wider">
+      <label
+        htmlFor={inputId}
+        className="block text-xs font-mono font-medium text-text-muted uppercase tracking-wider"
+      >
         {label}
       </label>
       <div className="relative">
@@ -38,9 +51,10 @@ const InputField = ({ label, type = 'text', name, value, onChange, error, placeh
             bg-void-elevated/50 border
             text-text-primary placeholder:text-text-muted
             focus:outline-none transition-all
-            ${error
-              ? 'border-danger-red/40 focus:border-danger-red focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
-              : 'border-white/[0.06] focus:border-blade-blue/40 focus:shadow-[0_0_0_3px_rgba(0,112,243,0.1)]'
+            ${
+              error
+                ? 'border-danger-red/40 focus:border-danger-red focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
+                : 'border-white/[0.06] focus:border-blade-blue/40 focus:shadow-[0_0_0_3px_rgba(0,112,243,0.1)]'
             }
           `}
         />
@@ -81,6 +95,56 @@ export default function LoginPage() {
     password: '',
   });
   const [formErrors, setFormErrors] = useState({});
+  const devLoginAttempted = useRef(false);
+
+  // Auto dev-login from localhost/Tailscale/private networks
+  useEffect(() => {
+    if (devLoginAttempted.current) return;
+    const host = window.location.hostname;
+    const isDev =
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host.startsWith('100.') ||
+      host.startsWith('10.') ||
+      host.startsWith('192.168.');
+    if (!isDev) return;
+
+    devLoginAttempted.current = true;
+
+    (async () => {
+      try {
+        const res = await fetch('/api/v1/auth/dev-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.success) {
+          const store = (await import('../../store/authStore')).default;
+          const { user, teams, activeTeamId, accessToken } = data.data;
+          const activeTeam = teams.find((t) => t.id === activeTeamId);
+          store.setState({
+            user,
+            teams,
+            activeTeamId,
+            activeTeamRole: activeTeam?.role || null,
+            activeTeamIsCoxswain: activeTeam?.isCoxswain || false,
+            accessToken,
+            isAuthenticated: true,
+            isLoading: false,
+            error: null,
+            isInitialized: true,
+          });
+          window.__rowlab_access_token = accessToken;
+          const from = location.state?.from?.pathname || '/app';
+          navigate(from, { replace: true });
+        }
+      } catch {
+        // Dev login not available, show normal login form
+      }
+    })();
+  }, [location, navigate]);
 
   // Success message from registration redirect
   const successMessage = location.state?.message;
@@ -134,7 +198,7 @@ export default function LoginPage() {
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.015]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }}
       />
 

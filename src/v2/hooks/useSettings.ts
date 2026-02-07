@@ -1,15 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { UserSettings, UpdateSettingsPayload, ApiResponse } from '../types/settings';
-
-/**
- * Query keys for settings
- */
-export const settingsKeys = {
-  all: ['settings'] as const,
-  user: () => [...settingsKeys.all, 'user'] as const,
-};
 
 /**
  * Fetch user settings from API
@@ -41,11 +34,10 @@ async function updateSettings(payload: UpdateSettingsPayload): Promise<UserSetti
  * Hook to fetch user settings
  */
 export function useSettings() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: settingsKeys.user(),
+    queryKey: queryKeys.settings.user(),
     queryFn: fetchSettings,
     enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -69,14 +61,14 @@ export function useUpdateSettings() {
     mutationFn: updateSettings,
     onMutate: async (payload) => {
       // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: settingsKeys.user() });
+      await queryClient.cancelQueries({ queryKey: queryKeys.settings.user() });
 
       // Snapshot previous value
-      const previousSettings = queryClient.getQueryData<UserSettings>(settingsKeys.user());
+      const previousSettings = queryClient.getQueryData<UserSettings>(queryKeys.settings.user());
 
       // Optimistically update
       if (previousSettings) {
-        queryClient.setQueryData(settingsKeys.user(), {
+        queryClient.setQueryData(queryKeys.settings.user(), {
           ...previousSettings,
           ...payload,
         });
@@ -87,12 +79,12 @@ export function useUpdateSettings() {
     onError: (_err, _payload, context) => {
       // Rollback on error
       if (context?.previousSettings) {
-        queryClient.setQueryData(settingsKeys.user(), context.previousSettings);
+        queryClient.setQueryData(queryKeys.settings.user(), context.previousSettings);
       }
     },
     onSettled: () => {
       // Refetch after mutation settles
-      queryClient.invalidateQueries({ queryKey: settingsKeys.user() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.settings.user() });
     },
   });
 
