@@ -12,7 +12,7 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { AnimatePresence, motion } from 'framer-motion';
 import { UserPlus, Upload } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAthletes } from '@v2/hooks/useAthletes';
 import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
@@ -28,12 +28,18 @@ import { AthleteCard } from '@v2/components/athletes/AthleteCard';
 import { getCountryFlag } from '@v2/utils/countryFlags';
 import { SPRING_GENTLE } from '@v2/utils/animations';
 
+import { AthleteProfilePanel } from '../profile/AthleteProfilePanel';
+import { CSVImportWizard } from '../import/CSVImportWizard';
+import { useAthleteKeyboard } from '../../hooks/useAthleteKeyboard';
+import { useAthleteSelection } from '../../hooks/useAthleteSelection';
+
 import { ViewModeSwitcher, type ViewMode } from './ViewModeSwitcher';
 import { RosterFilterBar, DEFAULT_ROSTER_FILTERS, type RosterFilters } from './RosterFilterBar';
 import { FilterSummary } from './FilterSummary';
 import { AthleteCompactRow } from './AthleteCompactRow';
 import { BulkActionBar } from './BulkActionBar';
 import { BulkEditDialog, type BulkEditFields } from './BulkEditDialog';
+import { KeyboardShortcutsHelp } from './KeyboardShortcutsHelp';
 import type { Athlete, AthleteFilters, AthleteStatus } from '@v2/types/athletes';
 
 // ============================================
@@ -144,6 +150,7 @@ function exportAthletesToCsv(athletes: Athlete[]) {
 
 export function AthletesRosterPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // View mode (persisted)
   const [viewMode, setViewMode] = useState<ViewMode>(getPersistedViewMode);
@@ -180,6 +187,57 @@ export function AthletesRosterPage() {
     });
     return Array.from(years).sort((a, b) => a - b);
   }, [allAthletes]);
+
+  // ─── Profile Panel State ──────────────────────────────────────────
+  const [selectedAthleteId, setSelectedAthleteId] = useState<string | null>(null);
+  const [isProfilePanelOpen, setIsProfilePanelOpen] = useState(false);
+
+  const handleAthleteClick = useCallback((athlete: Athlete) => {
+    setSelectedAthleteId(athlete.id);
+    setIsProfilePanelOpen(true);
+  }, []);
+
+  const handleCloseProfilePanel = useCallback(() => {
+    setIsProfilePanelOpen(false);
+    // Delay clearing selection so close animation completes
+    setTimeout(() => setSelectedAthleteId(null), 300);
+  }, []);
+
+  // ─── CSV Import Wizard State ──────────────────────────────────────
+  const [isImportOpen, setIsImportOpen] = useState(false);
+
+  // ─── URL Param Actions ────────────────────────────────────────────
+  useEffect(() => {
+    const action = searchParams.get('action');
+    if (action === 'create') {
+      navigate('/app/athletes/new');
+      // Clear the param
+      setSearchParams((prev) => {
+        prev.delete('action');
+        return prev;
+      });
+    } else if (action === 'import') {
+      setIsImportOpen(true);
+      // Clear the param
+      setSearchParams((prev) => {
+        prev.delete('action');
+        return prev;
+      });
+    }
+  }, [searchParams, navigate, setSearchParams]);
+
+  // ─── Selection (for keyboard hook) ────────────────────────────────
+  const selection = useAthleteSelection(athletes);
+
+  // ─── Keyboard Shortcuts ───────────────────────────────────────────
+  const keyboard = useAthleteKeyboard({
+    athletes,
+    searchInputRef: searchInputRef as React.RefObject<HTMLInputElement>,
+    onEdit: handleAthleteClick,
+    onViewProfile: handleAthleteClick,
+    selection,
+    isEnabled: !isProfilePanelOpen && !isImportOpen,
+  });
 
   // TanStack Table: Row selection state (persists across view switches)
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -359,47 +417,6 @@ export function AthletesRosterPage() {
     table.resetRowSelection();
   }, [table]);
 
-  const handleAthleteClick = useCallback(
-    (athlete: Athlete) => {
-      navigate(`/app/athletes/${athlete.id}`);
-    },
-    [navigate]
-  );
-
-  // Compact view: keyboard focus (J/K navigation)
-  const [focusedIndex, setFocusedIndex] = useState(-1);
-
-  useEffect(() => {
-    if (viewMode !== 'compact') return;
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (
-        document.activeElement?.tagName === 'INPUT' ||
-        document.activeElement?.tagName === 'TEXTAREA'
-      )
-        return;
-
-      if (e.key === 'j' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        setFocusedIndex((prev) => Math.min(prev + 1, rows.length - 1));
-      } else if (e.key === 'k' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        setFocusedIndex((prev) => Math.max(prev - 1, 0));
-      } else if (e.key === 'Enter' && focusedIndex >= 0 && focusedIndex < rows.length) {
-        e.preventDefault();
-        const focusedRow = rows[focusedIndex];
-        if (focusedRow) handleAthleteClick(focusedRow.original);
-      } else if (e.key === 'x' && focusedIndex >= 0 && focusedIndex < rows.length) {
-        e.preventDefault();
-        const focusedRow = rows[focusedIndex];
-        if (focusedRow) focusedRow.toggleSelected();
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [viewMode, focusedIndex, rows, handleAthleteClick]);
-
   // Compact view: virtual scroll
   const compactScrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -414,7 +431,7 @@ export function AthletesRosterPage() {
   // ============================================
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       {/* Header Bar */}
       <div className="flex flex-wrap items-center gap-4 px-6 py-4 border-b border-bdr-default">
         <FilterSummary
@@ -434,7 +451,7 @@ export function AthletesRosterPage() {
         </button>
 
         <button
-          onClick={() => navigate('/app/athletes/import')}
+          onClick={() => setIsImportOpen(true)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-txt-secondary border border-bdr-default hover:bg-bg-hover rounded-lg transition-colors"
         >
           <Upload className="h-4 w-4" />
@@ -468,7 +485,7 @@ export function AthletesRosterPage() {
           <div className="flex items-center justify-center h-full p-6">
             <AthletesEmptyState
               onAddAthlete={() => navigate('/app/athletes/new')}
-              onImportCsv={() => navigate('/app/athletes/import')}
+              onImportCsv={() => setIsImportOpen(true)}
             />
           </div>
         ) : athletes.length === 0 ? (
@@ -509,7 +526,7 @@ export function AthletesRosterPage() {
                   scrollRef={compactScrollRef}
                   virtualizer={virtualizer}
                   onAthleteClick={handleAthleteClick}
-                  focusedIndex={focusedIndex}
+                  focusedIndex={keyboard.focusedIndex}
                 />
               )}
             </motion.div>
@@ -532,6 +549,22 @@ export function AthletesRosterPage() {
         onClose={() => setIsBulkEditOpen(false)}
         selectedAthletes={selectedAthletes}
         onBulkUpdate={handleBulkUpdate}
+      />
+
+      {/* Athlete Profile Panel (slide-over) */}
+      <AthleteProfilePanel
+        athleteId={selectedAthleteId}
+        isOpen={isProfilePanelOpen}
+        onClose={handleCloseProfilePanel}
+      />
+
+      {/* CSV Import Wizard */}
+      <CSVImportWizard isOpen={isImportOpen} onClose={() => setIsImportOpen(false)} />
+
+      {/* Keyboard Shortcuts Help */}
+      <KeyboardShortcutsHelp
+        isOpen={keyboard.isShortcutsHelpOpen}
+        onClose={() => keyboard.setIsShortcutsHelpOpen(false)}
       />
     </div>
   );
