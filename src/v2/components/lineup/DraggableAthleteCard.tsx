@@ -25,18 +25,19 @@ interface DraggableAthleteCardProps {
 
 /**
  * Get side preference badge configuration
+ * Uses design token data colors for chromatic elements
  */
 function getSideBadge(athlete: Athlete): { text: string; color: string } {
   if (athlete.side === 'Cox') {
-    return { text: 'Cox', color: 'bg-purple-500/10 text-purple-600' };
+    return { text: 'Cox', color: 'bg-accent-primary/10 text-accent-primary' };
   } else if (athlete.side === 'Both') {
-    return { text: 'Both', color: 'bg-blue-500/10 text-blue-600' };
+    return { text: 'Both', color: 'bg-data-good/10 text-data-good' };
   } else if (athlete.side === 'Port') {
-    return { text: 'Port', color: 'bg-red-500/10 text-red-600' };
+    return { text: 'Port', color: 'bg-data-poor/10 text-data-poor' };
   } else if (athlete.side === 'Starboard') {
-    return { text: 'Starboard', color: 'bg-green-500/10 text-green-600' };
+    return { text: 'Starboard', color: 'bg-data-excellent/10 text-data-excellent' };
   }
-  return { text: 'Unknown', color: 'bg-gray-500/10 text-gray-600' };
+  return { text: 'Unknown', color: 'bg-txt-tertiary/10 text-txt-tertiary' };
 }
 
 /**

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search } from 'lucide-react';
 import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
+import { SPRING_GENTLE } from '@v2/utils/animations';
 import type { Athlete } from '@v2/types/lineup';
 
 /**
@@ -55,18 +56,18 @@ export function MobileAthleteSelector({
     setSearchQuery(''); // Clear search for next time
   }
 
-  // Get side preference badge
+  // Get side preference badge - uses design token data colors
   function getSideBadge(athlete: Athlete): { text: string; color: string } {
     if (athlete.side === 'Cox') {
-      return { text: 'Cox', color: 'bg-purple-500/10 text-purple-600' };
+      return { text: 'Cox', color: 'bg-accent-primary/10 text-accent-primary' };
     } else if (athlete.side === 'Both') {
-      return { text: 'Both', color: 'bg-blue-500/10 text-blue-600' };
+      return { text: 'Both', color: 'bg-data-good/10 text-data-good' };
     } else if (athlete.side === 'Port') {
-      return { text: 'Port', color: 'bg-red-500/10 text-red-600' };
+      return { text: 'Port', color: 'bg-data-poor/10 text-data-poor' };
     } else if (athlete.side === 'Starboard') {
-      return { text: 'Starboard', color: 'bg-green-500/10 text-green-600' };
+      return { text: 'Starboard', color: 'bg-data-excellent/10 text-data-excellent' };
     }
-    return { text: '-', color: 'bg-gray-500/10 text-gray-600' };
+    return { text: '-', color: 'bg-txt-tertiary/10 text-txt-tertiary' };
   }
 
   return (
@@ -88,7 +89,7 @@ export function MobileAthleteSelector({
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            transition={SPRING_GENTLE}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.5 }}
