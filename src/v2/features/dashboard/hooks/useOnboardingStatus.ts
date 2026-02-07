@@ -203,9 +203,9 @@ export function useOnboardingStatus(): OnboardingStatusReturn {
     return doneCount / STEP_IDS.length;
   }, [isStepComplete, isStepSkipped]);
 
-  // Permission check: only show wizard to team owners/admins
+  // Permission check: show wizard to team owners/admins/coaches
   const canManageTeam = useMemo(() => {
-    return activeTeamRole === 'OWNER' || activeTeamRole === 'ADMIN';
+    return activeTeamRole === 'OWNER' || activeTeamRole === 'ADMIN' || activeTeamRole === 'COACH';
   }, [activeTeamRole]);
 
   const shouldShowWizard = useMemo(() => {

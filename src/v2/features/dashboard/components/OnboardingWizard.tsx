@@ -411,7 +411,9 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
     isStepComplete,
   } = useOnboardingStatus();
 
-  const [localStep, setLocalStep] = useState(currentStep);
+  // Always start at step 0 (welcome) so users see the greeting,
+  // even though the welcome step is implicitly "complete"
+  const [localStep, setLocalStep] = useState(0);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   // Mock data for demo (TODO: replace with actual queries)

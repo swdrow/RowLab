@@ -12,6 +12,7 @@ import { NotificationsSection } from '../components/NotificationsSection';
 import { FeaturesSection } from '../components/FeaturesSection';
 import { TeamSection } from '../components/TeamSection';
 import { BillingSection } from '../components/BillingSection';
+import { SetupChecklist } from '../components/SetupChecklist';
 import { LoadingSkeleton, SkeletonLine } from '@v2/components/common';
 import { ErrorState } from '@v2/components/common/ErrorState';
 import type { SettingsTab, UserProfile, UserPreferences } from '@v2/types/settings';
@@ -199,7 +200,10 @@ export const SettingsPage: React.FC = () => {
         transition={{ duration: 0.2 }}
       >
         {activeTab === 'profile' && profile && (
-          <ProfileSection profile={profile} onChange={handleProfileChange} />
+          <>
+            <SetupChecklist />
+            <ProfileSection profile={profile} onChange={handleProfileChange} />
+          </>
         )}
         {activeTab === 'preferences' && preferences && (
           <PreferencesSection preferences={preferences} onChange={handlePreferencesChange} />
