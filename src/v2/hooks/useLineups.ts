@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { ApiResponse } from '../types/athletes';
 
 /**
@@ -151,7 +152,7 @@ export function useLineups() {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['lineups'],
+    queryKey: queryKeys.lineups.all,
     queryFn: fetchLineups,
     enabled: isInitialized && isAuthenticated,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -172,7 +173,7 @@ export function useLineup(lineupId: string | null) {
   const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['lineups', lineupId],
+    queryKey: lineupId ? queryKeys.lineups.detail(lineupId) : ['lineups', null],
     queryFn: () => fetchLineup(lineupId!),
     enabled: isInitialized && isAuthenticated && !!lineupId,
     staleTime: 2 * 60 * 1000, // 2 minutes
@@ -187,16 +188,51 @@ export function useLineup(lineupId: string | null) {
 }
 
 /**
- * Hook for saving new lineup
+ * Hook for saving new lineup (with optimistic update)
  */
 export function useSaveLineup() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: saveLineup,
-    onSuccess: () => {
-      // Invalidate lineups list to refetch with new lineup
-      queryClient.invalidateQueries({ queryKey: ['lineups'] });
+    onMutate: async (newLineup) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.lineups.all });
+
+      // Snapshot previous value
+      const previousLineups = queryClient.getQueryData<Lineup[]>(queryKeys.lineups.all);
+
+      // Optimistically add temp lineup to list
+      if (previousLineups) {
+        const tempLineup: Lineup = {
+          id: `temp-${Date.now()}`,
+          name: newLineup.name,
+          notes: newLineup.notes,
+          assignments: newLineup.assignments,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          teamId: 'temp', // Will be replaced by server response
+        };
+        queryClient.setQueryData<Lineup[]>(queryKeys.lineups.all, [...previousLineups, tempLineup]);
+      }
+
+      return { previousLineups };
+    },
+    onError: (_err, _variables, context) => {
+      // Rollback on error
+      if (context?.previousLineups) {
+        queryClient.setQueryData(queryKeys.lineups.all, context.previousLineups);
+      }
+    },
+    onSuccess: (savedLineup) => {
+      // Replace temp with server response
+      const previous = queryClient.getQueryData<Lineup[]>(queryKeys.lineups.all);
+      if (previous) {
+        const withoutTemp = previous.filter((l) => !l.id.startsWith('temp-'));
+        queryClient.setQueryData<Lineup[]>(queryKeys.lineups.all, [...withoutTemp, savedLineup]);
+      }
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.lineups.all });
     },
   });
 
@@ -209,17 +245,69 @@ export function useSaveLineup() {
 }
 
 /**
- * Hook for updating existing lineup
+ * Hook for updating existing lineup (with optimistic update)
  */
 export function useUpdateLineup() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: updateLineup,
+    onMutate: async (data) => {
+      const { id, ...updateData } = data;
+
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.lineups.all });
+      await queryClient.cancelQueries({ queryKey: queryKeys.lineups.detail(id) });
+
+      // Snapshot previous values
+      const previousList = queryClient.getQueryData<Lineup[]>(queryKeys.lineups.all);
+      const previousDetail = queryClient.getQueryData<Lineup>(queryKeys.lineups.detail(id));
+
+      // Optimistically update list cache
+      if (previousList) {
+        queryClient.setQueryData<Lineup[]>(
+          queryKeys.lineups.all,
+          previousList.map((lineup) =>
+            lineup.id === id
+              ? { ...lineup, ...updateData, updatedAt: new Date().toISOString() }
+              : lineup
+          )
+        );
+      }
+
+      // Optimistically update detail cache
+      if (previousDetail) {
+        queryClient.setQueryData<Lineup>(queryKeys.lineups.detail(id), {
+          ...previousDetail,
+          ...updateData,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      return { previousList, previousDetail };
+    },
+    onError: (_err, variables, context) => {
+      // Rollback both caches on error
+      if (context?.previousList) {
+        queryClient.setQueryData(queryKeys.lineups.all, context.previousList);
+      }
+      if (context?.previousDetail) {
+        queryClient.setQueryData(queryKeys.lineups.detail(variables.id), context.previousDetail);
+      }
+    },
     onSuccess: (updatedLineup) => {
-      // Invalidate both the list and specific lineup query
-      queryClient.invalidateQueries({ queryKey: ['lineups'] });
-      queryClient.invalidateQueries({ queryKey: ['lineups', updatedLineup.id] });
+      // Replace with server response
+      const previousList = queryClient.getQueryData<Lineup[]>(queryKeys.lineups.all);
+      if (previousList) {
+        queryClient.setQueryData<Lineup[]>(
+          queryKeys.lineups.all,
+          previousList.map((l) => (l.id === updatedLineup.id ? updatedLineup : l))
+        );
+      }
+      queryClient.setQueryData(queryKeys.lineups.detail(updatedLineup.id), updatedLineup);
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.lineups.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.lineups.detail(updatedLineup.id) });
     },
   });
 
@@ -232,16 +320,62 @@ export function useUpdateLineup() {
 }
 
 /**
- * Hook for duplicating lineup
+ * Hook for duplicating lineup (with optimistic update)
  */
 export function useDuplicateLineup() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: duplicateLineup,
-    onSuccess: () => {
-      // Invalidate lineups list to show the new duplicate
-      queryClient.invalidateQueries({ queryKey: ['lineups'] });
+    onMutate: async (data) => {
+      const { id, name } = data;
+
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.lineups.all });
+
+      // Snapshot previous value
+      const previousLineups = queryClient.getQueryData<Lineup[]>(queryKeys.lineups.all);
+
+      // Get the source lineup to copy assignments
+      const sourceLineup = previousLineups?.find((l) => l.id === id);
+
+      // Optimistically add temp duplicate to list
+      if (previousLineups && sourceLineup) {
+        const tempDuplicate: Lineup = {
+          id: `temp-duplicate-${Date.now()}`,
+          name,
+          notes: sourceLineup.notes,
+          assignments: [...sourceLineup.assignments],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          teamId: sourceLineup.teamId,
+        };
+        queryClient.setQueryData<Lineup[]>(queryKeys.lineups.all, [
+          ...previousLineups,
+          tempDuplicate,
+        ]);
+      }
+
+      return { previousLineups };
+    },
+    onError: (_err, _variables, context) => {
+      // Rollback on error
+      if (context?.previousLineups) {
+        queryClient.setQueryData(queryKeys.lineups.all, context.previousLineups);
+      }
+    },
+    onSuccess: (duplicatedLineup) => {
+      // Replace temp with server response
+      const previous = queryClient.getQueryData<Lineup[]>(queryKeys.lineups.all);
+      if (previous) {
+        const withoutTemp = previous.filter((l) => !l.id.startsWith('temp-duplicate-'));
+        queryClient.setQueryData<Lineup[]>(queryKeys.lineups.all, [
+          ...withoutTemp,
+          duplicatedLineup,
+        ]);
+      }
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.lineups.all });
     },
   });
 
@@ -254,7 +388,7 @@ export function useDuplicateLineup() {
 }
 
 /**
- * Hook for deleting lineup
+ * Hook for deleting lineup (with optimistic update)
  */
 export function useDeleteLineup() {
   const queryClient = useQueryClient();
@@ -263,13 +397,13 @@ export function useDeleteLineup() {
     mutationFn: deleteLineup,
     onMutate: async (deletedId) => {
       // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['lineups'] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.lineups.all });
 
       // Snapshot previous value
-      const previousLineups = queryClient.getQueryData<Lineup[]>(['lineups']);
+      const previousLineups = queryClient.getQueryData<Lineup[]>(queryKeys.lineups.all);
 
       // Optimistically remove from list
-      queryClient.setQueryData<Lineup[]>(['lineups'], (old = []) =>
+      queryClient.setQueryData<Lineup[]>(queryKeys.lineups.all, (old = []) =>
         old.filter((lineup) => lineup.id !== deletedId)
       );
 
@@ -278,12 +412,12 @@ export function useDeleteLineup() {
     onError: (_err, _deletedId, context) => {
       // Rollback on error
       if (context?.previousLineups) {
-        queryClient.setQueryData(['lineups'], context.previousLineups);
+        queryClient.setQueryData(queryKeys.lineups.all, context.previousLineups);
       }
     },
     onSettled: () => {
       // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: ['lineups'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.lineups.all });
     },
   });
 
