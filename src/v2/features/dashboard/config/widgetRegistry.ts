@@ -3,24 +3,19 @@
  * Phase 27-01: Defines all available dashboard widgets with size presets
  */
 
-import { createElement } from 'react';
-import type { WidgetConfig, WidgetProps, DashboardLayout, UserRole } from '../types';
+import type { WidgetConfig, DashboardLayout, UserRole } from '../types';
 
-// Real widget components
+// Widget components
 import { TodaysPracticeSummary } from '../components/widgets/TodaysPracticeSummary';
 import { AttendanceSummaryWidget } from '../components/widgets/AttendanceSummaryWidget';
 import { UpcomingSessionsWidget } from '../components/widgets/UpcomingSessionsWidget';
 import { RecentActivityWidget } from '../components/widgets/RecentActivityWidget';
 import { PersonalStatsWidget } from '../components/widgets/PersonalStatsWidget';
-
-// Visible placeholder for widgets not yet built
-function PlaceholderWidget(_props: WidgetProps) {
-  return createElement(
-    'div',
-    { className: 'h-full flex items-center justify-center p-4 text-center' },
-    createElement('p', { className: 'text-sm text-[var(--color-text-tertiary)]' }, 'Coming soon')
-  );
-}
+import { ExceptionAlertsWidget } from '../components/widgets/ExceptionAlertsWidget';
+import { ErgLeaderboardWidget } from '../components/widgets/ErgLeaderboardWidget';
+import { PRsAchievementsWidget } from '../components/widgets/PRsAchievementsWidget';
+import { NextWorkoutWidget } from '../components/widgets/NextWorkoutWidget';
+import { TeamLeaderboardWidget } from '../components/widgets/TeamLeaderboardWidget';
 
 /**
  * Widget Registry
@@ -71,7 +66,7 @@ export const WIDGET_REGISTRY: Record<string, WidgetConfig> = {
       normal: { w: 4, h: 4 },
     },
     defaultSize: 'compact',
-    component: PlaceholderWidget,
+    component: ExceptionAlertsWidget,
   },
 
   'upcoming-sessions': {
@@ -117,7 +112,7 @@ export const WIDGET_REGISTRY: Record<string, WidgetConfig> = {
       normal: { w: 6, h: 4 },
     },
     defaultSize: 'compact',
-    component: PlaceholderWidget,
+    component: ErgLeaderboardWidget,
   },
 
   // ATHLETE WIDGETS
@@ -149,7 +144,7 @@ export const WIDGET_REGISTRY: Record<string, WidgetConfig> = {
       normal: { w: 4, h: 4 },
     },
     defaultSize: 'compact',
-    component: PlaceholderWidget,
+    component: PRsAchievementsWidget,
   },
 
   'next-workout': {
@@ -164,7 +159,7 @@ export const WIDGET_REGISTRY: Record<string, WidgetConfig> = {
       normal: { w: 4, h: 4 },
     },
     defaultSize: 'compact',
-    component: PlaceholderWidget,
+    component: NextWorkoutWidget,
   },
 
   'team-leaderboard': {
@@ -179,7 +174,7 @@ export const WIDGET_REGISTRY: Record<string, WidgetConfig> = {
       normal: { w: 6, h: 4 },
     },
     defaultSize: 'compact',
-    component: PlaceholderWidget,
+    component: TeamLeaderboardWidget,
   },
 };
 
