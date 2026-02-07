@@ -3,6 +3,8 @@
  *
  * Global search interface triggered by Cmd/Ctrl+K.
  * Follows Raycast/Linear command palette pattern.
+ *
+ * Includes dedicated Athletes group with avatars and quick actions.
  */
 
 import { useEffect, useCallback, useRef } from 'react';
@@ -11,6 +13,8 @@ import { Command } from 'cmdk';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   User,
+  UserPlus,
+  UploadSimple,
   Calendar,
   Barbell,
   Rows,
@@ -22,7 +26,10 @@ import {
   X,
 } from '@phosphor-icons/react';
 import type { SearchResult, SearchResultType, SearchGroup } from '@v2/types/search';
+import type { Athlete, SidePreference } from '@v2/types/athletes';
 import { useGlobalSearch, useCommandPaletteStore } from '../hooks/useGlobalSearch';
+import { useAthletes } from '@v2/hooks/useAthletes';
+import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
 
 // ============================================
 // ICON MAP
@@ -58,19 +65,15 @@ function ResultItem({ result, onSelect }: ResultItemProps) {
                  data-[selected=true]:bg-surface-hover
                  hover:bg-surface-hover transition-colors"
     >
-      <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent-secondary/10
-                      flex items-center justify-center">
+      <div
+        className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent-secondary/10
+                      flex items-center justify-center"
+      >
         <Icon size={18} weight="duotone" className="text-accent-secondary" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-txt-primary truncate">
-          {result.title}
-        </p>
-        {result.subtitle && (
-          <p className="text-xs text-txt-tertiary truncate">
-            {result.subtitle}
-          </p>
-        )}
+        <p className="text-sm font-medium text-txt-primary truncate">{result.title}</p>
+        {result.subtitle && <p className="text-xs text-txt-tertiary truncate">{result.subtitle}</p>}
       </div>
     </Command.Item>
   );
@@ -89,11 +92,7 @@ function ResultGroup({ group, onSelect }: ResultGroupProps) {
   return (
     <Command.Group heading={group.label}>
       {group.results.map((result) => (
-        <ResultItem
-          key={`${result.type}-${result.id}`}
-          result={result}
-          onSelect={onSelect}
-        />
+        <ResultItem key={`${result.type}-${result.id}`} result={result} onSelect={onSelect} />
       ))}
     </Command.Group>
   );
@@ -130,11 +129,7 @@ function RecentItems({ items, onSelect, onClear }: RecentItemsProps) {
       }
     >
       {items.map((item) => (
-        <ResultItem
-          key={`recent-${item.type}-${item.id}`}
-          result={item}
-          onSelect={onSelect}
-        />
+        <ResultItem key={`recent-${item.type}-${item.id}`} result={item} onSelect={onSelect} />
       ))}
     </Command.Group>
   );
@@ -153,8 +148,10 @@ function EmptyState({ query, isLoading }: EmptyStateProps) {
   if (isLoading) {
     return (
       <div className="py-8 text-center">
-        <div className="inline-block w-5 h-5 border-2 border-accent-secondary/30
-                        border-t-accent-secondary rounded-full animate-spin" />
+        <div
+          className="inline-block w-5 h-5 border-2 border-accent-secondary/30
+                        border-t-accent-secondary rounded-full animate-spin"
+        />
         <p className="mt-2 text-sm text-txt-tertiary">Searching...</p>
       </div>
     );
@@ -164,9 +161,7 @@ function EmptyState({ query, isLoading }: EmptyStateProps) {
     return (
       <Command.Empty className="py-8 text-center">
         <MagnifyingGlass size={32} className="mx-auto text-txt-tertiary mb-2" />
-        <p className="text-sm text-txt-tertiary">
-          No results found for "{query}"
-        </p>
+        <p className="text-sm text-txt-tertiary">No results found for "{query}"</p>
       </Command.Empty>
     );
   }
@@ -174,10 +169,151 @@ function EmptyState({ query, isLoading }: EmptyStateProps) {
   return (
     <div className="py-8 text-center">
       <MagnifyingGlass size={32} className="mx-auto text-txt-tertiary mb-2" />
-      <p className="text-sm text-txt-tertiary">
-        Start typing to search...
-      </p>
+      <p className="text-sm text-txt-tertiary">Start typing to search...</p>
     </div>
+  );
+}
+
+// ============================================
+// SIDE BADGE COLORS
+// ============================================
+
+const SIDE_COLORS: Record<string, string> = {
+  Port: 'bg-red-500',
+  Starboard: 'bg-green-500',
+  Both: 'bg-blue-500',
+  Cox: 'bg-amber-500',
+};
+
+/** Small colored dot indicating athlete's rowing side */
+function SideDot({ side }: { side: SidePreference }) {
+  if (!side) return null;
+  const color = SIDE_COLORS[side] || 'bg-txt-tertiary';
+  return <span className={`inline-block w-2 h-2 rounded-full ${color}`} title={side} />;
+}
+
+/** Status text for non-active athletes */
+function StatusBadge({ status }: { status: string }) {
+  if (status === 'active') return null;
+  const label = status.charAt(0).toUpperCase() + status.slice(1);
+  return (
+    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-status-warning/10 text-status-warning font-medium">
+      {label}
+    </span>
+  );
+}
+
+// ============================================
+// ATHLETE COMMAND ITEM
+// ============================================
+
+interface AthleteCommandItemProps {
+  athlete: Athlete;
+  onSelect: (athlete: Athlete) => void;
+}
+
+/**
+ * Enhanced command palette item for athletes.
+ * Shows avatar, full name, side dot, and status badge.
+ */
+function AthleteCommandItem({ athlete, onSelect }: AthleteCommandItemProps) {
+  const fullName = `${athlete.firstName} ${athlete.lastName}`;
+  const keywords = [athlete.email, athlete.side, athlete.status].filter(Boolean).join(' ');
+
+  return (
+    <Command.Item
+      value={fullName}
+      keywords={[keywords]}
+      onSelect={() => onSelect(athlete)}
+      className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer
+                 data-[selected=true]:bg-surface-hover
+                 hover:bg-surface-hover transition-colors"
+    >
+      <AthleteAvatar
+        firstName={athlete.firstName}
+        lastName={athlete.lastName}
+        photoUrl={athlete.avatar}
+        size="sm"
+        showHeadshot={false}
+      />
+      <div className="flex-1 min-w-0 flex items-center gap-2">
+        <p className="text-sm font-medium text-txt-primary truncate">{fullName}</p>
+        <SideDot side={athlete.side} />
+        <StatusBadge status={athlete.status} />
+      </div>
+    </Command.Item>
+  );
+}
+
+// ============================================
+// ATHLETES GROUP (for command palette)
+// ============================================
+
+/** Maximum athletes to show in command palette results */
+const MAX_PALETTE_ATHLETES = 8;
+
+interface AthletesGroupProps {
+  athletes: Athlete[];
+  onSelectAthlete: (athlete: Athlete) => void;
+  onNavigate: (path: string) => void;
+}
+
+/**
+ * Athletes group for the command palette.
+ * Shows top matching athletes with avatars plus quick actions.
+ * cmdk handles filtering based on the Command.Item `value` and `keywords`.
+ */
+function AthletesGroup({ athletes, onSelectAthlete, onNavigate }: AthletesGroupProps) {
+  // Limit to top N athletes; cmdk's built-in search handles filtering
+  const displayAthletes = athletes.slice(0, MAX_PALETTE_ATHLETES);
+
+  return (
+    <>
+      {/* Athletes */}
+      {displayAthletes.length > 0 && (
+        <Command.Group heading="Athletes">
+          {displayAthletes.map((athlete) => (
+            <AthleteCommandItem key={athlete.id} athlete={athlete} onSelect={onSelectAthlete} />
+          ))}
+        </Command.Group>
+      )}
+
+      {/* Quick Actions */}
+      <Command.Group heading="Quick Actions">
+        <Command.Item
+          value="Add New Athlete"
+          keywords={['create', 'new', 'athlete', 'add']}
+          onSelect={() => onNavigate('/app/athletes?action=create')}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer
+                     data-[selected=true]:bg-surface-hover
+                     hover:bg-surface-hover transition-colors"
+        >
+          <div
+            className="flex-shrink-0 w-8 h-8 rounded-lg bg-status-success/10
+                          flex items-center justify-center"
+          >
+            <UserPlus size={18} weight="duotone" className="text-status-success" />
+          </div>
+          <p className="text-sm font-medium text-txt-primary">Add New Athlete</p>
+        </Command.Item>
+        <Command.Item
+          value="Import Athletes CSV"
+          keywords={['import', 'csv', 'bulk', 'upload', 'athletes']}
+          onSelect={() => onNavigate('/app/athletes?action=import')}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer
+                     data-[selected=true]:bg-surface-hover
+                     hover:bg-surface-hover transition-colors"
+        >
+          <div
+            className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent-secondary/10
+                          flex items-center justify-center"
+          >
+            <UploadSimple size={18} weight="duotone" className="text-accent-secondary" />
+          </div>
+          <p className="text-sm font-medium text-txt-primary">Import Athletes (CSV)</p>
+        </Command.Item>
+      </Command.Group>
+    </>
   );
 }
 
@@ -201,6 +337,9 @@ export function CommandPalette() {
     close,
     toggle,
   } = useGlobalSearch();
+
+  // Fetch athletes for the dedicated Athletes group (uses stale cache, won't refetch on open)
+  const { allAthletes } = useAthletes();
 
   // Handle keyboard shortcut (Cmd/Ctrl+K)
   useEffect(() => {
@@ -247,6 +386,31 @@ export function CommandPalette() {
       }
     },
     [close]
+  );
+
+  // Handle athlete selection from the dedicated Athletes group
+  const handleSelectAthlete = useCallback(
+    (athlete: Athlete) => {
+      addToRecent({
+        id: athlete.id,
+        type: 'athlete',
+        title: `${athlete.firstName} ${athlete.lastName}`,
+        subtitle: athlete.side || undefined,
+        href: `/app/athletes/${athlete.id}`,
+      });
+      close();
+      navigate(`/app/athletes/${athlete.id}`);
+    },
+    [addToRecent, close, navigate]
+  );
+
+  // Handle quick action navigation
+  const handleNavigate = useCallback(
+    (path: string) => {
+      close();
+      navigate(path);
+    },
+    [close, navigate]
   );
 
   // Show recent items when no query
@@ -296,69 +460,79 @@ export function CommandPalette() {
                     <X size={16} className="text-txt-tertiary" />
                   </button>
                 )}
-                <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded-md
-                               bg-surface-primary text-txt-tertiary text-xs font-mono">
+                <kbd
+                  className="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded-md
+                               bg-surface-primary text-txt-tertiary text-xs font-mono"
+                >
                   ESC
                 </kbd>
               </div>
 
               {/* Results List */}
-              <Command.List className="max-h-[50vh] overflow-y-auto p-2
+              <Command.List
+                className="max-h-[50vh] overflow-y-auto p-2
                                        [&_[cmdk-group-heading]]:px-3
                                        [&_[cmdk-group-heading]]:py-2
                                        [&_[cmdk-group-heading]]:text-xs
                                        [&_[cmdk-group-heading]]:font-medium
                                        [&_[cmdk-group-heading]]:text-txt-tertiary
                                        [&_[cmdk-group-heading]]:uppercase
-                                       [&_[cmdk-group-heading]]:tracking-wider">
+                                       [&_[cmdk-group-heading]]:tracking-wider"
+              >
                 {/* Loading state */}
                 {isLoading && !query.trim() && (
                   <div className="py-4 text-center">
-                    <div className="inline-block w-5 h-5 border-2 border-accent-secondary/30
-                                    border-t-accent-secondary rounded-full animate-spin" />
+                    <div
+                      className="inline-block w-5 h-5 border-2 border-accent-secondary/30
+                                    border-t-accent-secondary rounded-full animate-spin"
+                    />
                     <p className="mt-2 text-xs text-txt-tertiary">Loading...</p>
                   </div>
                 )}
 
                 {/* Recent items when no query */}
                 {showRecent && (
-                  <RecentItems
-                    items={recentItems}
-                    onSelect={handleSelect}
-                    onClear={clearRecent}
-                  />
+                  <RecentItems items={recentItems} onSelect={handleSelect} onClear={clearRecent} />
                 )}
 
                 {/* Search results */}
                 {showResults &&
                   results.map((group) => (
-                    <ResultGroup
-                      key={group.type}
-                      group={group}
-                      onSelect={handleSelect}
-                    />
+                    <ResultGroup key={group.type} group={group} onSelect={handleSelect} />
                   ))}
 
-                {/* Empty state */}
-                {showEmpty && <EmptyState query={query} isLoading={isLoading} />}
+                {/* Athletes group with avatars and quick actions */}
+                <AthletesGroup
+                  athletes={allAthletes}
+                  onSelectAthlete={handleSelectAthlete}
+                  onNavigate={handleNavigate}
+                />
+
+                {/* Empty state (only when search has no results AND no athlete matches) */}
+                {showEmpty && allAthletes.length === 0 && (
+                  <EmptyState query={query} isLoading={isLoading} />
+                )}
 
                 {/* Initial state with no recent items */}
-                {!query.trim() && !isLoading && recentItems.length === 0 && (
-                  <div className="py-8 text-center">
-                    <Clock size={32} className="mx-auto text-txt-tertiary mb-2" />
-                    <p className="text-sm text-txt-tertiary">
-                      No recent items yet
-                    </p>
-                    <p className="text-xs text-txt-tertiary mt-1">
-                      Start searching to see results here
-                    </p>
-                  </div>
-                )}
+                {!query.trim() &&
+                  !isLoading &&
+                  recentItems.length === 0 &&
+                  allAthletes.length === 0 && (
+                    <div className="py-8 text-center">
+                      <Clock size={32} className="mx-auto text-txt-tertiary mb-2" />
+                      <p className="text-sm text-txt-tertiary">No recent items yet</p>
+                      <p className="text-xs text-txt-tertiary mt-1">
+                        Start searching to see results here
+                      </p>
+                    </div>
+                  )}
               </Command.List>
 
               {/* Footer */}
-              <div className="flex items-center justify-between px-4 py-2 border-t border-bdr-secondary
-                             text-xs text-txt-tertiary bg-surface-primary/50">
+              <div
+                className="flex items-center justify-between px-4 py-2 border-t border-bdr-secondary
+                             text-xs text-txt-tertiary bg-surface-primary/50"
+              >
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
                     <kbd className="px-1.5 py-0.5 rounded bg-surface-primary font-mono">↑</kbd>
@@ -371,7 +545,9 @@ export function CommandPalette() {
                   </span>
                 </div>
                 {totalResults > 0 && (
-                  <span>{totalResults} result{totalResults !== 1 ? 's' : ''}</span>
+                  <span>
+                    {totalResults} result{totalResults !== 1 ? 's' : ''}
+                  </span>
                 )}
               </div>
             </Command>
@@ -404,8 +580,10 @@ export function SearchTriggerButton() {
     >
       <MagnifyingGlass size={16} weight="bold" />
       <span className="text-sm hidden sm:inline">Search...</span>
-      <kbd className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded
-                     bg-surface-primary text-xs font-mono ml-2">
+      <kbd
+        className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded
+                     bg-surface-primary text-xs font-mono ml-2"
+      >
         <span className="text-[10px]">⌘</span>K
       </kbd>
     </button>
