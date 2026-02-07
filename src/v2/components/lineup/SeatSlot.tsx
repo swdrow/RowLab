@@ -4,18 +4,8 @@ import { X } from 'lucide-react';
 import { validateSeatAssignment } from '@/utils/boatConfig';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
 import { SeatWarningBadge } from './SeatWarningBadge';
+import { SPRING_CONFIG } from '@v2/utils/animations';
 import type { SeatSlotData, SeatWarning } from '@v2/types/lineup';
-
-/**
- * Spring physics configuration for smooth, natural animations
- * Per RESEARCH.md: "Spring physics feel more natural, velocity-aware"
- */
-const springConfig = {
-  type: 'spring' as const,
-  stiffness: 300,
-  damping: 28,
-  restDelta: 0.00001,
-};
 
 /**
  * Props for SeatSlot component
@@ -63,7 +53,8 @@ export function SeatSlot({ boatId, seat, isCoxswain = false, onRemoveAthlete }: 
     }
 
     // Coxswain seat check (only for coxswain seats)
-    if (isCoxswain && !seat.athlete.isCoxswain) {
+    // Note: Athlete type doesn't have isCoxswain in V2, check by side === 'Cox'
+    if (isCoxswain && seat.athlete.side !== 'Cox') {
       warnings.push({
         type: 'cox',
         message: 'Non-coxswain assigned to coxswain seat',
@@ -87,11 +78,19 @@ export function SeatSlot({ boatId, seat, isCoxswain = false, onRemoveAthlete }: 
     <motion.div
       ref={setNodeRef}
       layout
-      transition={springConfig}
-      animate={{ scale: isOver ? 1.02 : 1 }}
+      transition={SPRING_CONFIG}
+      animate={{
+        scale: isOver ? 1.02 : 1,
+        boxShadow: isOver ? '0 8px 25px rgba(0,0,0,0.15)' : '0 0 0 rgba(0,0,0,0)',
+      }}
       whileHover={{ scale: isEmpty ? 1 : 1.01 }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Seat ${seat.seatNumber}, ${isEmpty ? 'empty' : `occupied by ${seat.athlete?.firstName} ${seat.athlete?.lastName}`}${isCoxswain ? ', coxswain position' : ''}`}
+      aria-describedby="seat-drop-instructions"
       className={`
         group relative flex items-center gap-3 p-3 rounded-lg border transition-colors
+        focus-visible:ring-2 focus-visible:ring-interactive-primary focus-visible:ring-offset-2
         ${
           isEmpty
             ? 'border-dashed border-bdr-default bg-bg-base'
@@ -126,15 +125,17 @@ export function SeatSlot({ boatId, seat, isCoxswain = false, onRemoveAthlete }: 
         ) : (
           <div className="flex items-center gap-3">
             {/* Occupied seats show DraggableAthleteCard for rearranging */}
-            <DraggableAthleteCard
-              athlete={seat.athlete}
-              source={{
-                type: isCoxswain ? 'coxswain' : 'seat',
-                boatId,
-                seatNumber: isCoxswain ? undefined : seat.seatNumber,
-              }}
-              className="flex-1 !p-0 !border-0 !bg-transparent hover:!bg-transparent cursor-grab"
-            />
+            {seat.athlete && (
+              <DraggableAthleteCard
+                athlete={seat.athlete}
+                source={{
+                  type: isCoxswain ? 'coxswain' : 'seat',
+                  boatId,
+                  seatNumber: isCoxswain ? undefined : seat.seatNumber,
+                }}
+                className="flex-1 !p-0 !border-0 !bg-transparent hover:!bg-transparent cursor-grab"
+              />
+            )}
             {onRemoveAthlete && (
               <button
                 onClick={onRemoveAthlete}
@@ -159,8 +160,8 @@ export function SeatSlot({ boatId, seat, isCoxswain = false, onRemoveAthlete }: 
               text-xs font-medium px-2 py-1 rounded-full
               ${
                 seat.side === 'Port'
-                  ? 'bg-red-500/10 text-red-600'
-                  : 'bg-green-500/10 text-green-600'
+                  ? 'bg-data-poor/10 text-data-poor'
+                  : 'bg-data-excellent/10 text-data-excellent'
               }
             `}
           >
@@ -171,7 +172,7 @@ export function SeatSlot({ boatId, seat, isCoxswain = false, onRemoveAthlete }: 
 
       {isCoxswain && (
         <div className="flex-shrink-0 w-16 text-right">
-          <span className="text-xs font-medium px-2 py-1 rounded-full bg-purple-500/10 text-purple-600">
+          <span className="text-xs font-medium px-2 py-1 rounded-full bg-accent-primary/10 text-accent-primary">
             Cox
           </span>
         </div>
