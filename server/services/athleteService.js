@@ -328,6 +328,8 @@ function formatAthlete(athlete, includeStats = false) {
     country: athlete.country,
     concept2UserId: athlete.concept2UserId,
     avatar: athlete.avatar || null,
+    status: athlete.status || 'active',
+    classYear: athlete.classYear ?? null,
     createdAt: athlete.createdAt,
     updatedAt: athlete.updatedAt,
   };

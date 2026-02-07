@@ -5,6 +5,8 @@
 // Athlete types
 export type SidePreference = 'Port' | 'Starboard' | 'Both' | 'Cox' | null;
 
+export type AthleteStatus = 'active' | 'inactive' | 'injured' | 'graduated';
+
 export interface Athlete {
   id: string;
   teamId: string;
@@ -21,6 +23,8 @@ export interface Athlete {
   heightCm: number | null;
   country: string | null;
   avatar: string | null;
+  status: AthleteStatus;
+  classYear: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -34,6 +38,28 @@ export interface AthleteWithStats extends Athlete {
     testDate: string;
   };
   attendanceRate?: number;
+}
+
+export interface AthleteDetailData extends AthleteWithStats {
+  recentErgTests?: Array<{
+    id: string;
+    testType: string;
+    time: string;
+    testDate: string;
+    distance?: number;
+  }>;
+  recentAttendance?: Array<{
+    date: string;
+    status: AttendanceStatus;
+  }>;
+  attendanceStreak?: number;
+  personalRecords?: Array<{
+    testType: string;
+    time: string;
+    date: string;
+  }>;
+  seatRaceRating?: number;
+  teamRank?: number;
 }
 
 // Attendance types
@@ -82,6 +108,10 @@ export interface AthleteFilters {
   side?: SidePreference | 'all';
   canScull?: boolean | null;
   canCox?: boolean | null;
+  status?: AthleteStatus | 'all';
+  classYear?: number | null;
+  sortBy?: 'name' | 'side' | 'classYear' | 'status' | 'updatedAt';
+  sortDir?: 'asc' | 'desc';
 }
 
 // CSV Import types

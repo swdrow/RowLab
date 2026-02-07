@@ -163,6 +163,8 @@ model Athlete {
   country        String? // ISO 3166-1 alpha-3 country code (e.g., USA, GBR)
   avatar         String?  @db.Text // Base64 encoded image data URL
   gamificationEnabled Boolean @default(true) // Per-athlete opt-out
+  status         String   @default("active") // active, inactive, injured, graduated
+  classYear      Int?     // Graduation year (e.g., 2027), nullable for non-college programs
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

@@ -38,191 +38,195 @@ router.use(authenticateToken, teamIsolation);
  */
 router.get('/me', async (req, res) => {
   try {
-      // Parse query params for pagination
-      const ergPage = parseInt(req.query.ergPage) || 1;
-      const ergLimit = Math.min(parseInt(req.query.ergLimit) || 10, 100);
-      const includeAllHistory = req.query.includeAllHistory === 'true';
-      const ergSkip = (ergPage - 1) * ergLimit;
+    // Parse query params for pagination
+    const ergPage = parseInt(req.query.ergPage) || 1;
+    const ergLimit = Math.min(parseInt(req.query.ergLimit) || 10, 100);
+    const includeAllHistory = req.query.includeAllHistory === 'true';
+    const ergSkip = (ergPage - 1) * ergLimit;
 
-      // Find athlete linked to this user in the active team
-      const athlete = await prisma.athlete.findFirst({
-        where: {
-          userId: req.user.id,
-          teamId: req.user.activeTeamId,
+    // Find athlete linked to this user in the active team
+    const athlete = await prisma.athlete.findFirst({
+      where: {
+        userId: req.user.id,
+        teamId: req.user.activeTeamId,
+      },
+    });
+
+    if (!athlete) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'No athlete profile found for this user' },
+      });
+    }
+
+    // Get team settings for visibility
+    const team = await prisma.team.findUnique({
+      where: { id: req.user.activeTeamId },
+      select: { settings: true },
+    });
+
+    const teamSettings = team?.settings || {};
+    const visibility = {
+      athletesCanSeeRankings: teamSettings.athletesCanSeeRankings !== false,
+      athletesCanSeeOthersErgData: teamSettings.athletesCanSeeOthersErgData !== false,
+      athletesCanSeeOthersLineups: teamSettings.athletesCanSeeOthersLineups !== false,
+    };
+
+    // Get total erg test count for pagination
+    const ergTestCount = await prisma.ergTest.count({
+      where: { athleteId: athlete.id },
+    });
+
+    // Get erg tests with pagination
+    const ergTests = await prisma.ergTest.findMany({
+      where: { athleteId: athlete.id },
+      orderBy: { testDate: 'desc' },
+      skip: includeAllHistory ? 0 : ergSkip,
+      take: includeAllHistory ? undefined : ergLimit,
+    });
+
+    // Get lineup assignments
+    const lineups = await prisma.lineup.findMany({
+      where: {
+        teamId: req.user.activeTeamId,
+        assignments: {
+          some: {
+            athleteId: athlete.id,
+          },
         },
-      });
+      },
+      include: {
+        assignments: {
+          where: {
+            athleteId: athlete.id,
+          },
+        },
+      },
+    });
 
-      if (!athlete) {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: 'No athlete profile found for this user' },
-        });
-      }
-
-      // Get team settings for visibility
-      const team = await prisma.team.findUnique({
-        where: { id: req.user.activeTeamId },
-        select: { settings: true },
-      });
-
-      const teamSettings = team?.settings || {};
-      const visibility = {
-        athletesCanSeeRankings: teamSettings.athletesCanSeeRankings !== false,
-        athletesCanSeeOthersErgData: teamSettings.athletesCanSeeOthersErgData !== false,
-        athletesCanSeeOthersLineups: teamSettings.athletesCanSeeOthersLineups !== false,
+    // Transform lineup data to include seat info
+    const lineupData = lineups.map((lineup) => {
+      const assignment = lineup.assignments[0];
+      return {
+        id: lineup.id,
+        name: lineup.name,
+        boatClass: assignment?.boatClass,
+        seatNumber: assignment?.seatNumber,
+        isCoxswain: assignment?.isCoxswain || false,
       };
+    });
 
-      // Get total erg test count for pagination
-      const ergTestCount = await prisma.ergTest.count({
-        where: { athleteId: athlete.id },
-      });
+    // Get seat racing rankings if allowed by team settings
+    let rankings = [];
+    let myRanking = null;
 
-      // Get erg tests with pagination
-      const ergTests = await prisma.ergTest.findMany({
-        where: { athleteId: athlete.id },
-        orderBy: { testDate: 'desc' },
-        skip: includeAllHistory ? 0 : ergSkip,
-        take: includeAllHistory ? undefined : ergLimit,
-      });
-
-      // Get lineup assignments
-      const lineups = await prisma.lineup.findMany({
+    if (visibility.athletesCanSeeRankings) {
+      // Get all athlete ratings for ranking
+      const allRatings = await prisma.athleteRating.findMany({
         where: {
-          teamId: req.user.activeTeamId,
-          assignments: {
-            some: {
-              athleteId: athlete.id,
-            },
-          },
+          athlete: { teamId: req.user.activeTeamId },
+          ratingType: 'combined',
         },
+        orderBy: { ratingValue: 'desc' },
         include: {
-          assignments: {
-            where: {
-              athleteId: athlete.id,
-            },
+          athlete: {
+            select: { id: true, firstName: true, lastName: true },
           },
         },
       });
 
-      // Transform lineup data to include seat info
-      const lineupData = lineups.map(lineup => {
-        const assignment = lineup.assignments[0];
-        return {
-          id: lineup.id,
-          name: lineup.name,
-          boatClass: assignment?.boatClass,
-          seatNumber: assignment?.seatNumber,
-          isCoxswain: assignment?.isCoxswain || false,
-        };
+      // Find this athlete's position
+      const athleteRating = await prisma.athleteRating.findFirst({
+        where: {
+          athleteId: athlete.id,
+          ratingType: 'combined',
+        },
       });
 
-      // Get seat racing rankings if allowed by team settings
-      let rankings = [];
-      let myRanking = null;
-
-      if (visibility.athletesCanSeeRankings) {
-        // Get all athlete ratings for ranking
-        const allRatings = await prisma.athleteRating.findMany({
-          where: {
-            athlete: { teamId: req.user.activeTeamId },
-            ratingType: 'combined',
-          },
-          orderBy: { ratingValue: 'desc' },
-          include: {
-            athlete: {
-              select: { id: true, firstName: true, lastName: true },
-            },
-          },
-        });
-
-        // Find this athlete's position
-        const athleteRating = await prisma.athleteRating.findFirst({
-          where: {
-            athleteId: athlete.id,
-            ratingType: 'combined',
-          },
-        });
-
-        if (athleteRating) {
-          const rank = allRatings.findIndex(r => r.athleteId === athlete.id) + 1;
-          myRanking = {
-            rank,
-            totalAthletes: allRatings.length,
-            score: parseFloat(athleteRating.ratingValue),
-            confidence: athleteRating.confidenceScore ? parseFloat(athleteRating.confidenceScore) : null,
-            racesCount: athleteRating.racesCount,
-          };
-        }
-
-        // Get this athlete's rating history
-        rankings = await prisma.athleteRating.findMany({
-          where: {
-            athleteId: athlete.id,
-          },
-          orderBy: { lastCalculatedAt: 'desc' },
-          take: 5,
-        });
+      if (athleteRating) {
+        const rank = allRatings.findIndex((r) => r.athleteId === athlete.id) + 1;
+        myRanking = {
+          rank,
+          totalAthletes: allRatings.length,
+          score: parseFloat(athleteRating.ratingValue),
+          confidence: athleteRating.confidenceScore
+            ? parseFloat(athleteRating.confidenceScore)
+            : null,
+          racesCount: athleteRating.racesCount,
+        };
       }
 
-      // Get C2 connection status
-      const c2Auth = await prisma.concept2Auth.findUnique({
-        where: { userId: req.user.id },
-        select: {
-          connected: true,
-          username: true,
-          lastSyncedAt: true,
-          syncEnabled: true,
+      // Get this athlete's rating history
+      rankings = await prisma.athleteRating.findMany({
+        where: {
+          athleteId: athlete.id,
         },
+        orderBy: { lastCalculatedAt: 'desc' },
+        take: 5,
       });
+    }
 
-      const c2Status = c2Auth ? {
+    // Get C2 connection status
+    const c2Auth = await prisma.concept2Auth.findUnique({
+      where: { userId: req.user.id },
+      select: {
         connected: true,
-        username: c2Auth.username,
-        lastSyncedAt: c2Auth.lastSyncedAt,
-        syncEnabled: c2Auth.syncEnabled,
-      } : { connected: false };
+        username: true,
+        lastSyncedAt: true,
+        syncEnabled: true,
+      },
+    });
 
-      res.json({
-        success: true,
-        data: {
-          athlete: {
-            id: athlete.id,
-            firstName: athlete.firstName,
-            lastName: athlete.lastName,
-            email: athlete.email,
-            side: athlete.side,
-            weightKg: athlete.weightKg,
-            heightCm: athlete.heightCm,
-          },
-          ergTests: ergTests.map(test => ({
-            id: test.id,
-            testType: test.testType,
-            testDate: test.testDate,
-            distanceM: test.distanceM,
-            timeSeconds: parseFloat(test.timeSeconds),
-            splitSeconds: test.splitSeconds ? parseFloat(test.splitSeconds) : null,
-            watts: test.watts,
-            strokeRate: test.strokeRate,
-          })),
-          ergTestPagination: {
-            page: ergPage,
-            limit: ergLimit,
-            total: ergTestCount,
-            totalPages: Math.ceil(ergTestCount / ergLimit),
-          },
-          lineups: lineupData,
-          myRanking,
-          rankings: rankings.map(r => ({
-            ratingType: r.ratingType,
-            score: parseFloat(r.ratingValue),
-            confidence: r.confidenceScore ? parseFloat(r.confidenceScore) : null,
-            racesCount: r.racesCount,
-            lastCalculatedAt: r.lastCalculatedAt,
-          })),
-          teamVisibility: visibility,
-          concept2Status: c2Status,
+    const c2Status = c2Auth
+      ? {
+          connected: true,
+          username: c2Auth.username,
+          lastSyncedAt: c2Auth.lastSyncedAt,
+          syncEnabled: c2Auth.syncEnabled,
+        }
+      : { connected: false };
+
+    res.json({
+      success: true,
+      data: {
+        athlete: {
+          id: athlete.id,
+          firstName: athlete.firstName,
+          lastName: athlete.lastName,
+          email: athlete.email,
+          side: athlete.side,
+          weightKg: athlete.weightKg,
+          heightCm: athlete.heightCm,
         },
-      });
+        ergTests: ergTests.map((test) => ({
+          id: test.id,
+          testType: test.testType,
+          testDate: test.testDate,
+          distanceM: test.distanceM,
+          timeSeconds: parseFloat(test.timeSeconds),
+          splitSeconds: test.splitSeconds ? parseFloat(test.splitSeconds) : null,
+          watts: test.watts,
+          strokeRate: test.strokeRate,
+        })),
+        ergTestPagination: {
+          page: ergPage,
+          limit: ergLimit,
+          total: ergTestCount,
+          totalPages: Math.ceil(ergTestCount / ergLimit),
+        },
+        lineups: lineupData,
+        myRanking,
+        rankings: rankings.map((r) => ({
+          ratingType: r.ratingType,
+          score: parseFloat(r.ratingValue),
+          confidence: r.confidenceScore ? parseFloat(r.confidenceScore) : null,
+          racesCount: r.racesCount,
+          lastCalculatedAt: r.lastCalculatedAt,
+        })),
+        teamVisibility: visibility,
+        concept2Status: c2Status,
+      },
+    });
   } catch (error) {
     logger.error('Get athlete profile error', { error: error.message });
     res.status(500).json({
@@ -392,165 +396,167 @@ router.get(
   async (req, res) => {
     try {
       const ergPage = parseInt(req.query.ergPage) || 1;
-        const ergLimit = Math.min(parseInt(req.query.ergLimit) || 10, 100);
-        const includeAllHistory = req.query.includeAllHistory === 'true';
-        const ergSkip = (ergPage - 1) * ergLimit;
+      const ergLimit = Math.min(parseInt(req.query.ergLimit) || 10, 100);
+      const includeAllHistory = req.query.includeAllHistory === 'true';
+      const ergSkip = (ergPage - 1) * ergLimit;
 
-        // Find athlete by ID in active team
-        const athlete = await prisma.athlete.findFirst({
-          where: {
-            id: req.params.id,
-            teamId: req.user.activeTeamId,
-          },
+      // Find athlete by ID in active team
+      const athlete = await prisma.athlete.findFirst({
+        where: {
+          id: req.params.id,
+          teamId: req.user.activeTeamId,
+        },
+      });
+
+      if (!athlete) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Athlete not found' },
         });
+      }
 
-        if (!athlete) {
-          return res.status(404).json({
-            success: false,
-            error: { code: 'NOT_FOUND', message: 'Athlete not found' },
-          });
-        }
+      // Coach viewing: always allow full visibility
+      const visibility = {
+        athletesCanSeeRankings: true,
+        athletesCanSeeOthersErgData: true,
+        athletesCanSeeOthersLineups: true,
+      };
 
-        // Coach viewing: always allow full visibility
-        const visibility = {
-          athletesCanSeeRankings: true,
-          athletesCanSeeOthersErgData: true,
-          athletesCanSeeOthersLineups: true,
+      // Get total erg test count
+      const ergTestCount = await prisma.ergTest.count({
+        where: { athleteId: athlete.id },
+      });
+
+      // Get erg tests
+      const ergTests = await prisma.ergTest.findMany({
+        where: { athleteId: athlete.id },
+        orderBy: { testDate: 'desc' },
+        skip: includeAllHistory ? 0 : ergSkip,
+        take: includeAllHistory ? undefined : ergLimit,
+      });
+
+      // Get lineups
+      const lineups = await prisma.lineup.findMany({
+        where: {
+          teamId: req.user.activeTeamId,
+          assignments: { some: { athleteId: athlete.id } },
+        },
+        include: {
+          assignments: { where: { athleteId: athlete.id } },
+        },
+      });
+
+      const lineupData = lineups.map((lineup) => {
+        const assignment = lineup.assignments[0];
+        return {
+          id: lineup.id,
+          name: lineup.name,
+          boatClass: assignment?.boatClass,
+          seatNumber: assignment?.seatNumber,
+          isCoxswain: assignment?.isCoxswain || false,
         };
+      });
 
-        // Get total erg test count
-        const ergTestCount = await prisma.ergTest.count({
-          where: { athleteId: athlete.id },
-        });
+      // Get rankings (Coach sees all)
+      const allRatings = await prisma.athleteRating.findMany({
+        where: {
+          athlete: { teamId: req.user.activeTeamId },
+          ratingType: 'combined',
+        },
+        orderBy: { ratingValue: 'desc' },
+        include: {
+          athlete: { select: { id: true, firstName: true, lastName: true } },
+        },
+      });
 
-        // Get erg tests
-        const ergTests = await prisma.ergTest.findMany({
-          where: { athleteId: athlete.id },
-          orderBy: { testDate: 'desc' },
-          skip: includeAllHistory ? 0 : ergSkip,
-          take: includeAllHistory ? undefined : ergLimit,
-        });
+      let myRanking = null;
+      const athleteRating = await prisma.athleteRating.findFirst({
+        where: { athleteId: athlete.id, ratingType: 'combined' },
+      });
 
-        // Get lineups
-        const lineups = await prisma.lineup.findMany({
-          where: {
-            teamId: req.user.activeTeamId,
-            assignments: { some: { athleteId: athlete.id } },
+      if (athleteRating) {
+        const rank = allRatings.findIndex((r) => r.athleteId === athlete.id) + 1;
+        myRanking = {
+          rank,
+          totalAthletes: allRatings.length,
+          score: parseFloat(athleteRating.ratingValue),
+          confidence: athleteRating.confidenceScore
+            ? parseFloat(athleteRating.confidenceScore)
+            : null,
+          racesCount: athleteRating.racesCount,
+        };
+      }
+
+      const rankings = await prisma.athleteRating.findMany({
+        where: { athleteId: athlete.id },
+        orderBy: { lastCalculatedAt: 'desc' },
+        take: 5,
+      });
+
+      // Check if athlete has C2 connection (via linked user)
+      let c2Status = { connected: false };
+      if (athlete.userId) {
+        const c2Auth = await prisma.concept2Auth.findUnique({
+          where: { userId: athlete.userId },
+          select: {
+            connected: true,
+            username: true,
+            lastSyncedAt: true,
+            syncEnabled: true,
           },
-          include: {
-            assignments: { where: { athleteId: athlete.id } },
-          },
         });
-
-        const lineupData = lineups.map(lineup => {
-          const assignment = lineup.assignments[0];
-          return {
-            id: lineup.id,
-            name: lineup.name,
-            boatClass: assignment?.boatClass,
-            seatNumber: assignment?.seatNumber,
-            isCoxswain: assignment?.isCoxswain || false,
-          };
-        });
-
-        // Get rankings (Coach sees all)
-        const allRatings = await prisma.athleteRating.findMany({
-          where: {
-            athlete: { teamId: req.user.activeTeamId },
-            ratingType: 'combined',
-          },
-          orderBy: { ratingValue: 'desc' },
-          include: {
-            athlete: { select: { id: true, firstName: true, lastName: true } },
-          },
-        });
-
-        let myRanking = null;
-        const athleteRating = await prisma.athleteRating.findFirst({
-          where: { athleteId: athlete.id, ratingType: 'combined' },
-        });
-
-        if (athleteRating) {
-          const rank = allRatings.findIndex(r => r.athleteId === athlete.id) + 1;
-          myRanking = {
-            rank,
-            totalAthletes: allRatings.length,
-            score: parseFloat(athleteRating.ratingValue),
-            confidence: athleteRating.confidenceScore ? parseFloat(athleteRating.confidenceScore) : null,
-            racesCount: athleteRating.racesCount,
+        if (c2Auth) {
+          c2Status = {
+            connected: true,
+            username: c2Auth.username,
+            lastSyncedAt: c2Auth.lastSyncedAt,
+            syncEnabled: c2Auth.syncEnabled,
           };
         }
+      }
 
-        const rankings = await prisma.athleteRating.findMany({
-          where: { athleteId: athlete.id },
-          orderBy: { lastCalculatedAt: 'desc' },
-          take: 5,
-        });
-
-        // Check if athlete has C2 connection (via linked user)
-        let c2Status = { connected: false };
-        if (athlete.userId) {
-          const c2Auth = await prisma.concept2Auth.findUnique({
-            where: { userId: athlete.userId },
-            select: {
-              connected: true,
-              username: true,
-              lastSyncedAt: true,
-              syncEnabled: true,
-            },
-          });
-          if (c2Auth) {
-            c2Status = {
-              connected: true,
-              username: c2Auth.username,
-              lastSyncedAt: c2Auth.lastSyncedAt,
-              syncEnabled: c2Auth.syncEnabled,
-            };
-          }
-        }
-
-        res.json({
-          success: true,
-          data: {
-            athlete: {
-              id: athlete.id,
-              firstName: athlete.firstName,
-              lastName: athlete.lastName,
-              email: athlete.email,
-              side: athlete.side,
-              weightKg: athlete.weightKg,
-              heightCm: athlete.heightCm,
-            },
-            ergTests: ergTests.map(test => ({
-              id: test.id,
-              testType: test.testType,
-              testDate: test.testDate,
-              distanceM: test.distanceM,
-              timeSeconds: parseFloat(test.timeSeconds),
-              splitSeconds: test.splitSeconds ? parseFloat(test.splitSeconds) : null,
-              watts: test.watts,
-              strokeRate: test.strokeRate,
-            })),
-            ergTestPagination: {
-              page: ergPage,
-              limit: ergLimit,
-              total: ergTestCount,
-              totalPages: Math.ceil(ergTestCount / ergLimit),
-            },
-            lineups: lineupData,
-            myRanking,
-            rankings: rankings.map(r => ({
-              ratingType: r.ratingType,
-              score: parseFloat(r.ratingValue),
-              confidence: r.confidenceScore ? parseFloat(r.confidenceScore) : null,
-              racesCount: r.racesCount,
-              lastCalculatedAt: r.lastCalculatedAt,
-            })),
-            teamVisibility: visibility,
-            concept2Status: c2Status,
-            isCoachView: true, // Flag to indicate this is a coach viewing an athlete
+      res.json({
+        success: true,
+        data: {
+          athlete: {
+            id: athlete.id,
+            firstName: athlete.firstName,
+            lastName: athlete.lastName,
+            email: athlete.email,
+            side: athlete.side,
+            weightKg: athlete.weightKg,
+            heightCm: athlete.heightCm,
           },
-        });
+          ergTests: ergTests.map((test) => ({
+            id: test.id,
+            testType: test.testType,
+            testDate: test.testDate,
+            distanceM: test.distanceM,
+            timeSeconds: parseFloat(test.timeSeconds),
+            splitSeconds: test.splitSeconds ? parseFloat(test.splitSeconds) : null,
+            watts: test.watts,
+            strokeRate: test.strokeRate,
+          })),
+          ergTestPagination: {
+            page: ergPage,
+            limit: ergLimit,
+            total: ergTestCount,
+            totalPages: Math.ceil(ergTestCount / ergLimit),
+          },
+          lineups: lineupData,
+          myRanking,
+          rankings: rankings.map((r) => ({
+            ratingType: r.ratingType,
+            score: parseFloat(r.ratingValue),
+            confidence: r.confidenceScore ? parseFloat(r.confidenceScore) : null,
+            racesCount: r.racesCount,
+            lastCalculatedAt: r.lastCalculatedAt,
+          })),
+          teamVisibility: visibility,
+          concept2Status: c2Status,
+          isCoachView: true, // Flag to indicate this is a coach viewing an athlete
+        },
+      });
     } catch (error) {
       logger.error('Get athlete dashboard error', { error: error.message });
       res.status(500).json({
@@ -682,35 +688,129 @@ router.get(
 
 /**
  * GET /api/v1/athletes/:id
- * Get single athlete
+ * Get single athlete. Pass ?detail=true for extended data (attendance, erg tests, PRs, ranking).
  */
-router.get(
-  '/:id',
-  [param('id').isUUID()],
-  validateRequest,
-  async (req, res) => {
-    try {
-      const athlete = await getAthleteById(req.params.id, req.user.activeTeamId);
+router.get('/:id', [param('id').isUUID()], validateRequest, async (req, res) => {
+  try {
+    const athlete = await getAthleteById(req.params.id, req.user.activeTeamId);
+    const includeDetail = req.query.detail === 'true';
 
-      res.json({
+    if (!includeDetail) {
+      return res.json({
         success: true,
         data: { athlete },
       });
-    } catch (error) {
-      if (error.message === 'Athlete not found') {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: error.message },
-        });
+    }
+
+    // Extended detail: recent attendance (last 12 weeks)
+    const twelveWeeksAgo = new Date();
+    twelveWeeksAgo.setDate(twelveWeeksAgo.getDate() - 84);
+
+    const [recentAttendance, recentErgTests, personalRecords, athleteRating, allRatings] =
+      await Promise.all([
+        prisma.attendance.findMany({
+          where: {
+            athleteId: req.params.id,
+            teamId: req.user.activeTeamId,
+            date: { gte: twelveWeeksAgo },
+          },
+          orderBy: { date: 'desc' },
+          select: { date: true, status: true },
+        }),
+        prisma.ergTest.findMany({
+          where: { athleteId: req.params.id },
+          orderBy: { testDate: 'desc' },
+          take: 10,
+          select: {
+            id: true,
+            testType: true,
+            timeSeconds: true,
+            testDate: true,
+            distanceM: true,
+          },
+        }),
+        prisma.personalRecord.findMany({
+          where: { athleteId: req.params.id },
+          orderBy: { achievedAt: 'desc' },
+          take: 10,
+          select: { testType: true, timeSeconds: true, achievedAt: true },
+        }),
+        prisma.athleteRating.findFirst({
+          where: { athleteId: req.params.id, ratingType: 'combined' },
+        }),
+        prisma.athleteRating.findMany({
+          where: {
+            athlete: { teamId: req.user.activeTeamId },
+            ratingType: 'combined',
+          },
+          orderBy: { ratingValue: 'desc' },
+          select: { athleteId: true },
+        }),
+      ]);
+
+    // Calculate attendance streak (consecutive present/late days)
+    let attendanceStreak = 0;
+    const sortedAttendance = [...recentAttendance].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+    for (const record of sortedAttendance) {
+      if (record.status === 'present' || record.status === 'late') {
+        attendanceStreak++;
+      } else {
+        break;
       }
-      logger.error('Get athlete error', { error: error.message });
-      res.status(500).json({
+    }
+
+    // Calculate team rank
+    let teamRank = undefined;
+    let seatRaceRating = undefined;
+    if (athleteRating) {
+      const rankIndex = allRatings.findIndex((r) => r.athleteId === req.params.id);
+      teamRank = rankIndex >= 0 ? rankIndex + 1 : undefined;
+      seatRaceRating = parseFloat(athleteRating.ratingValue);
+    }
+
+    res.json({
+      success: true,
+      data: {
+        athlete: {
+          ...athlete,
+          recentAttendance: recentAttendance.map((a) => ({
+            date: a.date.toISOString().split('T')[0],
+            status: a.status,
+          })),
+          recentErgTests: recentErgTests.map((t) => ({
+            id: t.id,
+            testType: t.testType,
+            time: t.timeSeconds ? String(Number(t.timeSeconds)) : null,
+            testDate: t.testDate instanceof Date ? t.testDate.toISOString() : t.testDate,
+            distance: t.distanceM,
+          })),
+          personalRecords: personalRecords.map((pr) => ({
+            testType: pr.testType,
+            time: pr.timeSeconds ? String(Number(pr.timeSeconds)) : null,
+            date: pr.achievedAt instanceof Date ? pr.achievedAt.toISOString() : pr.achievedAt,
+          })),
+          attendanceStreak,
+          seatRaceRating,
+          teamRank,
+        },
+      },
+    });
+  } catch (error) {
+    if (error.message === 'Athlete not found') {
+      return res.status(404).json({
         success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to get athlete' },
+        error: { code: 'NOT_FOUND', message: error.message },
       });
     }
+    logger.error('Get athlete error', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to get athlete' },
+    });
   }
-);
+});
 
 /**
  * PATCH /api/v1/athletes/:id
@@ -727,6 +827,8 @@ router.patch(
     body('side').optional().isIn(['Port', 'Starboard', 'Both', 'Cox', null]),
     body('weightKg').optional({ nullable: true }).isFloat({ min: 30, max: 200 }),
     body('heightCm').optional({ nullable: true }).isInt({ min: 100, max: 250 }),
+    body('status').optional().isIn(['active', 'inactive', 'injured', 'graduated']),
+    body('classYear').optional({ nullable: true }).isInt({ min: 2000, max: 2100 }),
     body('avatar')
       .optional({ nullable: true })
       .custom((value) => {
