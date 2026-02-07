@@ -77,10 +77,10 @@ async function bulkImportAthletes(
 }
 
 /**
- * Filter athletes client-side
+ * Filter and sort athletes client-side
  */
 function filterAthletes(athletes: Athlete[], filters: AthleteFilters): Athlete[] {
-  return athletes.filter((athlete) => {
+  const filtered = athletes.filter((athlete) => {
     // Search filter (name)
     if (filters.search) {
       const search = filters.search.toLowerCase();
@@ -103,8 +103,52 @@ function filterAthletes(athletes: Athlete[], filters: AthleteFilters): Athlete[]
       if (athlete.canCox !== filters.canCox) return false;
     }
 
+    // Status filter
+    if (filters.status && filters.status !== 'all') {
+      if (athlete.status !== filters.status) return false;
+    }
+
+    // Class year filter
+    if (filters.classYear !== null && filters.classYear !== undefined) {
+      if (athlete.classYear !== filters.classYear) return false;
+    }
+
     return true;
   });
+
+  // Sort
+  const sortBy = filters.sortBy || 'name';
+  const sortDir = filters.sortDir || 'asc';
+  const multiplier = sortDir === 'asc' ? 1 : -1;
+
+  filtered.sort((a, b) => {
+    switch (sortBy) {
+      case 'name': {
+        const cmp = a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName);
+        return cmp * multiplier;
+      }
+      case 'side': {
+        const sideA = a.side || '';
+        const sideB = b.side || '';
+        return sideA.localeCompare(sideB) * multiplier;
+      }
+      case 'classYear': {
+        const yearA = a.classYear ?? 9999;
+        const yearB = b.classYear ?? 9999;
+        return (yearA - yearB) * multiplier;
+      }
+      case 'status': {
+        return (a.status || 'active').localeCompare(b.status || 'active') * multiplier;
+      }
+      case 'updatedAt': {
+        return (new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()) * multiplier;
+      }
+      default:
+        return 0;
+    }
+  });
+
+  return filtered;
 }
 
 /**
