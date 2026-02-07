@@ -12,3 +12,14 @@ export type { QuickActionsProps } from './QuickActions';
 
 export { AthleteProfilePanel } from './AthleteProfilePanel';
 export type { AthleteProfilePanelProps } from './AthleteProfilePanel';
+
+export { ActivityTimeline } from './ActivityTimeline';
+export type { ActivityTimelineProps } from './ActivityTimeline';
+
+export { AchievementsSection } from './AchievementsSection';
+export type { AchievementsSectionProps } from './AchievementsSection';
+
+export { TeamTabs } from './TeamTabs';
+export type { TeamTabsProps } from './TeamTabs';
+
+export { ProfileSkeletonLoader } from './ProfileSkeletonLoader';
