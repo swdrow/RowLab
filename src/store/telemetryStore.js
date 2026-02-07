@@ -1,3 +1,12 @@
+/**
+ * @deprecated Phase 25-04
+ *
+ * This V1 Zustand store has been replaced by V2 TanStack Query hooks.
+ * V1 legacy components still reference this store. Do NOT add new functionality here.
+ *
+ * TODO(phase-25-08): Complete V1 → V2 migration and delete this file
+ */
+
 import { create } from 'zustand';
 
 // Helper to extract error message from various error formats

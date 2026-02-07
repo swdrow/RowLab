@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import axios from 'axios';
 import type { DashboardPreferences, ApiResponse, WidgetId, ActivitySource } from '../types/dashboard';
 
@@ -46,7 +47,7 @@ export function useDashboardPrefs() {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: ['dashboard-preferences'],
+    queryKey: queryKeys.dashboard.preferences(),
     queryFn: fetchPreferences,
     staleTime: 10 * 60 * 1000, // 10 minutes - preferences don't change often
   });

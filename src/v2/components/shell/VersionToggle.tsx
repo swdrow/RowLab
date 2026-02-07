@@ -7,6 +7,9 @@ interface VersionToggleProps {
 }
 
 /**
+ * @deprecated Phase 26 consolidated all routes under /app/*.
+ * V1/V2 version switching will be removed in Phase 36 (V1/V2 Cleanup).
+ *
  * Toggle button to switch between V1 (legacy) and V2 versions.
  * When clicked, updates preference and redirects to the other version.
  */

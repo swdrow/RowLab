@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 
+// @deprecated This store is deprecated. Use TanStack Query hooks from src/v2/hooks/ instead.
+// V1 legacy code still uses this store during migration.
+
 // Helper to extract error message from various error formats
 const getErrorMessage = (error, fallback = 'An error occurred') => {
   if (!error) return fallback;

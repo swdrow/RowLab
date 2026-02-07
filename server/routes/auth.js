@@ -8,10 +8,7 @@ import {
   getCurrentUser,
   logoutUser,
 } from '../services/authService.js';
-import {
-  rotateRefreshToken,
-  generateAccessToken,
-} from '../services/tokenService.js';
+import { rotateRefreshToken, generateAccessToken } from '../services/tokenService.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { prisma } from '../db/connection.js';
 import logger from '../utils/logger.js';
@@ -268,6 +265,98 @@ router.get('/me', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to get user' },
+    });
+  }
+});
+
+/**
+ * POST /api/v1/auth/dev-login
+ * Passwordless admin login — only from localhost or Tailscale (100.x.x.x)
+ */
+router.post('/dev-login', async (req, res) => {
+  // Check source IP
+  const forwarded = req.headers['x-forwarded-for'];
+  const rawIp = forwarded ? String(forwarded).split(',')[0].trim() : req.socket.remoteAddress;
+  const ip = rawIp?.replace(/^::ffff:/, '') || '';
+
+  const isLocal = ip === '127.0.0.1' || ip === '::1' || ip === 'localhost';
+  const isTailscale = ip.startsWith('100.');
+  const isPrivate = ip.startsWith('10.') || ip.startsWith('192.168.');
+
+  if (!isLocal && !isTailscale && !isPrivate) {
+    logger.warn('Dev-login rejected from IP', { ip });
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'FORBIDDEN',
+        message: 'Dev login only available from local/Tailscale network',
+      },
+    });
+  }
+
+  try {
+    // Find the admin user
+    const user = await prisma.user.findFirst({
+      where: { isAdmin: true },
+      include: {
+        memberships: {
+          include: { team: true },
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NO_ADMIN', message: 'No admin user found — run npm run db:seed' },
+      });
+    }
+
+    // Generate tokens (same as normal login)
+    const { generateAccessToken, generateRefreshToken } =
+      await import('../services/tokenService.js');
+
+    const firstMembership = user.memberships[0];
+    const activeTeamId = firstMembership?.teamId || null;
+    const activeTeamRole = firstMembership?.role || null;
+
+    const accessToken = generateAccessToken(user, activeTeamId, activeTeamRole);
+    const { token: refreshToken } = await generateRefreshToken(user.id);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    logger.info('Dev-login successful', { userId: user.id, ip });
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          name: user.name,
+          isAdmin: user.isAdmin,
+        },
+        teams: user.memberships.map((m) => ({
+          id: m.team.id,
+          name: m.team.name,
+          slug: m.team.slug,
+          role: m.role,
+        })),
+        activeTeamId,
+        accessToken,
+      },
+    });
+  } catch (error) {
+    logger.error('Dev-login error', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Dev login failed' },
     });
   }
 });

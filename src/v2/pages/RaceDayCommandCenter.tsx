@@ -12,12 +12,12 @@ import {
 } from '../components/race-day';
 import { useRegatta } from '../hooks/useRegattas';
 import type { RaceDayEvent } from '../types/regatta';
-import useAuthStore from '@/store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 
 export function RaceDayCommandCenter() {
   const { regattaId } = useParams<{ regattaId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user } = useAuth();
 
   const [selectedRaceId, setSelectedRaceId] = useState<string | null>(null);
 

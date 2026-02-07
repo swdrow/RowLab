@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useFeature } from './useFeaturePreference';
 import type { GamificationApiResponse } from '../types/gamification';
 
@@ -11,15 +12,14 @@ import type { GamificationApiResponse } from '../types/gamification';
  * @returns Object with enabled status and loading state
  */
 export function useGamificationEnabled() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   // Team-level feature toggle
   const teamEnabled = useFeature('gamification');
 
   // Athlete-level preference
   const { data: athletePrefs, isLoading } = useQuery({
-    queryKey: ['athlete', 'gamification-preference'],
+    queryKey: queryKeys.gamification.preferences(),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ gamificationEnabled: boolean }>>(
         '/api/v1/athletes/me/preferences'

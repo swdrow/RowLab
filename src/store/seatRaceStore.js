@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 
 /**
+ * @deprecated Phase 25-04
+ *
+ * This V1 Zustand store has been replaced by V2 TanStack Query hooks:
+ * - useSeatRaceSessions (src/v2/hooks/useSeatRaceSessions.ts)
+ *
+ * V1 legacy components still reference this store. Do NOT add new functionality here.
+ * New seat racing features should use the V2 hooks.
+ *
+ * TODO(phase-25-08): Complete V1 → V2 migration and delete this file
+ */
+
+/**
  * Zustand store for managing seat race sessions
  *
  * Features:
@@ -123,13 +135,8 @@ const useSeatRaceStore = create((set, get) => ({
       if (responseData.success) {
         const session = responseData.data.session || responseData.data;
         set((state) => ({
-          sessions: state.sessions.map((s) =>
-            s.id === sessionId ? session : s
-          ),
-          currentSession:
-            state.currentSession?.id === sessionId
-              ? session
-              : state.currentSession,
+          sessions: state.sessions.map((s) => (s.id === sessionId ? session : s)),
+          currentSession: state.currentSession?.id === sessionId ? session : state.currentSession,
           loading: false,
         }));
         return session;
@@ -157,10 +164,7 @@ const useSeatRaceStore = create((set, get) => ({
       if (data.success) {
         set((state) => ({
           sessions: state.sessions.filter((s) => s.id !== sessionId),
-          currentSession:
-            state.currentSession?.id === sessionId
-              ? null
-              : state.currentSession,
+          currentSession: state.currentSession?.id === sessionId ? null : state.currentSession,
           loading: false,
         }));
         return true;
@@ -201,9 +205,7 @@ const useSeatRaceStore = create((set, get) => ({
             };
             return {
               currentSession: updatedSession,
-              sessions: state.sessions.map((s) =>
-                s.id === sessionId ? updatedSession : s
-              ),
+              sessions: state.sessions.map((s) => (s.id === sessionId ? updatedSession : s)),
               loading: false,
             };
           }
@@ -294,9 +296,7 @@ const useSeatRaceStore = create((set, get) => ({
           if (state.currentSession?.pieces) {
             const updatedPieces = state.currentSession.pieces.map((piece) => ({
               ...piece,
-              boats: (piece.boats || []).map((boat) =>
-                boat.id === boatId ? updatedBoat : boat
-              ),
+              boats: (piece.boats || []).map((boat) => (boat.id === boatId ? updatedBoat : boat)),
             }));
             const updatedSession = {
               ...state.currentSession,

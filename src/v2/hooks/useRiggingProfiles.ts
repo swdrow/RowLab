@@ -3,29 +3,24 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '../../store/authStore';
+import { queryKeys } from '../lib/queryKeys';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../utils/api';
 import type { RiggingProfile, RiggingProfileInput, RiggingDefaults } from '../types/rigging';
 
 // Query key factory
-export const riggingKeys = {
-  all: ['rigging'] as const,
-  defaults: () => [...riggingKeys.all, 'defaults'] as const,
-  profiles: () => [...riggingKeys.all, 'profiles'] as const,
-  profile: (shellId: string) => [...riggingKeys.all, 'profile', shellId] as const,
-};
 
 /**
  * Get default rigging values for all boat classes
  */
 export function useDefaultRigging() {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   return useQuery({
-    queryKey: riggingKeys.defaults(),
+    queryKey: queryKeys.rigging.defaults(),
     queryFn: async (): Promise<Record<string, RiggingDefaults>> => {
-      const response = await authenticatedFetch('/api/v1/rigging/defaults');
-      const data = await response.json();
+      const response = await api.get('/api/v1/rigging/defaults');
+      const data = await response.data;
       if (!data.success) throw new Error(data.error?.message || 'Failed to fetch defaults');
       return data.data.defaults;
     },
@@ -38,14 +33,13 @@ export function useDefaultRigging() {
  * Get all team rigging profiles
  */
 export function useTeamRiggingProfiles() {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   return useQuery({
-    queryKey: riggingKeys.profiles(),
+    queryKey: queryKeys.rigging.profiles(),
     queryFn: async (): Promise<RiggingProfile[]> => {
-      const response = await authenticatedFetch('/api/v1/rigging');
-      const data = await response.json();
+      const response = await api.get('/api/v1/rigging');
+      const data = await response.data;
       if (!data.success) throw new Error(data.error?.message || 'Failed to fetch profiles');
       return data.data.profiles;
     },
@@ -58,14 +52,13 @@ export function useTeamRiggingProfiles() {
  * Get rigging profile for a specific shell
  */
 export function useRiggingProfile(shellId: string | null) {
-  const { authenticatedFetch, isAuthenticated, isInitialized, activeTeamId } =
-    useAuthStore();
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   return useQuery({
-    queryKey: riggingKeys.profile(shellId || ''),
+    queryKey: queryKeys.rigging.profile(shellId || ''),
     queryFn: async (): Promise<RiggingProfile & { isCustom: boolean }> => {
-      const response = await authenticatedFetch(`/api/v1/rigging/shell/${shellId}`);
-      const data = await response.json();
+      const response = await api.get(`/api/v1/rigging/shell/${shellId}`);
+      const data = await response.data;
       if (!data.success) throw new Error(data.error?.message || 'Failed to fetch profile');
       return data.data.profile;
     },
@@ -78,7 +71,6 @@ export function useRiggingProfile(shellId: string | null) {
  * Save (create/update) rigging profile
  */
 export function useSaveRiggingProfile() {
-  const { authenticatedFetch } = useAuthStore();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -89,18 +81,14 @@ export function useSaveRiggingProfile() {
       shellId: string;
       data: RiggingProfileInput;
     }): Promise<RiggingProfile> => {
-      const response = await authenticatedFetch(`/api/v1/rigging/shell/${shellId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
+      const response = await api.put(`/api/v1/rigging/shell/${shellId}`, data);
+      const result = response.data;
       if (!result.success) throw new Error(result.error?.message || 'Failed to save profile');
       return result.data.profile;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: riggingKeys.profile(variables.shellId) });
-      queryClient.invalidateQueries({ queryKey: riggingKeys.profiles() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rigging.profile(variables.shellId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rigging.profiles() });
     },
   });
 }
@@ -109,20 +97,17 @@ export function useSaveRiggingProfile() {
  * Delete rigging profile (revert to defaults)
  */
 export function useDeleteRiggingProfile() {
-  const { authenticatedFetch } = useAuthStore();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (shellId: string): Promise<void> => {
-      const response = await authenticatedFetch(`/api/v1/rigging/shell/${shellId}`, {
-        method: 'DELETE',
-      });
-      const result = await response.json();
+      const response = await api.delete(`/api/v1/rigging/shell/${shellId}`);
+      const result = response.data;
       if (!result.success) throw new Error(result.error?.message || 'Failed to delete profile');
     },
     onSuccess: (_, shellId) => {
-      queryClient.invalidateQueries({ queryKey: riggingKeys.profile(shellId) });
-      queryClient.invalidateQueries({ queryKey: riggingKeys.profiles() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rigging.profile(shellId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rigging.profiles() });
     },
   });
 }

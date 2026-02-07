@@ -4,11 +4,7 @@
  */
 
 // User settings
-export {
-  useSettings,
-  useUpdateSettings,
-  settingsKeys,
-} from '@v2/hooks/useSettings';
+export { useSettings, useUpdateSettings, settingsKeys } from '@v2/hooks/useSettings';
 
 // Team settings
 export {
@@ -30,7 +26,6 @@ export {
   useC2SyncConfig,
   useUpdateC2SyncConfig,
   useSyncC2ToStrava,
-  integrationKeys,
 } from '@v2/hooks/useIntegrations';
 
 // Face detection for photo uploads

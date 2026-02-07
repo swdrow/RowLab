@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { OarSet, ApiResponse } from '../types/coach';
 
 /**
@@ -19,9 +20,7 @@ async function fetchOarSets(): Promise<OarSet[]> {
 /**
  * Create a new oar set
  */
-async function createOarSet(
-  data: Omit<OarSet, 'id' | 'teamId'>
-): Promise<OarSet> {
+async function createOarSet(data: Omit<OarSet, 'id' | 'teamId'>): Promise<OarSet> {
   const response = await api.post<ApiResponse<OarSet>>('/api/v1/oar-sets', data);
 
   if (!response.data.success || !response.data.data) {
@@ -34,9 +33,7 @@ async function createOarSet(
 /**
  * Update an existing oar set
  */
-async function updateOarSet(
-  data: OarSet
-): Promise<OarSet> {
+async function updateOarSet(data: OarSet): Promise<OarSet> {
   const response = await api.put<ApiResponse<OarSet>>(`/api/v1/oar-sets/${data.id}`, data);
 
   if (!response.data.success || !response.data.data) {
@@ -62,11 +59,10 @@ async function deleteOarSet(id: string): Promise<void> {
  */
 export function useOarSets() {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['oar-sets'],
+    queryKey: queryKeys.oarSets.list(),
     queryFn: fetchOarSets,
     enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes - equipment doesn't change often
@@ -76,13 +72,13 @@ export function useOarSets() {
     mutationFn: createOarSet,
     onMutate: async (newOarSet) => {
       // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['oar-sets'] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.oarSets.list() });
 
       // Snapshot previous value
-      const previousOarSets = queryClient.getQueryData<OarSet[]>(['oar-sets']);
+      const previousOarSets = queryClient.getQueryData<OarSet[]>(queryKeys.oarSets.list());
 
       // Optimistically update with temporary ID
-      queryClient.setQueryData<OarSet[]>(['oar-sets'], (old = []) => [
+      queryClient.setQueryData<OarSet[]>(queryKeys.oarSets.list(), (old = []) => [
         ...old,
         { ...newOarSet, id: 'temp-' + Date.now(), teamId: 'temp' } as OarSet,
       ]);
@@ -92,23 +88,23 @@ export function useOarSets() {
     onError: (err, newOarSet, context) => {
       // Rollback on error
       if (context?.previousOarSets) {
-        queryClient.setQueryData(['oar-sets'], context.previousOarSets);
+        queryClient.setQueryData(queryKeys.oarSets.list(), context.previousOarSets);
       }
     },
     onSettled: () => {
       // Refetch to get server state
-      queryClient.invalidateQueries({ queryKey: ['oar-sets'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.oarSets.list() });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: updateOarSet,
     onMutate: async (updatedOarSet) => {
-      await queryClient.cancelQueries({ queryKey: ['oar-sets'] });
-      const previousOarSets = queryClient.getQueryData<OarSet[]>(['oar-sets']);
+      await queryClient.cancelQueries({ queryKey: queryKeys.oarSets.list() });
+      const previousOarSets = queryClient.getQueryData<OarSet[]>(queryKeys.oarSets.list());
 
       // Optimistically update
-      queryClient.setQueryData<OarSet[]>(['oar-sets'], (old = []) =>
+      queryClient.setQueryData<OarSet[]>(queryKeys.oarSets.list(), (old = []) =>
         old.map((oarSet) => (oarSet.id === updatedOarSet.id ? updatedOarSet : oarSet))
       );
 
@@ -116,22 +112,22 @@ export function useOarSets() {
     },
     onError: (err, updatedOarSet, context) => {
       if (context?.previousOarSets) {
-        queryClient.setQueryData(['oar-sets'], context.previousOarSets);
+        queryClient.setQueryData(queryKeys.oarSets.list(), context.previousOarSets);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['oar-sets'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.oarSets.list() });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteOarSet,
     onMutate: async (deletedId) => {
-      await queryClient.cancelQueries({ queryKey: ['oar-sets'] });
-      const previousOarSets = queryClient.getQueryData<OarSet[]>(['oar-sets']);
+      await queryClient.cancelQueries({ queryKey: queryKeys.oarSets.list() });
+      const previousOarSets = queryClient.getQueryData<OarSet[]>(queryKeys.oarSets.list());
 
       // Optimistically remove
-      queryClient.setQueryData<OarSet[]>(['oar-sets'], (old = []) =>
+      queryClient.setQueryData<OarSet[]>(queryKeys.oarSets.list(), (old = []) =>
         old.filter((oarSet) => oarSet.id !== deletedId)
       );
 
@@ -139,11 +135,11 @@ export function useOarSets() {
     },
     onError: (err, deletedId, context) => {
       if (context?.previousOarSets) {
-        queryClient.setQueryData(['oar-sets'], context.previousOarSets);
+        queryClient.setQueryData(queryKeys.oarSets.list(), context.previousOarSets);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['oar-sets'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.oarSets.list() });
     },
   });
 

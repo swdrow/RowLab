@@ -1,18 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuthStore from '@/store/authStore';
+import { queryKeys } from '../lib/queryKeys';
+import { useAuth } from '../contexts/AuthContext';
 import type { Regatta, RegattaFormData } from '../types/regatta';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Query keys
-export const regattaKeys = {
-  all: ['regattas'] as const,
-  lists: () => [...regattaKeys.all, 'list'] as const,
-  list: (filters: { season?: string; limit?: number }) =>
-    [...regattaKeys.lists(), filters] as const,
-  details: () => [...regattaKeys.all, 'detail'] as const,
-  detail: (id: string) => [...regattaKeys.details(), id] as const,
-};
 
 // Fetch regattas list
 async function fetchRegattas(
@@ -49,10 +42,7 @@ async function fetchRegatta(token: string, id: string): Promise<Regatta> {
 }
 
 // Create regatta
-async function createRegatta(
-  token: string,
-  regatta: RegattaFormData
-): Promise<Regatta> {
+async function createRegatta(token: string, regatta: RegattaFormData): Promise<Regatta> {
   const res = await fetch(`${API_URL}/api/v1/regattas`, {
     method: 'POST',
     headers: {
@@ -111,10 +101,10 @@ async function deleteRegatta(token: string, id: string): Promise<void> {
  * Fetch list of regattas
  */
 export function useRegattas(options?: { season?: string; limit?: number }) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
-    queryKey: regattaKeys.list(options || {}),
+    queryKey: queryKeys.regattas.list(options || {}),
     queryFn: () => fetchRegattas(accessToken!, options),
     enabled: !!accessToken,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -125,10 +115,10 @@ export function useRegattas(options?: { season?: string; limit?: number }) {
  * Fetch single regatta with full hierarchy
  */
 export function useRegatta(id: string | undefined) {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
 
   return useQuery({
-    queryKey: regattaKeys.detail(id!),
+    queryKey: queryKeys.regattas.detail(id!),
     queryFn: () => fetchRegatta(accessToken!, id!),
     enabled: !!accessToken && !!id,
     staleTime: 5 * 60 * 1000,
@@ -139,13 +129,13 @@ export function useRegatta(id: string | undefined) {
  * Create a new regatta
  */
 export function useCreateRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (regatta: RegattaFormData) => createRegatta(accessToken!, regatta),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.lists() });
     },
   });
 }
@@ -154,15 +144,15 @@ export function useCreateRegatta() {
  * Update an existing regatta
  */
 export function useUpdateRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: Partial<RegattaFormData> }) =>
       updateRegatta(accessToken!, id, updates),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.lists() });
-      queryClient.setQueryData(regattaKeys.detail(data.id), data);
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.lists() });
+      queryClient.setQueryData(queryKeys.regattas.detail(data.id), data);
     },
   });
 }
@@ -171,14 +161,14 @@ export function useUpdateRegatta() {
  * Delete a regatta
  */
 export function useDeleteRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => deleteRegatta(accessToken!, id),
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.lists() });
-      queryClient.removeQueries({ queryKey: regattaKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.lists() });
+      queryClient.removeQueries({ queryKey: queryKeys.regattas.detail(id) });
     },
   });
 }
@@ -187,7 +177,7 @@ export function useDeleteRegatta() {
  * Duplicate a regatta (copy metadata, clear results)
  */
 export function useDuplicateRegatta() {
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -213,7 +203,7 @@ export function useDuplicateRegatta() {
       return createRegatta(accessToken!, newRegatta);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: regattaKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.regattas.lists() });
     },
   });
 }

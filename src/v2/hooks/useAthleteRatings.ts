@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { RatingWithAthlete, Side, ApiResponse } from '../types/seatRacing';
 
 /**
@@ -80,9 +81,7 @@ async function fetchAthleteRatingHistory(athleteId: string): Promise<RatingWithA
  * Recalculate all ratings from scratch
  */
 async function recalculateRatings(): Promise<{ updated: number }> {
-  const response = await api.post<ApiResponse<{ updated: number }>>(
-    '/api/v1/ratings/recalculate'
-  );
+  const response = await api.post<ApiResponse<{ updated: number }>>('/api/v1/ratings/recalculate');
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to recalculate ratings');
@@ -114,15 +113,17 @@ async function recalculateRatings(): Promise<{ updated: number }> {
  * });
  */
 export function useAthleteRatings(options?: RatingsOptions) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
-  const activeTeamId = useAuthStore((state) => state.activeTeamId);
+  const { isAuthenticated, isInitialized, activeTeamId } = useAuth();
 
   const query = useQuery({
-    queryKey: ['athleteRatings', activeTeamId, options?.ratingType, options?.minRaces, options?.side],
+    queryKey: [
+      ...queryKeys.ratings.rankings(options?.side),
+      options?.ratingType,
+      options?.minRaces,
+    ],
     queryFn: () => fetchAthleteRatings(activeTeamId!, options),
     enabled: isInitialized && isAuthenticated && !!activeTeamId,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -142,14 +143,13 @@ export function useAthleteRatings(options?: RatingsOptions) {
  * NOTE: This hook may return empty array if API doesn't exist yet (Phase 9 MVP).
  */
 export function useAthleteRatingHistory(athleteId: string | null) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['athleteRatingHistory', athleteId],
+    queryKey: queryKeys.ratings.athlete(athleteId || ''),
     queryFn: () => fetchAthleteRatingHistory(athleteId!),
     enabled: isInitialized && isAuthenticated && !!athleteId,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -187,8 +187,7 @@ export function useRecalculateRatings() {
     mutationFn: recalculateRatings,
     onSuccess: () => {
       // Invalidate all rating queries to refetch with updated values
-      queryClient.invalidateQueries({ queryKey: ['athleteRatings'] });
-      queryClient.invalidateQueries({ queryKey: ['athleteRatingHistory'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.ratings.all });
     },
   });
 

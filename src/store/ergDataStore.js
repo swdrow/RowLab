@@ -1,3 +1,15 @@
+/**
+ * @deprecated Phase 25-04
+ *
+ * This V1 Zustand store has been replaced by V2 TanStack Query hooks:
+ * - useErgTests (src/v2/hooks/useErgTests.ts)
+ *
+ * V1 legacy components still reference this store. Do NOT add new functionality here.
+ * New erg data features should use the V2 hooks.
+ *
+ * TODO(phase-25-08): Complete V1 → V2 migration and delete this file
+ */
+
 import { create } from 'zustand';
 import useAuthStore from './authStore';
 

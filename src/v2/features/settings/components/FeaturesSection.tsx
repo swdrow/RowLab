@@ -1,6 +1,6 @@
 import React from 'react';
 import { Info } from 'lucide-react';
-import useAuthStore from '@/store/authStore';
+import { useAuth } from '../../../contexts/AuthContext';
 import { useFeaturePreferenceStore } from '@v2/stores/featurePreferenceStore';
 import { FEATURE_GROUPS, ALL_FEATURES } from '@v2/types/feature-toggles';
 import { FeatureGroupCard } from './FeatureGroupCard';
@@ -15,7 +15,7 @@ import { FeatureGroupCard } from './FeatureGroupCard';
  * - Info banner for non-admin users
  */
 export const FeaturesSection: React.FC = () => {
-  const { activeTeamRole } = useAuthStore();
+  const { activeTeamRole } = useAuth();
   const { enabledFeatures, toggleFeature, isFeatureEnabled } = useFeaturePreferenceStore();
 
   // Determine if user can edit features

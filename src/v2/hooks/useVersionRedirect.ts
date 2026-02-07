@@ -3,6 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useUserPreferenceStore } from '@v2/stores/userPreferenceStore';
 
 /**
+ * @deprecated Phase 26 consolidated all routes under /app/*. Legacy and beta
+ * routes now redirect via LegacyRedirect component in App.jsx.
+ * This hook is no longer used. Will be removed in Phase 36 (V1/V2 Cleanup).
+ *
  * Redirects users based on their version preference.
  * - If useLegacyMode is true and user is on V2 routes, redirect to /legacy
  * - If useLegacyMode is false and user is on /legacy routes, redirect to /
@@ -18,13 +22,23 @@ export function useVersionRedirect() {
     const path = location.pathname;
 
     // Paths that should NOT trigger redirects
-    const excludedPaths = ['/login', '/register', '/join', '/concept2/callback', '/settings/integrations'];
-    if (excludedPaths.some(excluded => path === excluded || path.startsWith(excluded))) {
+    const excludedPaths = [
+      '/login',
+      '/register',
+      '/join',
+      '/concept2/callback',
+      '/settings/integrations',
+    ];
+    if (excludedPaths.some((excluded) => path === excluded || path.startsWith(excluded))) {
       return;
     }
 
     const isOnLegacy = path.startsWith('/legacy');
-    const isOnV2 = path === '/' || path.startsWith('/me') || path.startsWith('/coach') || path.startsWith('/admin');
+    const isOnV2 =
+      path === '/' ||
+      path.startsWith('/me') ||
+      path.startsWith('/coach') ||
+      path.startsWith('/admin');
 
     // User wants legacy but is on V2 routes
     if (useLegacyMode && isOnV2) {

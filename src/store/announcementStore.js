@@ -1,5 +1,9 @@
 import { create } from 'zustand';
+
 import { getErrorMessage } from '../utils/errorUtils';
+
+// @deprecated This store is deprecated. Use TanStack Query hooks from src/v2/hooks/ instead.
+// V1 legacy code still uses this store during migration.
 
 /**
  * Zustand store for managing announcements
@@ -83,8 +87,7 @@ const useAnnouncementStore = create((set, get) => ({
       const searchParams = new URLSearchParams();
       if (params.priority) searchParams.append('priority', params.priority);
       if (params.pinnedOnly) searchParams.append('pinnedOnly', params.pinnedOnly);
-      if (params.includeRead !== undefined)
-        searchParams.append('includeRead', params.includeRead);
+      if (params.includeRead !== undefined) searchParams.append('includeRead', params.includeRead);
 
       const queryString = searchParams.toString();
       const url = `/api/v1/announcements${queryString ? `?${queryString}` : ''}`;
@@ -217,13 +220,9 @@ const useAnnouncementStore = create((set, get) => ({
 
       const updatedAnnouncement = data.data.announcement;
       set((state) => ({
-        announcements: state.announcements.map((a) =>
-          a._id === id ? updatedAnnouncement : a
-        ),
+        announcements: state.announcements.map((a) => (a._id === id ? updatedAnnouncement : a)),
         selectedAnnouncement:
-          state.selectedAnnouncement?._id === id
-            ? updatedAnnouncement
-            : state.selectedAnnouncement,
+          state.selectedAnnouncement?._id === id ? updatedAnnouncement : state.selectedAnnouncement,
         loading: false,
       }));
       return updatedAnnouncement;

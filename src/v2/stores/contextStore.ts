@@ -13,9 +13,9 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
     icon: 'user',
     shortcut: '⌘1',
     navItems: [
-      { to: '/beta/dashboard', label: 'Dashboard', icon: 'home' },
-      { to: '/beta/workouts', label: 'My Workouts', icon: 'activity' },
-      { to: '/beta/progress', label: 'Progress', icon: 'trending-up' },
+      { to: '/app', label: 'Dashboard', icon: 'home' },
+      { to: '/app/workouts', label: 'My Workouts', icon: 'activity' },
+      { to: '/app/progress', label: 'Progress', icon: 'trending-up' },
       { to: '/app/achievements', label: 'Achievements', icon: 'trophy' },
       { to: '/app/challenges', label: 'Challenges', icon: 'flag' },
     ],
@@ -44,8 +44,8 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
     icon: 'shield',
     shortcut: '⌘3',
     navItems: [
-      { to: '/beta/users', label: 'Users', icon: 'users' },
-      { to: '/beta/teams', label: 'Teams', icon: 'team' },
+      { to: '/app/users', label: 'Users', icon: 'users' },
+      { to: '/app/teams', label: 'Teams', icon: 'team' },
       { to: '/app/settings', label: 'Settings', icon: 'settings' },
     ],
   },

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { useShowGamification } from './useGamificationPreference';
 import type {
   Challenge,
@@ -13,25 +14,16 @@ import type {
 /**
  * Query key factory for challenges
  */
-export const challengeKeys = {
-  all: ['challenges'] as const,
-  list: (status?: string) => [...challengeKeys.all, 'list', status] as const,
-  active: () => [...challengeKeys.all, 'active'] as const,
-  detail: (id: string) => [...challengeKeys.all, 'detail', id] as const,
-  leaderboard: (id: string) => [...challengeKeys.all, 'leaderboard', id] as const,
-  templates: () => [...challengeKeys.all, 'templates'] as const,
-};
 
 /**
  * Hook for all challenges (with optional status filter)
  */
 export function useChallenges(status?: 'active' | 'completed' | 'cancelled') {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: challengeKeys.list(status),
+    queryKey: queryKeys.challenges.list(status),
     queryFn: async () => {
       const url = status
         ? `/api/v1/challenges?status=${status}`
@@ -51,12 +43,11 @@ export function useChallenges(status?: 'active' | 'completed' | 'cancelled') {
  * Hook for active challenges
  */
 export function useActiveChallenges() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: challengeKeys.active(),
+    queryKey: queryKeys.challenges.active(),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ challenges: Challenge[] }>>(
         '/api/v1/challenges/active'
@@ -75,11 +66,10 @@ export function useActiveChallenges() {
  * Hook for challenge templates
  */
 export function useChallengeTemplates() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   return useQuery({
-    queryKey: challengeKeys.templates(),
+    queryKey: queryKeys.challenges.templates(),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ templates: ChallengeTemplate[] }>>(
         '/api/v1/challenges/templates'
@@ -98,12 +88,11 @@ export function useChallengeTemplates() {
  * Hook for single challenge details
  */
 export function useChallenge(challengeId: string) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: challengeKeys.detail(challengeId),
+    queryKey: queryKeys.challenges.detail(challengeId),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<{ challenge: Challenge }>>(
         `/api/v1/challenges/${challengeId}`
@@ -123,12 +112,11 @@ export function useChallenge(challengeId: string) {
  * Uses 5s refetchInterval and staleTime: 0 per RESEARCH.md
  */
 export function useLeaderboard(challengeId: string, isActive: boolean = true) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
   const showGamification = useShowGamification();
 
   return useQuery({
-    queryKey: challengeKeys.leaderboard(challengeId),
+    queryKey: queryKeys.challenges.leaderboard(challengeId),
     queryFn: async () => {
       const response = await api.get<GamificationApiResponse<LeaderboardResponse>>(
         `/api/v1/challenges/${challengeId}/leaderboard`
@@ -165,7 +153,7 @@ export function useCreateChallenge() {
       return response.data.data.challenge;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: challengeKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.challenges.all });
     },
   });
 }
@@ -187,8 +175,8 @@ export function useJoinChallenge() {
       return response.data.data;
     },
     onSuccess: (_, challengeId) => {
-      queryClient.invalidateQueries({ queryKey: challengeKeys.detail(challengeId) });
-      queryClient.invalidateQueries({ queryKey: challengeKeys.leaderboard(challengeId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(challengeId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.challenges.leaderboard(challengeId) });
     },
   });
 }
@@ -210,8 +198,8 @@ export function useLeaveChallenge() {
       return response.data.data;
     },
     onSuccess: (_, challengeId) => {
-      queryClient.invalidateQueries({ queryKey: challengeKeys.detail(challengeId) });
-      queryClient.invalidateQueries({ queryKey: challengeKeys.leaderboard(challengeId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(challengeId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.challenges.leaderboard(challengeId) });
     },
   });
 }
@@ -233,7 +221,7 @@ export function useRefreshLeaderboard() {
       return response.data.data;
     },
     onSuccess: (data, challengeId) => {
-      queryClient.setQueryData(challengeKeys.leaderboard(challengeId), data);
+      queryClient.setQueryData(queryKeys.challenges.leaderboard(challengeId), data);
     },
   });
 }
@@ -255,7 +243,7 @@ export function useCancelChallenge() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: challengeKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.challenges.all });
     },
   });
 }

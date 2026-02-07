@@ -1,15 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import type { TeamSettings, TeamVisibility, ApiResponse } from '../types/settings';
-
-/**
- * Query keys for team settings
- */
-export const teamSettingsKeys = {
-  all: ['settings', 'team'] as const,
-  visibility: () => [...teamSettingsKeys.all, 'visibility'] as const,
-};
 
 /**
  * Fetch team settings from API (OWNER only)
@@ -28,7 +21,9 @@ async function fetchTeamSettings(): Promise<TeamSettings> {
  * Update team visibility settings
  */
 async function updateTeamVisibility(visibility: TeamVisibility): Promise<TeamSettings> {
-  const response = await api.patch<ApiResponse<TeamSettings>>('/api/v1/settings/team', { visibility });
+  const response = await api.patch<ApiResponse<TeamSettings>>('/api/v1/settings/team', {
+    visibility,
+  });
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to save team settings');
@@ -43,11 +38,10 @@ async function updateTeamVisibility(visibility: TeamVisibility): Promise<TeamSet
  * @param enabled - Whether to enable the query (typically based on role check)
  */
 export function useTeamSettings(enabled: boolean = true) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: teamSettingsKeys.all,
+    queryKey: queryKeys.settings.all,
     queryFn: fetchTeamSettings,
     enabled: isInitialized && isAuthenticated && enabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -72,14 +66,14 @@ export function useUpdateTeamVisibility() {
     mutationFn: updateTeamVisibility,
     onMutate: async (newVisibility) => {
       // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: teamSettingsKeys.all });
+      await queryClient.cancelQueries({ queryKey: queryKeys.settings.all });
 
       // Snapshot previous value
-      const previousSettings = queryClient.getQueryData<TeamSettings>(teamSettingsKeys.all);
+      const previousSettings = queryClient.getQueryData<TeamSettings>(queryKeys.settings.all);
 
       // Optimistically update
       if (previousSettings) {
-        queryClient.setQueryData(teamSettingsKeys.all, {
+        queryClient.setQueryData(queryKeys.settings.all, {
           ...previousSettings,
           visibility: newVisibility,
         });
@@ -90,12 +84,12 @@ export function useUpdateTeamVisibility() {
     onError: (_err, _newVisibility, context) => {
       // Rollback on error
       if (context?.previousSettings) {
-        queryClient.setQueryData(teamSettingsKeys.all, context.previousSettings);
+        queryClient.setQueryData(queryKeys.settings.all, context.previousSettings);
       }
     },
     onSettled: () => {
       // Refetch after mutation settles
-      queryClient.invalidateQueries({ queryKey: teamSettingsKeys.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.settings.all });
     },
   });
 

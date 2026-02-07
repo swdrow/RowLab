@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
+import { queryKeys } from '../lib/queryKeys';
 import type { Whiteboard, ApiResponse } from '../types/coach';
 
 /**
@@ -27,9 +28,7 @@ async function fetchWhiteboard(): Promise<Whiteboard | null> {
 /**
  * Save whiteboard (create or update)
  */
-async function saveWhiteboard(
-  data: Pick<Whiteboard, 'date' | 'content'>
-): Promise<Whiteboard> {
+async function saveWhiteboard(data: Pick<Whiteboard, 'date' | 'content'>): Promise<Whiteboard> {
   const response = await api.post<ApiResponse<Whiteboard>>('/api/v1/whiteboards', data);
 
   if (!response.data.success || !response.data.data) {
@@ -55,29 +54,56 @@ async function deleteWhiteboard(id: string): Promise<void> {
  */
 export function useWhiteboard() {
   const queryClient = useQueryClient();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const { isAuthenticated, isInitialized } = useAuth();
 
   const query = useQuery({
-    queryKey: ['whiteboard', 'latest'],
+    queryKey: queryKeys.whiteboard.latest(),
     queryFn: fetchWhiteboard,
     enabled: isInitialized && isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes - whiteboards don't change often
+    staleTime: 1 * 60 * 1000, // 1 minute - frequent updates
   });
 
   const saveMutation = useMutation({
     mutationFn: saveWhiteboard,
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.whiteboard.all });
+      const previous = queryClient.getQueryData(queryKeys.whiteboard.latest());
+
+      // Optimistic update — merge with existing data to preserve fields like id
+      if (previous) {
+        queryClient.setQueryData(queryKeys.whiteboard.latest(), { ...previous, ...newData });
+      } else {
+        queryClient.setQueryData(queryKeys.whiteboard.latest(), newData);
+      }
+
+      return { previous };
+    },
+    onError: (_err, _newData, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(queryKeys.whiteboard.latest(), context.previous);
+      }
+    },
     onSuccess: (data) => {
-      // Update cache immediately
-      queryClient.setQueryData(['whiteboard', 'latest'], data);
+      // Update cache with server response
+      queryClient.setQueryData(queryKeys.whiteboard.latest(), data);
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteWhiteboard,
-    onSuccess: () => {
-      // Clear cache on delete
-      queryClient.setQueryData(['whiteboard', 'latest'], null);
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.whiteboard.all });
+      const previous = queryClient.getQueryData(queryKeys.whiteboard.latest());
+
+      // Optimistic delete
+      queryClient.setQueryData(queryKeys.whiteboard.latest(), null);
+
+      return { previous };
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(queryKeys.whiteboard.latest(), context.previous);
+      }
     },
   });
 

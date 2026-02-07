@@ -1,5 +1,11 @@
 import { create } from 'zustand';
+
+// @deprecated This store is deprecated. Use TanStack Query hooks from src/v2/hooks/ instead.
+// V1 legacy code still uses this store during migration.
 import useAuthStore from './authStore.js';
+
+// @deprecated This store is deprecated. Use TanStack Query hooks from src/v2/hooks/ instead.
+// V1 legacy code still uses this store during migration.
 
 const API_URL = '/api/v1';
 

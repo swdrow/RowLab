@@ -12,7 +12,7 @@ const SESSION_TYPE_COLORS: Record<SessionType, string> = {
   RECOVERY: 'bg-pink-500/10 text-pink-500',
 };
 
-export function UpcomingSessionsWidget() {
+export function UpcomingSessionsWidget(_props: import('../../types').WidgetProps) {
   const today = new Date().toISOString().split('T')[0];
   const { sessions, isLoading } = useSessions({
     status: 'PLANNED',
@@ -30,10 +30,7 @@ export function UpcomingSessionsWidget() {
           <Calendar className="w-5 h-5 text-accent-primary" />
           Upcoming Sessions
         </h3>
-        <Link
-          to="/app/training/sessions"
-          className="text-sm text-accent-primary hover:underline"
-        >
+        <Link to="/app/training/sessions" className="text-sm text-accent-primary hover:underline">
           View all
         </Link>
       </div>
@@ -61,7 +58,9 @@ export function UpcomingSessionsWidget() {
                   border border-bdr-default hover:border-bdr-focus transition-colors group"
               >
                 <div className="flex items-center gap-3">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${SESSION_TYPE_COLORS[session.type]}`}>
+                  <span
+                    className={`px-2 py-0.5 rounded text-xs font-medium ${SESSION_TYPE_COLORS[session.type]}`}
+                  >
                     {session.type}
                   </span>
                   <div>

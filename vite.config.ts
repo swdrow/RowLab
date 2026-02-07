@@ -50,6 +50,16 @@ export default defineConfig({
         manualChunks: {
           // Core React dependencies
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          // State management and data fetching
+          'query-vendor': [
+            '@tanstack/react-query',
+            '@tanstack/react-table',
+            '@tanstack/react-virtual',
+          ],
+          // Forms
+          'forms-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          // UI libraries
+          'ui-vendor': ['@headlessui/react', 'sonner'],
           // 3D rendering (large chunk, load separately)
           'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
           // Animation library
@@ -60,6 +70,8 @@ export default defineConfig({
           'dnd-vendor': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
           // PDF/Export
           'export-vendor': ['jspdf', 'html2canvas'],
+          // Icons
+          'icons-vendor': ['@phosphor-icons/react', 'lucide-react'],
         },
       },
     },
