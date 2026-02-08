@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react';
 import { AnimatePresence, LayoutGroup } from 'framer-motion';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, Medal } from 'lucide-react';
+import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import type { RankingSource } from '../../types/regatta';
 import { useBoatClassRankings } from '../../hooks/useTeamRankings';
 import { getBoatClasses } from '../../utils/marginCalculations';
 import { RankingRow } from './RankingRow';
+import { RankingsSkeleton } from '../../features/regatta/components/RankingsSkeleton';
 
 type RankingsViewProps = {
   onSelectTeam?: (teamName: string, boatClass: string) => void;
@@ -73,8 +75,8 @@ export function RankingsView({ onSelectTeam }: RankingsViewProps) {
           </div>
 
           {loadingRankings ? (
-            <div className="p-8 text-center">
-              <div className="w-6 h-6 border-2 border-accent-primary border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="p-4">
+              <RankingsSkeleton />
             </div>
           ) : rankings && rankings.length > 0 ? (
             <LayoutGroup>

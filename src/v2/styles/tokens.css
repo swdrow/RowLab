@@ -17,34 +17,44 @@
      ======================================== */
 
   /* Display/Headlines: Fraunces serif for editorial authority */
-  --font-display: "Fraunces", "Source Serif Pro", Georgia, serif;
+  --font-display: 'Fraunces', 'Source Serif Pro', Georgia, serif;
 
   /* Body: Inter for clean readability */
-  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body:
+    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Data/Mono: Geist Mono for precision numbers */
-  --font-mono: "Geist Mono", "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --font-mono:
+    'Geist Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
 
   /* Metrics: Geist Mono for large hero numbers */
-  --font-metric: "Geist Mono", "Inter", system-ui, sans-serif;
+  --font-metric: 'Geist Mono', 'Inter', system-ui, sans-serif;
 
   /* ========================================
      LEVEL 1: INKWELL PALETTE
      Monochrome only - UI uses ONLY these
      ======================================== */
 
-  --ink-deep: #0A0A0A;        /* Deepest black - void/base */
-  --ink-base: #121212;        /* Primary surface - "paper" */
-  --ink-raised: #1A1A1A;      /* Elevated surfaces - cards */
-  --ink-float: #1F1F1F;       /* Floating elements - modals */
-  --ink-border: #262626;      /* Subtle borders */
+  --ink-deep: #0a0a0a; /* Deepest black - void/base */
+  --ink-base: #121212; /* Primary surface - "paper" */
+  --ink-raised: #1a1a1a; /* Elevated surfaces - cards */
+  --ink-float: #1f1f1f; /* Floating elements - modals */
+  --ink-border: #262626; /* Subtle borders */
   --ink-border-strong: #333333; /* Emphasized borders */
-  --ink-muted: #404040;       /* Muted/disabled elements */
-  --ink-tertiary: #525252;    /* Tertiary text */
-  --ink-secondary: #737373;   /* Secondary text */
-  --ink-body: #A3A3A3;        /* Body text */
-  --ink-primary: #E5E5E5;     /* Primary text */
-  --ink-bright: #FAFAFA;      /* Brightest - headlines, emphasis */
+  --ink-muted: #404040; /* Muted/disabled elements */
+  --ink-tertiary: #525252; /* Tertiary text */
+  --ink-secondary: #737373; /* Secondary text */
+  --ink-body: #a3a3a3; /* Body text */
+  --ink-primary: #e5e5e5; /* Primary text */
+  --ink-bright: #fafafa; /* Brightest - headlines, emphasis */
+  --ink-well: #0f0f0f; /* Inset/input backgrounds */
+  --ink-hover: #242424; /* Hover state for surfaces */
+
+  /* Accent Colors */
+  --accent-primary: #0070f3; /* Primary action blue */
+  --accent-primary-hover: #005fcc; /* Primary hover */
+  --accent-copper: #b87333; /* Warm copper brand accent */
+  --accent-copper-hover: #a06228; /* Copper hover */
 
   /* ========================================
      LEVEL 2: DATA COLORS
@@ -52,18 +62,18 @@
      ======================================== */
 
   /* Performance Spectrum - for metrics, status */
-  --data-excellent: #22C55E;   /* Green - above target, success */
-  --data-good: #3B82F6;        /* Blue - on target, info */
-  --data-warning: #F59E0B;     /* Amber - below target, caution */
-  --data-poor: #EF4444;        /* Red - needs attention, error */
+  --data-excellent: #22c55e; /* Green - above target, success */
+  --data-good: #3b82f6; /* Blue - on target, info */
+  --data-warning: #f59e0b; /* Amber - below target, caution */
+  --data-poor: #ef4444; /* Red - needs attention, error */
 
   /* Chart Palette - for multi-series visualization */
-  --chart-1: #3B82F6;          /* Blue - primary series */
-  --chart-2: #8B5CF6;          /* Purple - secondary */
-  --chart-3: #06B6D4;          /* Cyan - tertiary */
-  --chart-4: #F59E0B;          /* Amber - quaternary */
-  --chart-5: #EC4899;          /* Pink - fifth */
-  --chart-6: #10B981;          /* Emerald - sixth */
+  --chart-1: #3b82f6; /* Blue - primary series */
+  --chart-2: #8b5cf6; /* Purple - secondary */
+  --chart-3: #06b6d4; /* Cyan - tertiary */
+  --chart-4: #f59e0b; /* Amber - quaternary */
+  --chart-5: #ec4899; /* Pink - fifth */
+  --chart-6: #10b981; /* Emerald - sixth */
 
   /* Glow variants for Night Shift effect */
   --glow-excellent: rgba(34, 197, 94, 0.3);
@@ -78,11 +88,11 @@
      ======================================== */
 
   /* Text Luminance Levels */
-  --lum-glow: var(--ink-bright);      /* Level 1: Critical - glows */
-  --lum-lit: var(--ink-primary);      /* Level 2: Important - bright */
-  --lum-visible: var(--ink-body);     /* Level 3: Normal - readable */
+  --lum-glow: var(--ink-bright); /* Level 1: Critical - glows */
+  --lum-lit: var(--ink-primary); /* Level 2: Important - bright */
+  --lum-visible: var(--ink-body); /* Level 3: Normal - readable */
   --lum-receded: var(--ink-secondary); /* Level 4: Supporting - faded */
-  --lum-shadow: var(--ink-muted);     /* Level 5: Background - near-invisible */
+  --lum-shadow: var(--ink-muted); /* Level 5: Background - near-invisible */
 
   /* ========================================
      SEMANTIC TOKENS (mapped to Inkwell)
@@ -166,8 +176,8 @@
   --palette-stone-600: var(--ink-muted);
   --palette-stone-500: var(--ink-tertiary);
   --palette-stone-400: var(--ink-secondary);
-  --palette-stone-300: #D4D4D4;
-  --palette-stone-200: #E5E5E5;
+  --palette-stone-300: #d4d4d4;
+  --palette-stone-200: #e5e5e5;
   --palette-stone-100: var(--ink-primary);
   --palette-stone-50: var(--ink-bright);
 
@@ -189,7 +199,7 @@
   --palette-rowing-starboard: var(--data-excellent);
   --palette-rowing-port: var(--data-poor);
   --palette-rowing-gold: var(--data-warning);
-  --palette-rowing-premium: #8B5CF6;
+  --palette-rowing-premium: #8b5cf6;
 
   /* Brand colors */
   --palette-brand-red: var(--data-poor);
@@ -207,8 +217,8 @@
   --transition-slow: 300ms ease-out;
 
   /* Timing functions */
-  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
-  --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-snap: cubic-bezier(0, 0, 0.2, 1);
   --ease-precision: cubic-bezier(0.16, 1, 0.3, 1);
@@ -242,7 +252,7 @@
    ======================================== */
 
 .v2,
-.v2[data-theme="dark"] {
+.v2[data-theme='dark'] {
   color-scheme: dark;
 
   /* All tokens already set for dark in :root */
@@ -254,22 +264,30 @@
    Inverted inkwell for light mode
    ======================================== */
 
-.v2[data-theme="light"] {
+.v2[data-theme='light'] {
   color-scheme: light;
 
   /* Inverted Inkwell */
-  --ink-deep: #FAFAFA;
-  --ink-base: #F5F5F5;
-  --ink-raised: #FFFFFF;
-  --ink-float: #FFFFFF;
-  --ink-border: #E5E5E5;
-  --ink-border-strong: #D4D4D4;
-  --ink-muted: #A3A3A3;
+  --ink-deep: #fafafa;
+  --ink-base: #f5f5f5;
+  --ink-raised: #ffffff;
+  --ink-float: #ffffff;
+  --ink-border: #e5e5e5;
+  --ink-border-strong: #d4d4d4;
+  --ink-muted: #a3a3a3;
   --ink-tertiary: #737373;
   --ink-secondary: #525252;
   --ink-body: #404040;
-  --ink-primary: #1A1A1A;
-  --ink-bright: #0A0A0A;
+  --ink-primary: #1a1a1a;
+  --ink-bright: #0a0a0a;
+  --ink-well: #eeeeee;
+  --ink-hover: #e8e8e8;
+
+  /* Accent - same hues, adjusted for light bg */
+  --accent-primary: #0070f3;
+  --accent-primary-hover: #005fcc;
+  --accent-copper: #9a5f2b;
+  --accent-copper-hover: #7d4e23;
 
   /* Background overrides */
   --color-bg-overlay: rgba(250, 250, 250, 0.9);
@@ -293,28 +311,36 @@
    Maximum readability in sunlight
    ======================================== */
 
-.v2[data-theme="field"] {
+.v2[data-theme='field'] {
   color-scheme: light;
 
   /* High contrast warm palette */
-  --ink-deep: #FFFBEB;        /* amber-50 */
-  --ink-base: #FEF3C7;        /* amber-100 */
-  --ink-raised: #FFFFFF;
-  --ink-float: #FFFFFF;
-  --ink-border: #D6D3D1;      /* stone-300 */
-  --ink-border-strong: #A8A29E; /* stone-400 */
-  --ink-muted: #78716C;       /* stone-500 */
-  --ink-tertiary: #57534E;    /* stone-600 */
-  --ink-secondary: #44403C;   /* stone-700 */
-  --ink-body: #292524;        /* stone-800 */
-  --ink-primary: #1C1917;     /* stone-900 */
-  --ink-bright: #0C0A09;      /* stone-950 */
+  --ink-deep: #fffbeb; /* amber-50 */
+  --ink-base: #fef3c7; /* amber-100 */
+  --ink-raised: #ffffff;
+  --ink-float: #ffffff;
+  --ink-border: #d6d3d1; /* stone-300 */
+  --ink-border-strong: #a8a29e; /* stone-400 */
+  --ink-muted: #78716c; /* stone-500 */
+  --ink-tertiary: #57534e; /* stone-600 */
+  --ink-secondary: #44403c; /* stone-700 */
+  --ink-body: #292524; /* stone-800 */
+  --ink-primary: #1c1917; /* stone-900 */
+  --ink-bright: #0c0a09; /* stone-950 */
+  --ink-well: #fef9c3; /* amber-200 */
+  --ink-hover: #fde68a; /* amber-300 */
+
+  /* Accent - high contrast for outdoor */
+  --accent-primary: #1d4ed8;
+  --accent-primary-hover: #1e40af;
+  --accent-copper: #92400e;
+  --accent-copper-hover: #78350f;
 
   /* High contrast data colors */
-  --data-excellent: #15803D;  /* green-700 */
-  --data-good: #1D4ED8;       /* blue-700 */
-  --data-warning: #A16207;    /* yellow-700 */
-  --data-poor: #B91C1C;       /* red-700 */
+  --data-excellent: #15803d; /* green-700 */
+  --data-good: #1d4ed8; /* blue-700 */
+  --data-warning: #a16207; /* yellow-700 */
+  --data-poor: #b91c1c; /* red-700 */
 
   /* Background */
   --color-bg-overlay: rgba(254, 243, 199, 0.95);
