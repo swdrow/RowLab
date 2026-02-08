@@ -3,10 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.0 — App Redesign
-**Phase:** 33 (Regattas & Rankings Migration) — In Progress
+**Phase:** 37 (Warm Copper Design Sweep) — In Progress
 **Plan:** 5/6 complete
-**Status:** Phase 33 in progress. Plan 33-05 complete: Keyboard shortcuts (N/R/?/E), optimistic UI with offline queuing on all regatta/race/result mutations, skeleton loaders replacing all spinners, and offline queue indicator. Cross-cutting concerns (CW-01, CW-02, CW-03, RT-04) fulfilled for regattas/rankings domain.
-**Last activity:** 2026-02-08 — Completed 33-05-PLAN.md (keyboard shortcuts, optimistic UI, skeleton loaders)
+**Status:** Gamification + Settings copper redesign complete. All 6 remaining pages (achievements, challenges, recruiting, beta home, advanced rankings, settings) now have copper editorial design. Phase 37 nearly complete.
+**Next Plan:** 37-06 (verification and cleanup)
+**Last activity:** 2026-02-08 — Completed 37-05-PLAN.md (Gamification & Settings Copper Editorial)
 
 ## Project Reference
 
@@ -94,10 +95,13 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 30 | Erg Data Migration | Complete ✅ | 4/4 |
 | 31 | Seat Racing Migration | Complete ✅ | 6/6 |
 | 32 | Training & Attendance Migration | Complete ✅ | 6/6 |
-| 33 | Regattas & Rankings Migration | In Progress | 4/6 |
-| 33-36 | Feature Modules | Planned | TBD |
+| 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
+| 34 | Gamification & Activity Feed Migration | Not started | TBD |
+| 35 | Mobile Responsiveness & Performance | Not started | TBD |
+| 36 | V1/V2 Cleanup | Not started | TBD |
+| 37 | Warm Copper Design Sweep | In Progress | 5/6 |
 
-v3.0 Progress: ████████████████████░ (9 phases complete, 1 in progress, 3 remaining)
+v3.0 Progress: ████████████████████░ (9 phases complete, 1 in progress, 4 remaining)
 
 ## Quick Context
 
@@ -494,9 +498,9 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Phase 33, Plan 03 complete. Race day WebSocket infrastructure implemented.
+**Stopped at:** Phase 37, Plan 03 complete. Training session pages (SessionsPage, SessionDetailPage, LiveSessionPage) copper redesign complete.
 **Resume file:** None
-**Resume with:** Continue executing remaining Phase 33 plans (33-04 through 33-06)
+**Resume with:** Continue with Phase 37 Plan 04, 05, or 06 (remaining pages: athletes, attendance, erg tests, settings, recruiting, achievements, challenges)
 
 ## Roadmap Evolution
 
@@ -904,5 +908,17 @@ Phase 13 delivered the cross-feature integration layer:
 | 33-03 | Add getSocket() method to collaborationService | Encapsulation - race day features access socket without knowing connection management details, better abstraction |
 | 33-03 | Use raceday:* event prefix for namespacing | Avoids collision with collaboration events (session:*, lineup:*), simpler than Socket.IO namespaces |
 
+### v3.0 Decisions (Phase 37)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 37-01 | Sidebar active state uses 2px left border accent | Clearer affordance than background alone, follows Linear/VSCode pattern, provides spatial anchor |
+| 37-01 | Context rail active state uses solid copper background | Stronger affordance for context switch than gradient, more prominent signal |
+| 37-01 | Tabs use solid copper (not gradient) for active state | Segmented controls look cleaner with flat active vs gradient button style, better for horizontal groups |
+| 37-01 | Section header icons get copper tint | Reinforces copper accent throughout UI without overwhelming, subtle but consistent branding |
+| 37-04 | Workspace pages get compact copper toolbars | LineupBuilder & MatrixPlanner need maximum vertical space, compact toolbar preserves workspace area while providing copper branding |
+| 37-04 | Data pages get full copper editorial treatment | SeatRacing, Regattas, Rankings are analytics pages that benefit from full hero headers with context |
+| 37-04 | Section headers use copper dots + gradient dividers | Establishes consistent visual pattern for dividing content sections across all pages |
+
 ---
-*Last updated: 2026-02-08 — Phase 33 Plan 03 Complete (Race day WebSocket infrastructure: server-side broadcasting, client hooks, connection health indicator)*
+*Last updated: 2026-02-08 — Phase 37 Plan 01 Complete (Navigation chrome + coach pages copper sweep)*
