@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { format, formatDistanceToNow, parseISO } from 'date-fns';
-import { TrendingUp, Medal, Trophy, Award } from 'lucide-react';
+import { AnimatePresence, LayoutGroup } from 'framer-motion';
+import { TrendingUp } from 'lucide-react';
 import type { RankingSource } from '../../types/regatta';
 import { useBoatClassRankings } from '../../hooks/useTeamRankings';
 import { getBoatClasses } from '../../utils/marginCalculations';
+import { RankingRow } from './RankingRow';
 
 type RankingsViewProps = {
   onSelectTeam?: (teamName: string, boatClass: string) => void;
@@ -76,20 +77,27 @@ export function RankingsView({ onSelectTeam }: RankingsViewProps) {
               <div className="w-6 h-6 border-2 border-accent-primary border-t-transparent rounded-full animate-spin mx-auto" />
             </div>
           ) : rankings && rankings.length > 0 ? (
-            <div className="divide-y divide-bdr-subtle">
-              {rankings.map((team, index) => (
-                <RankingRow
-                  key={`${team.teamId}-${team.boatClass}`}
-                  rank={team.rank || index + 1}
-                  teamName={team.teamName || 'Unknown'}
-                  speed={team.adjustedSpeed}
-                  sampleCount={team.sampleCount}
-                  lastUpdated={team.lastCalculatedAt}
-                  isOwnTeam={team.teamName === 'Our Team'} // Replace with actual check
-                  onClick={() => onSelectTeam?.(team.teamName || '', selectedBoatClass!)}
-                />
-              ))}
-            </div>
+            <LayoutGroup>
+              <AnimatePresence initial={false}>
+                <div>
+                  {rankings.map((team, index) => (
+                    <RankingRow
+                      key={team.teamId || `${team.teamName}-${team.boatClass}`}
+                      rank={team.rank || index + 1}
+                      teamName={team.teamName || 'Unknown'}
+                      speed={team.adjustedSpeed}
+                      boatClass={selectedBoatClass}
+                      previousRank={team.previousRank}
+                      sampleCount={team.sampleCount}
+                      lastUpdated={team.lastCalculatedAt}
+                      isOwnTeam={team.teamName === 'Our Team'} // Replace with actual check
+                      onClick={() => onSelectTeam?.(team.teamName || '', selectedBoatClass!)}
+                      {...(index < 20 ? {} : { layout: false })} // Performance optimization: only animate top 20
+                    />
+                  ))}
+                </div>
+              </AnimatePresence>
+            </LayoutGroup>
           ) : (
             <div className="p-8 text-center text-txt-secondary">
               <TrendingUp className="w-10 h-10 mx-auto mb-2 opacity-40" />
@@ -123,84 +131,7 @@ export function RankingsView({ onSelectTeam }: RankingsViewProps) {
   );
 }
 
-// Individual ranking row
-function RankingRow({
-  rank,
-  teamName,
-  speed,
-  sampleCount,
-  lastUpdated,
-  isOwnTeam,
-  onClick,
-}: {
-  rank: number;
-  teamName: string;
-  speed: number | null;
-  sampleCount: number;
-  lastUpdated: string;
-  isOwnTeam: boolean;
-  onClick?: () => void;
-}) {
-  // Confidence color
-  const getConfidenceColor = () => {
-    if (sampleCount >= 10) return 'bg-data-excellent';
-    if (sampleCount >= 5) return 'bg-data-warning';
-    return 'bg-data-poor';
-  };
-
-  // Rank badge
-  const RankBadge = () => {
-    if (rank === 1) return <Trophy className="w-5 h-5 text-data-warning" />;
-    if (rank === 2) return <Medal className="w-5 h-5 text-ink-secondary" />;
-    if (rank === 3) return <Award className="w-5 h-5 text-data-warning" />;
-    return <span className="text-lg font-bold text-txt-tertiary">{rank}</span>;
-  };
-
-  return (
-    <div
-      className={`flex items-center gap-4 px-4 py-3 hover:bg-surface-hover transition-colors cursor-pointer ${
-        isOwnTeam ? 'bg-accent-primary/5' : ''
-      }`}
-      onClick={onClick}
-    >
-      {/* Rank */}
-      <div className="w-8 flex justify-center">
-        <RankBadge />
-      </div>
-
-      {/* Team name */}
-      <div className="flex-1 min-w-0">
-        <p
-          className={`font-medium truncate ${isOwnTeam ? 'text-accent-primary' : 'text-txt-primary'}`}
-        >
-          {teamName}
-          {isOwnTeam && <span className="text-xs ml-2">(Your Team)</span>}
-        </p>
-      </div>
-
-      {/* Speed estimate */}
-      {speed && (
-        <div className="text-right">
-          <p className="text-sm font-mono text-txt-primary">{speed.toFixed(3)} m/s</p>
-        </div>
-      )}
-
-      {/* Confidence indicator */}
-      <div className="flex items-center gap-2">
-        <div className={`w-2 h-2 rounded-full ${getConfidenceColor()}`} />
-        <span className="text-xs text-txt-tertiary w-16">{sampleCount} races</span>
-      </div>
-
-      {/* Last updated */}
-      <div
-        className="text-xs text-txt-tertiary w-24 text-right"
-        title={format(parseISO(lastUpdated), 'PPp')}
-      >
-        {formatDistanceToNow(parseISO(lastUpdated), { addSuffix: true })}
-      </div>
-    </div>
-  );
-}
+// RankingRow component now imported from ./RankingRow.tsx
 
 // Source badge component for external rankings
 export function SourceBadge({ source }: { source: RankingSource }) {
