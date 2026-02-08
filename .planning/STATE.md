@@ -4,9 +4,9 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 31 (Seat Racing Migration) — In Progress
-**Plan:** 1/6 complete (31-01 done, 31-02 done)
-**Status:** Phase 31 in progress. Core seat racing components (RankingsTable, ELO charts) migrated to V3. Data visualizations (Bradley-Terry, ProbabilityMatrix, ComparisonGraph) upgraded with gradient confidence bands and click-to-expand panels. Remaining: session wizard flow.
-**Last activity:** 2026-02-08 — Completed 31-02-PLAN.md
+**Plan:** 1/6 complete (31-01 done)
+**Status:** Phase 31 in progress. All core seat racing components (RankingsTable, RankingsChart, ConfidenceBadge, SessionList, SideRankings) migrated to V3 design tokens. Created 3 new animated UI components: ConfidenceRing (radial progress), ELOSparkline (inline trend), SegmentedControl (iOS-style toggle). RankingsTable enhanced with animated row reordering and new visual widgets. Remaining: data visualizations, session wizard, matrix planner.
+**Last activity:** 2026-02-08 — Completed 31-01-PLAN.md
 
 ## Project Reference
 
@@ -492,9 +492,9 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Completed 30-04-PLAN.md (V1 legacy cleanup, human verification — Phase 30 complete)
+**Stopped at:** Completed 31-01-PLAN.md (V3 token migration + animated UI components)
 **Resume file:** None
-**Resume with:** `/gsd:execute-phase 31` to begin Seat Racing Migration
+**Resume with:** `/gsd:execute-plan 31-02` to continue Seat Racing Migration
 
 ## Roadmap Evolution
 
