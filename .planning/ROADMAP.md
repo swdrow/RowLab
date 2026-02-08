@@ -1138,7 +1138,13 @@ Plans:
 5. User can use keyboard shortcuts for common actions
 6. User sees skeleton loaders instead of spinners on every page
 
-**Plans:** TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 30-01-PLAN.md — V3 design token migration for all erg components (14 components + PRCelebration)
+- [ ] 30-02-PLAN.md — Skeleton loaders + keyboard shortcuts (CW-03, CW-02)
+- [ ] 30-03-PLAN.md — Improved leaderboard + PR celebration integration + gamification (ERG-01, ERG-02, ERG-03)
+- [ ] 30-04-PLAN.md — V1 legacy cleanup + human verification
 
 ---
 
