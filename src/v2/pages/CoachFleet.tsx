@@ -104,69 +104,92 @@ export default function CoachFleet() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-txt-primary">Fleet Management</h1>
-        {canEdit && (
+    <div>
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        {/* Decorative copper line at bottom */}
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+
+        <div className="relative flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              Fleet Management
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Fleet
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">Manage shells, oars, and equipment</p>
+          </div>
+          {canEdit && (
+            <button
+              onClick={() =>
+                activeTab === 'shells' ? setIsShellModalOpen(true) : setIsOarModalOpen(true)
+              }
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium
+                         bg-gradient-to-b from-accent-copper to-accent-copper-hover
+                         text-white rounded-xl
+                         shadow-glow-copper hover:shadow-glow-copper-lg
+                         hover:-translate-y-px active:translate-y-0
+                         transition-all duration-150"
+            >
+              <Plus size={18} />
+              Add {activeTab === 'shells' ? 'Shell' : 'Oar Set'}
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="px-6">
+        {/* Tabs */}
+        <div className="flex gap-1 p-1 mb-6 bg-ink-raised rounded-lg w-fit border border-ink-border">
           <button
-            onClick={() =>
-              activeTab === 'shells' ? setIsShellModalOpen(true) : setIsOarModalOpen(true)
-            }
-            className="flex items-center gap-2 px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-primary/90 transition-colors"
+            onClick={() => setActiveTab('shells')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-150 ${
+              activeTab === 'shells'
+                ? 'bg-accent-copper text-white shadow-sm'
+                : 'text-ink-secondary hover:text-ink-body hover:bg-ink-hover'
+            }`}
           >
-            <Plus size={18} />
-            Add {activeTab === 'shells' ? 'Shell' : 'Oar Set'}
+            Shells ({shells?.length || 0})
           </button>
-        )}
-      </div>
+          <button
+            onClick={() => setActiveTab('oars')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-150 ${
+              activeTab === 'oars'
+                ? 'bg-accent-copper text-white shadow-sm'
+                : 'text-ink-secondary hover:text-ink-body hover:bg-ink-hover'
+            }`}
+          >
+            Oars ({oarSets?.length || 0})
+          </button>
+        </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 p-1 mb-6 bg-surface rounded-lg w-fit">
-        <button
-          onClick={() => setActiveTab('shells')}
-          className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-            activeTab === 'shells'
-              ? 'bg-accent-primary text-white'
-              : 'text-txt-secondary hover:text-txt-primary'
-          }`}
-        >
-          Shells ({shells?.length || 0})
-        </button>
-        <button
-          onClick={() => setActiveTab('oars')}
-          className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-            activeTab === 'oars'
-              ? 'bg-accent-primary text-white'
-              : 'text-txt-secondary hover:text-txt-primary'
-          }`}
-        >
-          Oars ({oarSets?.length || 0})
-        </button>
-      </div>
-
-      {/* Content */}
-      <div className="rounded-xl border border-bdr-primary bg-card-bg p-4">
-        {activeTab === 'shells' ? (
-          shellsLoading ? (
-            <div className="animate-pulse h-48 bg-surface rounded" />
+        {/* Content */}
+        <div className="rounded-xl border border-ink-border bg-ink-base p-4">
+          {activeTab === 'shells' ? (
+            shellsLoading ? (
+              <div className="animate-pulse h-48 bg-ink-raised rounded" />
+            ) : (
+              <ShellsTable
+                shells={shells || []}
+                canEdit={canEdit}
+                onEdit={handleEditShell}
+                onDelete={handleDeleteShell}
+              />
+            )
+          ) : oarsLoading ? (
+            <div className="animate-pulse h-48 bg-ink-raised rounded" />
           ) : (
-            <ShellsTable
-              shells={shells || []}
+            <OarsTable
+              oarSets={oarSets || []}
               canEdit={canEdit}
-              onEdit={handleEditShell}
-              onDelete={handleDeleteShell}
+              onEdit={handleEditOarSet}
+              onDelete={handleDeleteOarSet}
             />
-          )
-        ) : oarsLoading ? (
-          <div className="animate-pulse h-48 bg-surface rounded" />
-        ) : (
-          <OarsTable
-            oarSets={oarSets || []}
-            canEdit={canEdit}
-            onEdit={handleEditOarSet}
-            onDelete={handleDeleteOarSet}
-          />
-        )}
+          )}
+        </div>
       </div>
 
       {/* Shell Modal */}

@@ -78,47 +78,65 @@ export default function CoachAvailability() {
   const dateRangeLabel = `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-txt-primary">Team Availability</h1>
+    <div>
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        {/* Decorative copper line at bottom */}
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
 
-        {/* Week navigation */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={goToPreviousWeek}
-            className="p-2 rounded-lg border border-bdr-primary hover:bg-surface-hover transition-colors"
-          >
-            <ChevronLeft size={18} className="text-txt-secondary" />
-          </button>
-          <button
-            onClick={goToThisWeek}
-            className="px-3 py-1.5 text-sm border border-bdr-primary rounded-lg hover:bg-surface-hover transition-colors"
-          >
-            This Week
-          </button>
-          <span className="text-sm text-txt-secondary min-w-[160px] text-center">
-            {dateRangeLabel}
-          </span>
-          <button
-            onClick={goToNextWeek}
-            className="p-2 rounded-lg border border-bdr-primary hover:bg-surface-hover transition-colors"
-          >
-            <ChevronRight size={18} className="text-txt-secondary" />
-          </button>
+        <div className="relative flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              Team Scheduling
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Availability
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">View and manage team availability</p>
+          </div>
+
+          {/* Week navigation */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={goToPreviousWeek}
+              className="p-2 rounded-lg border border-ink-border hover:bg-ink-hover transition-colors"
+            >
+              <ChevronLeft size={18} className="text-ink-secondary" />
+            </button>
+            <button
+              onClick={goToThisWeek}
+              className="px-3 py-1.5 text-sm border border-ink-border rounded-lg hover:bg-ink-hover transition-colors"
+            >
+              This Week
+            </button>
+            <span className="text-sm text-ink-secondary min-w-[160px] text-center">
+              {dateRangeLabel}
+            </span>
+            <button
+              onClick={goToNextWeek}
+              className="p-2 rounded-lg border border-ink-border hover:bg-ink-hover transition-colors"
+            >
+              <ChevronRight size={18} className="text-ink-secondary" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Grid */}
-      {isLoading ? (
-        <div className="animate-pulse h-64 bg-surface rounded-xl" />
-      ) : (
-        <AvailabilityGrid
-          data={availability || []}
-          startDate={startDate}
-          numDays={numDays}
-          onAthleteClick={handleAthleteClick}
-        />
-      )}
+      <div className="px-6">
+        {/* Grid */}
+        {isLoading ? (
+          <div className="animate-pulse h-64 bg-ink-raised rounded-xl" />
+        ) : (
+          <AvailabilityGrid
+            data={availability || []}
+            startDate={startDate}
+            numDays={numDays}
+            onAthleteClick={handleAthleteClick}
+          />
+        )}
+      </div>
 
       {/* Edit Modal */}
       <CrudModal
