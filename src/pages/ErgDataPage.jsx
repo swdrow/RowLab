@@ -1,3 +1,8 @@
+/**
+ * @deprecated V1 Legacy — replaced by V2/V3 erg data components.
+ * See: src/v2/pages/ErgTestsPage.tsx, src/v2/components/erg/
+ * Removal planned: Phase 36 (V1/V2 Cleanup)
+ */
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -8,7 +13,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
 } from 'recharts';
 import {
   Activity,
@@ -26,7 +31,7 @@ import {
   AlertCircle,
   Loader2,
   Dumbbell,
-  Link2
+  Link2,
 } from 'lucide-react';
 import useLineupStore from '../store/lineupStore';
 import { useErgDataStore } from '../store/ergDataStore';
@@ -77,43 +82,45 @@ const TestTypeBadge = ({ type }) => {
       label: '2K',
       bg: 'bg-warning-orange/15',
       text: 'text-warning-orange',
-      border: 'border-warning-orange/30'
+      border: 'border-warning-orange/30',
     },
     '6k': {
       label: '6K',
       bg: 'bg-coxswain-violet/15',
       text: 'text-coxswain-violet',
-      border: 'border-coxswain-violet/30'
+      border: 'border-coxswain-violet/30',
     },
     '30min': {
       label: '30min',
       bg: 'bg-white/5',
       text: 'text-text-secondary',
-      border: 'border-white/10'
+      border: 'border-white/10',
     },
     '60min': {
       label: '60min',
       bg: 'bg-white/5',
       text: 'text-text-secondary',
-      border: 'border-white/10'
+      border: 'border-white/10',
     },
     '500m': {
       label: '500m',
       bg: 'bg-blade-blue/15',
       text: 'text-blade-blue',
-      border: 'border-blade-blue/30'
-    }
+      border: 'border-blade-blue/30',
+    },
   };
 
   const { label, bg, text, border } = config[type] || {
     label: type,
     bg: 'bg-white/5',
     text: 'text-text-muted',
-    border: 'border-white/10'
+    border: 'border-white/10',
   };
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase border ${bg} ${text} ${border}`}>
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase border ${bg} ${text} ${border}`}
+    >
       {label}
     </span>
   );
@@ -128,33 +135,39 @@ const StatCard = ({ icon: Icon, label, value, subValue, trend, accentColor = 'gr
       iconBg: 'bg-blade-blue/10',
       iconBorder: 'border-blade-blue/20',
       iconText: 'text-blade-blue',
-      glow: 'shadow-[0_0_15px_rgba(0,112,243,0.15)]'
+      glow: 'shadow-[0_0_15px_rgba(0,112,243,0.15)]',
     },
     orange: {
       iconBg: 'bg-warning-orange/10',
       iconBorder: 'border-warning-orange/20',
       iconText: 'text-warning-orange',
-      glow: 'shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+      glow: 'shadow-[0_0_15px_rgba(245,158,11,0.15)]',
     },
     violet: {
       iconBg: 'bg-coxswain-violet/10',
       iconBorder: 'border-coxswain-violet/20',
       iconText: 'text-coxswain-violet',
-      glow: 'shadow-[0_0_15px_rgba(124,58,237,0.15)]'
+      glow: 'shadow-[0_0_15px_rgba(124,58,237,0.15)]',
     },
     red: {
       iconBg: 'bg-danger-red/10',
       iconBorder: 'border-danger-red/20',
       iconText: 'text-danger-red',
-      glow: 'shadow-[0_0_15px_rgba(239,68,68,0.15)]'
-    }
+      glow: 'shadow-[0_0_15px_rgba(239,68,68,0.15)]',
+    },
   };
 
   const colors = colorConfig[accentColor] || colorConfig.green;
 
   return (
     <SpotlightCard
-      spotlightColor={accentColor === 'orange' ? 'rgba(245,158,11,0.08)' : accentColor === 'violet' ? 'rgba(124,58,237,0.08)' : 'rgba(0,112,243,0.08)'}
+      spotlightColor={
+        accentColor === 'orange'
+          ? 'rgba(245,158,11,0.08)'
+          : accentColor === 'violet'
+            ? 'rgba(124,58,237,0.08)'
+            : 'rgba(0,112,243,0.08)'
+      }
       className={`
         rounded-xl
         bg-void-elevated border border-white/5
@@ -165,22 +178,32 @@ const StatCard = ({ icon: Icon, label, value, subValue, trend, accentColor = 'gr
     >
       <div className="p-5">
         <div className="flex items-start justify-between mb-3">
-          <div className={`w-10 h-10 rounded-xl ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center ${colors.glow}`}>
+          <div
+            className={`w-10 h-10 rounded-xl ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center ${colors.glow}`}
+          >
             <Icon className={`w-5 h-5 ${colors.iconText}`} />
           </div>
           {trend && (
-            <div className={`flex items-center gap-1 text-xs font-mono font-medium px-2 py-1 rounded-lg ${
-              trend > 0
-                ? 'text-blade-blue bg-blade-blue/10 border border-blade-blue/20'
-                : 'text-danger-red bg-danger-red/10 border border-danger-red/20'
-            }`}>
-              {trend > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+            <div
+              className={`flex items-center gap-1 text-xs font-mono font-medium px-2 py-1 rounded-lg ${
+                trend > 0
+                  ? 'text-blade-blue bg-blade-blue/10 border border-blade-blue/20'
+                  : 'text-danger-red bg-danger-red/10 border border-danger-red/20'
+              }`}
+            >
+              {trend > 0 ? (
+                <TrendingUp className="w-3 h-3" />
+              ) : (
+                <TrendingDown className="w-3 h-3" />
+              )}
               {Math.abs(trend)}%
             </div>
           )}
         </div>
         <div className="text-3xl font-mono font-bold text-text-primary tabular-nums">{value}</div>
-        <div className="text-[10px] uppercase tracking-widest text-text-muted mt-1 font-mono">{label}</div>
+        <div className="text-[10px] uppercase tracking-widest text-text-muted mt-1 font-mono">
+          {label}
+        </div>
         {subValue && <div className="text-xs text-text-muted/70 mt-1">{subValue}</div>}
       </div>
     </SpotlightCard>
@@ -198,7 +221,7 @@ const AddTestModal = ({ isOpen, onClose, athletes, onSubmit, isSubmitting }) => 
     date: new Date().toISOString().split('T')[0],
     watts: '',
     strokeRate: '',
-    notes: ''
+    notes: '',
   });
   const [error, setError] = useState(null);
 
@@ -211,7 +234,7 @@ const AddTestModal = ({ isOpen, onClose, athletes, onSubmit, isSubmitting }) => 
         date: new Date().toISOString().split('T')[0],
         watts: '',
         strokeRate: '',
-        notes: ''
+        notes: '',
       });
       setError(null);
     }
@@ -252,7 +275,7 @@ const AddTestModal = ({ isOpen, onClose, athletes, onSubmit, isSubmitting }) => 
       distanceM,
       watts: formData.watts ? parseInt(formData.watts) : null,
       strokeRate: formData.strokeRate ? parseInt(formData.strokeRate) : null,
-      notes: formData.notes || null
+      notes: formData.notes || null,
     };
 
     try {
@@ -267,7 +290,7 @@ const AddTestModal = ({ isOpen, onClose, athletes, onSubmit, isSubmitting }) => 
     '2k': 'bg-warning-orange text-void-deep border-warning-orange shadow-[0_0_20px_rgba(245,158,11,0.4)]',
     '6k': 'bg-coxswain-violet text-white border-coxswain-violet shadow-[0_0_20px_rgba(124,58,237,0.4)]',
     '30min': 'bg-white/10 text-text-primary border-white/20',
-    '500m': 'bg-blade-blue text-void-deep border-blade-blue shadow-[0_0_20px_rgba(0,112,243,0.4)]'
+    '500m': 'bg-blade-blue text-void-deep border-blade-blue shadow-[0_0_20px_rgba(0,112,243,0.4)]',
   };
 
   return (
@@ -338,7 +361,9 @@ const AddTestModal = ({ isOpen, onClose, athletes, onSubmit, isSubmitting }) => 
                 required
                 disabled={isSubmitting}
               >
-                <option value="" className="bg-void-elevated">Select athlete...</option>
+                <option value="" className="bg-void-elevated">
+                  Select athlete...
+                </option>
                 {athletes.map((a) => (
                   <option key={a.id} value={a.id} className="bg-void-elevated">
                     {a.lastName}, {a.firstName}
@@ -362,9 +387,10 @@ const AddTestModal = ({ isOpen, onClose, athletes, onSubmit, isSubmitting }) => 
                     className={`
                       px-3 py-2.5 rounded-xl text-xs font-mono font-semibold uppercase border
                       transition-all duration-200
-                      ${formData.testType === type
-                        ? testTypeColors[type]
-                        : 'bg-void-elevated/50 text-text-secondary border-white/[0.06] hover:border-white/10 hover:bg-void-elevated'
+                      ${
+                        formData.testType === type
+                          ? testTypeColors[type]
+                          : 'bg-void-elevated/50 text-text-secondary border-white/[0.06] hover:border-white/10 hover:bg-void-elevated'
                       }
                     `}
                   >
@@ -532,14 +558,7 @@ const LoadingSkeleton = () => (
 // ============================================
 function ErgDataPage() {
   const { athletes } = useLineupStore();
-  const {
-    ergTests,
-    loading,
-    error,
-    fetchErgTests,
-    createErgTest,
-    clearError
-  } = useErgDataStore();
+  const { ergTests, loading, error, fetchErgTests, createErgTest, clearError } = useErgDataStore();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [testTypeFilter, setTestTypeFilter] = useState('all');
@@ -593,7 +612,7 @@ function ErgDataPage() {
         time: test.timeSeconds,
         date: test.testDate ? new Date(test.testDate).toISOString().split('T')[0] : '',
         watts: test.watts,
-        split: test.splitSeconds
+        split: test.splitSeconds,
       };
     });
   }, [ergTests, athletes]);
@@ -608,7 +627,7 @@ function ErgDataPage() {
         avg: null,
         best: null,
         avgWatts: null,
-        testCount: formattedTests.length
+        testCount: formattedTests.length,
       };
     }
 
@@ -616,7 +635,8 @@ function ErgDataPage() {
     const avg = times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : null;
     const best = times.length > 0 ? Math.min(...times) : null;
     const watts = twoKTests.map((t) => t.watts).filter(Boolean);
-    const avgWatts = watts.length > 0 ? Math.round(watts.reduce((a, b) => a + b, 0) / watts.length) : null;
+    const avgWatts =
+      watts.length > 0 ? Math.round(watts.reduce((a, b) => a + b, 0) / watts.length) : null;
 
     return { avg, best, avgWatts, testCount: formattedTests.length };
   }, [formattedTests]);
@@ -630,7 +650,7 @@ function ErgDataPage() {
       return months.map((month) => ({
         month,
         teamAvg: null,
-        teamBest: null
+        teamBest: null,
       }));
     }
 
@@ -650,7 +670,7 @@ function ErgDataPage() {
       return {
         month,
         teamAvg: times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : null,
-        teamBest: times.length > 0 ? Math.min(...times) : null
+        teamBest: times.length > 0 ? Math.min(...times) : null,
       };
     });
   }, [formattedTests]);
@@ -674,10 +694,22 @@ function ErgDataPage() {
   // Filter button colors
   const filterColors = {
     all: { active: 'bg-white/10 text-text-primary border-white/20', inactive: '' },
-    '2k': { active: 'bg-warning-orange text-void-deep border-warning-orange shadow-[0_0_15px_rgba(245,158,11,0.3)]', inactive: 'hover:border-warning-orange/30 hover:text-warning-orange' },
-    '6k': { active: 'bg-coxswain-violet text-white border-coxswain-violet shadow-[0_0_15px_rgba(124,58,237,0.3)]', inactive: 'hover:border-coxswain-violet/30 hover:text-coxswain-violet' },
+    '2k': {
+      active:
+        'bg-warning-orange text-void-deep border-warning-orange shadow-[0_0_15px_rgba(245,158,11,0.3)]',
+      inactive: 'hover:border-warning-orange/30 hover:text-warning-orange',
+    },
+    '6k': {
+      active:
+        'bg-coxswain-violet text-white border-coxswain-violet shadow-[0_0_15px_rgba(124,58,237,0.3)]',
+      inactive: 'hover:border-coxswain-violet/30 hover:text-coxswain-violet',
+    },
     '30min': { active: 'bg-white/10 text-text-primary border-white/20', inactive: '' },
-    '500m': { active: 'bg-blade-blue text-void-deep border-blade-blue shadow-[0_0_15px_rgba(0,112,243,0.3)]', inactive: 'hover:border-blade-blue/30 hover:text-blade-blue' }
+    '500m': {
+      active:
+        'bg-blade-blue text-void-deep border-blade-blue shadow-[0_0_15px_rgba(0,112,243,0.3)]',
+      inactive: 'hover:border-blade-blue/30 hover:text-blade-blue',
+    },
   };
 
   return (
@@ -709,9 +741,7 @@ function ErgDataPage() {
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-text-primary tracking-[-0.02em]">
               Erg Data
             </h1>
-            <p className="text-sm text-text-secondary">
-              Track and analyze erg test results
-            </p>
+            <p className="text-sm text-text-secondary">Track and analyze erg test results</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -731,17 +761,11 @@ function ErgDataPage() {
 
       {/* Error Banner */}
       <AnimatePresence>
-        {error && (
-          <ErrorBanner message={error} onDismiss={clearError} />
-        )}
+        {error && <ErrorBanner message={error} onDismiss={clearError} />}
       </AnimatePresence>
 
       {/* Concept2 Integration Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <button
           onClick={() => setShowC2Integration(!showC2Integration)}
           className="w-full sm:w-auto mb-3 px-4 py-2 rounded-xl bg-void-elevated/50 border border-white/[0.06] text-text-secondary hover:text-text-primary hover:border-white/10 transition-all text-sm font-medium flex items-center gap-2"
@@ -767,7 +791,9 @@ function ErgDataPage() {
                   onChange={(e) => setSelectedAthleteForC2(e.target.value)}
                   className="w-full sm:max-w-md px-4 py-3 rounded-xl bg-void-elevated/50 border border-white/[0.06] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blade-blue/40 focus:shadow-[0_0_0_3px_rgba(0,112,243,0.1)] transition-all"
                 >
-                  <option value="" className="bg-void-elevated">Select athlete...</option>
+                  <option value="" className="bg-void-elevated">
+                    Select athlete...
+                  </option>
                   {athletes.map((a) => (
                     <option key={a.id} value={a.id} className="bg-void-elevated">
                       {a.lastName}, {a.firstName}
@@ -777,10 +803,7 @@ function ErgDataPage() {
               </div>
 
               {selectedAthleteForC2 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                   <Concept2Connection
                     athleteId={selectedAthleteForC2}
                     onSyncComplete={handleC2SyncComplete}
@@ -794,7 +817,11 @@ function ErgDataPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0 }}
+        >
           <StatCard
             icon={Clock}
             label="Team Avg 2K"
@@ -803,7 +830,11 @@ function ErgDataPage() {
             trend={teamStats?.avg ? -2 : null}
           />
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+        >
           <StatCard
             icon={Award}
             label="Team Best 2K"
@@ -811,7 +842,11 @@ function ErgDataPage() {
             accentColor="orange"
           />
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
           <StatCard
             icon={Zap}
             label="Avg Watts"
@@ -820,7 +855,11 @@ function ErgDataPage() {
             trend={teamStats?.avgWatts ? 5 : null}
           />
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
           <StatCard
             icon={Target}
             label="Total Tests"
@@ -873,7 +912,9 @@ function ErgDataPage() {
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
                     wrapperStyle={{ paddingTop: '16px' }}
-                    formatter={(value) => <span className="text-text-secondary text-sm">{value}</span>}
+                    formatter={(value) => (
+                      <span className="text-text-secondary text-sm">{value}</span>
+                    )}
                   />
                   <Line
                     type="monotone"
@@ -934,9 +975,10 @@ function ErgDataPage() {
                   className={`
                     px-3 py-2 rounded-xl text-xs font-mono font-semibold uppercase border
                     transition-all duration-200
-                    ${testTypeFilter === type
-                      ? filterColors[type].active
-                      : `bg-void-elevated/50 text-text-secondary border-white/[0.06] hover:bg-void-elevated ${filterColors[type].inactive}`
+                    ${
+                      testTypeFilter === type
+                        ? filterColors[type].active
+                        : `bg-void-elevated/50 text-text-secondary border-white/[0.06] hover:bg-void-elevated ${filterColors[type].inactive}`
                     }
                   `}
                 >
@@ -963,9 +1005,7 @@ function ErgDataPage() {
                     <Activity className="w-5 h-5 text-blade-blue" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-text-primary">
-                      {test.athleteName}
-                    </div>
+                    <div className="font-medium text-text-primary">{test.athleteName}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <TestTypeBadge type={test.testType} />
                       <span className="text-xs text-text-muted font-mono">{test.date}</span>
@@ -991,7 +1031,9 @@ function ErgDataPage() {
                 <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-void-elevated border border-white/[0.06] flex items-center justify-center">
                   <FileText className="w-10 h-10 text-text-muted" />
                 </div>
-                <h3 className="text-lg font-display font-semibold text-text-primary mb-2 tracking-[-0.02em]">No Tests Found</h3>
+                <h3 className="text-lg font-display font-semibold text-text-primary mb-2 tracking-[-0.02em]">
+                  No Tests Found
+                </h3>
                 <p className="text-text-secondary max-w-sm mx-auto mb-6 text-sm">
                   {searchQuery || testTypeFilter !== 'all'
                     ? 'Try adjusting your filters'

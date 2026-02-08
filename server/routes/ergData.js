@@ -1,3 +1,8 @@
+/**
+ * @deprecated V1 Legacy erg data routes — replaced by /api/v1/erg-tests (server/routes/ergTest.js)
+ * Mounted at /api/erg-tests (non-namespaced legacy path)
+ * Removal planned: Phase 36 (V1/V2 Cleanup)
+ */
 import express from 'express';
 import logger from '../utils/logger.js';
 import prisma from '../db/connection.js';
@@ -131,7 +136,12 @@ router.put('/:id', verifyToken, async (req, res) => {
         testType: testType || existing.testType,
         result: result || existing.result,
         split: split !== undefined ? split : existing.split,
-        strokeRate: strokeRate !== undefined ? (strokeRate ? parseInt(strokeRate) : null) : existing.strokeRate,
+        strokeRate:
+          strokeRate !== undefined
+            ? strokeRate
+              ? parseInt(strokeRate)
+              : null
+            : existing.strokeRate,
         watts: watts !== undefined ? (watts ? parseInt(watts) : null) : existing.watts,
         notes: notes !== undefined ? notes : existing.notes,
       },
