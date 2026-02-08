@@ -19,40 +19,44 @@ export function WeightProfileSelector({
 }: WeightProfileSelectorProps) {
   const { profiles, isLoading } = useWeightProfiles();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [localWeights, setLocalWeights] = useState(customWeights || {
-    onWater: 0.75,
-    erg: 0.15,
-    attendance: 0.10
-  });
+  const [localWeights, setLocalWeights] = useState(
+    customWeights || {
+      onWater: 0.75,
+      erg: 0.15,
+      attendance: 0.1,
+    }
+  );
 
   // Sync local weights when profile changes
   useEffect(() => {
     if (selectedProfileId !== 'custom') {
-      const profile = profiles.find(p => p.id === selectedProfileId);
+      const profile = profiles.find((p) => p.id === selectedProfileId);
       if (profile) {
         setLocalWeights(profile.weights);
       }
     }
   }, [selectedProfileId, profiles]);
 
-  const selectedProfile = profiles.find(p => p.id === selectedProfileId);
+  const selectedProfile = profiles.find((p) => p.id === selectedProfileId);
 
   const handleWeightChange = (key: 'onWater' | 'erg' | 'attendance', value: number) => {
     // Calculate remaining weight to distribute
     const remaining = 1 - value;
-    const otherKeys = ['onWater', 'erg', 'attendance'].filter(k => k !== key) as Array<'onWater' | 'erg' | 'attendance'>;
+    const otherKeys = ['onWater', 'erg', 'attendance'].filter((k) => k !== key) as Array<
+      'onWater' | 'erg' | 'attendance'
+    >;
     const otherTotal = otherKeys.reduce((sum, k) => sum + localWeights[k], 0);
 
     let newWeights = { ...localWeights, [key]: value };
 
     // Redistribute remaining weight proportionally to other factors
     if (otherTotal > 0) {
-      otherKeys.forEach(k => {
+      otherKeys.forEach((k) => {
         newWeights[k] = (localWeights[k] / otherTotal) * remaining;
       });
     } else {
       // If others are 0, split evenly
-      otherKeys.forEach(k => {
+      otherKeys.forEach((k) => {
         newWeights[k] = remaining / otherKeys.length;
       });
     }
@@ -84,21 +88,26 @@ export function WeightProfileSelector({
             className="appearance-none pl-3 pr-8 py-1.5 bg-surface-secondary border border-bdr-primary rounded-lg text-sm text-txt-primary focus:ring-2 focus:ring-accent-primary cursor-pointer"
             disabled={isLoading}
           >
-            {profiles.map(profile => (
+            {profiles.map((profile) => (
               <option key={profile.id} value={profile.id}>
                 {profile.name}
               </option>
             ))}
             <option value="custom">Custom</option>
           </select>
-          <CaretDown size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-txt-secondary pointer-events-none" />
+          <CaretDown
+            size={16}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-txt-secondary pointer-events-none"
+          />
         </div>
 
         {/* Toggle custom sliders */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className={`p-1.5 rounded-lg transition-colors ${
-            isExpanded ? 'bg-accent-primary text-white' : 'bg-surface-secondary text-txt-secondary hover:bg-surface-hover'
+            isExpanded
+              ? 'bg-accent-primary text-white'
+              : 'bg-surface-secondary text-txt-secondary hover:bg-surface-hover'
           }`}
           title="Customize weights"
         >
@@ -109,15 +118,15 @@ export function WeightProfileSelector({
       {/* Weight display summary */}
       <div className="flex items-center gap-4 text-xs text-txt-secondary">
         <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-blue-500" />
+          <span className="w-2 h-2 rounded-full bg-[var(--data-good)]" />
           On-Water: {(localWeights.onWater * 100).toFixed(0)}%
         </span>
         <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-orange-500" />
+          <span className="w-2 h-2 rounded-full bg-[var(--data-warning)]" />
           Erg: {(localWeights.erg * 100).toFixed(0)}%
         </span>
         <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-green-500" />
+          <span className="w-2 h-2 rounded-full bg-[var(--data-excellent)]" />
           Attendance: {(localWeights.attendance * 100).toFixed(0)}%
         </span>
       </div>
@@ -175,9 +184,22 @@ interface WeightSliderProps {
 
 function WeightSlider({ label, value, onChange, color, description }: WeightSliderProps) {
   const colorClasses = {
-    blue: 'bg-blue-500',
-    orange: 'bg-orange-500',
-    green: 'bg-green-500',
+    blue: 'bg-[var(--data-good)]',
+    orange: 'bg-[var(--data-warning)]',
+    green: 'bg-[var(--data-excellent)]',
+  };
+
+  // Resolve accent color from CSS variables for slider thumb
+  const accentColors = {
+    blue:
+      getComputedStyle(document.documentElement).getPropertyValue('--data-good').trim() ||
+      '#3B82F6',
+    orange:
+      getComputedStyle(document.documentElement).getPropertyValue('--data-warning').trim() ||
+      '#F59E0B',
+    green:
+      getComputedStyle(document.documentElement).getPropertyValue('--data-excellent').trim() ||
+      '#22C55E',
   };
 
   return (
@@ -195,7 +217,7 @@ function WeightSlider({ label, value, onChange, color, description }: WeightSlid
         onChange={(e) => onChange(parseFloat(e.target.value))}
         className="w-full h-2 bg-surface-primary rounded-lg appearance-none cursor-pointer"
         style={{
-          accentColor: color === 'blue' ? '#3b82f6' : color === 'orange' ? '#f97316' : '#22c55e'
+          accentColor: accentColors[color],
         }}
       />
       <p className="text-xs text-txt-secondary">{description}</p>

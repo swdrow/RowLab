@@ -10,10 +10,10 @@ interface RankingBreakdownProps {
 export function RankingBreakdown({ breakdown, compositeScore, expanded = false }: RankingBreakdownProps) {
   const getSourceColor = (source: string): string => {
     switch (source) {
-      case 'onWater': return 'bg-blue-500';
-      case 'erg': return 'bg-orange-500';
-      case 'attendance': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'onWater': return 'bg-[var(--data-good)]';
+      case 'erg': return 'bg-[var(--data-warning)]';
+      case 'attendance': return 'bg-[var(--data-excellent)]';
+      default: return 'bg-[var(--ink-muted)]';
     }
   };
 
@@ -87,9 +87,9 @@ export function RankingBreakdown({ breakdown, compositeScore, expanded = false }
                 {component.dataPoints > 0 && ` (${component.dataPoints} data points)`}
               </span>
               <span className={`${
-                component.confidence >= 0.7 ? 'text-green-600' :
+                component.confidence >= 0.7 ? 'text-[var(--data-excellent)]' :
                 component.confidence >= 0.4 ? 'text-amber-600' :
-                'text-red-600'
+                'text-[var(--data-poor)]'
               }`}>
                 {component.confidence >= 0.7 ? 'High' :
                  component.confidence >= 0.4 ? 'Medium' :

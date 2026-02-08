@@ -26,7 +26,7 @@ export function CompositeRankings({ onAthleteClick }: CompositeRankingsProps) {
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+      <div className="p-4 bg-[var(--data-poor)]/10 border border-[var(--data-poor)]/20 rounded-lg text-[var(--data-poor)]">
         Failed to load composite rankings: {error.message}
       </div>
     );
@@ -113,8 +113,8 @@ function RankingRow({ ranking, isExpanded, onToggle, onClick }: RankingRowProps)
         <div className="col-span-1">
           <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
             rank === 1 ? 'bg-amber-100 text-amber-700' :
-            rank === 2 ? 'bg-gray-100 text-gray-700' :
-            rank === 3 ? 'bg-orange-100 text-orange-700' :
+            rank === 2 ? 'bg-[var(--ink-muted)]/20 text-[var(--ink-body)]' :
+            rank === 3 ? 'bg-[var(--data-warning)]/20 text-[var(--data-warning)]' :
             'bg-surface-primary text-txt-secondary'
           }`}>
             {rank}
@@ -133,9 +133,9 @@ function RankingRow({ ranking, isExpanded, onToggle, onClick }: RankingRowProps)
             <div className="flex items-center gap-2">
               {athlete.side && (
                 <span className={`w-2 h-2 rounded-full ${
-                  athlete.side === 'Port' ? 'bg-red-500' :
-                  athlete.side === 'Starboard' ? 'bg-green-500' :
-                  'bg-blue-500'
+                  athlete.side === 'Port' ? 'bg-[var(--data-poor)]' :
+                  athlete.side === 'Starboard' ? 'bg-[var(--data-excellent)]' :
+                  'bg-[var(--data-good)]'
                 }`} />
               )}
               <span className="font-medium text-txt-primary">
@@ -151,9 +151,9 @@ function RankingRow({ ranking, isExpanded, onToggle, onClick }: RankingRowProps)
             {(compositeScore * 100).toFixed(1)}
           </span>
           <span className={`ml-2 text-xs ${
-            overallConfidence >= 0.7 ? 'text-green-600' :
+            overallConfidence >= 0.7 ? 'text-[var(--data-excellent)]' :
             overallConfidence >= 0.4 ? 'text-amber-600' :
-            'text-red-600'
+            'text-[var(--data-poor)]'
           }`}>
             {overallConfidence >= 0.7 ? 'H' :
              overallConfidence >= 0.4 ? 'M' :

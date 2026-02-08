@@ -13,15 +13,15 @@ export function SideRankings({ onAthleteClick }: SideRankingsProps) {
   const { rankings, isLoading, error } = useSideRankings(selectedSide);
 
   const sideOptions: Array<{ value: Side | null; label: string; color: string }> = [
-    { value: null, label: 'Combined', color: 'bg-gray-500' },
-    { value: 'Port', label: 'Port', color: 'bg-red-500' },
-    { value: 'Starboard', label: 'Starboard', color: 'bg-green-500' },
-    { value: 'Cox', label: 'Cox', color: 'bg-blue-500' },
+    { value: null, label: 'Combined', color: 'bg-[var(--ink-muted)]' },
+    { value: 'Port', label: 'Port', color: 'bg-[var(--data-poor)]' },
+    { value: 'Starboard', label: 'Starboard', color: 'bg-[var(--data-excellent)]' },
+    { value: 'Cox', label: 'Cox', color: 'bg-[var(--data-good)]' },
   ];
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+      <div className="p-4 bg-[var(--data-poor)]/10 border border-[var(--data-poor)]/20 rounded-lg text-[var(--data-poor)]">
         Failed to load side rankings: {error.message}
       </div>
     );
@@ -33,7 +33,7 @@ export function SideRankings({ onAthleteClick }: SideRankingsProps) {
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium text-txt-secondary">Filter by side:</span>
         <div className="flex gap-1">
-          {sideOptions.map(option => (
+          {sideOptions.map((option) => (
             <button
               key={option.label}
               onClick={() => setSelectedSide(option.value)}
@@ -92,23 +92,32 @@ export function SideRankings({ onAthleteClick }: SideRankingsProps) {
                   onClick={() => onAthleteClick?.(ranking.athleteId)}
                 >
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${
-                      idx === 0 ? 'bg-amber-100 text-amber-700' :
-                      idx === 1 ? 'bg-gray-100 text-gray-700' :
-                      idx === 2 ? 'bg-orange-100 text-orange-700' :
-                      'bg-surface-secondary text-txt-secondary'
-                    }`}>
+                    <span
+                      className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${
+                        idx === 0
+                          ? 'bg-[var(--data-warning)]/20 text-[var(--data-warning)]'
+                          : idx === 1
+                            ? 'bg-[var(--ink-muted)]/20 text-[var(--ink-body)]'
+                            : idx === 2
+                              ? 'bg-[var(--data-warning)]/15 text-[var(--data-warning)]'
+                              : 'bg-surface-secondary text-txt-secondary'
+                      }`}
+                    >
                       {ranking.rank || idx + 1}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       {ranking.athlete?.side && (
-                        <span className={`w-2 h-2 rounded-full ${
-                          ranking.athlete.side === 'Port' ? 'bg-red-500' :
-                          ranking.athlete.side === 'Starboard' ? 'bg-green-500' :
-                          'bg-blue-500'
-                        }`} />
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            ranking.athlete.side === 'Port'
+                              ? 'bg-[var(--data-poor)]'
+                              : ranking.athlete.side === 'Starboard'
+                                ? 'bg-[var(--data-excellent)]'
+                                : 'bg-[var(--data-good)]'
+                          }`}
+                        />
                       )}
                       <span className="font-medium text-txt-primary">
                         {ranking.athlete?.firstName} {ranking.athlete?.lastName}
@@ -121,9 +130,7 @@ export function SideRankings({ onAthleteClick }: SideRankingsProps) {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <ConfidenceBadge
-                      confidence={ranking.confidenceScore}
-                    />
+                    <ConfidenceBadge confidence={ranking.confidenceScore} />
                   </td>
                   <td className="px-4 py-3 text-right text-txt-secondary">
                     {ranking.racesCount || 0}
@@ -138,9 +145,9 @@ export function SideRankings({ onAthleteClick }: SideRankingsProps) {
       {/* Side explanation */}
       {selectedSide && (
         <div className="p-3 bg-surface-secondary rounded-lg text-sm text-txt-secondary">
-          <strong>{selectedSide} rankings</strong> show ELO ratings calculated only from races
-          where athletes rowed on the {selectedSide.toLowerCase()} side. Athletes who row both sides
-          have separate ratings for each.
+          <strong>{selectedSide} rankings</strong> show ELO ratings calculated only from races where
+          athletes rowed on the {selectedSide.toLowerCase()} side. Athletes who row both sides have
+          separate ratings for each.
         </div>
       )}
     </div>

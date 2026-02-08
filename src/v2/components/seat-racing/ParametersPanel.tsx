@@ -41,13 +41,13 @@ interface ParameterRowProps {
 
 function ParameterRow({ label, value, description }: ParameterRowProps) {
   return (
-    <div className="flex items-start justify-between py-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+    <div className="flex items-start justify-between py-3 border-b border-bdr-default last:border-b-0">
       <div className="flex-1">
-        <div className="font-medium text-gray-900 dark:text-gray-100">{label}</div>
-        <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{description}</div>
+        <div className="font-medium text-txt-primary">{label}</div>
+        <div className="text-sm text-txt-secondary mt-1">{description}</div>
       </div>
       <div className="ml-4 text-right">
-        <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">{value}</div>
+        <div className="text-lg font-semibold font-mono text-txt-primary">{value}</div>
       </div>
     </div>
   );
@@ -75,9 +75,9 @@ export function ParametersPanel() {
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-bg-surface rounded-lg border border-bdr-default p-6">
         <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-interactive-primary"></div>
         </div>
       </div>
     );
@@ -85,10 +85,8 @@ export function ParametersPanel() {
 
   if (error) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-red-200 dark:border-red-800 p-6">
-        <div className="text-red-600 dark:text-red-400 text-center">
-          Failed to load rating parameters
-        </div>
+      <div className="bg-bg-surface rounded-lg border border-[var(--data-poor)]/20 p-6">
+        <div className="text-[var(--data-poor)] text-center">Failed to load rating parameters</div>
       </div>
     );
   }
@@ -98,17 +96,15 @@ export function ParametersPanel() {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          Rating Parameters
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+    <div className="bg-bg-surface rounded-lg border border-bdr-default">
+      <div className="px-6 py-4 border-b border-bdr-default">
+        <h3 className="text-lg font-semibold text-txt-primary">Rating Parameters</h3>
+        <p className="text-sm text-txt-secondary mt-1">
           Current configuration for ELO rating calculations
         </p>
       </div>
 
-      <div className="px-6 py-2 divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="px-6 py-2 divide-y divide-bdr-default">
         <ParameterRow
           label="K-Factor"
           value={parameters.kFactor}

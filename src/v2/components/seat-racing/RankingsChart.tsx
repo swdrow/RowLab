@@ -1,13 +1,5 @@
 import { useMemo } from 'react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { getConfidenceLevel } from '@v2/types/seatRacing';
 import type { RatingWithAthlete } from '@v2/types/seatRacing';
 
@@ -47,11 +39,24 @@ function CustomTooltip({ active, payload }: any) {
  * Horizontal bar chart showing athlete ELO distribution
  */
 export function RankingsChart({ ratings, maxAthletes = 10 }: RankingsChartProps) {
+  // Resolve CSS variable colors for recharts (needs hex strings)
+  const chartColors = useMemo(
+    () => ({
+      bar:
+        getComputedStyle(document.documentElement).getPropertyValue('--data-good').trim() ||
+        '#3B82F6',
+      axis:
+        getComputedStyle(document.documentElement).getPropertyValue('--ink-secondary').trim() ||
+        '#888',
+      text:
+        getComputedStyle(document.documentElement).getPropertyValue('--ink-body').trim() || '#ccc',
+    }),
+    []
+  );
+
   // Sort by rating descending and limit to maxAthletes
   const chartData = useMemo(() => {
-    const sorted = [...ratings]
-      .sort((a, b) => b.ratingValue - a.ratingValue)
-      .slice(0, maxAthletes);
+    const sorted = [...ratings].sort((a, b) => b.ratingValue - a.ratingValue).slice(0, maxAthletes);
 
     return sorted.map((r) => ({
       name: `${r.athlete.firstName} ${r.athlete.lastName}`,
@@ -88,14 +93,14 @@ export function RankingsChart({ ratings, maxAthletes = 10 }: RankingsChartProps)
           <XAxis
             type="number"
             domain={[800, 1200]}
-            stroke="#888"
-            tick={{ fill: '#888', fontSize: 12 }}
+            stroke={chartColors.axis}
+            tick={{ fill: chartColors.axis, fontSize: 12 }}
           />
           <YAxis
             type="category"
             dataKey="name"
-            stroke="#888"
-            tick={{ fill: '#ccc', fontSize: 12 }}
+            stroke={chartColors.axis}
+            tick={{ fill: chartColors.text, fontSize: 12 }}
             width={90}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }} />
@@ -103,7 +108,7 @@ export function RankingsChart({ ratings, maxAthletes = 10 }: RankingsChartProps)
             {chartData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill="#3b82f6"
+                fill={chartColors.bar}
                 fillOpacity={getBarOpacity(entry.confidence)}
               />
             ))}

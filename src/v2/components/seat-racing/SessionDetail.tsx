@@ -145,7 +145,7 @@ export function SessionDetail({ sessionId, onClose, onDelete }: SessionDetailPro
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-bg-subtle text-txt-danger hover:bg-red-500/10 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[var(--data-poor)]/10 text-[var(--data-poor)] hover:bg-[var(--data-poor)]/20 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Trash2 size={16} />
             Delete Session
@@ -190,12 +190,8 @@ function PieceDetail({ piece }: { piece: SeatRacePiece }) {
     <div className="border border-bdr-default rounded-lg overflow-hidden bg-bg-base">
       {/* Piece header */}
       <div className="px-4 py-3 bg-bg-subtle border-b border-bdr-default">
-        <h3 className="text-sm font-semibold text-txt-primary">
-          Piece {piece.pieceNumber}
-        </h3>
-        {piece.distance && (
-          <p className="text-xs text-txt-tertiary mt-0.5">{piece.distance}m</p>
-        )}
+        <h3 className="text-sm font-semibold text-txt-primary">Piece {piece.pieceNumber}</h3>
+        {piece.distance && <p className="text-xs text-txt-tertiary mt-0.5">{piece.distance}m</p>}
       </div>
 
       {/* Boats */}
@@ -205,9 +201,7 @@ function PieceDetail({ piece }: { piece: SeatRacePiece }) {
             <BoatDetail key={boat.id} boat={boat} rank={index + 1} />
           ))
         ) : (
-          <div className="px-4 py-6 text-center text-sm text-txt-tertiary">
-            No boats recorded
-          </div>
+          <div className="px-4 py-6 text-center text-sm text-txt-tertiary">No boats recorded</div>
         )}
       </div>
     </div>
@@ -271,9 +265,7 @@ function BoatDetail({ boat, rank }: { boat: SeatRaceBoat; rank: number }) {
                   key={assignment.id}
                   className="flex items-center gap-1 px-2 py-1 text-xs bg-bg-subtle rounded-md"
                 >
-                  <span className="font-medium text-txt-tertiary">
-                    {assignment.seat}:
-                  </span>
+                  <span className="font-medium text-txt-tertiary">{assignment.seat}:</span>
                   <span className="text-txt-secondary">
                     {assignment.athlete
                       ? `${assignment.athlete.firstName} ${assignment.athlete.lastName}`
@@ -283,7 +275,7 @@ function BoatDetail({ boat, rank }: { boat: SeatRaceBoat; rank: number }) {
                     <span
                       className={`
                         ml-1 text-xs font-medium
-                        ${assignment.side === 'Port' ? 'text-red-500' : 'text-green-500'}
+                        ${assignment.side === 'Port' ? 'text-[var(--data-poor)]' : 'text-[var(--data-excellent)]'}
                       `}
                     >
                       {assignment.side === 'Port' ? 'P' : 'S'}

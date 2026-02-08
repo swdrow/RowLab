@@ -37,7 +37,7 @@ function formatDate(dateStr: string): string {
  */
 function BoatClassBadge({ boatClass }: { boatClass: string }) {
   return (
-    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400">
+    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--data-good)]/10 text-[var(--data-good)]">
       {boatClass}
     </span>
   );
@@ -48,12 +48,12 @@ function BoatClassBadge({ boatClass }: { boatClass: string }) {
  */
 function ConditionsBadge({ conditions }: { conditions: string }) {
   const colors: Record<string, string> = {
-    calm: 'bg-green-500/10 text-green-600 dark:text-green-400',
-    variable: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400',
-    rough: 'bg-red-500/10 text-red-600 dark:text-red-400',
+    calm: 'bg-[var(--data-excellent)]/10 text-[var(--data-excellent)]',
+    variable: 'bg-[var(--data-warning)]/10 text-[var(--data-warning)]',
+    rough: 'bg-[var(--data-poor)]/10 text-[var(--data-poor)]',
   };
 
-  const color = colors[conditions] || 'bg-gray-500/10 text-gray-600 dark:text-gray-400';
+  const color = colors[conditions] || 'bg-[var(--ink-muted)]/10 text-[var(--ink-muted)]';
 
   return (
     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${color}`}>
@@ -122,7 +122,7 @@ function DeleteConfirmDialog({
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white bg-[var(--data-poor)] rounded-md hover:opacity-90 transition-opacity"
           >
             Delete Session
           </button>
@@ -233,7 +233,7 @@ export function SessionList({
                         e.stopPropagation();
                         handleDelete(session.id);
                       }}
-                      className="opacity-0 group-hover:opacity-100 p-1.5 text-txt-tertiary hover:text-red-500 hover:bg-red-500/10 rounded transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-1.5 text-txt-tertiary hover:text-[var(--data-poor)] hover:bg-[var(--data-poor)]/10 rounded transition-all"
                       title="Delete session"
                     >
                       <Trash2 className="w-4 h-4" />

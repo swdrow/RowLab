@@ -25,29 +25,29 @@ export function ConfidenceBadge({
 
   const styles: Record<ConfidenceLevel, { bg: string; text: string; dot: string }> = {
     UNRATED: {
-      bg: 'bg-gray-500/10',
-      text: 'text-gray-600 dark:text-gray-400',
-      dot: 'bg-gray-500',
+      bg: 'bg-[var(--ink-muted)]/10',
+      text: 'text-[var(--ink-muted)]',
+      dot: 'bg-[var(--ink-muted)]',
     },
     PROVISIONAL: {
-      bg: 'bg-red-500/10',
-      text: 'text-red-600 dark:text-red-400',
-      dot: 'bg-red-500',
+      bg: 'bg-[var(--data-poor)]/10',
+      text: 'text-[var(--data-poor)]',
+      dot: 'bg-[var(--data-poor)]',
     },
     LOW: {
-      bg: 'bg-orange-500/10',
-      text: 'text-orange-600 dark:text-orange-400',
-      dot: 'bg-orange-500',
+      bg: 'bg-[var(--data-warning)]/10',
+      text: 'text-[var(--data-warning)]',
+      dot: 'bg-[var(--data-warning)]',
     },
     MEDIUM: {
-      bg: 'bg-yellow-500/10',
-      text: 'text-yellow-600 dark:text-yellow-400',
-      dot: 'bg-yellow-500',
+      bg: 'bg-[var(--data-warning)]/10',
+      text: 'text-[var(--data-warning)]',
+      dot: 'bg-[var(--data-warning)]',
     },
     HIGH: {
-      bg: 'bg-green-500/10',
-      text: 'text-green-600 dark:text-green-400',
-      dot: 'bg-green-500',
+      bg: 'bg-[var(--data-excellent)]/10',
+      text: 'text-[var(--data-excellent)]',
+      dot: 'bg-[var(--data-excellent)]',
     },
   };
 

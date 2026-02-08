@@ -18,38 +18,38 @@ export interface RankingsTableProps {
 }
 
 /**
- * Format side preference badge (same colors as AthletesTable)
+ * Format side preference badge (V3 tokens)
  */
 function SideBadge({ side }: { side: string | null }) {
   if (!side) return <span className="text-txt-tertiary">—</span>;
 
   const colors: Record<string, string> = {
-    Port: 'bg-red-500/10 text-red-600 dark:text-red-400',
-    Starboard: 'bg-green-500/10 text-green-600 dark:text-green-400',
-    Both: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
-    Cox: 'bg-purple-500/10 text-purple-600 dark:text-purple-400',
+    Port: 'bg-[var(--data-poor)]/10 text-[var(--data-poor)]',
+    Starboard: 'bg-[var(--data-excellent)]/10 text-[var(--data-excellent)]',
+    Both: 'bg-[var(--data-good)]/10 text-[var(--data-good)]',
+    Cox: 'bg-[var(--chart-2)]/10 text-[var(--chart-2)]',
   };
 
-  const color = colors[side] || 'bg-gray-500/10 text-gray-600 dark:text-gray-400';
+  const color = colors[side] || 'bg-[var(--ink-muted)]/10 text-[var(--ink-muted)]';
 
   return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${color}`}>{side}</span>;
 }
 
 /**
- * Get rating color based on value (from V1 RankingsDisplay)
+ * Get rating color based on value (V3 tokens)
  */
 function getRatingColor(rating: number): string {
-  if (rating >= 1200) return 'text-blue-500'; // blade-blue
+  if (rating >= 1200) return 'text-[var(--data-good)]';
   if (rating >= 1000) return 'text-txt-primary';
-  if (rating >= 800) return 'text-orange-500';
+  if (rating >= 800) return 'text-[var(--data-warning)]';
   return 'text-txt-muted';
 }
 
 /**
- * Get rank color (top 3 highlighted)
+ * Get rank color (top 3 highlighted with warm accent)
  */
 function getRankColor(rank: number): string {
-  if (rank <= 3) return 'text-orange-500 font-bold';
+  if (rank <= 3) return 'text-[var(--data-warning)] font-bold';
   return 'text-txt-primary';
 }
 
