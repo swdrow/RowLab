@@ -43,8 +43,8 @@ export function RankingsPage() {
         <button
           onClick={() => setIsImportOpen(true)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                   bg-bg-raised text-txt-primary rounded-lg
-                   hover:bg-bg-hover transition-colors"
+                   bg-ink-raised text-txt-primary rounded-lg
+                   hover:bg-ink-hover transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add External Ranking
@@ -101,7 +101,7 @@ export function RankingsPage() {
                         boatClass: prev?.boatClass || boatClasses[0]?.value || '8+',
                       }))
                     }
-                    className="w-full px-3 py-2 bg-bg-default border border-bdr-default rounded-lg
+                    className="w-full px-3 py-2 bg-ink-well border border-bdr-default rounded-lg
                              text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
                   >
                     <option value="">Select a team</option>
@@ -125,7 +125,7 @@ export function RankingsPage() {
                         boatClass: e.target.value,
                       }))
                     }
-                    className="w-full px-3 py-2 bg-bg-default border border-bdr-default rounded-lg
+                    className="w-full px-3 py-2 bg-ink-well border border-bdr-default rounded-lg
                              text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
                   >
                     {boatClasses.map((bc) => (
@@ -155,9 +155,9 @@ export function RankingsPage() {
 
       {/* Import Modal */}
       <Dialog open={isImportOpen} onClose={() => setIsImportOpen(false)} className="relative z-50">
-        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+        <div className="fixed inset-0 bg-ink-deep/80 backdrop-blur-sm" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-md bg-bg-default rounded-xl shadow-xl p-6">
+          <Dialog.Panel className="w-full max-w-md bg-ink-well rounded-xl shadow-xl p-6">
             <Dialog.Title className="text-lg font-semibold text-txt-primary mb-4">
               Add External Ranking
             </Dialog.Title>

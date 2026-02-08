@@ -57,7 +57,7 @@ export function AdvancedRankingsPage() {
       ) : (
         <motion.div variants={FADE_IN_VARIANTS} initial="hidden" animate="visible">
           <Tab.Group onChange={(index) => setActiveTab(TABS[index].id)}>
-            <Tab.List className="flex gap-1 bg-bg-raised p-1 rounded-lg">
+            <Tab.List className="flex gap-1 bg-ink-raised p-1 rounded-lg">
               {TABS.map((tab) => (
                 <Tab
                   key={tab.id}
@@ -65,8 +65,8 @@ export function AdvancedRankingsPage() {
                     flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors flex-1
                     ${
                       selected
-                        ? 'bg-bg-surface text-txt-primary shadow-sm'
-                        : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-hover'
+                        ? 'bg-ink-raised text-txt-primary shadow-sm'
+                        : 'text-txt-secondary hover:text-txt-primary hover:bg-ink-hover'
                     }
                   `}
                 >
@@ -79,14 +79,14 @@ export function AdvancedRankingsPage() {
             <Tab.Panels className="mt-6">
               {/* Composite Rankings */}
               <Tab.Panel>
-                <div className="bg-bg-surface rounded-lg p-6 shadow-sm border border-bdr-default">
+                <div className="bg-ink-raised rounded-lg p-6 shadow-sm border border-bdr-default">
                   <CompositeRankings onAthleteClick={handleAthleteClick} />
                 </div>
               </Tab.Panel>
 
               {/* Bradley-Terry Rankings */}
               <Tab.Panel>
-                <div className="bg-bg-surface rounded-lg p-6 shadow-sm border border-bdr-default">
+                <div className="bg-ink-raised rounded-lg p-6 shadow-sm border border-bdr-default">
                   <BradleyTerryRankings
                     onAthleteClick={handleAthleteClick}
                     showMethodology={false}
@@ -96,14 +96,14 @@ export function AdvancedRankingsPage() {
 
               {/* Side-Specific Rankings */}
               <Tab.Panel>
-                <div className="bg-bg-surface rounded-lg p-6 shadow-sm border border-bdr-default">
+                <div className="bg-ink-raised rounded-lg p-6 shadow-sm border border-bdr-default">
                   <SideRankings onAthleteClick={handleAthleteClick} />
                 </div>
               </Tab.Panel>
 
               {/* Comparison Graph */}
               <Tab.Panel>
-                <div className="bg-bg-surface rounded-lg p-6 shadow-sm border border-bdr-default">
+                <div className="bg-ink-raised rounded-lg p-6 shadow-sm border border-bdr-default">
                   <h3 className="text-lg font-semibold text-txt-primary mb-4">
                     Comparison Network
                   </h3>
@@ -121,7 +121,7 @@ export function AdvancedRankingsPage() {
 
               {/* Probability Matrix */}
               <Tab.Panel>
-                <div className="bg-bg-surface rounded-lg p-6 shadow-sm border border-bdr-default">
+                <div className="bg-ink-raised rounded-lg p-6 shadow-sm border border-bdr-default">
                   <h3 className="text-lg font-semibold text-txt-primary mb-4">
                     Win Probability Matrix
                   </h3>

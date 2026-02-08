@@ -3,12 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, List, Calendar as CalendarIcon, ChevronLeft } from 'lucide-react';
 import { Dialog } from '@headlessui/react';
-import {
-  RegattaList,
-  RegattaCalendar,
-  RegattaForm,
-  RegattaDetail,
-} from '../components/regatta';
+import { RegattaList, RegattaCalendar, RegattaForm, RegattaDetail } from '../components/regatta';
 import {
   useRegattas,
   useRegatta,
@@ -118,9 +113,7 @@ export function RegattasPage() {
             onEdit={() => setEditingRegatta(selectedRegatta)}
           />
         ) : (
-          <div className="text-center py-12 text-txt-secondary">
-            Regatta not found
-          </div>
+          <div className="text-center py-12 text-txt-secondary">Regatta not found</div>
         )}
       </div>
     );
@@ -224,7 +217,7 @@ export function RegattasPage() {
         }}
         className="relative z-50"
       >
-        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+        <div className="fixed inset-0 bg-ink-deep/80 backdrop-blur-sm" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-lg bg-surface-default rounded-xl shadow-xl p-6 max-h-[90vh] overflow-y-auto">
             <Dialog.Title className="text-lg font-semibold text-txt-primary mb-4">
@@ -249,15 +242,15 @@ export function RegattasPage() {
         onClose={() => setDeleteConfirm(null)}
         className="relative z-50"
       >
-        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+        <div className="fixed inset-0 bg-ink-deep/80 backdrop-blur-sm" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-sm bg-surface-default rounded-xl shadow-xl p-6">
             <Dialog.Title className="text-lg font-semibold text-txt-primary">
               Delete Regatta
             </Dialog.Title>
             <p className="mt-2 text-sm text-txt-secondary">
-              Are you sure you want to delete "{deleteConfirm?.name}"? This will also delete
-              all events, races, and results. This action cannot be undone.
+              Are you sure you want to delete "{deleteConfirm?.name}"? This will also delete all
+              events, races, and results. This action cannot be undone.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -271,7 +264,7 @@ export function RegattasPage() {
                 onClick={handleDelete}
                 disabled={deleteRegatta.isPending}
                 className="px-4 py-2 text-sm font-medium text-white
-                         bg-red-500 rounded-lg hover:bg-red-600 disabled:opacity-50"
+                         bg-data-poor rounded-lg hover:bg-data-poor/90 disabled:opacity-50"
               >
                 {deleteRegatta.isPending ? 'Deleting...' : 'Delete'}
               </button>
