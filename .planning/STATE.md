@@ -4,9 +4,9 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 32 (Training & Attendance Migration) — In Progress
-**Plan:** 1/6 complete
-**Status:** Phase 32 in progress. Plan 32-01 complete: 11 training components (calendar, workout, periodization) migrated to V3 warm design tokens. Zero hardcoded colors, runtime CSS variable resolution for color functions, font-mono on all numeric displays.
-**Last activity:** 2026-02-08 — Completed 32-01-PLAN.md (V3 token migration for calendar/workout/periodization)
+**Plan:** 2/6 complete
+**Status:** Phase 32 in progress. Plan 32-02 complete: 15 files migrated (compliance dashboard, session forms/pages, assignment manager, athlete workout view, training pages). getComputedStyle pattern for chart/periodization colors, font-mono on all numeric displays, glass-card panels.
+**Last activity:** 2026-02-08 — Completed 32-02-PLAN.md (V3 token migration for compliance/session/assignment/pages)
 
 ## Project Reference
 
@@ -93,7 +93,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 29 | Lineup Builder Migration | Complete ✅ | 5/5 |
 | 30 | Erg Data Migration | Complete ✅ | 4/4 |
 | 31 | Seat Racing Migration | Complete ✅ | 6/6 |
-| 32 | Training & Attendance Migration | In Progress | 1/6 |
+| 32 | Training & Attendance Migration | In Progress | 2/6 |
 | 33-36 | Feature Modules | Planned | TBD |
 
 v3.0 Progress: ██████████████████░ (8 phases complete, 1 in progress, 4 remaining)
@@ -493,9 +493,9 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Phase 32, Plan 01 complete. Continuing Phase 32 execution.
+**Stopped at:** Phase 32, Plan 02 complete. Continuing Phase 32 execution.
 **Resume file:** None
-**Resume with:** Continue executing remaining Phase 32 plans (32-02 through 32-06)
+**Resume with:** Continue executing remaining Phase 32 plans (32-03 through 32-06)
 
 ## Roadmap Evolution
 
@@ -520,7 +520,7 @@ Key architectural decisions carrying forward:
 
 **v3.0 — App Redesign** (In Progress)
 
-Phase 32 (Training & Attendance Migration) in progress. Plan 01 complete (11 components migrated to V3 tokens).
+Phase 32 (Training & Attendance Migration) in progress. Plans 01-02 complete (26 files migrated to V3 tokens across calendar/workout/periodization/compliance/session/assignment/training pages).
 
 **v3.0 Progress:**
 - Phase 24: Foundation & Design System ✅
@@ -531,10 +531,10 @@ Phase 32 (Training & Attendance Migration) in progress. Plan 01 complete (11 com
 - Phase 29: Lineup Builder Migration ✅
 - Phase 30: Erg Data Migration ✅
 - Phase 31: Seat Racing Migration ✅
-- Phase 32: Training & Attendance Migration (1/6 plans complete)
+- Phase 32: Training & Attendance Migration (2/6 plans complete)
 - Phases 33-36: Planned
 
-Continue executing remaining Phase 32 plans.
+Continue executing remaining Phase 32 plans (32-03 through 32-06).
 
 Phase 13 delivered the cross-feature integration layer:
 
