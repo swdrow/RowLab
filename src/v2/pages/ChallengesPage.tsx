@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { ChallengeList, LeaderboardLive } from '../features/gamification';
 import { useChallenge } from '../hooks/useChallenges';
 import { useGamificationEnabled } from '../hooks/useGamificationPreference';
-import { ArrowLeft, Trophy, Users, Calendar, Flag } from 'lucide-react';
+import { ArrowLeft, Trophy, Users, Calendar, Flag, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 /**
@@ -12,14 +12,14 @@ function ChallengeDetail({ challengeId }: { challengeId: string }) {
   const { data: challenge, isLoading } = useChallenge(challengeId);
 
   if (isLoading) {
-    return <div className="animate-pulse h-96 bg-surface-hover rounded-lg" />;
+    return <div className="animate-pulse h-96 bg-ink-raised rounded-lg border border-ink-border" />;
   }
 
   if (!challenge) {
     return (
       <div className="text-center py-12">
-        <p className="text-txt-secondary">Challenge not found</p>
-        <Link to="/app/challenges" className="text-primary hover:underline mt-2 inline-block">
+        <p className="text-ink-secondary">Challenge not found</p>
+        <Link to="/app/challenges" className="text-accent-copper hover:underline mt-2 inline-block">
           Back to challenges
         </Link>
       </div>
@@ -33,60 +33,62 @@ function ChallengeDetail({ challengeId }: { challengeId: string }) {
       {/* Back button */}
       <Link
         to="/app/challenges"
-        className="flex items-center gap-2 text-txt-secondary hover:text-txt-primary transition-colors"
+        className="flex items-center gap-2 text-ink-secondary hover:text-accent-copper transition-colors"
       >
         <ArrowLeft size={18} />
         Back to challenges
       </Link>
 
       {/* Challenge header */}
-      <div className="p-6 bg-surface-elevated rounded-lg border border-bdr">
+      <div className="p-6 bg-ink-raised rounded-xl border border-ink-border">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-txt-primary">{challenge.name}</h1>
+            <h1 className="text-2xl font-display font-bold text-ink-bright">{challenge.name}</h1>
             {challenge.description && (
-              <p className="text-txt-secondary mt-2">{challenge.description}</p>
+              <p className="text-ink-secondary mt-2">{challenge.description}</p>
             )}
           </div>
 
-          <span className={`
-            px-3 py-1 rounded-full text-sm font-medium
-            ${isActive ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : ''}
-            ${challenge.status === 'completed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : ''}
-          `}>
+          <span
+            className={`
+            px-3 py-1.5 rounded-lg text-sm font-medium border
+            ${isActive ? 'bg-accent-copper/10 text-accent-copper border-accent-copper/20' : ''}
+            ${challenge.status === 'completed' ? 'bg-ink-hover text-ink-secondary border-ink-border' : ''}
+          `}
+          >
             {challenge.status}
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-4 mt-4 text-sm text-txt-secondary">
-          <span className="flex items-center gap-1">
-            <Trophy size={16} />
+        <div className="flex flex-wrap gap-4 mt-4 text-sm text-ink-secondary">
+          <span className="flex items-center gap-1.5">
+            <Trophy size={16} className="text-accent-copper" />
             {challenge.type === 'individual' ? 'Individual' : 'Team Goal'}
           </span>
-          <span className="flex items-center gap-1">
-            <Flag size={16} />
+          <span className="flex items-center gap-1.5">
+            <Flag size={16} className="text-accent-copper" />
             {challenge.metric}
           </span>
-          <span className="flex items-center gap-1">
-            <Users size={16} />
+          <span className="flex items-center gap-1.5">
+            <Users size={16} className="text-accent-copper" />
             {challenge.participantCount || 0} participants
           </span>
-          <span className="flex items-center gap-1">
-            <Calendar size={16} />
+          <span className="flex items-center gap-1.5">
+            <Calendar size={16} className="text-accent-copper" />
             {new Date(challenge.endDate).toLocaleDateString()}
           </span>
         </div>
       </div>
 
       {/* Leaderboard */}
-      <div className="p-6 bg-surface-elevated rounded-lg border border-bdr">
-        <h2 className="text-lg font-semibold text-txt-primary mb-4">
-          {isActive ? 'Live Leaderboard' : 'Final Standings'}
-        </h2>
-        <LeaderboardLive
-          challengeId={challengeId}
-          isActive={isActive}
-        />
+      <div className="p-6 bg-ink-raised rounded-xl border border-ink-border">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+            {isActive ? 'Live Leaderboard' : 'Final Standings'}
+          </h2>
+        </div>
+        <LeaderboardLive challengeId={challengeId} isActive={isActive} />
       </div>
     </div>
   );
@@ -102,8 +104,9 @@ export function ChallengesPage() {
   if (!enabled) {
     return (
       <div className="p-8 text-center">
-        <h1 className="text-2xl font-bold text-txt-primary mb-2">Challenges</h1>
-        <p className="text-txt-secondary">
+        <Target className="w-16 h-16 text-accent-copper/30 mx-auto mb-4" />
+        <h1 className="text-2xl font-display font-bold text-ink-bright mb-2">Challenges</h1>
+        <p className="text-ink-secondary">
           Gamification is disabled. Enable it in settings to participate in challenges.
         </p>
       </div>
@@ -121,15 +124,29 @@ export function ChallengesPage() {
 
   // Otherwise show list
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-txt-primary">Challenges</h1>
-        <p className="text-txt-secondary mt-1">
-          Compete with your team in friendly challenges
-        </p>
+    <div className="space-y-6">
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+        <div className="relative flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              TEAM CHALLENGES
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Challenges
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">
+              Compete with teammates and set team goals
+            </p>
+          </div>
+        </div>
       </div>
 
-      <ChallengeList showCreateButton />
+      <div className="px-6">
+        <ChallengeList showCreateButton />
+      </div>
     </div>
   );
 }

@@ -18,7 +18,7 @@ import type { VisitStatus } from '@v2/types/recruiting';
  * - Edit visits via modal form
  * - Status filters: All, Scheduled, Completed, Cancelled
  * - Empty state when no visits
- * - Violet theme consistent with recruiting feature
+ * - Copper editorial design theme
  */
 export function RecruitingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -59,100 +59,106 @@ export function RecruitingPage() {
 
   return (
     <FeatureGuard featureId="recruiting">
-      <div className="p-6 max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-[var(--color-text-primary)] flex items-center gap-2">
-              <Users className="w-6 h-6 text-violet-500" />
-              Recruiting
-            </h1>
-            <p className="text-[var(--color-text-secondary)] mt-1">
-              Manage recruit visits and schedules
-            </p>
-          </div>
-
-          <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition"
-          >
-            <Plus className="w-4 h-4" />
-            New Visit
-          </button>
-        </div>
-
-        {/* Filters */}
-        <div className="flex items-center gap-2 mb-6">
-          <Filter className="w-4 h-4 text-[var(--color-text-secondary)]" />
-          {(['all', 'scheduled', 'completed', 'cancelled'] as const).map(status => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                statusFilter === status
-                  ? 'bg-violet-500 text-white'
-                  : 'bg-[var(--color-bg-surface-elevated)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-              }`}
-            >
-              {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* Visit List */}
-        {isLoading ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map(i => (
-              <div
-                key={i}
-                className="h-40 bg-[var(--color-bg-surface-elevated)] rounded-xl animate-pulse"
-              />
-            ))}
-          </div>
-        ) : visits.length === 0 ? (
-          <div className="text-center py-12 bg-[var(--color-bg-surface-elevated)] rounded-xl">
-            <Users className="w-12 h-12 text-[var(--color-text-tertiary)] mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
-              No recruit visits
-            </h3>
-            <p className="text-[var(--color-text-secondary)] mb-4">
-              {statusFilter !== 'all'
-                ? `No ${statusFilter} visits found`
-                : 'Create your first recruit visit to get started'}
-            </p>
-            {statusFilter === 'all' && (
+      <div className="space-y-6">
+        {/* Hero Header */}
+        <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+          <div className="relative flex items-end justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+                RECRUIT MANAGEMENT
+              </p>
+              <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+                Recruiting
+              </h1>
+              <p className="text-sm text-ink-secondary mt-2">Manage recruit visits and schedules</p>
+            </div>
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition"
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-gradient-to-b from-accent-copper to-accent-copper-hover text-white rounded-xl shadow-glow-copper hover:shadow-glow-copper-lg hover:-translate-y-px active:translate-y-0 transition-all duration-150"
               >
                 <Plus className="w-4 h-4" />
-                Create Visit
+                New Visit
               </button>
-            )}
+            </div>
           </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {visits.map(visit => (
-              <motion.div
-                key={visit.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+        </div>
+
+        <div className="px-6 space-y-6">
+          {/* Filters */}
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-ink-secondary" />
+            {(['all', 'scheduled', 'completed', 'cancelled'] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 border ${
+                  statusFilter === status
+                    ? 'bg-accent-copper/10 text-accent-copper border-accent-copper/20'
+                    : 'bg-ink-raised text-ink-secondary hover:text-ink-body border-ink-border hover:border-accent-copper/20'
+                }`}
               >
-                <RecruitVisitCard
-                  visit={visit}
-                  onClick={() => setSelectedVisitId(visit.id)}
-                />
-              </motion.div>
+                {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
             ))}
           </div>
-        )}
+
+          {/* Visit List */}
+          {isLoading ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="h-40 bg-ink-raised rounded-xl border border-ink-border animate-pulse"
+                />
+              ))}
+            </div>
+          ) : visits.length === 0 ? (
+            <div className="text-center py-12 bg-ink-raised rounded-xl border border-ink-border">
+              <Users className="w-12 h-12 text-accent-copper/30 mx-auto mb-4" />
+              <h3 className="text-lg font-display font-medium text-ink-bright mb-2">
+                No recruit visits
+              </h3>
+              <p className="text-ink-secondary mb-4">
+                {statusFilter !== 'all'
+                  ? `No ${statusFilter} visits found`
+                  : 'Create your first recruit visit to get started'}
+              </p>
+              {statusFilter === 'all' && (
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-b from-accent-copper to-accent-copper-hover text-white rounded-xl shadow-glow-copper hover:shadow-glow-copper-lg hover:-translate-y-px active:translate-y-0 transition-all duration-150"
+                >
+                  <Plus className="w-4 h-4" />
+                  Create Visit
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {visits.map((visit) => (
+                <motion.div
+                  key={visit.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <RecruitVisitCard visit={visit} onClick={() => setSelectedVisitId(visit.id)} />
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Create Form Modal */}
-        <Modal open={showForm} onClose={() => setShowForm(false)} title="New Recruit Visit" size="lg">
-          <RecruitVisitForm
-            onSuccess={handleCreateSuccess}
-            onCancel={() => setShowForm(false)}
-          />
+        <Modal
+          open={showForm}
+          onClose={() => setShowForm(false)}
+          title="New Recruit Visit"
+          size="lg"
+        >
+          <RecruitVisitForm onSuccess={handleCreateSuccess} onCancel={() => setShowForm(false)} />
         </Modal>
 
         {/* Edit Form Modal */}
