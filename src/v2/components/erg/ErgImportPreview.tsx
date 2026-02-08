@@ -26,12 +26,12 @@ export function ErgImportPreview({
     <div className="space-y-6">
       {/* Summary */}
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-lg">
+        <div className="flex items-center gap-2 px-4 py-2 bg-data-excellent/10 text-data-excellent rounded-lg">
           <CheckCircle2 size={18} />
           <span className="font-medium">{totalValid} valid</span>
         </div>
         {hasErrors && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg">
+          <div className="flex items-center gap-2 px-4 py-2 bg-status-error/10 text-status-error rounded-lg">
             <AlertCircle size={18} />
             <span className="font-medium">{totalInvalid} with errors</span>
           </div>
@@ -46,15 +46,18 @@ export function ErgImportPreview({
             {invalidRows.slice(0, 20).map(({ row, errors }) => (
               <div
                 key={row}
-                className="p-3 bg-red-500/5 border border-red-500/20 rounded-lg"
+                className="p-3 bg-status-error/5 border border-status-error/20 rounded-lg"
               >
-                <div className="text-sm font-medium text-red-400">Row {row}</div>
+                <div className="text-sm font-medium text-status-error">Row {row}</div>
                 <ul className="mt-1 space-y-1">
                   {errors.map((error, i) => (
-                    <li key={i} className="text-xs text-red-300">
+                    <li key={i} className="text-xs text-status-error/80">
                       <span className="font-medium">{error.column}:</span> {error.message}
                       {error.value !== null && error.value !== undefined && (
-                        <span className="text-red-400/70"> (got: "{String(error.value)}")</span>
+                        <span className="text-status-error/60">
+                          {' '}
+                          (got: "{String(error.value)}")
+                        </span>
                       )}
                     </li>
                   ))}

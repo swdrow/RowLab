@@ -93,7 +93,7 @@ export function C2StatusBadge({
   if (isStale) {
     return (
       <div
-        className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 text-xs"
+        className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-data-warning/10 text-data-warning text-xs"
         title={`Last synced: ${relativeTime}`}
       >
         <AlertCircle size={14} />
@@ -109,7 +109,7 @@ export function C2StatusBadge({
   // Connected + recent state (green)
   return (
     <div
-      className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 text-xs"
+      className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-data-excellent/10 text-data-excellent text-xs"
       title={`Last synced: ${relativeTime}`}
     >
       <CheckCircle2 size={14} />

@@ -79,7 +79,7 @@ export function C2SyncButton({
       return {
         icon: <AlertTriangle size={size === 'sm' ? 14 : 16} />,
         text: 'Error',
-        className: 'bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20',
+        className: 'bg-status-error/10 text-status-error hover:bg-status-error/20',
       };
     }
 
@@ -87,7 +87,7 @@ export function C2SyncButton({
       return {
         icon: <Check size={size === 'sm' ? 14 : 16} />,
         text: 'Synced',
-        className: 'bg-green-500/10 text-green-600 dark:text-green-400',
+        className: 'bg-data-excellent/10 text-data-excellent',
       };
     }
 
@@ -110,7 +110,8 @@ export function C2SyncButton({
 
   const { icon, text, className } = getButtonContent();
 
-  const baseClasses = 'inline-flex items-center justify-center rounded-md transition-colors font-medium';
+  const baseClasses =
+    'inline-flex items-center justify-center rounded-md transition-colors font-medium';
   const sizeClasses = size === 'sm' ? 'text-xs' : 'text-sm';
 
   // Icon-only variant
@@ -125,10 +126,10 @@ export function C2SyncButton({
           !isConnected
             ? 'Concept2 not connected'
             : showError
-            ? `Sync failed: ${syncError?.message || 'Unknown error'}`
-            : showSuccess
-            ? 'Sync complete'
-            : 'Sync Concept2 workouts'
+              ? `Sync failed: ${syncError?.message || 'Unknown error'}`
+              : showSuccess
+                ? 'Sync complete'
+                : 'Sync Concept2 workouts'
         }
       >
         {icon}
@@ -147,8 +148,8 @@ export function C2SyncButton({
         !isConnected
           ? 'Concept2 not connected'
           : showError
-          ? `Sync failed: ${syncError?.message || 'Unknown error'}`
-          : undefined
+            ? `Sync failed: ${syncError?.message || 'Unknown error'}`
+            : undefined
       }
     >
       {icon}
