@@ -1,13 +1,24 @@
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, FileSpreadsheet } from 'lucide-react';
 import { Dialog, Tab } from '@headlessui/react';
-import { RankingsView, RankingImportForm, HeadToHeadTable } from '../components/rankings';
-import { useExternalTeams, useAddExternalRanking } from '../hooks/useTeamRankings';
+import {
+  RankingsView,
+  RankingImportForm,
+  HeadToHeadTable,
+  NCAAExportDialog,
+} from '../components/rankings';
+import {
+  useExternalTeams,
+  useAddExternalRanking,
+  useBoatClassRankings,
+} from '../hooks/useTeamRankings';
 import { getBoatClasses } from '../utils/marginCalculations';
 import type { ExternalRankingFormData } from '../types/regatta';
 
 export function RankingsPage() {
   const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [selectedBoatClass, setSelectedBoatClass] = useState<string | null>(null);
   const [selectedComparison, setSelectedComparison] = useState<{
     opponent: string;
     boatClass: string;
@@ -16,6 +27,7 @@ export function RankingsPage() {
   const { data: externalTeams } = useExternalTeams();
   const addRanking = useAddExternalRanking();
   const boatClasses = getBoatClasses();
+  const { data: rankings } = useBoatClassRankings(selectedBoatClass || undefined);
 
   const handleSelectTeam = (teamName: string, boatClass: string) => {
     setSelectedComparison({ opponent: teamName, boatClass });
@@ -40,15 +52,28 @@ export function RankingsPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => setIsImportOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                   bg-ink-raised text-txt-primary rounded-lg
-                   hover:bg-ink-hover transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add External Ranking
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsExportOpen(true)}
+            disabled={!rankings || rankings.length === 0}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium
+                     bg-accent-copper text-white rounded-lg
+                     hover:bg-accent-copper-hover transition-colors
+                     disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Export for NCAA
+          </button>
+          <button
+            onClick={() => setIsImportOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium
+                     bg-ink-raised text-txt-primary rounded-lg
+                     hover:bg-ink-hover transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add External Ranking
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -169,6 +194,13 @@ export function RankingsPage() {
           </Dialog.Panel>
         </div>
       </Dialog>
+
+      {/* NCAA Export Dialog */}
+      <NCAAExportDialog
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        rankings={rankings || []}
+      />
     </div>
   );
 }
