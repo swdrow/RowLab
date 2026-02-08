@@ -78,11 +78,16 @@ export function PeriodizationTimeline({
           <button
             onClick={() => onAddBlock(today)}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium
-                       text-accent-primary hover:text-accent-primary-hover
+                       text-interactive-primary hover:text-interactive-hover
                        transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
             </svg>
             Add Phase
           </button>
@@ -98,14 +103,11 @@ export function PeriodizationTimeline({
         </div>
 
         {/* Timeline track */}
-        <div className="relative h-16 bg-surface-elevated rounded-lg border border-bdr-default overflow-hidden">
+        <div className="relative h-16 bg-bg-surface-elevated rounded-lg border border-bdr-default overflow-hidden">
           {/* Background grid (weeks) */}
           <div className="absolute inset-0 flex">
             {Array.from({ length: Math.ceil(totalDays / 7) }).map((_, i) => (
-              <div
-                key={i}
-                className="flex-1 border-r border-bdr-default/30 last:border-r-0"
-              />
+              <div key={i} className="flex-1 border-r border-bdr-default/30 last:border-r-0" />
             ))}
           </div>
 
@@ -116,7 +118,7 @@ export function PeriodizationTimeline({
               onClick={() => onBlockClick?.(block)}
               className="absolute top-1 bottom-1 rounded-md transition-all
                          hover:ring-2 hover:ring-white/30 hover:scale-[1.02]
-                         focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                         focus:outline-none focus:ring-2 focus:ring-interactive-primary"
               style={{
                 left: `${block.left}%`,
                 width: `${block.width}%`,
@@ -127,17 +129,23 @@ export function PeriodizationTimeline({
             >
               <div className="h-full flex flex-col justify-center px-2 text-white">
                 <div className="flex items-center gap-1">
-                  <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={phaseIcons[block.phase]} />
+                  <svg
+                    className="w-3 h-3 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d={phaseIcons[block.phase]}
+                    />
                   </svg>
-                  <span className="text-xs font-semibold truncate">
-                    {phaseLabels[block.phase]}
-                  </span>
+                  <span className="text-xs font-semibold truncate">{phaseLabels[block.phase]}</span>
                 </div>
                 {block.weeks >= 2 && (
-                  <span className="text-[10px] truncate">
-                    {block.weeks}w
-                  </span>
+                  <span className="text-[10px] truncate font-mono">{block.weeks}w</span>
                 )}
               </div>
             </button>
@@ -146,12 +154,12 @@ export function PeriodizationTimeline({
           {/* Today indicator */}
           {isWithinInterval(today, { start: startDate, end: endDate }) && (
             <div
-              className="absolute top-0 bottom-0 w-0.5 bg-accent-destructive z-10"
+              className="absolute top-0 bottom-0 w-0.5 bg-data-poor z-10"
               style={{
                 left: `${(differenceInDays(today, startDate) / totalDays) * 100}%`,
               }}
             >
-              <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-accent-destructive rounded-full" />
+              <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-data-poor rounded-full" />
             </div>
           )}
         </div>
