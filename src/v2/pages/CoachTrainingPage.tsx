@@ -14,6 +14,8 @@ import {
 } from '../components/training';
 import { useTrainingPlans } from '../hooks/useTrainingPlans';
 import { useCreateWorkout } from '../hooks/useWorkouts';
+import { useTrainingKeyboard, getTrainingShortcuts } from '../hooks/useTrainingKeyboard';
+import { TrainingShortcutsHelp } from '../features/training/components/TrainingShortcutsHelp';
 import type { CalendarEvent, PeriodizationBlock } from '../types/training';
 import { Fragment } from 'react';
 
@@ -49,6 +51,31 @@ export function CoachTrainingPage() {
   // Data hooks
   const { plans, isLoading: loadingPlans } = useTrainingPlans();
   const { createWorkout, isCreating } = useCreateWorkout();
+
+  // Close all open modals/panels
+  const closeAllModals = useCallback(() => {
+    setShowWorkoutModal(false);
+    setShowAssignmentModal(false);
+    setShowAuditModal(false);
+    setSelectedSlot(null);
+    setSelectedEvent(null);
+  }, []);
+
+  // Keyboard shortcuts
+  const { showHelp, setShowHelp } = useTrainingKeyboard({
+    onNewSession: () => setShowWorkoutModal(true),
+    onEscape: closeAllModals,
+  });
+
+  const shortcuts = useMemo(
+    () =>
+      getTrainingShortcuts({
+        hasNewSession: true,
+        hasRefresh: true,
+        hasEscape: true,
+      }),
+    []
+  );
 
   // Resolve CSS vars for periodization block colors
   const blockColors = useMemo(() => {
@@ -443,6 +470,13 @@ export function CoachTrainingPage() {
           </div>
         </Dialog>
       </Transition>
+
+      {/* Keyboard Shortcuts Help */}
+      <TrainingShortcutsHelp
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+        shortcuts={shortcuts}
+      />
     </div>
   );
 }

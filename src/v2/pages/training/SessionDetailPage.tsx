@@ -1,7 +1,10 @@
+import { useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Play, Pencil, Trash, Clock, Users, Copy, Calendar } from '@phosphor-icons/react';
 import { useSession, useUpdateSession, useDeleteSession } from '../../hooks/useSessions';
 import { Breadcrumbs } from '../../features/shared/components/Breadcrumbs';
+import { TrainingShortcutsHelp } from '../../features/training/components/TrainingShortcutsHelp';
+import { useTrainingKeyboard, getTrainingShortcuts } from '../../hooks/useTrainingKeyboard';
 import type { PieceSegment } from '../../types/session';
 
 const SEGMENT_ORDER: PieceSegment[] = ['WARMUP', 'MAIN', 'COOLDOWN'];
@@ -18,6 +21,19 @@ export function SessionDetailPage() {
   const { session, isLoading, error } = useSession(sessionId || '');
   const { updateSessionAsync, isUpdating } = useUpdateSession();
   const { deleteSessionAsync } = useDeleteSession();
+
+  // Keyboard shortcuts (R=refresh, Escape=back, ?=help)
+  const { showHelp, setShowHelp } = useTrainingKeyboard({});
+
+  const shortcuts = useMemo(
+    () =>
+      getTrainingShortcuts({
+        hasNewSession: false,
+        hasRefresh: true,
+        hasEscape: true,
+      }),
+    []
+  );
 
   const handleStartLive = async () => {
     if (!sessionId) return;
@@ -243,6 +259,13 @@ export function SessionDetailPage() {
           ))
         )}
       </div>
+
+      {/* Keyboard Shortcuts Help */}
+      <TrainingShortcutsHelp
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+        shortcuts={shortcuts}
+      />
     </div>
   );
 }

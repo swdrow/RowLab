@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { queryKeys } from '../lib/queryKeys';
@@ -182,7 +183,47 @@ export function useCreatePlan() {
 
   const mutation = useMutation({
     mutationFn: createPlan,
+    onMutate: async (newPlanData) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.trainingPlans.all });
+
+      const previousPlans = queryClient.getQueriesData({ queryKey: queryKeys.trainingPlans.all });
+
+      // Optimistically add to cache
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.trainingPlans.lists() },
+        (old: TrainingPlan[] | undefined) => {
+          if (!old) return old;
+          const optimistic: TrainingPlan = {
+            id: `temp-${Date.now()}`,
+            teamId: '',
+            name: newPlanData.name,
+            description: newPlanData.description,
+            startDate: newPlanData.startDate,
+            endDate: newPlanData.endDate,
+            phase: newPlanData.phase,
+            isTemplate: newPlanData.isTemplate,
+            createdById: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          return [optimistic, ...old];
+        }
+      );
+
+      return { previousPlans };
+    },
     onSuccess: () => {
+      toast.success('Training plan created');
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlans) {
+        for (const [queryKey, data] of context.previousPlans) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      toast.error('Failed to create plan — changes reverted');
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.trainingPlans.all });
     },
   });
@@ -200,9 +241,37 @@ export function useUpdatePlan() {
 
   const mutation = useMutation({
     mutationFn: updatePlan,
-    onSuccess: (updatedPlan) => {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.trainingPlans.all });
+
+      const previousPlans = queryClient.getQueriesData({ queryKey: queryKeys.trainingPlans.all });
+
+      // Optimistically update in cache
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.trainingPlans.lists() },
+        (old: TrainingPlan[] | undefined) => {
+          if (!old) return old;
+          return old.map((p) =>
+            p.id === variables.id ? { ...p, ...variables, updatedAt: new Date().toISOString() } : p
+          );
+        }
+      );
+
+      return { previousPlans };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlans) {
+        for (const [queryKey, data] of context.previousPlans) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      toast.error('Failed to save — changes reverted');
+    },
+    onSettled: (updatedPlan) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.trainingPlans.all });
-      queryClient.invalidateQueries({ queryKey: queryKeys.trainingPlans.detail(updatedPlan.id) });
+      if (updatedPlan) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.trainingPlans.detail(updatedPlan.id) });
+      }
     },
   });
 
@@ -219,7 +288,34 @@ export function useDeletePlan() {
 
   const mutation = useMutation({
     mutationFn: deletePlan,
+    onMutate: async (planId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.trainingPlans.all });
+
+      const previousPlans = queryClient.getQueriesData({ queryKey: queryKeys.trainingPlans.all });
+
+      // Optimistically remove from cache
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.trainingPlans.lists() },
+        (old: TrainingPlan[] | undefined) => {
+          if (!old) return old;
+          return old.filter((p) => p.id !== planId);
+        }
+      );
+
+      return { previousPlans };
+    },
     onSuccess: () => {
+      toast.success('Training plan deleted');
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousPlans) {
+        for (const [queryKey, data] of context.previousPlans) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      toast.error('Failed to delete — changes reverted');
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.trainingPlans.all });
     },
   });

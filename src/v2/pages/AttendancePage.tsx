@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Calendar, BarChart3, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import { AttendanceSummary as AttendanceSummaryView } from '@v2/components/athletes/AttendanceSummary';
@@ -7,9 +7,11 @@ import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
 import { QuickMarkAttendance } from '@v2/features/attendance/components/QuickMarkAttendance';
 import { AttendanceStreakBadge } from '@v2/features/attendance/components/AttendanceStreakBadge';
 import { LiveAttendancePanel } from '@v2/features/attendance/components/LiveAttendancePanel';
+import { TrainingShortcutsHelp } from '@v2/features/training/components/TrainingShortcutsHelp';
 import { useAthletes } from '@v2/hooks/useAthletes';
 import { useAttendance, useAttendanceStreaks } from '@v2/hooks/useAttendance';
 import { useActiveSession } from '@v2/hooks/useSessions';
+import { useTrainingKeyboard, getTrainingShortcuts } from '@v2/hooks/useTrainingKeyboard';
 import type { AttendanceStatus } from '@v2/types/athletes';
 
 type Tab = 'daily' | 'summary';
@@ -48,6 +50,23 @@ export default function AttendancePage() {
   const { streakMap } = useAttendanceStreaks();
   const { session: activeSession } = useActiveSession();
   const hasActiveSession = activeSession?.status === 'ACTIVE';
+
+  // Keyboard shortcuts (no N shortcut on attendance — not applicable)
+  const { showHelp, setShowHelp } = useTrainingKeyboard({
+    onEscape: useCallback(() => {
+      setSelectedAthleteId(null);
+    }, []),
+  });
+
+  const shortcuts = useMemo(
+    () =>
+      getTrainingShortcuts({
+        hasNewSession: false,
+        hasRefresh: true,
+        hasEscape: true,
+      }),
+    []
+  );
 
   // Find selected athlete
   const selectedAthlete = useMemo(() => {
@@ -416,6 +435,13 @@ export default function AttendancePage() {
           </div>
         )}
       </div>
+
+      {/* Keyboard Shortcuts Help */}
+      <TrainingShortcutsHelp
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+        shortcuts={shortcuts}
+      />
     </div>
   );
 }

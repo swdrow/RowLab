@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { queryKeys } from '../lib/queryKeys';
@@ -341,10 +342,58 @@ export function useCreateWorkout() {
 
   const mutation = useMutation({
     mutationFn: createWorkout,
-    onSuccess: (newWorkout) => {
+    onMutate: async (newWorkoutData) => {
+      // Cancel in-flight queries
+      await queryClient.cancelQueries({ queryKey: ['workouts'] });
+      await queryClient.cancelQueries({ queryKey: ['calendarEvents'] });
+
+      // Snapshot previous state for rollback
+      const previousWorkouts = queryClient.getQueriesData({ queryKey: ['workouts'] });
+      const previousEvents = queryClient.getQueriesData({ queryKey: ['calendarEvents'] });
+
+      // Optimistically add to workouts cache
+      queryClient.setQueriesData(
+        { queryKey: ['workouts'] },
+        (old: PlannedWorkout[] | undefined) => {
+          if (!old) return old;
+          const optimistic: PlannedWorkout = {
+            id: `temp-${Date.now()}`,
+            planId: newWorkoutData.planId,
+            name: newWorkoutData.name,
+            type: newWorkoutData.type,
+            description: newWorkoutData.description,
+            scheduledDate: newWorkoutData.scheduledDate,
+            duration: newWorkoutData.duration,
+            intensity: newWorkoutData.intensity,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          return [optimistic, ...old];
+        }
+      );
+
+      return { previousWorkouts, previousEvents };
+    },
+    onSuccess: () => {
+      toast.success('Workout created');
+    },
+    onError: (_err, _variables, context) => {
+      // Rollback on error
+      if (context?.previousWorkouts) {
+        for (const [queryKey, data] of context.previousWorkouts) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      if (context?.previousEvents) {
+        for (const [queryKey, data] of context.previousEvents) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      toast.error('Failed to create workout — changes reverted');
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['workouts'] });
       queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
-      queryClient.invalidateQueries({ queryKey: ['trainingPlan', newWorkout.planId] });
     },
   });
 
@@ -361,12 +410,40 @@ export function useUpdateWorkout() {
 
   const mutation = useMutation({
     mutationFn: updateWorkout,
-    onSuccess: (updatedWorkout) => {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ['workouts'] });
+
+      const previousWorkouts = queryClient.getQueriesData({ queryKey: ['workouts'] });
+
+      // Optimistically update the workout in cache
+      queryClient.setQueriesData(
+        { queryKey: ['workouts'] },
+        (old: PlannedWorkout[] | undefined) => {
+          if (!old) return old;
+          return old.map((w) =>
+            w.id === variables.id ? { ...w, ...variables, updatedAt: new Date().toISOString() } : w
+          );
+        }
+      );
+
+      return { previousWorkouts };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousWorkouts) {
+        for (const [queryKey, data] of context.previousWorkouts) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      toast.error('Failed to save — changes reverted');
+    },
+    onSettled: (updatedWorkout) => {
       queryClient.invalidateQueries({ queryKey: ['workouts'] });
       queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
-      queryClient.invalidateQueries({
-        queryKey: ['workout', updatedWorkout.planId, updatedWorkout.id],
-      });
+      if (updatedWorkout) {
+        queryClient.invalidateQueries({
+          queryKey: ['workout', updatedWorkout.planId, updatedWorkout.id],
+        });
+      }
     },
   });
 
@@ -383,7 +460,50 @@ export function useDeleteWorkout() {
 
   const mutation = useMutation({
     mutationFn: deleteWorkout,
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ['workouts'] });
+      await queryClient.cancelQueries({ queryKey: ['calendarEvents'] });
+
+      const previousWorkouts = queryClient.getQueriesData({ queryKey: ['workouts'] });
+      const previousEvents = queryClient.getQueriesData({ queryKey: ['calendarEvents'] });
+
+      // Optimistically remove from workouts cache
+      queryClient.setQueriesData(
+        { queryKey: ['workouts'] },
+        (old: PlannedWorkout[] | undefined) => {
+          if (!old) return old;
+          return old.filter((w) => w.id !== variables.id);
+        }
+      );
+
+      // Optimistically remove from calendar events cache
+      queryClient.setQueriesData(
+        { queryKey: ['calendarEvents'] },
+        (old: CalendarEvent[] | undefined) => {
+          if (!old) return old;
+          return old.filter((e) => e.id !== variables.id && e.resource?.workoutId !== variables.id);
+        }
+      );
+
+      return { previousWorkouts, previousEvents };
+    },
     onSuccess: () => {
+      toast.success('Workout deleted');
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousWorkouts) {
+        for (const [queryKey, data] of context.previousWorkouts) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      if (context?.previousEvents) {
+        for (const [queryKey, data] of context.previousEvents) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+      toast.error('Failed to delete — changes reverted');
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['workouts'] });
       queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
     },
@@ -434,13 +554,14 @@ export function useRescheduleWorkout() {
 
       return { previousEvents };
     },
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       // Rollback on error
       if (context?.previousEvents) {
         for (const [queryKey, data] of context.previousEvents) {
           queryClient.setQueryData(queryKey, data);
         }
       }
+      toast.error('Failed to reschedule — changes reverted');
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });

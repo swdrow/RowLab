@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Calendar, ListBullets, CaretRight, Play } from '@phosphor-icons/react';
 import { useSessions } from '../../hooks/useSessions';
 import { SessionForm } from '../../features/sessions/components/SessionForm';
 import { Breadcrumbs } from '../../features/shared/components/Breadcrumbs';
+import { TrainingShortcutsHelp } from '../../features/training/components/TrainingShortcutsHelp';
+import { useTrainingKeyboard, getTrainingShortcuts } from '../../hooks/useTrainingKeyboard';
 import type { SessionType, SessionStatus } from '../../types/session';
 
 const SESSION_TYPE_COLORS: Record<SessionType, string> = {
@@ -28,6 +30,24 @@ export function SessionsPage() {
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
 
   const { sessions, isLoading, error } = useSessions();
+
+  // Keyboard shortcuts
+  const { showHelp, setShowHelp } = useTrainingKeyboard({
+    onNewSession: useCallback(() => setShowForm(true), []),
+    onEscape: useCallback(() => setShowForm(false), []),
+    onToggleView: useCallback(() => setViewMode((v) => (v === 'list' ? 'calendar' : 'list')), []),
+  });
+
+  const shortcuts = useMemo(
+    () =>
+      getTrainingShortcuts({
+        hasNewSession: true,
+        hasRefresh: true,
+        hasEscape: true,
+        hasToggleView: true,
+      }),
+    []
+  );
 
   if (isLoading) {
     return (
@@ -190,6 +210,13 @@ export function SessionsPage() {
           </div>
         </div>
       )}
+
+      {/* Keyboard Shortcuts Help */}
+      <TrainingShortcutsHelp
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+        shortcuts={shortcuts}
+      />
     </div>
   );
 }

@@ -1,13 +1,29 @@
+import { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Stop } from '@phosphor-icons/react';
 import { useSession, useUpdateSession } from '../../hooks/useSessions';
 import { LiveErgDashboard } from '../../features/live-erg/components/LiveErgDashboard';
 import { Breadcrumbs } from '../../features/shared/components/Breadcrumbs';
+import { TrainingShortcutsHelp } from '../../features/training/components/TrainingShortcutsHelp';
+import { useTrainingKeyboard, getTrainingShortcuts } from '../../hooks/useTrainingKeyboard';
 
 export function LiveSessionPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const { session, isLoading, error } = useSession(sessionId || '');
   const { updateSessionAsync, isUpdating } = useUpdateSession();
+
+  // Keyboard shortcuts (R=refresh, ?=help)
+  const { showHelp, setShowHelp } = useTrainingKeyboard({});
+
+  const shortcuts = useMemo(
+    () =>
+      getTrainingShortcuts({
+        hasNewSession: false,
+        hasRefresh: true,
+        hasEscape: true,
+      }),
+    []
+  );
 
   const handleEndSession = async () => {
     if (!sessionId || !confirm('Are you sure you want to end this session?')) return;
@@ -101,6 +117,13 @@ export function LiveSessionPage() {
         sessionName={session.name}
         sessionCode={session.sessionCode}
         targetPace={targetPace}
+      />
+
+      {/* Keyboard Shortcuts Help */}
+      <TrainingShortcutsHelp
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+        shortcuts={shortcuts}
       />
     </div>
   );
