@@ -9,29 +9,34 @@ import { getPeriodizationColor } from '../../../utils/calendarHelpers';
 import type { PeriodizationBlock, PeriodizationPhase } from '../../../types/training';
 
 // Phase guidelines for validation
-const PHASE_GUIDELINES: Record<PeriodizationPhase, { minWeeks: number; maxWeeks: number; description: string }> = {
+const PHASE_GUIDELINES: Record<
+  PeriodizationPhase,
+  { minWeeks: number; maxWeeks: number; description: string }
+> = {
   base: { minWeeks: 6, maxWeeks: 12, description: 'Build aerobic foundation and technique' },
   build: { minWeeks: 4, maxWeeks: 8, description: 'Increase intensity and race-specific work' },
   peak: { minWeeks: 2, maxWeeks: 4, description: 'Race-specific high intensity training' },
   taper: { minWeeks: 1, maxWeeks: 2, description: 'Reduce volume, maintain intensity' },
 };
 
-const blockSchema = z.object({
-  name: z.string().min(1, 'Block name is required').max(50),
-  phase: z.enum(['base', 'build', 'peak', 'taper']),
-  startDate: z.string().min(1, 'Start date is required'),
-  endDate: z.string().min(1, 'End date is required'),
-  weeklyTSSTarget: z.number().min(0).max(2000).optional(),
-  focusAreas: z.array(z.string()).default([]),
-  color: z.string().optional(),
-}).refine(
-  (data) => {
-    const start = parseISO(data.startDate);
-    const end = parseISO(data.endDate);
-    return end > start;
-  },
-  { message: 'End date must be after start date', path: ['endDate'] }
-);
+const blockSchema = z
+  .object({
+    name: z.string().min(1, 'Block name is required').max(50),
+    phase: z.enum(['base', 'build', 'peak', 'taper']),
+    startDate: z.string().min(1, 'Start date is required'),
+    endDate: z.string().min(1, 'End date is required'),
+    weeklyTSSTarget: z.number().min(0).max(2000).optional(),
+    focusAreas: z.array(z.string()).default([]),
+    color: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      const start = parseISO(data.startDate);
+      const end = parseISO(data.endDate);
+      return end > start;
+    },
+    { message: 'End date must be after start date', path: ['endDate'] }
+  );
 
 type BlockFormValues = z.infer<typeof blockSchema>;
 
@@ -76,7 +81,13 @@ export function BlockForm({
     color: block?.color,
   };
 
-  const { register, handleSubmit, watch, control, formState: { errors } } = useForm<BlockFormValues>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    formState: { errors },
+  } = useForm<BlockFormValues>({
     resolver: zodResolver(blockSchema),
     defaultValues,
   });
@@ -86,9 +97,10 @@ export function BlockForm({
   const watchEndDate = watch('endDate');
 
   // Calculate block duration
-  const blockWeeks = watchStartDate && watchEndDate
-    ? differenceInWeeks(parseISO(watchEndDate), parseISO(watchStartDate))
-    : 0;
+  const blockWeeks =
+    watchStartDate && watchEndDate
+      ? differenceInWeeks(parseISO(watchEndDate), parseISO(watchStartDate))
+      : 0;
 
   const guidelines = PHASE_GUIDELINES[watchPhase];
 
@@ -114,14 +126,12 @@ export function BlockForm({
           <input
             id="name"
             {...register('name')}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+            className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                        text-txt-primary placeholder:text-txt-tertiary
-                       focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                       focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
             placeholder="e.g., Spring Base Phase"
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-accent-destructive">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="mt-1 text-sm text-data-poor">{errors.name.message}</p>}
         </div>
 
         <div>
@@ -135,16 +145,11 @@ export function BlockForm({
                 className={`relative flex items-center justify-center p-3 rounded-lg border-2 cursor-pointer
                            transition-all ${
                              watchPhase === phase
-                               ? 'border-accent-primary bg-accent-primary/10'
+                               ? 'border-interactive-primary bg-interactive-primary/10'
                                : 'border-bdr-default hover:border-bdr-default/80'
                            }`}
               >
-                <input
-                  type="radio"
-                  {...register('phase')}
-                  value={phase}
-                  className="sr-only"
-                />
+                <input type="radio" {...register('phase')} value={phase} className="sr-only" />
                 <div className="text-center">
                   <div
                     className="w-6 h-6 rounded-full mx-auto mb-1"
@@ -169,12 +174,12 @@ export function BlockForm({
             id="startDate"
             type="date"
             {...register('startDate')}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+            className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                        text-txt-primary
-                       focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                       focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
           />
           {errors.startDate && (
-            <p className="mt-1 text-sm text-accent-destructive">{errors.startDate.message}</p>
+            <p className="mt-1 text-sm text-data-poor">{errors.startDate.message}</p>
           )}
         </div>
 
@@ -186,24 +191,28 @@ export function BlockForm({
             id="endDate"
             type="date"
             {...register('endDate')}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+            className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                        text-txt-primary
-                       focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                       focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
           />
           {errors.endDate && (
-            <p className="mt-1 text-sm text-accent-destructive">{errors.endDate.message}</p>
+            <p className="mt-1 text-sm text-data-poor">{errors.endDate.message}</p>
           )}
         </div>
       </div>
 
       {/* Duration indicator */}
       {blockWeeks > 0 && (
-        <div className={`p-3 rounded-lg ${isDurationValid ? 'bg-accent-success/10' : 'bg-accent-warning/10'}`}>
+        <div
+          className={`p-3 rounded-lg ${isDurationValid ? 'bg-data-excellent/10' : 'bg-data-warning/10'}`}
+        >
           <div className="flex items-center justify-between">
             <span className="text-sm text-txt-primary">
-              Duration: <span className="font-semibold">{blockWeeks} weeks</span>
+              Duration: <span className="font-semibold font-mono">{blockWeeks} weeks</span>
             </span>
-            <span className={`text-xs ${isDurationValid ? 'text-accent-success' : 'text-accent-warning'}`}>
+            <span
+              className={`text-xs ${isDurationValid ? 'text-data-excellent' : 'text-data-warning'}`}
+            >
               Recommended: {guidelines.minWeeks}-{guidelines.maxWeeks} weeks
             </span>
           </div>
@@ -212,7 +221,10 @@ export function BlockForm({
 
       {/* TSS Target */}
       <div>
-        <label htmlFor="weeklyTSSTarget" className="block text-sm font-medium text-txt-primary mb-1">
+        <label
+          htmlFor="weeklyTSSTarget"
+          className="block text-sm font-medium text-txt-primary mb-1"
+        >
           Weekly TSS Target (optional)
         </label>
         <input
@@ -221,9 +233,9 @@ export function BlockForm({
           min={0}
           max={2000}
           {...register('weeklyTSSTarget', { valueAsNumber: true })}
-          className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
-                     text-txt-primary placeholder:text-txt-tertiary
-                     focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+          className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
+                     text-txt-primary placeholder:text-txt-tertiary font-mono
+                     focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
           placeholder="e.g., 500"
         />
         <p className="mt-1 text-xs text-txt-tertiary">
@@ -233,9 +245,7 @@ export function BlockForm({
 
       {/* Focus Areas */}
       <div>
-        <label className="block text-sm font-medium text-txt-primary mb-2">
-          Focus Areas
-        </label>
+        <label className="block text-sm font-medium text-txt-primary mb-2">Focus Areas</label>
         <Controller
           control={control}
           name="focusAreas"
@@ -254,9 +264,10 @@ export function BlockForm({
                     }
                   }}
                   className={`px-3 py-1.5 text-sm rounded-full border transition-colors
-                    ${(field.value || []).includes(area)
-                      ? 'bg-accent-primary text-white border-accent-primary'
-                      : 'bg-surface-default text-txt-secondary border-bdr-default hover:border-accent-primary'
+                    ${
+                      (field.value || []).includes(area)
+                        ? 'bg-interactive-primary text-white border-interactive-primary'
+                        : 'bg-bg-surface text-txt-secondary border-bdr-default hover:border-interactive-primary'
                     }`}
                 >
                   {area}
@@ -280,8 +291,8 @@ export function BlockForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-4 py-2 text-sm font-medium text-white bg-accent-primary
-                     rounded-md hover:bg-accent-primary-hover
+          className="px-4 py-2 text-sm font-medium text-white bg-interactive-primary
+                     rounded-md hover:bg-interactive-hover
                      disabled:opacity-50 disabled:cursor-not-allowed
                      transition-colors"
         >

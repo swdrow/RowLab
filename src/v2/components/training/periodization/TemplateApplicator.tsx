@@ -7,15 +7,17 @@ import { z } from 'zod';
 import { format, parseISO, eachDayOfInterval } from 'date-fns';
 import type { TrainingPlan, PlannedWorkout } from '../../../types/training';
 
-const applyTemplateSchema = z.object({
-  templateId: z.string().min(1, 'Select a template'),
-  startDate: z.string().min(1, 'Start date is required'),
-  endDate: z.string().min(1, 'End date is required'),
-  replaceExisting: z.boolean().default(false),
-}).refine(
-  (data) => parseISO(data.endDate) > parseISO(data.startDate),
-  { message: 'End date must be after start date', path: ['endDate'] }
-);
+const applyTemplateSchema = z
+  .object({
+    templateId: z.string().min(1, 'Select a template'),
+    startDate: z.string().min(1, 'Start date is required'),
+    endDate: z.string().min(1, 'End date is required'),
+    replaceExisting: z.boolean().default(false),
+  })
+  .refine((data) => parseISO(data.endDate) > parseISO(data.startDate), {
+    message: 'End date must be after start date',
+    path: ['endDate'],
+  });
 
 type ApplyTemplateValues = z.infer<typeof applyTemplateSchema>;
 
@@ -45,7 +47,12 @@ export function TemplateApplicator({
 }: TemplateApplicatorProps) {
   const [showConflicts, setShowConflicts] = useState(false);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<ApplyTemplateValues>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<ApplyTemplateValues>({
     resolver: zodResolver(applyTemplateSchema),
     defaultValues: {
       templateId: '',
@@ -96,9 +103,9 @@ export function TemplateApplicator({
         <select
           id="templateId"
           {...register('templateId')}
-          className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+          className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                      text-txt-primary
-                     focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                     focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
         >
           <option value="">Choose a template...</option>
           {templates.map((template) => (
@@ -109,13 +116,13 @@ export function TemplateApplicator({
           ))}
         </select>
         {errors.templateId && (
-          <p className="mt-1 text-sm text-accent-destructive">{errors.templateId.message}</p>
+          <p className="mt-1 text-sm text-data-poor">{errors.templateId.message}</p>
         )}
       </div>
 
       {/* Template Preview */}
       {selectedTemplate && (
-        <div className="p-4 bg-surface-elevated rounded-lg border border-bdr-default">
+        <div className="p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default">
           <h4 className="text-sm font-medium text-txt-primary mb-2">{selectedTemplate.name}</h4>
           {selectedTemplate.description && (
             <p className="text-sm text-txt-tertiary mb-2">{selectedTemplate.description}</p>
@@ -136,12 +143,12 @@ export function TemplateApplicator({
             id="startDate"
             type="date"
             {...register('startDate')}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+            className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                        text-txt-primary
-                       focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                       focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
           />
           {errors.startDate && (
-            <p className="mt-1 text-sm text-accent-destructive">{errors.startDate.message}</p>
+            <p className="mt-1 text-sm text-data-poor">{errors.startDate.message}</p>
           )}
         </div>
 
@@ -153,22 +160,22 @@ export function TemplateApplicator({
             id="endDate"
             type="date"
             {...register('endDate')}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+            className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                        text-txt-primary
-                       focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                       focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
           />
           {errors.endDate && (
-            <p className="mt-1 text-sm text-accent-destructive">{errors.endDate.message}</p>
+            <p className="mt-1 text-sm text-data-poor">{errors.endDate.message}</p>
           )}
         </div>
       </div>
 
       {/* Conflict Warning */}
       {conflicts.length > 0 && (
-        <div className="p-4 bg-accent-warning/10 border border-accent-warning/30 rounded-lg">
+        <div className="p-4 bg-data-warning/10 border border-data-warning/30 rounded-lg">
           <div className="flex items-start justify-between">
             <div>
-              <h4 className="text-sm font-medium text-accent-warning">
+              <h4 className="text-sm font-medium text-data-warning">
                 {conflicts.length} existing workout{conflicts.length > 1 ? 's' : ''} in this range
               </h4>
               <p className="text-xs text-txt-secondary mt-1">
@@ -178,7 +185,7 @@ export function TemplateApplicator({
             <button
               type="button"
               onClick={() => setShowConflicts(!showConflicts)}
-              className="text-xs text-accent-primary hover:underline"
+              className="text-xs text-interactive-primary hover:underline"
             >
               {showConflicts ? 'Hide' : 'Show'} details
             </button>
@@ -188,14 +195,13 @@ export function TemplateApplicator({
             <ul className="mt-3 space-y-1">
               {conflicts.slice(0, 5).map((workout) => (
                 <li key={workout.id} className="text-xs text-txt-secondary flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-accent-warning rounded-full" />
-                  {workout.name} - {workout.scheduledDate && format(parseISO(workout.scheduledDate), 'MMM d')}
+                  <span className="w-1.5 h-1.5 bg-data-warning rounded-full" />
+                  {workout.name} -{' '}
+                  {workout.scheduledDate && format(parseISO(workout.scheduledDate), 'MMM d')}
                 </li>
               ))}
               {conflicts.length > 5 && (
-                <li className="text-xs text-txt-tertiary">
-                  ...and {conflicts.length - 5} more
-                </li>
+                <li className="text-xs text-txt-tertiary">...and {conflicts.length - 5} more</li>
               )}
             </ul>
           )}
@@ -204,8 +210,8 @@ export function TemplateApplicator({
             <input
               type="checkbox"
               {...register('replaceExisting')}
-              className="w-4 h-4 rounded border-bdr-default bg-surface-default
-                         text-accent-primary focus:ring-accent-primary focus:ring-offset-0"
+              className="w-4 h-4 rounded border-bdr-default bg-bg-surface
+                         text-interactive-primary focus:ring-interactive-primary focus:ring-offset-0"
             />
             <span className="text-sm text-txt-primary">Replace existing workouts</span>
           </label>
@@ -225,8 +231,8 @@ export function TemplateApplicator({
         <button
           type="submit"
           disabled={isApplying || !watchTemplateId}
-          className="px-4 py-2 text-sm font-medium text-white bg-accent-primary
-                     rounded-md hover:bg-accent-primary-hover
+          className="px-4 py-2 text-sm font-medium text-white bg-interactive-primary
+                     rounded-md hover:bg-interactive-hover
                      disabled:opacity-50 disabled:cursor-not-allowed
                      transition-colors"
         >

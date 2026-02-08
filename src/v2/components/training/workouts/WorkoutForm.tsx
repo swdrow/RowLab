@@ -7,7 +7,12 @@ import { z } from 'zod';
 import { format, parseISO } from 'date-fns';
 import { ExerciseFieldArray } from './ExerciseFieldArray';
 import { estimateTSSFromPlan } from '../../../utils/tssCalculator';
-import type { WorkoutFormData, WorkoutType, IntensityLevel, PlannedWorkout } from '../../../types/training';
+import type {
+  WorkoutFormData,
+  WorkoutType,
+  IntensityLevel,
+  PlannedWorkout,
+} from '../../../types/training';
 
 // Validation schema
 const exerciseSchema = z.object({
@@ -87,14 +92,15 @@ export function WorkoutForm({
     targetPace: workout?.targetPace || undefined,
     targetHeartRate: workout?.targetHeartRate || undefined,
     intensity: (workout?.intensity as IntensityLevel) || undefined,
-    exercises: workout?.exercises?.map(e => ({
-      name: e.name,
-      sets: e.sets,
-      reps: e.reps,
-      duration: e.duration,
-      intensity: e.intensity,
-      notes: e.notes || '',
-    })) || [],
+    exercises:
+      workout?.exercises?.map((e) => ({
+        name: e.name,
+        sets: e.sets,
+        reps: e.reps,
+        duration: e.duration,
+        intensity: e.intensity,
+        notes: e.notes || '',
+      })) || [],
     estimatedTSS: workout?.estimatedTSS || undefined,
   };
 
@@ -103,7 +109,13 @@ export function WorkoutForm({
     defaultValues,
   });
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = methods;
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = methods;
 
   const watchDuration = watch('duration');
   const watchIntensity = watch('intensity');
@@ -136,14 +148,12 @@ export function WorkoutForm({
             <input
               id="name"
               {...register('name')}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+              className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                          text-txt-primary placeholder:text-txt-tertiary
-                         focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                         focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               placeholder="e.g., Morning 2k Test"
             />
-            {errors.name && (
-              <p className="mt-1 text-sm text-accent-destructive">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="mt-1 text-sm text-data-poor">{errors.name.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -154,42 +164,50 @@ export function WorkoutForm({
               <select
                 id="type"
                 {...register('type')}
-                className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+                className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                            text-txt-primary
-                           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                           focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               >
                 {workoutTypeOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label htmlFor="scheduledDate" className="block text-sm font-medium text-txt-primary mb-1">
+              <label
+                htmlFor="scheduledDate"
+                className="block text-sm font-medium text-txt-primary mb-1"
+              >
                 Scheduled Date & Time
               </label>
               <input
                 id="scheduledDate"
                 type="datetime-local"
                 {...register('scheduledDate')}
-                className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+                className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                            text-txt-primary
-                           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                           focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-txt-primary mb-1">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-txt-primary mb-1"
+            >
               Description
             </label>
             <textarea
               id="description"
               {...register('description')}
               rows={2}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+              className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                          text-txt-primary placeholder:text-txt-tertiary resize-none
-                         focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                         focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               placeholder="Workout details and notes..."
             />
           </div>
@@ -209,9 +227,9 @@ export function WorkoutForm({
                 min={1}
                 max={480}
                 {...register('duration', { valueAsNumber: true })}
-                className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
-                           text-txt-primary text-center
-                           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
+                           text-txt-primary text-center font-mono
+                           focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               />
             </div>
 
@@ -224,9 +242,9 @@ export function WorkoutForm({
                 type="number"
                 min={0}
                 {...register('distance', { valueAsNumber: true })}
-                className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
-                           text-txt-primary text-center
-                           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
+                           text-txt-primary text-center font-mono
+                           focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               />
             </div>
 
@@ -241,9 +259,9 @@ export function WorkoutForm({
                 max={180}
                 step={0.1}
                 {...register('targetPace', { valueAsNumber: true })}
-                className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
-                           text-txt-primary text-center
-                           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
+                           text-txt-primary text-center font-mono
+                           focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               />
             </div>
 
@@ -254,22 +272,24 @@ export function WorkoutForm({
               <select
                 id="intensity"
                 {...register('intensity')}
-                className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+                className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                            text-txt-primary
-                           focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                           focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
               >
                 <option value="">--</option>
                 {intensityOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
           {/* Estimated TSS */}
-          <div className="mt-3 p-3 bg-surface-sunken rounded-lg flex items-center justify-between">
+          <div className="mt-3 p-3 bg-bg-base rounded-lg flex items-center justify-between">
             <span className="text-sm text-txt-secondary">Estimated TSS:</span>
-            <span className="text-lg font-semibold text-txt-primary">
+            <span className="text-lg font-semibold text-txt-primary font-mono">
               {watch('estimatedTSS') || '--'}
             </span>
           </div>
@@ -291,8 +311,8 @@ export function WorkoutForm({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 text-sm font-medium text-white bg-accent-primary
-                       rounded-md hover:bg-accent-primary-hover
+            className="px-4 py-2 text-sm font-medium text-white bg-interactive-primary
+                       rounded-md hover:bg-interactive-hover
                        disabled:opacity-50 disabled:cursor-not-allowed
                        transition-colors"
           >
