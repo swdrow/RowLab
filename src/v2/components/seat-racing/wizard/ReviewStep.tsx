@@ -2,7 +2,9 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useSessionWizard } from '@/v2/hooks/useSessionWizard';
 import { useAthletes } from '@/v2/hooks/useAthletes';
+import { useBradleyTerryRankings } from '@/v2/hooks/useAdvancedRankings';
 import { PencilIcon, CheckCircleIcon, AlertTriangleIcon } from 'lucide-react';
+import { RankingsImpactPreview } from './RankingsImpactPreview';
 
 /**
  * Format date for display (e.g., "January 24, 2026")
@@ -92,15 +94,22 @@ function PieceReview({ piece, index }: PieceReviewProps) {
         </p>
       )}
       <div className="mt-2 space-y-1">
-        <p className="text-xs font-medium text-txt-secondary uppercase tracking-wide mb-1">Boat Times</p>
+        <p className="text-xs font-medium text-txt-secondary uppercase tracking-wide mb-1">
+          Boat Times
+        </p>
         {piece.boats && piece.boats.length > 0 ? (
           piece.boats.map((boat: any, j: number) => (
-            <div key={j} className="flex justify-between text-sm py-1 border-t border-bdr-subtle first:border-t-0">
+            <div
+              key={j}
+              className="flex justify-between text-sm py-1 border-t border-bdr-subtle first:border-t-0"
+            >
               <span className="text-txt-primary">{boat.name}</span>
               <span className="font-mono text-txt-primary">
-                {boat.finishTimeSeconds
-                  ? formatTimeDisplay(boat.finishTimeSeconds)
-                  : <span className="text-txt-muted">—</span>}
+                {boat.finishTimeSeconds ? (
+                  formatTimeDisplay(boat.finishTimeSeconds)
+                ) : (
+                  <span className="text-txt-muted">—</span>
+                )}
               </span>
             </div>
           ))
@@ -124,7 +133,7 @@ function PieceAssignmentsReview({ piece, index }: PieceAssignmentsReviewProps) {
   const { data: athletes } = useAthletes();
 
   const getAthleteName = (id: string): string => {
-    const athlete = athletes?.find(a => a.id === id);
+    const athlete = athletes?.find((a) => a.id === id);
     return athlete ? `${athlete.firstName} ${athlete.lastName}` : 'Unknown';
   };
 
@@ -138,7 +147,10 @@ function PieceAssignmentsReview({ piece, index }: PieceAssignmentsReviewProps) {
             <div className="flex flex-wrap gap-1">
               {boat.assignments && boat.assignments.length > 0 ? (
                 boat.assignments.map((assignment: any, k: number) => (
-                  <span key={k} className="text-xs bg-bg-elevated px-2 py-1 rounded border border-bdr-subtle text-txt-primary">
+                  <span
+                    key={k}
+                    className="text-xs bg-bg-elevated px-2 py-1 rounded border border-bdr-subtle text-txt-primary"
+                  >
                     Seat {assignment.seatNumber}: {getAthleteName(assignment.athleteId)}
                   </span>
                 ))
@@ -214,23 +226,30 @@ function ValidationSummary({ data }: ValidationSummaryProps) {
 }
 
 /**
- * Step 4: Review & Submit
+ * Step 3: Review & Submit (3-step wizard)
  *
  * Displays all session data for final review before submission.
  * Allows editing by navigating back to specific steps.
+ * Shows rankings impact preview with before/after comparison.
  */
 export function ReviewStep() {
   const { watch } = useFormContext();
   const wizard = useSessionWizard();
   const data = watch();
 
+  // Fetch current rankings for impact preview
+  const { data: rankingsData } = useBradleyTerryRankings();
+  const currentRankings =
+    rankingsData?.athletes?.map((athlete) => ({
+      athleteId: athlete.id,
+      rating: athlete.rating || 1500,
+      rank: athlete.rank || 0,
+    })) || [];
+
   return (
     <div className="space-y-6">
       {/* Session Metadata Section */}
-      <ReviewSection
-        title="Session Info"
-        onEdit={() => wizard.goToStep(0)}
-      >
+      <ReviewSection title="Session Info" onEdit={() => wizard.goToStep(0)}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <ReviewField label="Date" value={formatDate(data.date)} />
           <ReviewField label="Boat Class" value={data.boatClass || 'Not specified'} />
@@ -244,36 +263,30 @@ export function ReviewStep() {
         )}
       </ReviewSection>
 
-      {/* Pieces Section */}
+      {/* Pieces & Assignments Section (combined for 3-step wizard) */}
       <ReviewSection
-        title={`Pieces (${data.pieces?.length || 0})`}
+        title={`Pieces & Assignments (${data.pieces?.length || 0} pieces)`}
         onEdit={() => wizard.goToStep(1)}
       >
         {data.pieces && data.pieces.length > 0 ? (
           data.pieces.map((piece: any, i: number) => (
-            <PieceReview key={i} piece={piece} index={i} />
+            <div key={i} className="mb-4">
+              <PieceReview piece={piece} index={i} />
+              <div className="mt-2 pl-4">
+                <PieceAssignmentsReview piece={piece} index={i} />
+              </div>
+            </div>
           ))
         ) : (
           <p className="text-txt-muted text-sm">No pieces added yet</p>
         )}
       </ReviewSection>
 
-      {/* Assignments Section */}
-      <ReviewSection
-        title="Athlete Assignments"
-        onEdit={() => wizard.goToStep(2)}
-      >
-        {data.pieces && data.pieces.length > 0 ? (
-          data.pieces.map((piece: any, i: number) => (
-            <PieceAssignmentsReview key={i} piece={piece} index={i} />
-          ))
-        ) : (
-          <p className="text-txt-muted text-sm">No assignments yet</p>
-        )}
-      </ReviewSection>
-
       {/* Validation Summary */}
       <ValidationSummary data={data} />
+
+      {/* Rankings Impact Preview */}
+      <RankingsImpactPreview sessionData={data} currentRankings={currentRankings} />
     </div>
   );
 }

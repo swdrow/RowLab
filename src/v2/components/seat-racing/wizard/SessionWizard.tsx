@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { motion, AnimatePresence } from 'framer-motion';
 import { sessionCreateSchema, type SessionCreateInput } from '@/v2/types/seatRacing';
 import { useSessionWizard, WIZARD_STEPS } from '@/v2/hooks/useSessionWizard';
 import {
@@ -10,10 +11,10 @@ import {
   useSetAssignments,
   useProcessSession,
 } from '@/v2/hooks/useSeatRaceSessions';
+import { SPRING_CONFIG } from '@/v2/utils/animations';
 import { StepIndicator } from './StepIndicator';
 import { SessionMetadataStep } from './SessionMetadataStep';
-import { PieceManagerStep } from './PieceManagerStep';
-import { AthleteAssignmentStep } from './AthleteAssignmentStep';
+import { PiecesAndAthletesStep } from './PiecesAndAthletesStep';
 import { ReviewStep } from './ReviewStep';
 
 export interface SessionWizardProps {
@@ -29,11 +30,9 @@ function getStepFields(step: number): string[] {
   switch (step) {
     case 0: // Session metadata
       return ['date', 'boatClass'];
-    case 1: // Pieces
+    case 1: // Pieces + Athletes (combined)
       return ['pieces'];
-    case 2: // Assignments (validated in Plan 05)
-      return [];
-    case 3: // Review (no validation)
+    case 2: // Review (no validation)
       return [];
     default:
       return [];
@@ -41,17 +40,17 @@ function getStepFields(step: number): string[] {
 }
 
 /**
- * Multi-step session creation wizard
+ * Multi-step session creation wizard (3-step flow)
  *
  * Steps:
  * 1. Session Info: Date, boat class, conditions, location
- * 2. Add Pieces: Create pieces with boats (Plan 04)
- * 3. Assign Athletes: Place athletes in seats (Plan 05)
- * 4. Review & Submit: Verify and create session (Plan 06)
+ * 2. Pieces & Athletes: Create pieces with boats, assign athletes (combined)
+ * 3. Review & Submit: Verify and create session with rankings preview
  *
  * Features:
  * - Step-by-step validation
  * - Form state persistence across steps
+ * - Horizontal slide transitions (forward left, back right)
  * - Click navigation to previously visited steps
  * - Visual progress indicator
  */
@@ -62,6 +61,9 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
   const addBoatMutation = useAddBoat();
   const setAssignmentsMutation = useSetAssignments();
   const processSessionMutation = useProcessSession();
+
+  // Track navigation direction for horizontal slide animation
+  const [direction, setDirection] = useState<'forward' | 'back'>('forward');
 
   const methods = useForm<any>({
     // Note: Using 'any' here because the wizard form includes pieces/boats
@@ -89,7 +91,13 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
       }
     }
 
+    setDirection('forward');
     wizard.nextStep();
+  };
+
+  const handleBack = () => {
+    setDirection('back');
+    wizard.prevStep();
   };
 
   const handleSubmit = methods.handleSubmit(async (data) => {
@@ -151,13 +159,28 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
     }
   });
 
-  // Step components
+  // Step components (3 steps)
   const stepComponents = [
     <SessionMetadataStep key="metadata" />,
-    <PieceManagerStep key="pieces" />,
-    <AthleteAssignmentStep key="assignments" />,
+    <PiecesAndAthletesStep key="pieces-athletes" />,
     <ReviewStep key="review" />,
   ];
+
+  // Animation variants for horizontal slide
+  const slideVariants = {
+    enter: (direction: 'forward' | 'back') => ({
+      x: direction === 'forward' ? '100%' : '-100%',
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction: 'forward' | 'back') => ({
+      x: direction === 'forward' ? '-100%' : '100%',
+      opacity: 0,
+    }),
+  };
 
   return (
     <FormProvider {...methods}>
@@ -170,9 +193,21 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
           onStepClick={wizard.goToStep}
         />
 
-        {/* Current step content */}
-        <div className="min-h-[300px]">
-          {stepComponents[wizard.step]}
+        {/* Current step content with horizontal slide transition */}
+        <div className="relative overflow-hidden min-h-[300px]">
+          <AnimatePresence initial={false} mode="wait" custom={direction}>
+            <motion.div
+              key={wizard.step}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={SPRING_CONFIG}
+            >
+              {stepComponents[wizard.step]}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Navigation buttons */}
@@ -193,7 +228,7 @@ export function SessionWizard({ onComplete, onCancel, initialData }: SessionWiza
             {!wizard.isFirstStep && (
               <button
                 type="button"
-                onClick={wizard.prevStep}
+                onClick={handleBack}
                 disabled={wizard.isSubmitting}
                 className="px-4 py-2 bg-bg-surface border border-bdr-default text-txt-primary rounded-md hover:bg-bg-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >

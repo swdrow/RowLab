@@ -4,9 +4,9 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 31 (Seat Racing Migration) — In Progress
-**Plan:** 1/6 complete (31-01 done)
-**Status:** Phase 31 in progress. All core seat racing components (RankingsTable, RankingsChart, ConfidenceBadge, SessionList, SideRankings) migrated to V3 design tokens. Created 3 new animated UI components: ConfidenceRing (radial progress), ELOSparkline (inline trend), SegmentedControl (iOS-style toggle). RankingsTable enhanced with animated row reordering and new visual widgets. Remaining: data visualizations, session wizard, matrix planner.
-**Last activity:** 2026-02-08 — Completed 31-01-PLAN.md
+**Plan:** 3/6 complete (31-01, 31-02, 31-03 done)
+**Status:** Phase 31 in progress. Core components migrated to V3 (RankingsTable, RankingsChart, ConfidenceBadge, SessionList, SideRankings). Created RankingDetailPanel slide-out with ELO history chart (smooth monotone line), composite factor breakdown, and recent sessions list. Panel uses spring physics animation and dismisses on Escape. Remaining: session wizard, matrix planner, parameters panel.
+**Last activity:** 2026-02-08 — Completed 31-03-PLAN.md
 
 ## Project Reference
 
@@ -92,7 +92,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 28 | Athletes Feature Migration | Complete ✅ | 8/8 |
 | 29 | Lineup Builder Migration | Complete ✅ | 5/5 |
 | 30 | Erg Data Migration | Complete ✅ | 4/4 |
-| 31 | Seat Racing Migration | In Progress | 2/6 |
+| 31 | Seat Racing Migration | In Progress | 3/6 |
 | 32-36 | Feature Modules | Planned | TBD |
 
 v3.0 Progress: █████████████████░░ (7 phases complete, 1 in progress, 5 remaining)

@@ -1,16 +1,15 @@
 import { useState, useMemo } from 'react';
 
 /**
- * Wizard step definitions
+ * Wizard step definitions (3-step flow)
  */
 export const WIZARD_STEPS = [
-  { id: 0, name: 'Session Info', description: 'Date, boat class, conditions' },
-  { id: 1, name: 'Add Pieces', description: 'Create pieces with boats' },
-  { id: 2, name: 'Assign Athletes', description: 'Place athletes in seats' },
-  { id: 3, name: 'Review & Submit', description: 'Verify and create session' },
+  { id: 0, name: 'Details', description: 'Date, boat class, conditions' },
+  { id: 1, name: 'Pieces & Athletes', description: 'Create pieces and assign athletes' },
+  { id: 2, name: 'Review', description: 'Verify and create session' },
 ] as const;
 
-export type WizardStep = typeof WIZARD_STEPS[number];
+export type WizardStep = (typeof WIZARD_STEPS)[number];
 
 export interface UseSessionWizardReturn {
   step: number;
@@ -31,7 +30,7 @@ export interface UseSessionWizardReturn {
  * Hook for managing multi-step wizard state
  *
  * Manages:
- * - Current step index (0-3)
+ * - Current step index (0-2 for 3-step flow)
  * - Maximum step reached (for validation)
  * - Submission state
  * - Navigation between steps
