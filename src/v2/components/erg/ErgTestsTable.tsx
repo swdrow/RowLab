@@ -74,7 +74,7 @@ function ErgTestCard({
   return (
     <div
       onClick={() => onClick?.(test)}
-      className="p-4 bg-bg-surface border border-bdr-default rounded-lg hover:border-interactive-primary transition-colors cursor-pointer"
+      className="p-4 bg-bg-surface border border-ink-border rounded-xl hover:border-accent-copper/30 hover:bg-accent-copper/[0.02] transition-colors cursor-pointer"
     >
       <div className="flex items-start justify-between mb-2">
         <div>

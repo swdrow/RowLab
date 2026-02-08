@@ -222,59 +222,72 @@ export function ErgTestsPage() {
         )}
       </AnimatePresence>
 
-      {/* Header */}
-      <div className="flex-shrink-0 px-6 py-4 border-b border-bdr-default bg-bg-surface">
-        <div className="flex items-center justify-between mb-4">
+      {/* Copper Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden border-b border-bdr-default">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+        <div className="relative flex items-end justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-txt-primary">Erg Tests</h1>
-            <p className="text-sm text-txt-tertiary mt-1">
-              {tests.length} {tests.length === 1 ? 'test' : 'tests'}
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              PERFORMANCE DATA
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Erg Tests
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">
+              Track and analyze ergometer performance
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             {/* View toggle */}
-            <div className="flex gap-0.5 p-0.5 bg-bg-subtle rounded-md">
+            <div className="flex gap-0.5 p-0.5 bg-bg-subtle rounded-lg border border-ink-border">
               <button
                 onClick={() => setActiveView('tests')}
                 className={`
-                  flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded transition-colors
+                  relative flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded transition-colors
                   ${
                     activeView === 'tests'
-                      ? 'bg-interactive-primary text-white shadow-sm'
+                      ? 'text-accent-copper'
                       : 'text-txt-secondary hover:text-txt-primary'
                   }
                 `}
                 title="Tests view"
               >
-                <List size={16} />
-                Tests
+                {activeView === 'tests' && (
+                  <div className="absolute inset-0 rounded-md bg-accent-copper/[0.12] border border-accent-copper/30" />
+                )}
+                <List size={16} className="relative z-10" />
+                <span className="relative z-10">Tests</span>
               </button>
               <button
                 onClick={() => setActiveView('leaderboard')}
                 className={`
-                  flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded transition-colors
+                  relative flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded transition-colors
                   ${
                     activeView === 'leaderboard'
-                      ? 'bg-interactive-primary text-white shadow-sm'
+                      ? 'text-accent-copper'
                       : 'text-txt-secondary hover:text-txt-primary'
                   }
                 `}
                 title="Leaderboard view"
               >
-                <BarChart3 size={16} />
-                Leaderboard
+                {activeView === 'leaderboard' && (
+                  <div className="absolute inset-0 rounded-md bg-accent-copper/[0.12] border border-accent-copper/30" />
+                )}
+                <BarChart3 size={16} className="relative z-10" />
+                <span className="relative z-10">Leaderboard</span>
               </button>
             </div>
 
             <button
               onClick={() => setShowC2Status(!showC2Status)}
               className={`
-                flex items-center gap-2 px-4 py-2 rounded-md transition-colors font-medium
+                flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-medium border
                 ${
                   showC2Status
-                    ? 'bg-interactive-primary text-white hover:bg-interactive-primary-hover'
-                    : 'bg-bg-subtle text-txt-secondary hover:bg-bg-default'
+                    ? 'bg-accent-copper/[0.12] text-accent-copper border-accent-copper/30'
+                    : 'bg-bg-subtle text-txt-secondary hover:bg-accent-copper/[0.04] hover:text-accent-copper border-ink-border'
                 }
               `}
               title={showC2Status ? 'Hide C2 Status' : 'Show C2 Status'}
@@ -285,7 +298,7 @@ export function ErgTestsPage() {
 
             <button
               onClick={handleOpenImportModal}
-              className="flex items-center gap-2 px-4 py-2 bg-bg-subtle text-txt-secondary hover:bg-bg-default rounded-md transition-colors font-medium"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-ink-secondary border border-ink-border hover:bg-accent-copper/[0.04] hover:text-accent-copper hover:border-accent-copper/30 rounded-xl transition-all"
             >
               <Upload size={18} />
               Import CSV
@@ -293,17 +306,21 @@ export function ErgTestsPage() {
 
             <button
               onClick={handleOpenAddModal}
-              className="flex items-center gap-2 px-4 py-2 bg-interactive-primary text-white rounded-md hover:bg-interactive-primary-hover transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-gradient-to-b from-accent-copper to-accent-copper-hover text-white rounded-xl shadow-glow-copper hover:shadow-glow-copper-lg hover:-translate-y-px active:translate-y-0 transition-all duration-150"
             >
               <Plus size={18} />
               Add Test
             </button>
           </div>
         </div>
-
-        {/* Filters - only show in tests view */}
-        {activeView === 'tests' && <ErgTestFilters filters={filters} onFilterChange={setFilters} />}
       </div>
+
+      {/* Filters */}
+      {activeView === 'tests' && (
+        <div className="px-6 py-3 border-b border-bdr-subtle">
+          <ErgTestFilters filters={filters} onFilterChange={setFilters} />
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex-1 flex overflow-hidden">

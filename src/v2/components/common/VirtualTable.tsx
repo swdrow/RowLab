@@ -65,9 +65,7 @@ export function VirtualTable<TData>({
   // Padding to maintain scroll height
   const paddingTop = virtualRows.length > 0 ? virtualRows[0]?.start || 0 : 0;
   const paddingBottom =
-    virtualRows.length > 0
-      ? totalSize - (virtualRows[virtualRows.length - 1]?.end || 0)
-      : 0;
+    virtualRows.length > 0 ? totalSize - (virtualRows[virtualRows.length - 1]?.end || 0) : 0;
 
   const handleRowClick = useCallback(
     (row: Row<TData>) => {
@@ -102,7 +100,7 @@ export function VirtualTable<TData>({
     >
       <table className="w-full border-collapse">
         {/* Fixed Header */}
-        <thead className="sticky top-0 z-10 bg-bg-surface-elevated">
+        <thead className="sticky top-0 z-10 bg-bg-surface-elevated border-b border-ink-border">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -114,18 +112,17 @@ export function VirtualTable<TData>({
                     key={header.id}
                     style={{ width: header.getSize() }}
                     className={`
-                      px-4 py-3 text-left text-xs font-semibold text-txt-secondary uppercase tracking-wider
-                      border-b border-bdr-default
-                      ${canSort ? 'cursor-pointer select-none hover:text-txt-primary' : ''}
+                      px-4 py-3 text-left text-[10px] font-semibold text-ink-secondary uppercase tracking-[0.15em]
+                      ${canSort ? 'cursor-pointer select-none hover:text-accent-copper' : ''}
                     `}
                     onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
                       {sortDirection && (
-                        <span className="text-interactive-primary">
+                        <span className="text-accent-copper">
                           {sortDirection === 'asc' ? '↑' : '↓'}
                         </span>
                       )}
@@ -156,7 +153,7 @@ export function VirtualTable<TData>({
                 className={`
                   border-b border-bdr-subtle transition-colors
                   ${onRowClick ? 'cursor-pointer' : ''}
-                  ${isSelected ? 'bg-bg-active' : 'hover:bg-bg-hover'}
+                  ${isSelected ? 'bg-accent-copper/[0.08]' : 'hover:bg-accent-copper/[0.04]'}
                 `}
                 onClick={() => handleRowClick(row)}
               >

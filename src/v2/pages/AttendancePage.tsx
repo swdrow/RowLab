@@ -143,38 +143,53 @@ export default function AttendancePage() {
 
   return (
     <div className="h-full">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-bdr-default">
-        <div className="flex items-center justify-between mb-4">
+      {/* Copper Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden border-b border-bdr-default">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+        <div className="relative flex items-end justify-between">
           <div>
-            <h1 className="text-2xl font-display font-semibold text-txt-primary">Attendance</h1>
-            <p className="text-sm text-txt-secondary mt-1">Track and view team attendance</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              TEAM TRACKING
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Attendance
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">Record and track practice attendance</p>
           </div>
         </div>
+      </div>
 
-        {/* Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-bg-surface-elevated rounded-lg w-fit">
+      {/* Tabs */}
+      <div className="px-6 py-3 border-b border-bdr-subtle">
+        <div className="flex items-center gap-1 p-1 bg-bg-surface-elevated rounded-lg w-fit border border-ink-border">
           <button
             onClick={() => setActiveTab('daily')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
+            className={`relative flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
               activeTab === 'daily'
-                ? 'bg-interactive-primary text-white'
+                ? 'text-accent-copper'
                 : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-hover'
             }`}
           >
-            <Calendar size={18} />
-            Daily
+            {activeTab === 'daily' && (
+              <div className="absolute inset-0 rounded-md bg-accent-copper/[0.12] border border-accent-copper/30" />
+            )}
+            <Calendar size={18} className="relative z-10" />
+            <span className="relative z-10">Daily</span>
           </button>
           <button
             onClick={() => setActiveTab('summary')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
+            className={`relative flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
               activeTab === 'summary'
-                ? 'bg-interactive-primary text-white'
+                ? 'text-accent-copper'
                 : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-hover'
             }`}
           >
-            <BarChart3 size={18} />
-            Summary
+            {activeTab === 'summary' && (
+              <div className="absolute inset-0 rounded-md bg-accent-copper/[0.12] border border-accent-copper/30" />
+            )}
+            <BarChart3 size={18} className="relative z-10" />
+            <span className="relative z-10">Summary</span>
           </button>
         </div>
       </div>
@@ -197,7 +212,7 @@ export default function AttendancePage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => navigateDate('prev')}
-                  className="p-2 text-txt-secondary hover:text-txt-primary hover:bg-bg-hover rounded-lg"
+                  className="p-2 text-txt-secondary hover:text-accent-copper hover:bg-accent-copper/[0.06] rounded-lg border border-ink-border transition-colors"
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -206,13 +221,13 @@ export default function AttendancePage() {
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="px-4 py-2 bg-bg-surface-elevated border border-bdr-default rounded-lg
-                             text-txt-primary focus:outline-none focus:border-interactive-primary"
+                  className="px-4 py-2 bg-bg-surface-elevated border border-ink-border rounded-lg
+                             text-txt-primary focus:outline-none focus:border-accent-copper focus:ring-1 focus:ring-accent-copper/30"
                 />
 
                 <button
                   onClick={() => navigateDate('next')}
-                  className="p-2 text-txt-secondary hover:text-txt-primary hover:bg-bg-hover rounded-lg"
+                  className="p-2 text-txt-secondary hover:text-accent-copper hover:bg-accent-copper/[0.06] rounded-lg border border-ink-border transition-colors"
                 >
                   <ChevronRight size={20} />
                 </button>
@@ -288,19 +303,19 @@ export default function AttendancePage() {
                     <div key={athlete.id}>
                       {isFirstMarked && (
                         <div className="flex items-center gap-3 py-2">
-                          <div className="flex-1 h-px bg-bdr-default" />
-                          <span className="text-xs text-txt-tertiary uppercase tracking-wider">
+                          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-accent-copper/20 to-accent-copper/20" />
+                          <span className="text-xs text-accent-copper uppercase tracking-[0.15em] font-semibold">
                             Marked
                           </span>
-                          <div className="flex-1 h-px bg-bdr-default" />
+                          <div className="flex-1 h-px bg-gradient-to-l from-transparent via-accent-copper/20 to-accent-copper/20" />
                         </div>
                       )}
 
                       <div
-                        className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+                        className={`flex items-center justify-between p-3 rounded-xl transition-colors border ${
                           currentStatus
-                            ? 'bg-bg-surface-elevated'
-                            : 'bg-bg-surface-elevated border border-bdr-default'
+                            ? 'bg-bg-surface-elevated border-ink-border'
+                            : 'bg-bg-surface-elevated border-accent-copper/30 shadow-sm'
                         }`}
                       >
                         {/* Left: Avatar + name + streak */}
@@ -401,7 +416,7 @@ export default function AttendancePage() {
             </div>
 
             {/* Summary table */}
-            <div className="bg-bg-surface-elevated rounded-lg overflow-hidden">
+            <div className="bg-bg-surface-elevated border border-ink-border rounded-xl overflow-hidden">
               <AttendanceSummaryView
                 startDate={dateRange.start}
                 endDate={dateRange.end}
@@ -411,12 +426,16 @@ export default function AttendancePage() {
 
             {/* Individual history panel */}
             {selectedAthlete && (
-              <div className="p-4 bg-bg-surface-elevated rounded-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-txt-primary">Individual History</h3>
+              <div className="p-6 bg-bg-surface-elevated border border-ink-border rounded-xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+                    Individual History
+                  </span>
+                  <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent" />
                   <button
                     onClick={() => setSelectedAthleteId(null)}
-                    className="text-sm text-txt-secondary hover:text-txt-primary"
+                    className="text-sm text-txt-secondary hover:text-accent-copper transition-colors"
                   >
                     Close
                   </button>
