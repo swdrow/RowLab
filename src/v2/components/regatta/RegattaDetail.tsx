@@ -2,8 +2,17 @@ import { useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Calendar, MapPin, ExternalLink, ChevronDown, ChevronRight,
-  Plus, Edit, Trash2, Clock, Trophy, Flag
+  Calendar,
+  MapPin,
+  ExternalLink,
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  Edit,
+  Trash2,
+  Clock,
+  Trophy,
+  Flag,
 } from 'lucide-react';
 import { Dialog } from '@headlessui/react';
 import type { Regatta, Event, Race, RaceResult } from '../../types/regatta';
@@ -12,9 +21,11 @@ import { RaceForm } from './RaceForm';
 import { ResultsForm } from './ResultsForm';
 import { MarginBadge } from './MarginDisplay';
 import {
-  useCreateEvent, useDeleteEvent,
-  useCreateRace, useDeleteRace,
-  useBatchAddResults
+  useCreateEvent,
+  useDeleteEvent,
+  useCreateRace,
+  useDeleteRace,
+  useBatchAddResults,
 } from '../../hooks/useRaces';
 
 type RegattaDetailProps = {
@@ -38,11 +49,14 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
 
   const isMultiDay = regatta.endDate && regatta.endDate !== regatta.date;
   const regattaDays = isMultiDay
-    ? Math.ceil((new Date(regatta.endDate!).getTime() - new Date(regatta.date).getTime()) / (1000 * 60 * 60 * 24)) + 1
+    ? Math.ceil(
+        (new Date(regatta.endDate!).getTime() - new Date(regatta.date).getTime()) /
+          (1000 * 60 * 60 * 24)
+      ) + 1
     : 1;
 
   const toggleEvent = (eventId: string) => {
-    setExpandedEvents(prev => {
+    setExpandedEvents((prev) => {
       const next = new Set(prev);
       if (next.has(eventId)) {
         next.delete(eventId);
@@ -55,14 +69,14 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
 
   // Get winner time for margin calculations
   const getWinnerTime = (results: RaceResult[]) => {
-    const winner = results.find(r => r.place === 1);
+    const winner = results.find((r) => r.place === 1);
     return winner?.finishTimeSeconds || null;
   };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-surface-elevated rounded-lg p-6 border border-bdr-default">
+      <div className="glass-card rounded-lg p-6 border border-ink-border">
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-2xl font-semibold text-txt-primary">{regatta.name}</h2>
@@ -92,14 +106,14 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
                 href={regatta.externalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg hover:bg-surface-hover transition-colors text-txt-secondary"
+                className="p-2 rounded-lg hover:bg-ink-hover transition-colors text-txt-secondary"
               >
                 <ExternalLink className="w-5 h-5" />
               </a>
             )}
             <button
               onClick={onEdit}
-              className="p-2 rounded-lg hover:bg-surface-hover transition-colors text-txt-secondary"
+              className="p-2 rounded-lg hover:bg-ink-hover transition-colors text-txt-secondary"
             >
               <Edit className="w-5 h-5" />
             </button>
@@ -107,8 +121,8 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
         </div>
 
         {regatta.teamGoals && (
-          <div className="mt-4 p-3 bg-accent-primary/5 rounded-lg border border-accent-primary/20">
-            <p className="text-sm font-medium text-accent-primary">Team Goals</p>
+          <div className="mt-4 p-3 bg-data-good/10 rounded-lg border border-data-good/20">
+            <p className="text-sm font-medium text-data-good">Team Goals</p>
             <p className="text-sm text-txt-primary mt-1">{regatta.teamGoals}</p>
           </div>
         )}
@@ -135,7 +149,7 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
           </div>
         ) : (
           <div className="space-y-3">
-            {regatta.events.map(event => (
+            {regatta.events.map((event) => (
               <EventCard
                 key={event.id}
                 event={event}
@@ -153,14 +167,10 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
       </div>
 
       {/* Modal for forms */}
-      <Dialog
-        open={!!modalContent}
-        onClose={() => setModalContent(null)}
-        className="relative z-50"
-      >
-        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+      <Dialog open={!!modalContent} onClose={() => setModalContent(null)} className="relative z-50">
+        <div className="fixed inset-0 bg-ink-deep/50 backdrop-blur-sm" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-lg bg-surface-default rounded-xl shadow-xl p-6">
+          <Dialog.Panel className="w-full max-w-lg glass-card rounded-xl shadow-xl p-6">
             <Dialog.Title className="text-lg font-semibold text-txt-primary mb-4">
               {modalContent?.type === 'event' && 'Add Event'}
               {modalContent?.type === 'race' && 'Add Race'}
@@ -233,10 +243,10 @@ function EventCard({
   const raceCount = event.races?.length || 0;
 
   return (
-    <div className="bg-surface-elevated rounded-lg border border-bdr-default overflow-hidden">
+    <div className="glass-card rounded-lg border border-ink-border overflow-hidden">
       {/* Event header */}
       <div
-        className="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors"
+        className="flex items-center justify-between p-4 cursor-pointer hover:bg-ink-hover transition-colors"
         onClick={onToggle}
       >
         <div className="flex items-center gap-3">
@@ -254,17 +264,17 @@ function EventCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={onAddRace}
-            className="p-1.5 rounded hover:bg-surface-default text-txt-tertiary hover:text-txt-primary transition-colors"
+            className="p-1.5 rounded hover:bg-ink-base text-txt-tertiary hover:text-txt-primary transition-colors"
             title="Add race"
           >
             <Plus className="w-4 h-4" />
           </button>
           <button
             onClick={onDeleteEvent}
-            className="p-1.5 rounded hover:bg-surface-default text-txt-tertiary hover:text-red-500 transition-colors"
+            className="p-1.5 rounded hover:bg-ink-base text-txt-tertiary hover:text-data-poor transition-colors"
             title="Delete event"
           >
             <Trash2 className="w-4 h-4" />
@@ -279,9 +289,9 @@ function EventCard({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-t border-bdr-default"
+            className="border-t border-ink-border"
           >
-            {event.races.map(race => (
+            {event.races.map((race) => (
               <RaceRow
                 key={race.id}
                 race={race}
@@ -309,10 +319,10 @@ function RaceRow({
   winnerTime: number | null;
 }) {
   const hasResults = race.results && race.results.length > 0;
-  const ownResult = race.results?.find(r => r.isOwnTeam);
+  const ownResult = race.results?.find((r) => r.isOwnTeam);
 
   return (
-    <div className="px-4 py-3 border-b border-bdr-subtle last:border-b-0 hover:bg-surface-hover/50">
+    <div className="px-4 py-3 border-b border-ink-border last:border-b-0 hover:bg-ink-hover/50">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div>
@@ -321,7 +331,9 @@ function RaceRow({
               {race.boatClass} • {race.distanceMeters}m
               {race.scheduledTime && (
                 <>
-                  {' '}• <Clock className="w-3 h-3 inline" /> {format(parseISO(race.scheduledTime), 'h:mm a')}
+                  {' '}
+                  • <Clock className="w-3 h-3 inline" />{' '}
+                  {format(parseISO(race.scheduledTime), 'h:mm a')}
                 </>
               )}
             </p>
@@ -330,7 +342,7 @@ function RaceRow({
           {/* Our result badge */}
           {ownResult && (
             <div className="flex items-center gap-2">
-              {ownResult.place === 1 && <Trophy className="w-4 h-4 text-yellow-500" />}
+              {ownResult.place === 1 && <Trophy className="w-4 h-4 text-data-warning" />}
               <span className="text-sm font-medium text-txt-primary">
                 {ownResult.place ? `${ownResult.place}${getOrdinal(ownResult.place)}` : '—'}
               </span>
@@ -350,14 +362,14 @@ function RaceRow({
           <button
             onClick={onAddResults}
             className="px-2 py-1 text-xs font-medium rounded
-                     bg-surface-default text-txt-secondary hover:bg-accent-primary hover:text-white
+                     bg-ink-base text-txt-secondary hover:bg-data-good hover:text-white
                      transition-colors"
           >
             {hasResults ? 'Edit Results' : 'Add Results'}
           </button>
           <button
             onClick={onDelete}
-            className="p-1 rounded hover:bg-surface-default text-txt-tertiary hover:text-red-500 transition-colors"
+            className="p-1 rounded hover:bg-ink-base text-txt-tertiary hover:text-data-poor transition-colors"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>

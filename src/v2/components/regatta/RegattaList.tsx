@@ -22,14 +22,14 @@ export function RegattaList({
   onDuplicate,
 }: RegattaListProps) {
   // Group by upcoming/past
-  const upcoming = regattas.filter(r => isFuture(parseISO(r.date)) || isToday(parseISO(r.date)));
-  const past = regattas.filter(r => isPast(parseISO(r.date)) && !isToday(parseISO(r.date)));
+  const upcoming = regattas.filter((r) => isFuture(parseISO(r.date)) || isToday(parseISO(r.date)));
+  const past = regattas.filter((r) => isPast(parseISO(r.date)) && !isToday(parseISO(r.date)));
 
   if (isLoading) {
     return (
       <div className="space-y-3">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="animate-pulse bg-surface-elevated rounded-lg h-20" />
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="animate-pulse bg-ink-raised rounded-lg h-20" />
         ))}
       </div>
     );
@@ -54,7 +54,7 @@ export function RegattaList({
           </h3>
           <div className="space-y-2">
             <AnimatePresence>
-              {upcoming.map(regatta => (
+              {upcoming.map((regatta) => (
                 <RegattaCard
                   key={regatta.id}
                   regatta={regatta}
@@ -76,7 +76,7 @@ export function RegattaList({
           </h3>
           <div className="space-y-2">
             <AnimatePresence>
-              {past.map(regatta => (
+              {past.map((regatta) => (
                 <RegattaCard
                   key={regatta.id}
                   regatta={regatta}
@@ -121,21 +121,18 @@ function RegattaCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       className={`
-        group relative bg-surface-elevated rounded-lg border border-bdr-default
-        hover:border-bdr-hover transition-colors cursor-pointer
+        group relative glass-card rounded-lg border border-ink-border
+        hover:border-ink-border-strong transition-colors cursor-pointer
         ${isPast ? 'opacity-70' : ''}
       `}
     >
-      <div
-        className="flex items-center p-4 gap-4"
-        onClick={() => onSelect(regatta)}
-      >
+      <div className="flex items-center p-4 gap-4" onClick={() => onSelect(regatta)}>
         {/* Date badge */}
-        <div className="flex-shrink-0 w-14 h-14 bg-accent-primary/10 rounded-lg flex flex-col items-center justify-center">
-          <span className="text-xs font-medium text-accent-primary uppercase">
+        <div className="flex-shrink-0 w-14 h-14 bg-data-good/10 rounded-lg flex flex-col items-center justify-center">
+          <span className="text-xs font-medium text-data-good uppercase">
             {format(parseISO(regatta.date), 'MMM')}
           </span>
-          <span className="text-lg font-bold text-accent-primary">
+          <span className="text-lg font-bold text-data-good">
             {format(parseISO(regatta.date), 'd')}
           </span>
         </div>
@@ -146,7 +143,8 @@ function RegattaCard({
           <div className="flex items-center gap-3 mt-1 text-sm text-txt-secondary">
             <span className="flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5" />
-              {dateStr}{endDateStr}
+              {dateStr}
+              {endDateStr}
             </span>
             {regatta.location && (
               <span className="flex items-center gap-1 truncate">
@@ -166,17 +164,17 @@ function RegattaCard({
         <div className="flex items-center gap-2">
           <Menu as="div" className="relative">
             <Menu.Button
-              className="p-2 rounded-md hover:bg-surface-hover transition-colors opacity-0 group-hover:opacity-100"
+              className="p-2 rounded-md hover:bg-ink-hover transition-colors opacity-0 group-hover:opacity-100"
               onClick={(e) => e.stopPropagation()}
             >
               <MoreVertical className="w-4 h-4 text-txt-secondary" />
             </Menu.Button>
-            <Menu.Items className="absolute right-0 mt-1 w-48 bg-surface-elevated rounded-lg shadow-lg border border-bdr-default py-1 z-10">
+            <Menu.Items className="absolute right-0 mt-1 w-48 glass-card rounded-lg shadow-lg border border-ink-border py-1 z-10">
               <Menu.Item>
                 {({ active }) => (
                   <button
                     className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 ${
-                      active ? 'bg-surface-hover' : ''
+                      active ? 'bg-ink-hover' : ''
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -192,7 +190,7 @@ function RegattaCard({
                 {({ active }) => (
                   <button
                     className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 ${
-                      active ? 'bg-surface-hover' : ''
+                      active ? 'bg-ink-hover' : ''
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -207,8 +205,8 @@ function RegattaCard({
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 text-red-500 ${
-                      active ? 'bg-surface-hover' : ''
+                    className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 text-data-poor ${
+                      active ? 'bg-ink-hover' : ''
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();

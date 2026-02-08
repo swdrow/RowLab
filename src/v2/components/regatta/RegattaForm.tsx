@@ -15,11 +15,14 @@ const regattaSchema = z.object({
   description: z.string().max(1000).nullable().optional(),
   externalUrl: z.string().url().max(500).nullable().optional().or(z.literal('')),
   teamGoals: z.string().max(1000).nullable().optional(),
-  conditions: z.object({
-    wind: z.string().optional(),
-    temperature: z.number().optional(),
-    current: z.string().optional(),
-  }).nullable().optional(),
+  conditions: z
+    .object({
+      wind: z.string().optional(),
+      temperature: z.number().optional(),
+      current: z.string().optional(),
+    })
+    .nullable()
+    .optional(),
 });
 
 type FormValues = z.infer<typeof regattaSchema>;
@@ -38,13 +41,7 @@ const courseTypes: Array<{ value: CourseType; label: string }> = [
   { value: 'custom', label: 'Custom' },
 ];
 
-const venueTypes = [
-  'Lake',
-  'River',
-  'Canal',
-  'Bay/Harbor',
-  'Reservoir',
-];
+const venueTypes = ['Lake', 'River', 'Canal', 'Bay/Harbor', 'Reservoir'];
 
 export function RegattaForm({
   regatta,
@@ -65,11 +62,13 @@ export function RegattaForm({
     defaultValues: {
       name: regatta?.name || '',
       location: regatta?.location || '',
-      date: regatta?.date ? format(new Date(regatta.date), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
+      date: regatta?.date
+        ? format(new Date(regatta.date), 'yyyy-MM-dd')
+        : format(new Date(), 'yyyy-MM-dd'),
       endDate: regatta?.endDate ? format(new Date(regatta.endDate), 'yyyy-MM-dd') : null,
       host: regatta?.host || '',
       venueType: regatta?.venueType || '',
-      courseType: regatta?.courseType as CourseType || null,
+      courseType: (regatta?.courseType as CourseType) || null,
       description: regatta?.description || '',
       externalUrl: regatta?.externalUrl || '',
       teamGoals: regatta?.teamGoals || '',
@@ -98,61 +97,49 @@ export function RegattaForm({
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Regatta Name *
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Regatta Name *</label>
           <input
             {...register('name')}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+            className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                      text-txt-primary placeholder:text-txt-tertiary
-                     focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                     focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-transparent"
             placeholder="e.g., IRA National Championship"
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="mt-1 text-sm text-data-poor">{errors.name.message}</p>}
         </div>
 
         {/* Dates */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-txt-primary mb-1">
-              Start Date *
-            </label>
+            <label className="block text-sm font-medium text-txt-primary mb-1">Start Date *</label>
             <input
               type="date"
               {...register('date')}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                       text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                       text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
             />
-            {errors.date && (
-              <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>
-            )}
+            {errors.date && <p className="mt-1 text-sm text-data-poor">{errors.date.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-txt-primary mb-1">
-              End Date
-            </label>
+            <label className="block text-sm font-medium text-txt-primary mb-1">End Date</label>
             <input
               type="date"
               {...register('endDate')}
               min={startDate}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                       text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                       text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
             />
           </div>
         </div>
 
         {/* Location */}
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Location
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Location</label>
           <input
             {...register('location')}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+            className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                      text-txt-primary placeholder:text-txt-tertiary
-                     focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                     focus:outline-none focus:ring-2 focus:ring-focus-ring"
             placeholder="e.g., Camden, NJ"
           />
         </div>
@@ -165,24 +152,24 @@ export function RegattaForm({
             </label>
             <input
               {...register('host')}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+              className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                        text-txt-primary placeholder:text-txt-tertiary
-                       focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                       focus:outline-none focus:ring-2 focus:ring-focus-ring"
               placeholder="e.g., USRowing"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-txt-primary mb-1">
-              Venue Type
-            </label>
+            <label className="block text-sm font-medium text-txt-primary mb-1">Venue Type</label>
             <select
               {...register('venueType')}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                       text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                       text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
             >
               <option value="">Select venue type</option>
-              {venueTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
+              {venueTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
               ))}
             </select>
           </div>
@@ -190,24 +177,22 @@ export function RegattaForm({
 
         {/* Course Type */}
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Course Type
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Course Type</label>
           <div className="flex gap-2 flex-wrap">
             <Controller
               name="courseType"
               control={control}
               render={({ field }) => (
                 <>
-                  {courseTypes.map(ct => (
+                  {courseTypes.map((ct) => (
                     <button
                       key={ct.value}
                       type="button"
                       onClick={() => field.onChange(field.value === ct.value ? null : ct.value)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                         field.value === ct.value
-                          ? 'bg-accent-primary text-white'
-                          : 'bg-surface-elevated text-txt-secondary hover:bg-surface-hover'
+                          ? 'bg-data-good text-white'
+                          : 'bg-ink-raised text-txt-secondary hover:bg-ink-hover'
                       }`}
                     >
                       {ct.label}
@@ -234,54 +219,50 @@ export function RegattaForm({
           <input
             {...register('externalUrl')}
             type="url"
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+            className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                      text-txt-primary placeholder:text-txt-tertiary
-                     focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                     focus:outline-none focus:ring-2 focus:ring-focus-ring"
             placeholder="https://www.regattacentral.com/..."
           />
           {errors.externalUrl && (
-            <p className="mt-1 text-sm text-red-500">{errors.externalUrl.message}</p>
+            <p className="mt-1 text-sm text-data-poor">{errors.externalUrl.message}</p>
           )}
         </div>
 
         {/* Team Goals */}
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Team Goals
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Team Goals</label>
           <textarea
             {...register('teamGoals')}
             rows={3}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+            className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                      text-txt-primary placeholder:text-txt-tertiary resize-none
-                     focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                     focus:outline-none focus:ring-2 focus:ring-focus-ring"
             placeholder="What do you want to achieve at this regatta?"
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Notes
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Notes</label>
           <textarea
             {...register('description')}
             rows={3}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+            className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                      text-txt-primary placeholder:text-txt-tertiary resize-none
-                     focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                     focus:outline-none focus:ring-2 focus:ring-focus-ring"
             placeholder="Additional notes about this regatta..."
           />
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-bdr-default">
+      <div className="flex justify-end gap-3 pt-4 border-t border-ink-border">
         <button
           type="button"
           onClick={onCancel}
           className="px-4 py-2 text-sm font-medium text-txt-secondary hover:text-txt-primary
-                   bg-surface-elevated rounded-lg hover:bg-surface-hover transition-colors"
+                   bg-ink-raised rounded-lg hover:bg-ink-hover transition-colors"
         >
           Cancel
         </button>
@@ -289,7 +270,7 @@ export function RegattaForm({
           type="submit"
           disabled={isSubmitting}
           className="px-4 py-2 text-sm font-medium text-white
-                   bg-accent-primary rounded-lg hover:bg-accent-primary-hover
+                   bg-data-good rounded-lg hover:bg-data-good-hover
                    disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isSubmitting ? 'Saving...' : isEditing ? 'Save Changes' : 'Create Regatta'}
