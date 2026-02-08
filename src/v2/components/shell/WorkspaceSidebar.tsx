@@ -11,6 +11,7 @@ import {
   Trophy,
   Flag,
   BarChart2,
+  UserCheck,
 } from 'lucide-react';
 import { useContextStore } from '@v2/stores/contextStore';
 import { useFeaturePreferenceStore } from '@v2/stores/featurePreferenceStore';
@@ -34,6 +35,7 @@ const ICON_MAP = {
   trophy: Trophy, // Trophy for seat racing
   flag: Flag, // Flag for regattas
   'bar-chart': BarChart2, // Bar chart for rankings
+  'user-check': UserCheck, // User check for attendance
 } as const;
 
 /**
@@ -49,6 +51,7 @@ const NAV_ITEM_FEATURES: Record<string, FeatureId | null> = {
   '/app/coach/lineup-builder': null, // Core lineup builder
   '/app/coach/seat-racing': 'basic-seat-racing', // Core seat racing
   '/app/coach/training': null, // Core training calendar
+  '/app/attendance': null, // Core attendance tracking
   '/app/settings': null, // Settings always available
   '/beta/dashboard': null, // Athlete dashboard
   '/beta/workouts': null, // Athlete workouts

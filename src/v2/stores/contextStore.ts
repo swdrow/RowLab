@@ -32,6 +32,7 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
       { to: '/app/coach/lineup-builder', label: 'Lineup Builder', icon: 'layout' },
       { to: '/app/coach/seat-racing', label: 'Seat Racing', icon: 'trophy' },
       { to: '/app/coach/training', label: 'Training', icon: 'activity' },
+      { to: '/app/attendance', label: 'Attendance', icon: 'user-check' },
       { to: '/app/regattas', label: 'Regattas', icon: 'flag' },
       { to: '/app/rankings', label: 'Rankings', icon: 'bar-chart' },
       { to: '/app/recruiting', label: 'Recruiting', icon: 'users' },
