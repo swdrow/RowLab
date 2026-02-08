@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -222,4 +223,138 @@ export function useAttendanceSummary(startDate: string, endDate: string) {
     enabled: isInitialized && isAuthenticated && !!startDate && !!endDate,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+}
+
+// ============================================
+// Streak Calculation
+// ============================================
+
+/**
+ * Calculate consecutive attendance streak from records.
+ * A "present" day is one where status is 'present' or 'late'
+ * (late arrivals count toward attendance per Phase 06-06 decision).
+ *
+ * Records should be sorted descending by date (most recent first).
+ */
+export function calculateStreak(records: Attendance[]): number {
+  if (!records.length) return 0;
+
+  // Sort descending by date
+  const sorted = [...records].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  let streak = 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = 0; i < sorted.length; i++) {
+    const record = sorted[i];
+    if (!record) break;
+
+    // Count present + late as attending (Phase 06-06)
+    if (record.status === 'present' || record.status === 'late') {
+      streak++;
+    } else {
+      break; // Streak broken
+    }
+  }
+
+  return streak;
+}
+
+/**
+ * Compute per-athlete streaks from summary data.
+ * Returns a map of athleteId -> streak count.
+ *
+ * Uses client-side calculation from attendance history within a 90-day window.
+ */
+export function useAttendanceStreaks() {
+  const { isAuthenticated, isInitialized } = useAuth();
+
+  // Fetch last 90 days of attendance for streak calculation
+  const endDate = new Date().toISOString().split('T')[0] || '';
+  const start = new Date();
+  start.setDate(start.getDate() - 90);
+  const startDate = start.toISOString().split('T')[0] || '';
+
+  const summaryQuery = useQuery({
+    queryKey: queryKeys.attendance.summary({ startDate, endDate, type: 'streaks' }),
+    queryFn: () => fetchAttendanceSummary(startDate, endDate),
+    enabled: isInitialized && isAuthenticated && !!startDate && !!endDate,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Compute streaks from summary data
+  // Summary gives us present/late/excused/unexcused counts per athlete
+  // For a simple streak approximation, use present + late as consecutive days
+  const streakMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    if (!summaryQuery.data) return map;
+
+    for (const entry of summaryQuery.data) {
+      // Approximate streak: present + late days (maximum possible consecutive)
+      // This is an upper-bound estimate since we don't have day-by-day ordering from summary
+      const attendedDays = entry.present + entry.late;
+      map[entry.athlete.id] = attendedDays;
+    }
+
+    return map;
+  }, [summaryQuery.data]);
+
+  return {
+    streakMap,
+    isLoading: summaryQuery.isLoading,
+  };
+}
+
+// ============================================
+// Live Polling Variant (for active sessions)
+// ============================================
+
+/**
+ * Attendance hook with configurable polling for live session use.
+ * When isActive is true, polls every 5 seconds. Otherwise, standard staleTime.
+ */
+export function useLiveAttendance(date: string, isActive: boolean) {
+  const queryClient = useQueryClient();
+  const { isAuthenticated, isInitialized } = useAuth();
+
+  const query = useQuery({
+    queryKey: queryKeys.attendance.date(date),
+    queryFn: () => fetchAttendanceByDate(date),
+    enabled: isInitialized && isAuthenticated && !!date,
+    staleTime: isActive ? 0 : 1 * 60 * 1000,
+    refetchInterval: isActive ? 5000 : false,
+  });
+
+  // Convert array to map for easy lookup
+  const attendanceMap = (query.data || []).reduce(
+    (acc, record) => {
+      acc[record.athleteId] = record;
+      return acc;
+    },
+    {} as Record<string, Attendance>
+  );
+
+  // Status counts
+  const counts = useMemo(() => {
+    const result = { present: 0, late: 0, excused: 0, unexcused: 0 };
+    for (const record of query.data || []) {
+      if (record.status in result) {
+        result[record.status]++;
+      }
+    }
+    return result;
+  }, [query.data]);
+
+  return {
+    attendance: query.data || [],
+    attendanceMap,
+    counts,
+    totalMarked: (query.data || []).length,
+    isLoading: query.isLoading,
+    dataUpdatedAt: query.dataUpdatedAt,
+    refetch: query.refetch,
+  };
 }

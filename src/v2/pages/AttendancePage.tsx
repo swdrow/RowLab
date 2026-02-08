@@ -1,20 +1,30 @@
 import { useState, useMemo } from 'react';
-import { Calendar, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
-import { AttendanceTracker } from '@v2/components/athletes/AttendanceTracker';
-import { AttendanceSummary } from '@v2/components/athletes/AttendanceSummary';
+import { Calendar, BarChart3, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { AttendanceSummary as AttendanceSummaryView } from '@v2/components/athletes/AttendanceSummary';
 import { AttendanceHistory } from '@v2/components/athletes/AttendanceHistory';
+import { AthleteAvatar } from '@v2/components/athletes/AthleteAvatar';
+import { QuickMarkAttendance } from '@v2/features/attendance/components/QuickMarkAttendance';
+import { AttendanceStreakBadge } from '@v2/features/attendance/components/AttendanceStreakBadge';
 import { useAthletes } from '@v2/hooks/useAthletes';
+import { useAttendance, useAttendanceStreaks } from '@v2/hooks/useAttendance';
+import type { AttendanceStatus } from '@v2/types/athletes';
 
 type Tab = 'daily' | 'summary';
+
+// Status sort order for marked athletes
+const STATUS_ORDER: Record<AttendanceStatus, number> = {
+  present: 0,
+  late: 1,
+  excused: 2,
+  unexcused: 3,
+};
 
 export default function AttendancePage() {
   const [activeTab, setActiveTab] = useState<Tab>('daily');
   const [selectedDate, setSelectedDate] = useState<string>(() => {
-    // Default to today
     return new Date().toISOString().split('T')[0] || '';
   });
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>(() => {
-    // Default to last 30 days
     const end = new Date();
     const start = new Date();
     start.setDate(start.getDate() - 30);
@@ -26,12 +36,57 @@ export default function AttendancePage() {
   const [selectedAthleteId, setSelectedAthleteId] = useState<string | null>(null);
 
   const { athletes } = useAthletes();
+  const {
+    attendanceMap,
+    isLoading: attendanceLoading,
+    bulkRecord,
+    isBulkRecording,
+  } = useAttendance(selectedDate);
+  const { streakMap } = useAttendanceStreaks();
 
   // Find selected athlete
   const selectedAthlete = useMemo(() => {
     if (!selectedAthleteId) return null;
     return athletes.find((a) => a.id === selectedAthleteId);
   }, [athletes, selectedAthleteId]);
+
+  // Sort: unmarked first (need attention), then marked by status order
+  const sortedAthletes = useMemo(() => {
+    return [...athletes].sort((a, b) => {
+      const aStatus = attendanceMap[a.id]?.status;
+      const bStatus = attendanceMap[b.id]?.status;
+
+      // Unmarked athletes come first
+      if (!aStatus && bStatus) return -1;
+      if (aStatus && !bStatus) return 1;
+
+      // Both unmarked: sort by last name
+      if (!aStatus && !bStatus) {
+        return a.lastName.localeCompare(b.lastName);
+      }
+
+      // Both marked: sort by status order, then last name
+      const aOrder = STATUS_ORDER[aStatus!] ?? 99;
+      const bOrder = STATUS_ORDER[bStatus!] ?? 99;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+
+      return a.lastName.localeCompare(b.lastName);
+    });
+  }, [athletes, attendanceMap]);
+
+  // Calculate stats
+  const stats = useMemo(() => {
+    const counts = { present: 0, late: 0, excused: 0, unexcused: 0, unmarked: 0 };
+    athletes.forEach((athlete) => {
+      const status = attendanceMap[athlete.id]?.status;
+      if (status) {
+        counts[status]++;
+      } else {
+        counts.unmarked++;
+      }
+    });
+    return counts;
+  }, [athletes, attendanceMap]);
 
   // Date navigation
   const navigateDate = (direction: 'prev' | 'next') => {
@@ -50,18 +105,25 @@ export default function AttendancePage() {
     });
   }, [selectedDate]);
 
+  const handleMarkAllPresent = () => {
+    const records = athletes.map((athlete) => ({
+      athleteId: athlete.id,
+      status: 'present' as AttendanceStatus,
+    }));
+    bulkRecord({ date: selectedDate, records });
+  };
+
+  // Count for unmarked separator
+  const unmarkedCount = sortedAthletes.filter((a) => !attendanceMap[a.id]?.status).length;
+
   return (
     <div className="h-full">
       {/* Header */}
       <div className="px-6 py-4 border-b border-bdr-default">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-display font-semibold text-txt-primary">
-              Attendance
-            </h1>
-            <p className="text-sm text-txt-secondary mt-1">
-              Track and view team attendance
-            </p>
+            <h1 className="text-2xl font-display font-semibold text-txt-primary">Attendance</h1>
+            <p className="text-sm text-txt-secondary mt-1">Track and view team attendance</p>
           </div>
         </div>
 
@@ -125,8 +187,132 @@ export default function AttendancePage() {
               <span className="text-txt-secondary">{formattedDate}</span>
             </div>
 
-            {/* Tracker */}
-            <AttendanceTracker date={selectedDate} />
+            {/* Stats bar + bulk action */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-mono font-medium text-data-excellent">
+                    {stats.present}
+                  </span>
+                  <span className="text-xs text-txt-tertiary">present</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-mono font-medium text-data-good">{stats.late}</span>
+                  <span className="text-xs text-txt-tertiary">late</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-mono font-medium text-data-warning">
+                    {stats.excused}
+                  </span>
+                  <span className="text-xs text-txt-tertiary">excused</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-mono font-medium text-data-poor">
+                    {stats.unexcused}
+                  </span>
+                  <span className="text-xs text-txt-tertiary">unexcused</span>
+                </div>
+                {stats.unmarked > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-mono font-medium text-txt-secondary">
+                      {stats.unmarked}
+                    </span>
+                    <span className="text-xs text-txt-tertiary">unmarked</span>
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={handleMarkAllPresent}
+                disabled={isBulkRecording}
+                className="flex items-center gap-2 px-4 py-2 bg-data-excellent/20 text-data-excellent rounded-lg
+                           font-medium hover:bg-data-excellent/30 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <CheckCircle size={18} />
+                Mark All Present
+              </button>
+            </div>
+
+            {/* Athlete roster with one-tap attendance */}
+            {attendanceLoading ? (
+              <div className="space-y-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="h-16 bg-bg-surface-elevated rounded-lg animate-pulse" />
+                ))}
+              </div>
+            ) : athletes.length === 0 ? (
+              <div className="text-center py-12 text-txt-secondary">
+                No athletes in roster. Add athletes to track attendance.
+              </div>
+            ) : (
+              <div className="space-y-1">
+                {sortedAthletes.map((athlete, index) => {
+                  const currentStatus = attendanceMap[athlete.id]?.status;
+                  const streak = streakMap[athlete.id] ?? 0;
+
+                  // Visual separator between unmarked and marked athletes
+                  const isFirstMarked =
+                    index === unmarkedCount && unmarkedCount > 0 && unmarkedCount < athletes.length;
+
+                  return (
+                    <div key={athlete.id}>
+                      {isFirstMarked && (
+                        <div className="flex items-center gap-3 py-2">
+                          <div className="flex-1 h-px bg-bdr-default" />
+                          <span className="text-xs text-txt-tertiary uppercase tracking-wider">
+                            Marked
+                          </span>
+                          <div className="flex-1 h-px bg-bdr-default" />
+                        </div>
+                      )}
+
+                      <div
+                        className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+                          currentStatus
+                            ? 'bg-bg-surface-elevated'
+                            : 'bg-bg-surface-elevated border border-bdr-default'
+                        }`}
+                      >
+                        {/* Left: Avatar + name + streak */}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <AthleteAvatar
+                            firstName={athlete.firstName}
+                            lastName={athlete.lastName}
+                            size="sm"
+                          />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-txt-primary truncate">
+                                {athlete.lastName}, {athlete.firstName}
+                              </span>
+                              {athlete.side && (
+                                <span className="text-xs text-txt-tertiary flex-shrink-0">
+                                  ({athlete.side})
+                                </span>
+                              )}
+                            </div>
+                            {streak > 0 && (
+                              <div className="mt-0.5">
+                                <AttendanceStreakBadge streak={streak} size="sm" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Right: P/L/E/U buttons */}
+                        <div className="flex-shrink-0 ml-4">
+                          <QuickMarkAttendance
+                            athleteId={athlete.id}
+                            date={selectedDate}
+                            currentStatus={currentStatus}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-6">
@@ -186,7 +372,7 @@ export default function AttendancePage() {
 
             {/* Summary table */}
             <div className="bg-bg-surface-elevated rounded-lg overflow-hidden">
-              <AttendanceSummary
+              <AttendanceSummaryView
                 startDate={dateRange.start}
                 endDate={dateRange.end}
                 onSelectAthlete={setSelectedAthleteId}
@@ -197,9 +383,7 @@ export default function AttendancePage() {
             {selectedAthlete && (
               <div className="p-4 bg-bg-surface-elevated rounded-lg">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-txt-primary">
-                    Individual History
-                  </h3>
+                  <h3 className="text-lg font-semibold text-txt-primary">Individual History</h3>
                   <button
                     onClick={() => setSelectedAthleteId(null)}
                     className="text-sm text-txt-secondary hover:text-txt-primary"
