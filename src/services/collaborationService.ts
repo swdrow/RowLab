@@ -6,14 +6,46 @@
  */
 
 import { io, Socket } from 'socket.io-client';
-import type { PresenceUser, CollaborationEvent } from '@/types';
+import type { PresenceUser } from '@/types';
 
 export interface CollaborationCallbacks {
-  onUsersUpdate?: (users: PresenceUser[], event: { joined?: PresenceUser; left?: PresenceUser }) => void;
-  onCursorUpdate?: (cursor: { socketId: string; userId: string; name: string; color: string; cursor: { x: number; y: number }; activeBoatId?: string }) => void;
-  onLineupUpdate?: (update: { operation: string; data: unknown; version: number; userId: string; userName: string; color: string; timestamp: number }) => void;
-  onSelectionUpdate?: (selection: { socketId: string; userId: string; name: string; color: string; selectedSeats: unknown[]; selectedAthlete: unknown }) => void;
-  onChatMessage?: (message: { id: string; userId: string; name: string; color: string; message: string; timestamp: number }) => void;
+  onUsersUpdate?: (
+    users: PresenceUser[],
+    event: { joined?: PresenceUser; left?: PresenceUser }
+  ) => void;
+  onCursorUpdate?: (cursor: {
+    socketId: string;
+    userId: string;
+    name: string;
+    color: string;
+    cursor: { x: number; y: number };
+    activeBoatId?: string;
+  }) => void;
+  onLineupUpdate?: (update: {
+    operation: string;
+    data: unknown;
+    version: number;
+    userId: string;
+    userName: string;
+    color: string;
+    timestamp: number;
+  }) => void;
+  onSelectionUpdate?: (selection: {
+    socketId: string;
+    userId: string;
+    name: string;
+    color: string;
+    selectedSeats: unknown[];
+    selectedAthlete: unknown;
+  }) => void;
+  onChatMessage?: (message: {
+    id: string;
+    userId: string;
+    name: string;
+    color: string;
+    message: string;
+    timestamp: number;
+  }) => void;
   onSyncRequired?: (info: { version: number; needsRefresh: boolean }) => void;
   onConnect?: () => void;
   onDisconnect?: (reason: string) => void;
@@ -211,6 +243,14 @@ class CollaborationService {
    */
   getVersion(): number {
     return this.currentVersion;
+  }
+
+  /**
+   * Get the underlying Socket.IO instance
+   * Used by other services (e.g., race day) to access the same connection
+   */
+  getSocket(): Socket | null {
+    return this.socket;
   }
 }
 
