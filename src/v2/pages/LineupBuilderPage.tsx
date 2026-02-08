@@ -43,8 +43,21 @@ export function LineupBuilderPage() {
   }
 
   return (
-    <div className="h-full overflow-hidden bg-bg-default">
-      <LineupWorkspace lineupId={lineupId} className="h-full" />
+    <div className="h-full flex flex-col overflow-hidden bg-ink-default">
+      {/* Compact copper workspace toolbar */}
+      <div className="relative px-4 py-3 bg-ink-raised border-b border-ink-border flex-shrink-0">
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper">
+            LINEUP BUILDER
+          </span>
+        </div>
+      </div>
+
+      {/* Workspace */}
+      <div className="flex-1 overflow-hidden">
+        <LineupWorkspace lineupId={lineupId} className="h-full" />
+      </div>
     </div>
   );
 }
