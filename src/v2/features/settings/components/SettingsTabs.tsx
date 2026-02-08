@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  User,
-  Palette,
-  Shield,
-  Plug,
-  Bell,
-  Users,
-  CreditCard,
-  ToggleLeft,
-} from 'lucide-react';
+import { User, Palette, Shield, Plug, Bell, Users, CreditCard, ToggleLeft } from 'lucide-react';
 import type { SettingsTab } from '../../../types/settings';
 
 interface TabConfig {
@@ -36,20 +27,16 @@ interface TabButtonProps {
   children: React.ReactNode;
 }
 
-const TabButton: React.FC<TabButtonProps> = ({
-  active,
-  onClick,
-  icon: Icon,
-  children,
-}) => (
+const TabButton: React.FC<TabButtonProps> = ({ active, onClick, icon: Icon, children }) => (
   <button
     onClick={onClick}
     className={`
-      flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all duration-200
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface
-      ${active
-        ? 'bg-interactive-primary/10 text-interactive-primary border border-interactive-primary/20 shadow-[0_0_12px_rgba(var(--color-interactive-primary-rgb),0.15)]'
-        : 'text-txt-secondary hover:text-txt-primary hover:bg-hover border border-transparent'
+      flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-150 border-b-2 -mb-px
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-copper focus-visible:ring-offset-2 focus-visible:ring-offset-ink-base
+      ${
+        active
+          ? 'border-accent-copper text-ink-bright'
+          : 'border-transparent text-ink-secondary hover:text-accent-copper hover:border-ink-border'
       }
     `}
   >
