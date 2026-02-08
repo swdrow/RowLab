@@ -151,6 +151,12 @@ export function useOnboardingStatus(): OnboardingStatusReturn {
       completed.push('setup-practice');
     }
 
+    // Explore step: auto-complete if team already has athletes AND sessions
+    // (user has clearly already set up their team — no need for onboarding)
+    if (athletesCount > 0 && sessionsCount > 0) {
+      completed.push('explore');
+    }
+
     return completed;
   }, [athletesCount, sessionsCount]);
 
