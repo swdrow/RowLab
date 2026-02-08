@@ -71,7 +71,7 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
           type="checkbox"
           checked={enabled}
           onChange={(e) => setEnabled(e.target.checked)}
-          className="w-4 h-4 rounded border-bdr-default text-accent-primary focus:ring-accent-primary"
+          className="w-4 h-4 rounded border-bdr-default text-interactive-primary focus:ring-interactive-primary"
         />
         <span className="text-txt-primary">Repeat session</span>
       </label>
@@ -85,8 +85,8 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
               <select
                 value={freq}
                 onChange={(e) => setFreq(e.target.value as Frequency)}
-                className="w-full px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                  text-txt-primary focus:outline-none focus:border-accent-primary"
+                className="w-full px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                  text-txt-primary focus:outline-none focus:border-interactive-primary"
               >
                 <option value="DAILY">Daily</option>
                 <option value="WEEKLY">Weekly</option>
@@ -103,8 +103,8 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
                   max={99}
                   value={interval}
                   onChange={(e) => setInterval(parseInt(e.target.value) || 1)}
-                  className="w-20 px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                    text-txt-primary focus:outline-none focus:border-accent-primary"
+                  className="w-20 px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                    text-txt-primary focus:outline-none focus:border-interactive-primary"
                 />
                 <span className="text-txt-secondary">
                   {freq === 'DAILY' ? 'day(s)' : freq === 'WEEKLY' ? 'week(s)' : 'month(s)'}
@@ -125,8 +125,8 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
                     onClick={() => toggleDay(day.value)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                       selectedDays.includes(day.value)
-                        ? 'bg-accent-primary text-white'
-                        : 'bg-surface-default border border-bdr-default text-txt-secondary hover:text-txt-primary'
+                        ? 'bg-interactive-primary text-txt-inverse'
+                        : 'bg-bg-surface border border-bdr-default text-txt-secondary hover:text-txt-primary'
                     }`}
                   >
                     {day.label}
@@ -146,7 +146,7 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
                   name="endType"
                   checked={endType === 'never'}
                   onChange={() => setEndType('never')}
-                  className="text-accent-primary focus:ring-accent-primary"
+                  className="text-interactive-primary focus:ring-interactive-primary"
                 />
                 <span className="text-txt-primary">Never</span>
               </label>
@@ -157,7 +157,7 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
                   name="endType"
                   checked={endType === 'until'}
                   onChange={() => setEndType('until')}
-                  className="text-accent-primary focus:ring-accent-primary"
+                  className="text-interactive-primary focus:ring-interactive-primary"
                 />
                 <span className="text-txt-primary">On date</span>
                 {endType === 'until' && (
@@ -165,8 +165,8 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
                     type="date"
                     value={untilDate?.toISOString().split('T')[0] || ''}
                     onChange={(e) => setUntilDate(e.target.value ? new Date(e.target.value) : null)}
-                    className="px-2 py-1 rounded-lg bg-surface-default border border-bdr-default
-                      text-txt-primary focus:outline-none focus:border-accent-primary"
+                    className="px-2 py-1 rounded-lg bg-bg-surface border border-bdr-default
+                      text-txt-primary focus:outline-none focus:border-interactive-primary"
                   />
                 )}
               </label>
@@ -177,7 +177,7 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
                   name="endType"
                   checked={endType === 'count'}
                   onChange={() => setEndType('count')}
-                  className="text-accent-primary focus:ring-accent-primary"
+                  className="text-interactive-primary focus:ring-interactive-primary"
                 />
                 <span className="text-txt-primary">After</span>
                 {endType === 'count' && (
@@ -188,8 +188,8 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
                       max={999}
                       value={count}
                       onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-                      className="w-20 px-2 py-1 rounded-lg bg-surface-default border border-bdr-default
-                        text-txt-primary focus:outline-none focus:border-accent-primary"
+                      className="w-20 px-2 py-1 rounded-lg bg-bg-surface border border-bdr-default
+                        text-txt-primary focus:outline-none focus:border-interactive-primary"
                     />
                     <span className="text-txt-secondary">occurrences</span>
                   </>
@@ -200,7 +200,7 @@ export function RecurrenceEditor({ value, onChange, startDate }: RecurrenceEdito
 
           {/* Preview */}
           {value && (
-            <div className="p-3 rounded-lg bg-surface-default border border-bdr-default">
+            <div className="p-3 rounded-lg bg-bg-surface border border-bdr-default">
               <div className="text-xs text-txt-muted mb-1">Preview</div>
               <div className="text-sm text-txt-primary">{formatRRule(value)}</div>
             </div>

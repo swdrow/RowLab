@@ -53,11 +53,11 @@ export function SessionDetailPage() {
   if (isLoading) {
     return (
       <div className="p-6 space-y-6">
-        <div className="h-8 bg-surface-default rounded w-48 animate-pulse" />
-        <div className="h-24 bg-surface-elevated rounded-lg animate-pulse" />
+        <div className="h-8 bg-bg-surface rounded w-48 animate-pulse" />
+        <div className="h-24 bg-bg-surface-elevated rounded-lg animate-pulse" />
         <div className="space-y-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-16 bg-surface-elevated rounded-lg animate-pulse" />
+            <div key={i} className="h-16 bg-bg-surface-elevated rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -67,7 +67,7 @@ export function SessionDetailPage() {
   if (error || !session) {
     return (
       <div className="p-6">
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
+        <div className="bg-data-poor/10 border border-data-poor/20 rounded-lg p-4 text-data-poor">
           Session not found or failed to load.
         </div>
       </div>
@@ -95,19 +95,21 @@ export function SessionDetailPage() {
       </div>
 
       {/* Session Info Card */}
-      <div className="bg-surface-elevated rounded-lg border border-bdr-default p-6">
+      <div className="bg-bg-surface-elevated rounded-lg border border-bdr-default p-6">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-2xl font-semibold text-txt-primary">{session.name}</h1>
-              <span className="px-2 py-1 rounded text-xs font-medium bg-blue-500/10 text-blue-500">
+              <span className="px-2 py-1 rounded text-xs font-medium bg-data-good/10 text-data-good">
                 {session.type}
               </span>
-              <span className={`px-2 py-1 rounded text-xs font-medium ${
-                session.status === 'ACTIVE'
-                  ? 'bg-green-500/10 text-green-500'
-                  : 'bg-surface-default text-txt-secondary'
-              }`}>
+              <span
+                className={`px-2 py-1 rounded text-xs font-medium ${
+                  session.status === 'ACTIVE'
+                    ? 'bg-data-excellent/10 text-data-excellent'
+                    : 'bg-bg-surface text-txt-secondary'
+                }`}
+              >
                 {session.status}
               </span>
             </div>
@@ -120,7 +122,10 @@ export function SessionDetailPage() {
               {session.startTime && (
                 <span className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  {new Date(session.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {new Date(session.startTime).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </span>
               )}
               <span className="flex items-center gap-1">
@@ -129,17 +134,17 @@ export function SessionDetailPage() {
               </span>
             </div>
 
-            {session.notes && (
-              <p className="mt-3 text-txt-secondary">{session.notes}</p>
-            )}
+            {session.notes && <p className="mt-3 text-txt-secondary">{session.notes}</p>}
 
             {session.sessionCode && (
               <div className="mt-3 flex items-center gap-2">
                 <span className="text-txt-muted">Session Code:</span>
-                <span className="font-mono font-bold text-accent-primary">{session.sessionCode}</span>
+                <span className="font-mono font-bold text-interactive-primary">
+                  {session.sessionCode}
+                </span>
                 <button
                   onClick={() => navigator.clipboard.writeText(session.sessionCode || '')}
-                  className="p-1 rounded hover:bg-surface-hover transition-colors"
+                  className="p-1 rounded hover:bg-bg-hover transition-colors"
                   title="Copy code"
                 >
                   <Copy className="w-4 h-4 text-txt-muted" />
@@ -153,8 +158,8 @@ export function SessionDetailPage() {
               <button
                 onClick={handleStartLive}
                 disabled={isUpdating}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 text-white
-                  font-medium hover:bg-green-600 disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-data-excellent text-txt-inverse
+                  font-medium hover:bg-data-excellent/90 disabled:opacity-50 transition-colors"
               >
                 <Play className="w-5 h-5" weight="fill" />
                 Start Live
@@ -164,8 +169,8 @@ export function SessionDetailPage() {
             {session.status === 'ACTIVE' && (
               <Link
                 to={`/app/training/sessions/${session.id}/live`}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 text-white
-                  font-medium hover:bg-green-600 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-data-excellent text-txt-inverse
+                  font-medium hover:bg-data-excellent/90 transition-colors"
               >
                 <Play className="w-5 h-5" weight="fill" />
                 View Live
@@ -183,7 +188,7 @@ export function SessionDetailPage() {
             <button
               onClick={handleDelete}
               className="p-2 rounded-lg border border-bdr-default text-txt-secondary
-                hover:text-red-500 hover:border-red-500/50 transition-colors"
+                hover:text-data-poor hover:border-data-poor/50 transition-colors"
               title="Delete session"
             >
               <Trash className="w-5 h-5" />
@@ -197,7 +202,7 @@ export function SessionDetailPage() {
         <h2 className="text-lg font-medium text-txt-primary">Session Pieces</h2>
 
         {piecesBySegment.length === 0 ? (
-          <div className="bg-surface-elevated rounded-lg border border-bdr-default p-8 text-center text-txt-muted">
+          <div className="bg-bg-surface-elevated rounded-lg border border-bdr-default p-8 text-center text-txt-muted">
             No pieces defined for this session.
           </div>
         ) : (
@@ -210,7 +215,7 @@ export function SessionDetailPage() {
                 {group.pieces.map((piece) => (
                   <div
                     key={piece.id}
-                    className="bg-surface-elevated rounded-lg border border-bdr-default p-4"
+                    className="bg-bg-surface-elevated rounded-lg border border-bdr-default p-4"
                   >
                     <div className="flex items-center justify-between">
                       <div>
@@ -220,12 +225,10 @@ export function SessionDetailPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-txt-secondary">
+                      <div className="flex items-center gap-4 text-sm text-txt-secondary font-mono">
                         {piece.distance && <span>{piece.distance}m</span>}
                         {piece.duration && <span>{formatTime(piece.duration)}</span>}
-                        {piece.targetSplit && (
-                          <span className="font-mono">@{formatTime(piece.targetSplit)}/500m</span>
-                        )}
+                        {piece.targetSplit && <span>@{formatTime(piece.targetSplit)}/500m</span>}
                         {piece.targetRate && <span>{piece.targetRate}spm</span>}
                       </div>
                     </div>

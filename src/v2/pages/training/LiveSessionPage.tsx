@@ -25,7 +25,7 @@ export function LiveSessionPage() {
   if (isLoading) {
     return (
       <div className="p-6">
-        <div className="animate-spin w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full mx-auto" />
+        <div className="animate-spin w-8 h-8 border-2 border-interactive-primary border-t-transparent rounded-full mx-auto" />
       </div>
     );
   }
@@ -33,7 +33,7 @@ export function LiveSessionPage() {
   if (error || !session) {
     return (
       <div className="p-6">
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
+        <div className="bg-data-poor/10 border border-data-poor/20 rounded-lg p-4 text-data-poor">
           Session not found or failed to load.
         </div>
       </div>
@@ -51,11 +51,11 @@ export function LiveSessionPage() {
             { label: 'Live' },
           ]}
         />
-        <div className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-amber-500">
+        <div className="mt-6 bg-data-warning/10 border border-data-warning/20 rounded-lg p-4 text-data-warning">
           <p>This session is not currently active.</p>
           <Link
             to={`/app/training/sessions/${session.id}`}
-            className="inline-flex items-center gap-2 mt-2 text-accent-primary hover:underline"
+            className="inline-flex items-center gap-2 mt-2 text-interactive-primary hover:underline"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to session details
@@ -87,8 +87,8 @@ export function LiveSessionPage() {
         <button
           onClick={handleEndSession}
           disabled={isUpdating}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500 text-white
-            font-medium hover:bg-red-600 disabled:opacity-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-data-poor text-txt-inverse
+            font-medium hover:bg-data-poor/90 disabled:opacity-50 transition-colors"
         >
           <Stop className="w-5 h-5" weight="fill" />
           End Session
