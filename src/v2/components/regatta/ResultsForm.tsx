@@ -103,15 +103,15 @@ export function ResultsForm({
               key={field.id}
               className={`p-4 rounded-lg border ${
                 isOwnTeam
-                  ? 'bg-accent-primary/5 border-accent-primary/30'
-                  : 'bg-surface-elevated border-bdr-default'
+                  ? 'bg-data-good/5 border-accent-primary/30'
+                  : 'bg-ink-raised border-ink-border'
               }`}
             >
               <div className="flex items-start gap-3">
                 {/* Place indicator */}
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-surface-default flex items-center justify-center">
-                  {index === 0 && <Trophy className="w-4 h-4 text-yellow-500" />}
-                  {index === 1 && <Medal className="w-4 h-4 text-gray-400" />}
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-ink-well flex items-center justify-center">
+                  {index === 0 && <Trophy className="w-4 h-4 text-data-warning" />}
+                  {index === 1 && <Medal className="w-4 h-4 text-txt-tertiary" />}
                   {index === 2 && <Medal className="w-4 h-4 text-amber-600" />}
                   {index > 2 && <span className="text-sm font-medium text-txt-secondary">{index + 1}</span>}
                 </div>
@@ -122,12 +122,12 @@ export function ResultsForm({
                     <input
                       {...register(`results.${index}.teamName`)}
                       placeholder="Team name"
-                      className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+                      className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                                text-txt-primary placeholder:text-txt-tertiary text-sm
-                               focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                               focus:outline-none focus:ring-2 focus:ring-focus-ring"
                     />
                     {errors.results?.[index]?.teamName && (
-                      <p className="mt-1 text-xs text-red-500">
+                      <p className="mt-1 text-xs text-data-poor">
                         {errors.results[index]?.teamName?.message}
                       </p>
                     )}
@@ -140,9 +140,9 @@ export function ResultsForm({
                       {...register(`results.${index}.place`, { valueAsNumber: true })}
                       placeholder="Place"
                       min={1}
-                      className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+                      className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                                text-txt-primary placeholder:text-txt-tertiary text-sm
-                               focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                               focus:outline-none focus:ring-2 focus:ring-focus-ring"
                     />
                   </div>
 
@@ -151,9 +151,9 @@ export function ResultsForm({
                     <input
                       {...register(`results.${index}.finishTimeStr`)}
                       placeholder="M:SS.s"
-                      className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+                      className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                                text-txt-primary placeholder:text-txt-tertiary text-sm font-mono
-                               focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                               focus:outline-none focus:ring-2 focus:ring-focus-ring"
                     />
                   </div>
                 </div>
@@ -164,7 +164,7 @@ export function ResultsForm({
                     <input
                       type="checkbox"
                       {...register(`results.${index}.isOwnTeam`)}
-                      className="w-3.5 h-3.5 rounded border-bdr-default text-accent-primary"
+                      className="w-3.5 h-3.5 rounded border-ink-border text-data-good"
                     />
                     Us
                   </label>
@@ -173,7 +173,7 @@ export function ResultsForm({
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="p-1.5 rounded hover:bg-surface-hover text-txt-tertiary hover:text-red-500 transition-colors"
+                      className="p-1.5 rounded hover:bg-ink-hover text-txt-tertiary hover:text-data-poor transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -186,8 +186,8 @@ export function ResultsForm({
                 <div className="mt-3 ml-11">
                   <select
                     {...register(`results.${index}.lineupId`)}
-                    className="w-full max-w-xs px-3 py-1.5 bg-surface-default border border-bdr-default rounded-lg
-                             text-txt-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                    className="w-full max-w-xs px-3 py-1.5 bg-ink-well border border-ink-border rounded-lg
+                             text-txt-primary text-sm focus:outline-none focus:ring-2 focus:ring-focus-ring"
                   >
                     <option value="">Link to lineup (optional)</option>
                     {lineups.map(lineup => (
@@ -205,8 +205,8 @@ export function ResultsForm({
       <button
         type="button"
         onClick={addResult}
-        className="w-full py-2 border-2 border-dashed border-bdr-default rounded-lg
-                 text-sm text-txt-secondary hover:border-bdr-hover hover:text-txt-primary
+        className="w-full py-2 border-2 border-dashed border-ink-border rounded-lg
+                 text-sm text-txt-secondary hover:border-ink-border-strong hover:text-txt-primary
                  transition-colors flex items-center justify-center gap-2"
       >
         <Plus className="w-4 h-4" />
@@ -215,16 +215,16 @@ export function ResultsForm({
 
       {/* Form errors */}
       {errors.results?.root && (
-        <p className="text-sm text-red-500">{errors.results.root.message}</p>
+        <p className="text-sm text-data-poor">{errors.results.root.message}</p>
       )}
 
       {/* Actions */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-bdr-default">
+      <div className="flex justify-end gap-3 pt-4 border-t border-ink-border">
         <button
           type="button"
           onClick={onCancel}
           className="px-4 py-2 text-sm font-medium text-txt-secondary
-                   bg-surface-elevated rounded-lg hover:bg-surface-hover transition-colors"
+                   bg-ink-raised rounded-lg hover:bg-ink-hover transition-colors"
         >
           Cancel
         </button>
@@ -232,7 +232,7 @@ export function ResultsForm({
           type="submit"
           disabled={isSubmitting}
           className="px-4 py-2 text-sm font-medium text-white
-                   bg-accent-primary rounded-lg hover:bg-accent-primary-hover
+                   bg-data-good rounded-lg hover:bg-data-good-hover
                    disabled:opacity-50 transition-colors"
         >
           {isSubmitting ? 'Saving...' : 'Save Results'}

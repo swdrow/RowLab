@@ -187,7 +187,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
         </div>
         <button
           onClick={onClose}
-          className="p-2 rounded-lg hover:bg-surface-hover text-txt-tertiary"
+          className="p-2 rounded-lg hover:bg-ink-hover text-txt-tertiary"
         >
           <X className="w-5 h-5" />
         </button>
@@ -200,10 +200,10 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step === s
-                  ? 'bg-accent-primary text-white'
+                  ? 'bg-data-good text-white'
                   : ['complete'].includes(step) || i < ['upload', 'map', 'preview', 'complete'].indexOf(step)
-                  ? 'bg-green-500 text-white'
-                  : 'bg-surface-elevated text-txt-tertiary'
+                  ? 'bg-data-excellent text-white'
+                  : 'bg-ink-raised text-txt-tertiary'
               }`}
             >
               {['complete'].includes(step) || i < ['upload', 'map', 'preview', 'complete'].indexOf(step) ? (
@@ -212,7 +212,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                 i + 1
               )}
             </div>
-            {i < 3 && <div className="w-12 h-0.5 bg-surface-elevated" />}
+            {i < 3 && <div className="w-12 h-0.5 bg-ink-raised" />}
           </div>
         ))}
       </div>
@@ -230,8 +230,8 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
               {...getRootProps()}
               className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors ${
                 isDragActive
-                  ? 'border-accent-primary bg-accent-primary/5'
-                  : 'border-bdr-default hover:border-bdr-hover'
+                  ? 'border-accent-primary bg-data-good/5'
+                  : 'border-ink-border hover:border-ink-border-strong'
               }`}
             >
               <input {...getInputProps()} />
@@ -242,7 +242,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
               <p className="text-sm text-txt-secondary mt-1">or click to browse</p>
             </div>
 
-            <div className="mt-4 p-4 bg-surface-elevated rounded-lg">
+            <div className="mt-4 p-4 bg-ink-raised rounded-lg">
               <p className="text-sm font-medium text-txt-primary">Expected CSV format:</p>
               <p className="text-xs text-txt-secondary mt-1">
                 Columns: Team/School Name, Place (optional), Time (optional)
@@ -275,8 +275,8 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                 <select
                   value={mapping.teamName || ''}
                   onChange={(e) => setMapping(m => ({ ...m, teamName: e.target.value || undefined }))}
-                  className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
                 >
                   <option value="">Select column</option>
                   {headers.map(h => (
@@ -293,8 +293,8 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                 <select
                   value={mapping.place || ''}
                   onChange={(e) => setMapping(m => ({ ...m, place: e.target.value || undefined }))}
-                  className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
                 >
                   <option value="">Select column</option>
                   {headers.map(h => (
@@ -311,8 +311,8 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                 <select
                   value={mapping.finishTime || ''}
                   onChange={(e) => setMapping(m => ({ ...m, finishTime: e.target.value || undefined }))}
-                  className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
                 >
                   <option value="">Select column</option>
                   {headers.map(h => (
@@ -329,8 +329,8 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                 <select
                   value={mapping.isOwnTeam || ''}
                   onChange={(e) => setMapping(m => ({ ...m, isOwnTeam: e.target.value || undefined }))}
-                  className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                           text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
                 >
                   <option value="">None</option>
                   {headers.map(h => (
@@ -346,7 +346,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-bdr-default">
+                    <tr className="border-b border-ink-border">
                       {headers.map(h => (
                         <th key={h} className="px-3 py-2 text-left text-txt-secondary font-medium">{h}</th>
                       ))}
@@ -354,7 +354,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                   </thead>
                   <tbody>
                     {rawData.slice(0, 3).map((row, i) => (
-                      <tr key={i} className="border-b border-bdr-subtle">
+                      <tr key={i} className="border-b border-ink-border">
                         {row.map((cell, j) => (
                           <td key={j} className="px-3 py-2 text-txt-primary">{cell}</td>
                         ))}
@@ -378,7 +378,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                 onClick={parseRows}
                 disabled={!mapping.teamName}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white
-                         bg-accent-primary rounded-lg hover:bg-accent-primary-hover
+                         bg-data-good rounded-lg hover:bg-data-good-hover
                          disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Preview
@@ -398,23 +398,23 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
           >
             {/* Summary */}
             <div className="flex gap-4">
-              <div className="flex-1 p-4 bg-green-500/10 rounded-lg">
-                <p className="text-2xl font-bold text-green-500">{validCount}</p>
+              <div className="flex-1 p-4 bg-data-excellent/10 rounded-lg">
+                <p className="text-2xl font-bold text-data-excellent">{validCount}</p>
                 <p className="text-sm text-txt-secondary">Valid rows</p>
               </div>
               {invalidCount > 0 && (
                 <div className="flex-1 p-4 bg-red-500/10 rounded-lg">
-                  <p className="text-2xl font-bold text-red-500">{invalidCount}</p>
+                  <p className="text-2xl font-bold text-data-poor">{invalidCount}</p>
                   <p className="text-sm text-txt-secondary">Rows with errors</p>
                 </div>
               )}
             </div>
 
             {/* Preview table */}
-            <div className="max-h-64 overflow-y-auto border border-bdr-default rounded-lg">
+            <div className="max-h-64 overflow-y-auto border border-ink-border rounded-lg">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-surface-elevated">
-                  <tr className="border-b border-bdr-default">
+                <thead className="sticky top-0 bg-ink-raised">
+                  <tr className="border-b border-ink-border">
                     <th className="px-3 py-2 text-left text-txt-secondary font-medium w-8">#</th>
                     <th className="px-3 py-2 text-left text-txt-secondary font-medium">Team</th>
                     <th className="px-3 py-2 text-left text-txt-secondary font-medium">Place</th>
@@ -426,7 +426,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                   {parsedRows.map((row) => (
                     <tr
                       key={row.rowIndex}
-                      className={`border-b border-bdr-subtle ${
+                      className={`border-b border-ink-border ${
                         row.errors.length > 0 ? 'bg-red-500/5' : ''
                       }`}
                     >
@@ -438,12 +438,12 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                       </td>
                       <td className="px-3 py-2">
                         {row.errors.length > 0 ? (
-                          <span className="flex items-center gap-1 text-red-500 text-xs">
+                          <span className="flex items-center gap-1 text-data-poor text-xs">
                             <AlertCircle className="w-3 h-3" />
                             {row.errors[0]}
                           </span>
                         ) : (
-                          <Check className="w-4 h-4 text-green-500" />
+                          <Check className="w-4 h-4 text-data-excellent" />
                         )}
                       </td>
                     </tr>
@@ -465,7 +465,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
                 onClick={handleImport}
                 disabled={validCount === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white
-                         bg-accent-primary rounded-lg hover:bg-accent-primary-hover
+                         bg-data-good rounded-lg hover:bg-data-good-hover
                          disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Import {validCount} Results
@@ -496,8 +496,8 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
           >
             {importResult.success > 0 ? (
               <>
-                <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Check className="w-8 h-8 text-green-500" />
+                <div className="w-16 h-16 bg-data-excellent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8 text-data-excellent" />
                 </div>
                 <h4 className="text-lg font-semibold text-txt-primary">Import Complete</h4>
                 <p className="text-txt-secondary mt-1">
@@ -508,7 +508,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
             ) : (
               <>
                 <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <AlertCircle className="w-8 h-8 text-red-500" />
+                  <AlertCircle className="w-8 h-8 text-data-poor" />
                 </div>
                 <h4 className="text-lg font-semibold text-txt-primary">Import Failed</h4>
                 <p className="text-txt-secondary mt-1">
@@ -520,7 +520,7 @@ export function ResultsCSVImport({ race, onClose, onSuccess }: ResultsCSVImportP
             <button
               onClick={onClose}
               className="mt-6 px-6 py-2 text-sm font-medium text-white
-                       bg-accent-primary rounded-lg hover:bg-accent-primary-hover"
+                       bg-data-good rounded-lg hover:bg-data-good-hover"
             >
               Done
             </button>

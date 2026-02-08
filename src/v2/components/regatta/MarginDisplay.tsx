@@ -72,7 +72,7 @@ export function MarginBadge({
 
   return (
     <span
-      className="text-xs px-1.5 py-0.5 rounded bg-surface-elevated text-txt-secondary"
+      className="text-xs px-1.5 py-0.5 rounded bg-ink-raised text-txt-secondary"
       title={`${marginInfo.seconds?.toFixed(2) || marginSeconds}s`}
     >
       +{marginInfo.terminology}

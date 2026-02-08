@@ -94,8 +94,8 @@ export function EventForm({
               onClick={() => handleCategorySelect(cat)}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 selectedCategory === cat || (watch('name') === cat && selectedCategory !== 'Custom')
-                  ? 'bg-accent-primary text-white'
-                  : 'bg-surface-elevated text-txt-secondary hover:bg-surface-hover'
+                  ? 'bg-data-good text-white'
+                  : 'bg-ink-raised text-txt-secondary hover:bg-ink-hover'
               }`}
             >
               {cat}
@@ -106,8 +106,8 @@ export function EventForm({
             onClick={() => handleCategorySelect('Custom')}
             className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
               !selectedCategory && !EVENT_CATEGORIES.includes(watch('name'))
-                ? 'bg-accent-primary text-white'
-                : 'bg-surface-elevated text-txt-secondary hover:bg-surface-hover'
+                ? 'bg-data-good text-white'
+                : 'bg-ink-raised text-txt-secondary hover:bg-ink-hover'
             }`}
           >
             Custom
@@ -122,13 +122,13 @@ export function EventForm({
         </label>
         <input
           {...register('name')}
-          className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+          className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                    text-txt-primary placeholder:text-txt-tertiary
-                   focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                   focus:outline-none focus:ring-2 focus:ring-focus-ring"
           placeholder="e.g., Varsity 8+"
         />
         {errors.name && (
-          <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+          <p className="mt-1 text-sm text-data-poor">{errors.name.message}</p>
         )}
       </div>
 
@@ -140,8 +140,8 @@ export function EventForm({
           </label>
           <select
             {...register('scheduledDay', { valueAsNumber: true })}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                     text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                     text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
           >
             {Array.from({ length: regattaDays }, (_, i) => i + 1).map(day => (
               <option key={day} value={day}>Day {day}</option>
@@ -156,7 +156,7 @@ export function EventForm({
           type="button"
           onClick={onCancel}
           className="px-4 py-2 text-sm font-medium text-txt-secondary
-                   bg-surface-elevated rounded-lg hover:bg-surface-hover transition-colors"
+                   bg-ink-raised rounded-lg hover:bg-ink-hover transition-colors"
         >
           Cancel
         </button>
@@ -164,7 +164,7 @@ export function EventForm({
           type="submit"
           disabled={isSubmitting}
           className="px-4 py-2 text-sm font-medium text-white
-                   bg-accent-primary rounded-lg hover:bg-accent-primary-hover
+                   bg-data-good rounded-lg hover:bg-data-good-hover
                    disabled:opacity-50 transition-colors"
         >
           {isSubmitting ? 'Saving...' : isEditing ? 'Save' : 'Add Event'}

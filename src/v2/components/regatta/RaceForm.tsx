@@ -76,13 +76,13 @@ export function RaceForm({
         </label>
         <input
           {...register('eventName')}
-          className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
+          className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
                    text-txt-primary placeholder:text-txt-tertiary
-                   focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                   focus:outline-none focus:ring-2 focus:ring-focus-ring"
           placeholder="e.g., Heat 1, Final A, Time Trial"
         />
         {errors.eventName && (
-          <p className="mt-1 text-sm text-red-500">{errors.eventName.message}</p>
+          <p className="mt-1 text-sm text-data-poor">{errors.eventName.message}</p>
         )}
       </div>
 
@@ -93,8 +93,8 @@ export function RaceForm({
         </label>
         <select
           {...register('boatClass')}
-          className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                   text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+          className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                   text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
         >
           <option value="">Select boat class</option>
           {boatClasses.map(bc => (
@@ -102,7 +102,7 @@ export function RaceForm({
           ))}
         </select>
         {errors.boatClass && (
-          <p className="mt-1 text-sm text-red-500">{errors.boatClass.message}</p>
+          <p className="mt-1 text-sm text-data-poor">{errors.boatClass.message}</p>
         )}
       </div>
 
@@ -113,8 +113,8 @@ export function RaceForm({
             <input
               type="checkbox"
               {...register('isHeadRace')}
-              className="w-4 h-4 rounded border-bdr-default text-accent-primary
-                       focus:ring-accent-primary"
+              className="w-4 h-4 rounded border-ink-border text-data-good
+                       focus:ring-focus-ring"
             />
             <span className="text-sm font-medium text-txt-primary">Head Race</span>
           </label>
@@ -129,8 +129,8 @@ export function RaceForm({
           </label>
           <select
             {...register('distanceMeters', { valueAsNumber: true })}
-            className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                     text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                     text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
           >
             {DISTANCES.map(d => (
               <option key={d.value} value={d.value}>{d.label}</option>
@@ -147,8 +147,8 @@ export function RaceForm({
         <input
           type="datetime-local"
           {...register('scheduledTime')}
-          className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-lg
-                   text-txt-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+          className="w-full px-3 py-2 bg-ink-well border border-ink-border rounded-lg
+                   text-txt-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
         />
         <p className="text-xs text-txt-tertiary mt-1">
           Used for race day schedule and warmup calculations
@@ -161,7 +161,7 @@ export function RaceForm({
           type="button"
           onClick={onCancel}
           className="px-4 py-2 text-sm font-medium text-txt-secondary
-                   bg-surface-elevated rounded-lg hover:bg-surface-hover transition-colors"
+                   bg-ink-raised rounded-lg hover:bg-ink-hover transition-colors"
         >
           Cancel
         </button>
@@ -169,7 +169,7 @@ export function RaceForm({
           type="submit"
           disabled={isSubmitting}
           className="px-4 py-2 text-sm font-medium text-white
-                   bg-accent-primary rounded-lg hover:bg-accent-primary-hover
+                   bg-data-good rounded-lg hover:bg-data-good-hover
                    disabled:opacity-50 transition-colors"
         >
           {isSubmitting ? 'Saving...' : isEditing ? 'Save' : 'Add Race'}
