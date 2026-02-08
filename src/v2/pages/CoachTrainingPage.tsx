@@ -148,340 +148,351 @@ export function CoachTrainingPage() {
 
   return (
     <div className="coach-training-page">
-      {/* Page Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-txt-primary">Training</h1>
-        <p className="text-txt-secondary mt-1">
-          Manage training plans, schedules, and NCAA compliance
-        </p>
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        {/* Decorative copper line at bottom */}
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+
+        <div className="relative">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+            Training Program
+          </p>
+          <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+            Training
+          </h1>
+          <p className="text-sm text-ink-secondary mt-2">
+            Plan, schedule, and track training sessions
+          </p>
+        </div>
       </div>
 
-      {/* Periodization Timeline */}
-      <div className="mb-6 p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default">
-        <PeriodizationTimeline
-          blocks={periodizationBlocks}
-          startDate={new Date('2026-01-01')}
-          endDate={new Date('2026-06-30')}
-          onBlockClick={handleBlockClick}
-          onAddBlock={() => console.log('Add block')}
-        />
-      </div>
+      <div className="px-6">
+        {/* Periodization Timeline */}
+        <div className="mb-6 p-4 bg-ink-raised rounded-lg border border-ink-border">
+          <PeriodizationTimeline
+            blocks={periodizationBlocks}
+            startDate={new Date('2026-01-01')}
+            endDate={new Date('2026-06-30')}
+            onBlockClick={handleBlockClick}
+            onAddBlock={() => console.log('Add block')}
+          />
+        </div>
 
-      {/* Tab Navigation */}
-      <Tab.Group
-        selectedIndex={tabs.findIndex((t) => t.key === activeTab)}
-        onChange={(index) => setActiveTab(tabs[index].key)}
-      >
-        <Tab.List className="flex items-center gap-1 p-1 bg-bg-surface-elevated rounded-lg mb-6">
-          {tabs.map((tab) => (
-            <Tab
-              key={tab.key}
-              className={({ selected }) =>
-                `flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors
+        {/* Tab Navigation */}
+        <Tab.Group
+          selectedIndex={tabs.findIndex((t) => t.key === activeTab)}
+          onChange={(index) => setActiveTab(tabs[index].key)}
+        >
+          <Tab.List className="flex items-center gap-1 p-1 bg-ink-raised rounded-lg mb-6 border border-ink-border">
+            {tabs.map((tab) => (
+              <Tab
+                key={tab.key}
+                className={({ selected }) =>
+                  `flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-150
                 ${
                   selected
-                    ? 'bg-interactive-primary text-txt-inverse'
-                    : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-hover'
+                    ? 'bg-accent-copper text-white shadow-sm'
+                    : 'text-ink-secondary hover:text-ink-body hover:bg-ink-hover'
                 }`
-              }
-            >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
-            </Tab>
-          ))}
-        </Tab.List>
-
-        <Tab.Panels>
-          {/* Calendar Tab */}
-          <Tab.Panel>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <select
-                  value={selectedPlanId || ''}
-                  onChange={(e) => setSelectedPlanId(e.target.value || null)}
-                  className="px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
-                             text-txt-primary text-sm
-                             focus:outline-none focus:ring-2 focus:ring-interactive-primary"
-                  aria-label="Filter training calendar by plan"
-                >
-                  <option value="">All Plans</option>
-                  {plans?.map((plan) => (
-                    <option key={plan.id} value={plan.id}>
-                      {plan.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button
-                onClick={() => setShowWorkoutModal(true)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                           bg-interactive-primary text-txt-inverse rounded-md
-                           hover:bg-interactive-primary-hover transition-colors"
+                }
               >
-                <Plus className="w-4 h-4" />
-                Add Workout
-              </button>
-            </div>
+                <tab.icon className="w-4 h-4" />
+                {tab.label}
+              </Tab>
+            ))}
+          </Tab.List>
 
-            <DragDropCalendar
-              planId={selectedPlanId || undefined}
-              onSelectEvent={handleSelectEvent}
-              onSelectSlot={handleSelectSlot}
-              className="bg-bg-surface-elevated rounded-lg border border-bdr-default p-4"
-            />
-          </Tab.Panel>
-
-          {/* Compliance Tab */}
-          <Tab.Panel>
-            <div className="flex items-center justify-end mb-4">
-              <button
-                onClick={() => setShowAuditModal(true)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                           border border-bdr-default text-txt-primary rounded-md
-                           hover:bg-bg-surface-elevated transition-colors"
-              >
-                <FileText className="w-4 h-4" />
-                Generate Audit Report
-              </button>
-            </div>
-
-            <ComplianceDashboard onAthleteClick={handleAthleteClick} />
-          </Tab.Panel>
-
-          {/* Plans Tab */}
-          <Tab.Panel>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Plan List */}
-              <div className="lg:col-span-2">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-txt-primary">Training Plans</h3>
-                  <button
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                               bg-interactive-primary text-txt-inverse rounded-md
-                               hover:bg-interactive-primary-hover transition-colors"
+          <Tab.Panels>
+            {/* Calendar Tab */}
+            <Tab.Panel>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-4">
+                  <select
+                    value={selectedPlanId || ''}
+                    onChange={(e) => setSelectedPlanId(e.target.value || null)}
+                    className="px-3 py-2 bg-ink-base border border-ink-border rounded-md
+                             text-ink-bright text-sm
+                             focus:outline-none focus:ring-2 focus:ring-accent-copper/30"
+                    aria-label="Filter training calendar by plan"
                   >
-                    <Plus className="w-4 h-4" />
-                    New Plan
-                  </button>
+                    <option value="">All Plans</option>
+                    {plans?.map((plan) => (
+                      <option key={plan.id} value={plan.id}>
+                        {plan.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                {loadingPlans ? (
-                  <div className="space-y-3">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="h-16 bg-bg-surface-elevated rounded-lg animate-pulse"
-                      />
-                    ))}
+                <button
+                  onClick={() => setShowWorkoutModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium
+                           bg-gradient-to-b from-accent-copper to-accent-copper-hover text-white shadow-glow-copper rounded-md
+                           hover:shadow-glow-copper-lg hover:-translate-y-px active:translate-y-0 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Workout
+                </button>
+              </div>
+
+              <DragDropCalendar
+                planId={selectedPlanId || undefined}
+                onSelectEvent={handleSelectEvent}
+                onSelectSlot={handleSelectSlot}
+                className="bg-ink-raised rounded-lg border border-ink-border p-4"
+              />
+            </Tab.Panel>
+
+            {/* Compliance Tab */}
+            <Tab.Panel>
+              <div className="flex items-center justify-end mb-4">
+                <button
+                  onClick={() => setShowAuditModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium
+                           border border-ink-border text-ink-bright rounded-md
+                           hover:bg-ink-raised transition-colors"
+                >
+                  <FileText className="w-4 h-4" />
+                  Generate Audit Report
+                </button>
+              </div>
+
+              <ComplianceDashboard onAthleteClick={handleAthleteClick} />
+            </Tab.Panel>
+
+            {/* Plans Tab */}
+            <Tab.Panel>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Plan List */}
+                <div className="lg:col-span-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-ink-bright">Training Plans</h3>
+                    <button
+                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium
+                               bg-gradient-to-b from-accent-copper to-accent-copper-hover text-white shadow-glow-copper rounded-md
+                               hover:shadow-glow-copper-lg hover:-translate-y-px active:translate-y-0 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      New Plan
+                    </button>
                   </div>
-                ) : !plans || plans.length === 0 ? (
-                  <div className="text-center py-12 text-txt-tertiary">
-                    No training plans yet. Create your first plan to get started.
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {plans.map((plan) => (
-                      <div
-                        key={plan.id}
-                        className="p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default
-                                   hover:border-interactive-primary/50 transition-colors cursor-pointer"
-                        onClick={() => setSelectedPlanId(plan.id)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4 className="font-medium text-txt-primary">{plan.name}</h4>
-                            {plan.description && (
-                              <p className="text-sm text-txt-tertiary mt-1 line-clamp-1">
-                                {plan.description}
-                              </p>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {plan.phase && (
-                              <span className="px-2 py-0.5 text-xs font-medium bg-interactive-primary/20 text-interactive-primary rounded">
-                                {plan.phase}
-                              </span>
-                            )}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedPlanId(plan.id);
-                                setShowAssignmentModal(true);
-                              }}
-                              className="px-2 py-1 text-xs font-medium text-interactive-primary
-                                         hover:bg-interactive-primary/10 rounded transition-colors"
-                            >
-                              Assign
-                            </button>
+
+                  {loadingPlans ? (
+                    <div className="space-y-3">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="h-16 bg-ink-raised rounded-lg animate-pulse" />
+                      ))}
+                    </div>
+                  ) : !plans || plans.length === 0 ? (
+                    <div className="text-center py-12 text-ink-muted">
+                      No training plans yet. Create your first plan to get started.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {plans.map((plan) => (
+                        <div
+                          key={plan.id}
+                          className="p-4 bg-ink-raised rounded-lg border border-ink-border
+                                   hover:border-accent-copper/50 transition-colors cursor-pointer"
+                          onClick={() => setSelectedPlanId(plan.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-ink-bright">{plan.name}</h4>
+                              {plan.description && (
+                                <p className="text-sm text-ink-muted mt-1 line-clamp-1">
+                                  {plan.description}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {plan.phase && (
+                                <span className="px-2 py-0.5 text-xs font-medium bg-accent-copper/[0.12] text-accent-copper rounded">
+                                  {plan.phase}
+                                </span>
+                              )}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedPlanId(plan.id);
+                                  setShowAssignmentModal(true);
+                                }}
+                                className="px-2 py-1 text-xs font-medium text-accent-copper
+                                         hover:bg-accent-copper/[0.08] rounded transition-colors"
+                              >
+                                Assign
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Quick Stats */}
-              <div className="space-y-4">
-                <div className="p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default">
-                  <h4 className="font-medium text-txt-primary mb-3">Quick Stats</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-txt-secondary">Active Plans</span>
-                      <span className="font-medium font-mono text-txt-primary">
-                        {plans?.filter((p) => !p.isTemplate).length || 0}
-                      </span>
+                      ))}
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-txt-secondary">Templates</span>
-                      <span className="font-medium font-mono text-txt-primary">
-                        {plans?.filter((p) => p.isTemplate).length || 0}
-                      </span>
+                  )}
+                </div>
+
+                {/* Quick Stats */}
+                <div className="space-y-4">
+                  <div className="p-4 bg-ink-raised rounded-lg border border-ink-border">
+                    <h4 className="font-medium text-ink-bright mb-3">Quick Stats</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-ink-secondary">Active Plans</span>
+                        <span className="font-medium font-mono text-ink-bright">
+                          {plans?.filter((p) => !p.isTemplate).length || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-ink-secondary">Templates</span>
+                        <span className="font-medium font-mono text-ink-bright">
+                          {plans?.filter((p) => p.isTemplate).length || 0}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
+
+        {/* Workout Modal */}
+        <Transition appear show={showWorkoutModal} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-50"
+            onClose={() => {
+              setShowWorkoutModal(false);
+              setSelectedSlot(null);
+            }}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 flex items-center justify-center p-4">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-2xl bg-ink-base rounded-lg shadow-xl border border-ink-border p-6">
+                  <Dialog.Title className="text-lg font-semibold text-ink-bright mb-4">
+                    {selectedSlot ? 'Create Workout' : 'Add Workout'}
+                  </Dialog.Title>
+                  <WorkoutForm
+                    planId={selectedPlanId || plans?.[0]?.id || ''}
+                    initialDate={selectedSlot?.start}
+                    onSubmit={handleWorkoutSubmit}
+                    onCancel={() => {
+                      setShowWorkoutModal(false);
+                      setSelectedSlot(null);
+                    }}
+                    isSubmitting={isCreating}
+                  />
+                </Dialog.Panel>
+              </Transition.Child>
             </div>
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
+          </Dialog>
+        </Transition>
 
-      {/* Workout Modal */}
-      <Transition appear show={showWorkoutModal} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => {
-            setShowWorkoutModal(false);
-            setSelectedSlot(null);
-          }}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 flex items-center justify-center p-4">
+        {/* Assignment Modal */}
+        <Transition appear show={showAssignmentModal} as={Fragment}>
+          <Dialog as="div" className="relative z-50" onClose={() => setShowAssignmentModal(false)}>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
             >
-              <Dialog.Panel className="w-full max-w-2xl bg-bg-surface rounded-lg shadow-xl border border-bdr-default p-6">
-                <Dialog.Title className="text-lg font-semibold text-txt-primary mb-4">
-                  {selectedSlot ? 'Create Workout' : 'Add Workout'}
-                </Dialog.Title>
-                <WorkoutForm
-                  planId={selectedPlanId || plans?.[0]?.id || ''}
-                  initialDate={selectedSlot?.start}
-                  onSubmit={handleWorkoutSubmit}
-                  onCancel={() => {
-                    setShowWorkoutModal(false);
-                    setSelectedSlot(null);
-                  }}
-                  isSubmitting={isCreating}
-                />
-              </Dialog.Panel>
+              <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
             </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
 
-      {/* Assignment Modal */}
-      <Transition appear show={showAssignmentModal} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setShowAssignmentModal(false)}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-          </Transition.Child>
+            <div className="fixed inset-0 flex items-center justify-center p-4">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-2xl bg-ink-base rounded-lg shadow-xl border border-ink-border p-6">
+                  <Dialog.Title className="text-lg font-semibold text-ink-bright mb-4">
+                    Assign Training Plan
+                  </Dialog.Title>
+                  <AssignmentManager
+                    plan={plans?.find((p) => p.id === selectedPlanId)}
+                    onSuccess={() => setShowAssignmentModal(false)}
+                    onCancel={() => setShowAssignmentModal(false)}
+                  />
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition>
 
-          <div className="fixed inset-0 flex items-center justify-center p-4">
+        {/* Audit Report Modal */}
+        <Transition appear show={showAuditModal} as={Fragment}>
+          <Dialog as="div" className="relative z-50" onClose={() => setShowAuditModal(false)}>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
             >
-              <Dialog.Panel className="w-full max-w-2xl bg-bg-surface rounded-lg shadow-xl border border-bdr-default p-6">
-                <Dialog.Title className="text-lg font-semibold text-txt-primary mb-4">
-                  Assign Training Plan
-                </Dialog.Title>
-                <AssignmentManager
-                  plan={plans?.find((p) => p.id === selectedPlanId)}
-                  onSuccess={() => setShowAssignmentModal(false)}
-                  onCancel={() => setShowAssignmentModal(false)}
-                />
-              </Dialog.Panel>
+              <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
             </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
 
-      {/* Audit Report Modal */}
-      <Transition appear show={showAuditModal} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setShowAuditModal(false)}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-          </Transition.Child>
+            <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-4xl bg-ink-base rounded-lg shadow-xl border border-ink-border p-6 my-8">
+                  <NCAAAuditReport
+                    weekStart={startOfWeek(new Date(), { weekStartsOn: 1 })}
+                    teamName="Team"
+                    onClose={() => setShowAuditModal(false)}
+                  />
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition>
 
-          <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-4xl bg-bg-surface rounded-lg shadow-xl border border-bdr-default p-6 my-8">
-                <NCAAAuditReport
-                  weekStart={startOfWeek(new Date(), { weekStartsOn: 1 })}
-                  teamName="Team"
-                  onClose={() => setShowAuditModal(false)}
-                />
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
-
-      {/* Keyboard Shortcuts Help */}
-      <TrainingShortcutsHelp
-        isOpen={showHelp}
-        onClose={() => setShowHelp(false)}
-        shortcuts={shortcuts}
-      />
+        {/* Keyboard Shortcuts Help */}
+        <TrainingShortcutsHelp
+          isOpen={showHelp}
+          onClose={() => setShowHelp(false)}
+          shortcuts={shortcuts}
+        />
+      </div>
     </div>
   );
 }

@@ -26,8 +26,8 @@ export function RaceDayCommandCenter() {
   // Get all races with scheduled times
   const races = useMemo(() => {
     if (!regatta?.events) return [];
-    return regatta.events.flatMap(event =>
-      (event.races || []).filter(race => race.scheduledTime)
+    return regatta.events.flatMap((event) =>
+      (event.races || []).filter((race) => race.scheduledTime)
     );
   }, [regatta]);
 
@@ -35,7 +35,7 @@ export function RaceDayCommandCenter() {
   const timelineEvents = useMemo<RaceDayEvent[]>(() => {
     const events: RaceDayEvent[] = [];
 
-    races.forEach(race => {
+    races.forEach((race) => {
       if (!race.scheduledTime) return;
 
       const start = new Date(race.scheduledTime);
@@ -81,8 +81,8 @@ export function RaceDayCommandCenter() {
 
   // Get races for selected date
   const todayRaces = useMemo(() => {
-    return races.filter(race =>
-      race.scheduledTime && isSameDay(parseISO(race.scheduledTime), raceDate)
+    return races.filter(
+      (race) => race.scheduledTime && isSameDay(parseISO(race.scheduledTime), raceDate)
     );
   }, [races, raceDate]);
 
@@ -94,10 +94,21 @@ export function RaceDayCommandCenter() {
 
   if (isLoading) {
     return (
-      <div className="p-6 max-w-6xl mx-auto">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 w-48 bg-surface-elevated rounded" />
-          <div className="h-64 bg-surface-elevated rounded-xl" />
+      <div className="max-w-6xl mx-auto">
+        <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+          <div className="relative">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-1">
+              Race Day
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Command Center
+            </h1>
+          </div>
+        </div>
+        <div className="px-6 animate-pulse space-y-4">
+          <div className="h-64 bg-ink-raised rounded-xl" />
         </div>
       </div>
     );
@@ -105,118 +116,144 @@ export function RaceDayCommandCenter() {
 
   if (!regatta) {
     return (
-      <div className="p-6 max-w-6xl mx-auto text-center py-12">
-        <p className="text-txt-secondary">Regatta not found</p>
-        <button
-          onClick={() => navigate('/app/regattas')}
-          className="mt-4 text-accent-primary hover:underline"
-        >
-          Back to regattas
-        </button>
+      <div className="max-w-6xl mx-auto">
+        <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+          <div className="relative">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-1">
+              Race Day
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Command Center
+            </h1>
+          </div>
+        </div>
+        <div className="px-6 text-center py-12">
+          <p className="text-ink-secondary">Regatta not found</p>
+          <button
+            onClick={() => navigate('/app/regattas')}
+            className="mt-4 text-accent-copper hover:text-accent-copper-hover font-medium transition-colors"
+          >
+            Back to regattas
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate(`/app/regattas/${regattaId}`)}
-            className="p-2 rounded-lg hover:bg-surface-hover text-txt-secondary"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-2xl font-semibold text-txt-primary">
-              Race Day Command Center
-            </h1>
-            <p className="text-sm text-txt-secondary mt-1">
-              {regatta.name} — {format(raceDate, 'EEEE, MMMM d, yyyy')}
-            </p>
-          </div>
-        </div>
+    <div className="max-w-6xl mx-auto">
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        {/* Decorative copper line at bottom */}
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
 
-        <TimelineLegend />
+        <div className="relative flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate(`/app/regattas/${regattaId}`)}
+              className="p-2 rounded-lg hover:bg-ink-hover text-accent-copper transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-1">
+                Race Day
+              </p>
+              <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+                Command Center
+              </h1>
+              <p className="text-sm text-ink-secondary mt-1">
+                {regatta.name} — {format(raceDate, 'EEEE, MMMM d, yyyy')}
+              </p>
+            </div>
+          </div>
+
+          <TimelineLegend />
+        </div>
       </div>
 
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left column - Timeline */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Next race card */}
-          <NextRaceCard races={todayRaces} />
+      <div className="px-6">
+        {/* Main content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left column - Timeline */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Next race card */}
+            <NextRaceCard races={todayRaces} />
 
-          {/* Day timeline */}
-          <div className="bg-surface-elevated rounded-xl border border-bdr-default p-4">
-            <h3 className="font-medium text-txt-primary mb-4 flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Today's Schedule
-            </h3>
-            <DayTimeline
-              raceDate={raceDate}
-              events={timelineEvents.filter(e => isSameDay(e.start, raceDate))}
-              onSelectEvent={(event) => {
-                if (event.raceId) setSelectedRaceId(event.raceId);
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Right column - Warmup & Checklists */}
-        <div className="space-y-6">
-          {/* Warmup schedule */}
-          <div className="bg-surface-elevated rounded-xl border border-bdr-default p-4">
-            <h3 className="font-medium text-txt-primary mb-4 flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              Launch Schedule
-            </h3>
-            <WarmupSchedule
-              races={todayRaces}
-              config={{ warmupDuration: 45, travelToStartTime: 15 }}
-            />
-          </div>
-
-          {/* Checklists */}
-          <div className="bg-surface-elevated rounded-xl border border-bdr-default p-4">
-            <h3 className="font-medium text-txt-primary mb-4">Pre-Race Checklists</h3>
-
-            {selectedRaceId ? (
-              <PreRaceChecklist
-                raceId={selectedRaceId}
-                raceName={todayRaces.find(r => r.id === selectedRaceId)?.eventName || ''}
-                userRole={userRole}
-                userId={user?.id || ''}
-                userName={user?.name}
+            {/* Day timeline */}
+            <div className="bg-ink-raised rounded-xl border border-ink-border p-4">
+              <h3 className="font-medium text-ink-bright mb-4 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-accent-copper" />
+                Today's Schedule
+              </h3>
+              <DayTimeline
+                raceDate={raceDate}
+                events={timelineEvents.filter((e) => isSameDay(e.start, raceDate))}
+                onSelectEvent={(event) => {
+                  if (event.raceId) setSelectedRaceId(event.raceId);
+                }}
               />
-            ) : (
-              <div className="space-y-2">
-                {todayRaces.slice(0, 5).map(race => (
-                  <button
-                    key={race.id}
-                    onClick={() => setSelectedRaceId(race.id)}
-                    className="w-full text-left"
-                  >
-                    <ChecklistProgress raceId={race.id} raceName={race.eventName} />
-                  </button>
-                ))}
-                {todayRaces.length === 0 && (
-                  <p className="text-sm text-txt-tertiary text-center py-4">
-                    No scheduled races for today
-                  </p>
-                )}
-              </div>
-            )}
+            </div>
+          </div>
 
-            {selectedRaceId && (
-              <button
-                onClick={() => setSelectedRaceId(null)}
-                className="mt-4 w-full text-sm text-txt-secondary hover:text-txt-primary"
-              >
-                View all races
-              </button>
-            )}
+          {/* Right column - Warmup & Checklists */}
+          <div className="space-y-6">
+            {/* Warmup schedule */}
+            <div className="bg-ink-raised rounded-xl border border-ink-border p-4">
+              <h3 className="font-medium text-ink-bright mb-4 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-accent-copper" />
+                Launch Schedule
+              </h3>
+              <WarmupSchedule
+                races={todayRaces}
+                config={{ warmupDuration: 45, travelToStartTime: 15 }}
+              />
+            </div>
+
+            {/* Checklists */}
+            <div className="bg-ink-raised rounded-xl border border-ink-border p-4">
+              <h3 className="font-medium text-ink-bright mb-4">Pre-Race Checklists</h3>
+
+              {selectedRaceId ? (
+                <PreRaceChecklist
+                  raceId={selectedRaceId}
+                  raceName={todayRaces.find((r) => r.id === selectedRaceId)?.eventName || ''}
+                  userRole={userRole}
+                  userId={user?.id || ''}
+                  userName={user?.name}
+                />
+              ) : (
+                <div className="space-y-2">
+                  {todayRaces.slice(0, 5).map((race) => (
+                    <button
+                      key={race.id}
+                      onClick={() => setSelectedRaceId(race.id)}
+                      className="w-full text-left"
+                    >
+                      <ChecklistProgress raceId={race.id} raceName={race.eventName} />
+                    </button>
+                  ))}
+                  {todayRaces.length === 0 && (
+                    <p className="text-sm text-ink-muted text-center py-4">
+                      No scheduled races for today
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {selectedRaceId && (
+                <button
+                  onClick={() => setSelectedRaceId(null)}
+                  className="mt-4 w-full text-sm text-ink-secondary hover:text-ink-bright"
+                >
+                  View all races
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
