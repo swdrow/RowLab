@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
+import useLineupStore from '@/store/lineupStore';
 import { useAthletes } from '../../hooks/useAthletes';
-import { useLineupDraft } from '../../hooks/useLineupDraft';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
 import type { AthleteBankProps } from '@v2/types/lineup';
 
@@ -24,23 +24,26 @@ import type { AthleteBankProps } from '@v2/types/lineup';
  *
  * Athletes are draggable using DraggableAthleteCard with source='bank'
  */
-export function AthleteBank({
-  className = '',
-  lineupId,
-}: AthleteBankProps & { lineupId: string | null }) {
+export function AthleteBank({ className = '' }: AthleteBankProps & { lineupId: string | null }) {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // V3 hooks: TanStack Query for athletes and draft state
+  // V3 hooks: TanStack Query for athletes
   const { allAthletes } = useAthletes();
-  const { draft } = useLineupDraft(lineupId);
 
-  // Get available athletes (those not in any draft assignment)
+  // Read activeBoats from V1 store to track which athletes are assigned
+  const activeBoats = useLineupStore((state: any) => state.activeBoats);
+
+  // Get available athletes (those not assigned to any seat in activeBoats)
   const availableAthletes = useMemo(() => {
-    if (!draft) return allAthletes;
-
-    const assignedAthleteIds = new Set(draft.assignments.map((a) => a.athleteId));
-    return allAthletes.filter((athlete) => !assignedAthleteIds.has(athlete.id));
-  }, [allAthletes, draft]);
+    const assignedIds = new Set<string>();
+    activeBoats.forEach((boat: any) => {
+      boat.seats.forEach((seat: any) => {
+        if (seat.athlete?.id) assignedIds.add(seat.athlete.id);
+      });
+      if (boat.coxswain?.id) assignedIds.add(boat.coxswain.id);
+    });
+    return allAthletes.filter((athlete) => !assignedIds.has(athlete.id));
+  }, [allAthletes, activeBoats]);
 
   // Filter athletes by search query
   const filteredAthletes = useMemo(() => {
