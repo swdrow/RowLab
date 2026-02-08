@@ -22,33 +22,63 @@ export default function CoachWhiteboard() {
 
   if (isLoading) {
     return (
-      <div className="p-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-surface rounded w-1/3" />
-          <div className="h-64 bg-surface rounded" />
+      <div>
+        <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+          <div className="relative">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              Team Communication
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Whiteboard
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">Daily team messages and announcements</p>
+          </div>
+        </div>
+        <div className="px-6 animate-pulse">
+          <div className="h-64 bg-ink-raised rounded" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-4xl">
-      <h1 className="text-2xl font-bold text-txt-primary mb-6">Team Whiteboard</h1>
+    <div>
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        {/* Decorative copper line at bottom */}
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
 
-      {isEditing ? (
-        <WhiteboardEditor
-          initialContent={whiteboard?.content || ''}
-          onSave={handleSave}
-          onCancel={() => setIsEditing(false)}
-          isSaving={isSaving}
-        />
-      ) : (
-        <WhiteboardView
-          whiteboard={whiteboard || null}
-          canEdit={canEdit}
-          onEdit={() => setIsEditing(true)}
-        />
-      )}
+        <div className="relative">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+            Team Communication
+          </p>
+          <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+            Whiteboard
+          </h1>
+          <p className="text-sm text-ink-secondary mt-2">Daily team messages and announcements</p>
+        </div>
+      </div>
+
+      <div className="px-6 max-w-4xl">
+        {isEditing ? (
+          <WhiteboardEditor
+            initialContent={whiteboard?.content || ''}
+            onSave={handleSave}
+            onCancel={() => setIsEditing(false)}
+            isSaving={isSaving}
+          />
+        ) : (
+          <WhiteboardView
+            whiteboard={whiteboard || null}
+            canEdit={canEdit}
+            onEdit={() => setIsEditing(true)}
+          />
+        )}
+      </div>
     </div>
   );
 }
