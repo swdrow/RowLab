@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import useLineupStore from '@/store/lineupStore';
 import { PrintableLineup } from './PrintableLineup';
 import { exportLineupToPdf } from '@v2/utils/lineupPdfExport';
+import type { BoatInstance, SeatSlotData } from '@v2/types/lineup';
 
 /**
  * Props for ExportPDFButton
@@ -11,6 +12,58 @@ import { exportLineupToPdf } from '@v2/utils/lineupPdfExport';
 interface ExportPDFButtonProps {
   className?: string;
 }
+
+type ActiveBoatLike = {
+  id: string | number;
+  name?: string;
+  boatConfig?: {
+    name?: string;
+    numSeats?: number;
+    hasCoxswain?: boolean;
+  };
+  shellName?: string | null;
+  shell?: {
+    name?: string | null;
+  };
+  numSeats?: number;
+  hasCoxswain?: boolean;
+  seats?: Array<{
+    seatNumber: number;
+    side: string;
+    athlete: BoatInstance['seats'][number]['athlete'] | null;
+    isCoxswain?: boolean;
+  }>;
+  coxswain?: BoatInstance['coxswain'] | null;
+  isExpanded?: boolean;
+};
+
+const normalizeSeatSide = (side?: string): SeatSlotData['side'] =>
+  side === 'Port' || side === 'Starboard' ? side : 'Port';
+
+export const mapBoatsForPrintableLineup = (boats: ActiveBoatLike[]): BoatInstance[] =>
+  boats.map((boat) => {
+    const boatConfig = boat.boatConfig;
+    const seats =
+      boat.seats
+        ?.filter((seat) => !seat.isCoxswain)
+        .map((seat) => ({
+          seatNumber: seat.seatNumber,
+          side: normalizeSeatSide(seat.side),
+          athlete: seat.athlete ?? null,
+        })) ?? [];
+    const coxswainSeat = boat.seats?.find((seat) => seat.isCoxswain);
+
+    return {
+      id: String(boat.id),
+      name: boat.name ?? boatConfig?.name ?? 'Boat',
+      shellName: boat.shellName ?? boat.shell?.name ?? null,
+      numSeats: boat.numSeats ?? boatConfig?.numSeats ?? seats.length,
+      hasCoxswain: boat.hasCoxswain ?? boatConfig?.hasCoxswain ?? false,
+      seats,
+      coxswain: boat.coxswain ?? coxswainSeat?.athlete ?? null,
+      isExpanded: boat.isExpanded ?? true,
+    };
+  });
 
 /**
  * ExportPDFButton - Trigger PDF export with loading state
@@ -40,6 +93,7 @@ export function ExportPDFButton({ className = '' }: ExportPDFButtonProps) {
 
   const activeBoats = useLineupStore((state) => state.activeBoats);
   const lineupName = useLineupStore((state) => state.lineupName || 'Lineup');
+  const printableBoats = mapBoatsForPrintableLineup(activeBoats);
 
   const hasBoats = activeBoats.length > 0;
 
@@ -108,7 +162,7 @@ export function ExportPDFButton({ className = '' }: ExportPDFButtonProps) {
       {showPrintable &&
         createPortal(
           <div ref={printRef}>
-            <PrintableLineup boats={activeBoats} lineupName={lineupName} />
+            <PrintableLineup boats={printableBoats} lineupName={lineupName} />
           </div>,
           document.body
         )}
