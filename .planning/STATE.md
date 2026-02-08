@@ -3,10 +3,10 @@
 ## Current Status
 
 **Milestone:** v3.0 — App Redesign
-**Phase:** 29 (Lineup Builder Migration) — In Progress
-**Plan:** 4/5 complete (29-01, 29-02, 29-03, 29-04), 29-05 verification in progress
-**Status:** All plans executed. Multiple V1/V2 data disconnect bugs fixed during verification: AthleteBank assignment tracking, VersionHistory null guards, save crash (assignments derivation from V1 store), useLineups API normalization. PDF export deferred (GitHub #2).
-**Last activity:** 2026-02-08 — Phase 29-05 verification, bug fixes
+**Phase:** 29 (Lineup Builder Migration) — Complete ✅
+**Plan:** 5/5 complete (29-01 through 29-05)
+**Status:** All lineup components migrated to V3 (TanStack Query + command pattern + design tokens). V1/V2 data disconnect bugs fixed during verification. PDF export deferred (GitHub #2).
+**Last activity:** 2026-02-08 — Phase 29 complete
 
 ## Project Reference
 
@@ -90,10 +90,10 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 26 | Route & Navigation Cleanup | Complete ✅ | 2/2 |
 | 27 | Dashboard Rebuild | Complete ✅ | 7/7 |
 | 28 | Athletes Feature Migration | Complete ✅ | 8/8 |
-| 29 | Lineup Builder Migration | In Progress | 2/5 |
+| 29 | Lineup Builder Migration | Complete ✅ | 5/5 |
 | 30-36 | Feature Modules | Planned | TBD |
 
-v3.0 Progress: ██████████████░ (5 phases complete, 1 in progress, 7 remaining)
+v3.0 Progress: ████████████████░ (6 phases complete, 7 remaining)
 
 ## Quick Context
 
@@ -489,10 +489,10 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-02-07
-**Stopped at:** Completed 29-02-PLAN.md (keyboard accessibility, magnetic snap, command-based undo for core DnD layer)
+**Last session:** 2026-02-08
+**Stopped at:** Phase 29 complete. All 5 plans executed and verified.
 **Resume file:** None
-**Resume with:** `/gsd:execute-phase 29` to continue Lineup Builder Migration (29-04, 29-05 remaining)
+**Resume with:** `/gsd:plan-phase 30` to start next feature module migration
 
 ## Roadmap Evolution
 
@@ -516,7 +516,7 @@ Key architectural decisions carrying forward:
 
 **v3.0 — App Redesign** (In Progress)
 
-Phase 29 (Lineup Builder Migration) in progress. Foundation hooks complete (1/5 plans).
+Phase 29 (Lineup Builder Migration) complete. 6 of 13 v3.0 phases done.
 
 **v3.0 Progress:**
 - Phase 24: Foundation & Design System ✅
@@ -524,10 +524,10 @@ Phase 29 (Lineup Builder Migration) in progress. Foundation hooks complete (1/5 
 - Phase 26: Route & Navigation Cleanup ✅
 - Phase 27: Dashboard Rebuild ✅
 - Phase 28: Athletes Feature Migration ✅
-- Phase 29: Lineup Builder Migration (in progress - 1/5)
+- Phase 29: Lineup Builder Migration ✅
 - Phases 30-36: Planned
 
-To continue, run `/gsd:plan-phase 28` to start Athletes Feature Migration.
+To continue, run `/gsd:plan-phase 30` to start next feature module migration.
 
 Phase 13 delivered the cross-feature integration layer:
 
