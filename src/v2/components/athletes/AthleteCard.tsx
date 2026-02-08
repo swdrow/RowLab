@@ -38,38 +38,39 @@ function SideIndicator({ side }: { side: Athlete['side'] }) {
   );
 }
 
-export function AthleteCard({ athlete, onClick, isSelected = false, className = '' }: AthleteCardProps) {
+export function AthleteCard({
+  athlete,
+  onClick,
+  isSelected = false,
+  className = '',
+}: AthleteCardProps) {
   return (
     <div
       onClick={onClick}
       className={`
-        group p-4 rounded-lg border transition-all
+        group p-4 rounded-xl border transition-all
         ${onClick ? 'cursor-pointer' : ''}
         ${
           isSelected
-            ? 'border-interactive-primary bg-bg-active'
-            : 'border-bdr-default bg-bg-surface hover:border-interactive-primary/50 hover:bg-bg-hover'
+            ? 'border-accent-copper bg-accent-copper/[0.06]'
+            : 'border-ink-border bg-bg-surface hover:border-accent-copper/30 hover:bg-accent-copper/[0.02]'
         }
         ${className}
       `}
     >
       {/* Header with Avatar and Name */}
       <div className="flex items-start gap-3 mb-4">
-        <AthleteAvatar
-          firstName={athlete.firstName}
-          lastName={athlete.lastName}
-          size="lg"
-        />
+        <AthleteAvatar firstName={athlete.firstName} lastName={athlete.lastName} size="lg" />
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-txt-primary truncate flex items-center gap-2">
-            <span>{athlete.firstName} {athlete.lastName}</span>
+            <span>
+              {athlete.firstName} {athlete.lastName}
+            </span>
             {athlete.country && (
               <span title={athlete.country}>{getCountryFlag(athlete.country)}</span>
             )}
           </h3>
-          {athlete.email && (
-            <p className="text-sm text-txt-tertiary truncate">{athlete.email}</p>
-          )}
+          {athlete.email && <p className="text-sm text-txt-tertiary truncate">{athlete.email}</p>}
         </div>
       </div>
 

@@ -23,7 +23,7 @@ const VIEW_OPTIONS: Array<{ mode: ViewMode; icon: typeof LayoutGrid; label: stri
 export function ViewModeSwitcher({ view, onChange, className = '' }: ViewModeSwitcherProps) {
   return (
     <div
-      className={`inline-flex items-center gap-0.5 rounded-lg border border-bdr-default bg-bg-surface p-0.5 ${className}`}
+      className={`inline-flex items-center gap-0.5 rounded-lg border border-ink-border bg-bg-surface p-0.5 ${className}`}
       role="radiogroup"
       aria-label="View mode"
     >
@@ -34,7 +34,7 @@ export function ViewModeSwitcher({ view, onChange, className = '' }: ViewModeSwi
             key={mode}
             onClick={() => onChange(mode)}
             className={`relative flex items-center justify-center rounded-md px-2.5 py-1.5 transition-colors ${
-              isActive ? 'text-txt-primary' : 'text-txt-tertiary hover:text-txt-secondary'
+              isActive ? 'text-accent-copper' : 'text-txt-tertiary hover:text-txt-secondary'
             }`}
             role="radio"
             aria-checked={isActive}
@@ -44,7 +44,7 @@ export function ViewModeSwitcher({ view, onChange, className = '' }: ViewModeSwi
             {isActive && (
               <motion.div
                 layoutId="view-mode-indicator"
-                className="absolute inset-0 rounded-md bg-bg-active"
+                className="absolute inset-0 rounded-md bg-accent-copper/[0.12] border border-accent-copper/30"
                 transition={SPRING_FAST}
               />
             )}

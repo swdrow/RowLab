@@ -143,7 +143,7 @@ export function AthleteDetailPage() {
       <nav className="flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
         <button
           onClick={() => navigate('/app/athletes')}
-          className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary transition-colors"
+          className="flex items-center gap-1 text-txt-secondary hover:text-accent-copper transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
           <span>Athletes</span>
@@ -152,23 +152,36 @@ export function AthleteDetailPage() {
         <span className="text-txt-primary font-medium truncate">{fullName}</span>
       </nav>
 
+      {/* Copper Profile Hero */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden border border-ink-border rounded-2xl bg-bg-surface">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+        <div className="relative">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-3">
+            ATHLETE PROFILE
+          </p>
+          <ProfileHero athlete={athlete} />
+        </div>
+      </div>
+
       {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
-          {/* 1. Profile Hero */}
-          <section className="rounded-xl bg-bg-surface border border-bdr-subtle p-6">
-            <ProfileHero athlete={athlete} />
-          </section>
-
           {/* 2. Team Tabs (if multi-team) */}
           {teams.length > 1 && (
             <TeamTabs teams={teams} activeTeamId={activeTeamId} onTeamChange={setActiveTeamId} />
           )}
 
           {/* 3. Erg History */}
-          <section className="rounded-xl bg-bg-surface border border-bdr-subtle p-6 space-y-4">
-            <h3 className="text-sm font-semibold text-txt-primary">Erg History</h3>
+          <section className="rounded-xl bg-bg-surface border border-ink-border p-6 space-y-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+                Erg History
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent" />
+            </div>
 
             {/* Taller sparkline chart */}
             <div className="[&_.h-\\[80px\\]]:h-[160px]">
@@ -187,7 +200,14 @@ export function AthleteDetailPage() {
           </section>
 
           {/* 4. Attendance Heatmap */}
-          <section className="rounded-xl bg-bg-surface border border-bdr-subtle p-6">
+          <section className="rounded-xl bg-bg-surface border border-ink-border p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+                Attendance
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent" />
+            </div>
             <AttendanceHeatmap
               attendanceData={athlete.recentAttendance ?? []}
               streak={athlete.attendanceStreak ?? 0}
@@ -195,7 +215,14 @@ export function AthleteDetailPage() {
           </section>
 
           {/* 5. Activity Timeline */}
-          <section className="rounded-xl bg-bg-surface border border-bdr-subtle p-6">
+          <section className="rounded-xl bg-bg-surface border border-ink-border p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+                Activity
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent" />
+            </div>
             <ActivityTimeline athleteId={athlete.id} />
           </section>
         </div>
@@ -203,17 +230,38 @@ export function AthleteDetailPage() {
         {/* Right Column (1/3 width) */}
         <div className="space-y-6">
           {/* 1. Quick Profile Edit */}
-          <section className="rounded-xl bg-bg-surface border border-bdr-subtle p-6">
+          <section className="rounded-xl bg-bg-surface border border-ink-border p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+                Quick Edit
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent" />
+            </div>
             <AthleteEditForm athlete={athlete} />
           </section>
 
           {/* 2. Quick Actions */}
-          <section className="rounded-xl bg-bg-surface border border-bdr-subtle p-6">
+          <section className="rounded-xl bg-bg-surface border border-ink-border p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+                Quick Actions
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent" />
+            </div>
             <QuickActions athleteId={athlete.id} athleteName={fullName} />
           </section>
 
           {/* 3. Achievements */}
-          <section className="rounded-xl bg-bg-surface border border-bdr-subtle p-6">
+          <section className="rounded-xl bg-bg-surface border border-ink-border p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+                Achievements
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent" />
+            </div>
             <AchievementsSection athleteId={athlete.id} gamificationEnabled={gamificationEnabled} />
           </section>
         </div>

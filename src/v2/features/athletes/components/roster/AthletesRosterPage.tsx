@@ -432,31 +432,47 @@ export function AthletesRosterPage() {
 
   return (
     <div className="flex flex-col h-full relative">
-      {/* Header Bar */}
-      <div className="flex flex-wrap items-center gap-4 px-6 py-4 border-b border-bdr-default">
+      {/* Copper Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden border-b border-bdr-default">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+        <div className="relative flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              ROSTER MANAGEMENT
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Athletes
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">View and manage your team roster</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/app/athletes/new')}
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-gradient-to-b from-accent-copper to-accent-copper-hover text-white rounded-xl shadow-glow-copper hover:shadow-glow-copper-lg hover:-translate-y-px active:translate-y-0 transition-all duration-150"
+            >
+              <UserPlus className="h-4 w-4" />
+              Add Athlete
+            </button>
+            <button
+              onClick={() => setIsImportOpen(true)}
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-ink-secondary border border-ink-border hover:bg-accent-copper/[0.04] hover:text-accent-copper hover:border-accent-copper/30 rounded-xl transition-all duration-150"
+            >
+              <Upload className="h-4 w-4" />
+              Import CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* View Mode + Filter Summary Bar */}
+      <div className="flex flex-wrap items-center gap-4 px-6 py-3 border-b border-bdr-subtle">
         <FilterSummary
           filteredCount={athletes.length}
           totalCount={allAthletes.length}
           className="mr-auto"
         />
-
         <ViewModeSwitcher view={viewMode} onChange={handleViewChange} />
-
-        <button
-          onClick={() => navigate('/app/athletes/new')}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-interactive-primary hover:bg-interactive-primary-hover rounded-lg transition-colors"
-        >
-          <UserPlus className="h-4 w-4" />
-          Add Athlete
-        </button>
-
-        <button
-          onClick={() => setIsImportOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-txt-secondary border border-bdr-default hover:bg-bg-hover rounded-lg transition-colors"
-        >
-          <Upload className="h-4 w-4" />
-          Import CSV
-        </button>
       </div>
 
       {/* Filter Bar */}
@@ -603,7 +619,7 @@ function TableView({
   return (
     <div ref={parentRef} className="h-full overflow-auto" style={{ contain: 'strict' }}>
       <table className="w-full border-collapse">
-        <thead className="sticky top-0 z-10 bg-bg-surface-elevated">
+        <thead className="sticky top-0 z-10 bg-bg-surface-elevated border-b border-ink-border">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -614,18 +630,17 @@ function TableView({
                     key={header.id}
                     style={{ width: header.getSize() }}
                     className={`
-                      px-4 py-3 text-left text-xs font-semibold text-txt-secondary uppercase tracking-wider
-                      border-b border-bdr-default
-                      ${canSort ? 'cursor-pointer select-none hover:text-txt-primary' : ''}
+                      px-4 py-3 text-left text-[10px] font-semibold text-ink-secondary uppercase tracking-[0.15em]
+                      ${canSort ? 'cursor-pointer select-none hover:text-accent-copper' : ''}
                     `}
                     onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
                       {sortDirection && (
-                        <span className="text-interactive-primary">
+                        <span className="text-accent-copper">
                           {sortDirection === 'asc' ? '\u2191' : '\u2193'}
                         </span>
                       )}
@@ -652,7 +667,7 @@ function TableView({
                 style={{ height: 60 }}
                 className={`
                   border-b border-bdr-subtle transition-colors cursor-pointer
-                  ${isSelected ? 'bg-interactive-primary/10' : 'hover:bg-bg-hover'}
+                  ${isSelected ? 'bg-accent-copper/[0.08]' : 'hover:bg-accent-copper/[0.04]'}
                 `}
                 onClick={() => onRowClick(row.original)}
               >
@@ -694,17 +709,21 @@ function GridView({
     <div className="h-full overflow-auto p-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {rows.map((row) => (
-          <div key={row.id} className="relative">
+          <div key={row.id} className="relative group">
             {/* Selection checkbox overlay */}
             <div className="absolute top-3 left-3 z-10">
               <input
                 type="checkbox"
                 checked={row.getIsSelected()}
                 onChange={() => onToggleSelect(row.original.id)}
-                className="h-4 w-4 rounded border-bdr-default text-interactive-primary focus:ring-interactive-primary/50 cursor-pointer bg-bg-surface/80 backdrop-blur-sm"
+                className="h-4 w-4 rounded border-ink-border text-accent-copper focus:ring-accent-copper/50 cursor-pointer bg-bg-surface/80 backdrop-blur-sm"
                 aria-label={`Select ${row.original.firstName} ${row.original.lastName}`}
               />
             </div>
+            {/* Left accent bar for selected state */}
+            {row.getIsSelected() && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-accent-copper to-accent-copper-hover rounded-l-xl" />
+            )}
             <AthleteCard
               athlete={row.original}
               onClick={() => onAthleteClick(row.original)}
