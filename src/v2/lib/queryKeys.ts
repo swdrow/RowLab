@@ -136,6 +136,14 @@ export const queryKeys = {
     detail: (id: string) => [...queryKeys.races.all, 'detail', id] as const,
   },
 
+  // Race Day (live WebSocket updates)
+  raceday: {
+    all: ['raceday'] as const,
+    viewers: (regattaId: string) => [...queryKeys.raceday.all, 'viewers', regattaId] as const,
+    liveResults: (regattaId: string) =>
+      [...queryKeys.raceday.all, 'liveResults', regattaId] as const,
+  },
+
   // Attendance
   attendance: {
     all: ['attendance'] as const,
