@@ -14,6 +14,11 @@ import {
   useDuplicateRegatta,
 } from '../hooks/useRegattas';
 import { useRegattaKeyboard, getRegattaShortcuts } from '../hooks/useRegattaKeyboard';
+import {
+  RegattaListSkeleton,
+  RegattaDetailSkeleton,
+} from '../features/regatta/components/RegattaSkeleton';
+import { OfflineQueueIndicator } from '../features/regatta/components/OfflineQueueIndicator';
 import { queryKeys } from '../lib/queryKeys';
 import type { Regatta, RegattaFormData } from '../types/regatta';
 
@@ -118,10 +123,7 @@ export function RegattasPage() {
         </button>
 
         {loadingDetail ? (
-          <div className="animate-pulse space-y-4">
-            <div className="h-32 bg-surface-elevated rounded-lg" />
-            <div className="h-48 bg-surface-elevated rounded-lg" />
-          </div>
+          <RegattaDetailSkeleton />
         ) : selectedRegatta ? (
           <RegattaDetail
             regatta={selectedRegatta}
@@ -195,14 +197,18 @@ export function RegattasPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
           >
-            <RegattaList
-              regattas={regattas || []}
-              isLoading={loadingRegattas}
-              onSelect={handleSelectRegatta}
-              onEdit={setEditingRegatta}
-              onDelete={setDeleteConfirm}
-              onDuplicate={handleDuplicate}
-            />
+            {loadingRegattas ? (
+              <RegattaListSkeleton />
+            ) : (
+              <RegattaList
+                regattas={regattas || []}
+                isLoading={false}
+                onSelect={handleSelectRegatta}
+                onEdit={setEditingRegatta}
+                onDelete={setDeleteConfirm}
+                onDuplicate={handleDuplicate}
+              />
+            )}
           </motion.div>
         ) : (
           <motion.div
@@ -326,6 +332,9 @@ export function RegattasPage() {
           </Dialog.Panel>
         </div>
       </Dialog>
+
+      {/* Offline Queue Indicator */}
+      <OfflineQueueIndicator />
     </div>
   );
 }

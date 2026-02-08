@@ -27,6 +27,8 @@ import {
   useDeleteRace,
   useBatchAddResults,
 } from '../../hooks/useRaces';
+import { useConnectionHealth } from '../../features/regatta/hooks/useConnectionHealth';
+import { ConnectionIndicator } from '../../features/regatta/components/ConnectionIndicator';
 
 type RegattaDetailProps = {
   regatta: Regatta;
@@ -46,6 +48,7 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
   const createRace = useCreateRace();
   const deleteRace = useDeleteRace();
   const batchAddResults = useBatchAddResults();
+  const { status, retryCount } = useConnectionHealth();
 
   const isMultiDay = regatta.endDate && regatta.endDate !== regatta.date;
   const regattaDays = isMultiDay
@@ -101,6 +104,9 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Connection Status Indicator for active regattas */}
+            <ConnectionIndicator status={status} retryCount={retryCount} />
+
             {regatta.externalUrl && (
               <a
                 href={regatta.externalUrl}

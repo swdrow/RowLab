@@ -14,6 +14,8 @@ import {
   useBoatClassRankings,
 } from '../hooks/useTeamRankings';
 import { useRegattaKeyboard, getRegattaShortcuts } from '../hooks/useRegattaKeyboard';
+import { RankingsSkeleton } from '../features/regatta/components/RankingsSkeleton';
+import { OfflineQueueIndicator } from '../features/regatta/components/OfflineQueueIndicator';
 import { queryKeys } from '../lib/queryKeys';
 import { getBoatClasses } from '../utils/marginCalculations';
 import type { ExternalRankingFormData } from '../types/regatta';
@@ -120,7 +122,7 @@ export function RankingsPage() {
         <Tab.Panels>
           {/* Speed Rankings */}
           <Tab.Panel>
-            <RankingsView onSelectTeam={handleSelectTeam} />
+            {!rankings ? <RankingsSkeleton /> : <RankingsView onSelectTeam={handleSelectTeam} />}
           </Tab.Panel>
 
           {/* Head-to-Head */}
@@ -254,6 +256,9 @@ export function RankingsPage() {
           </Dialog.Panel>
         </div>
       </Dialog>
+
+      {/* Offline Queue Indicator */}
+      <OfflineQueueIndicator />
     </div>
   );
 }
