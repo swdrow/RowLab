@@ -4,9 +4,9 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 31 (Seat Racing Migration) — In Progress
-**Plan:** 3/6 complete (31-01, 31-02, 31-03 done)
-**Status:** Phase 31 in progress. Core components migrated to V3 (RankingsTable, RankingsChart, ConfidenceBadge, SessionList, SideRankings). Created RankingDetailPanel slide-out with ELO history chart (smooth monotone line), composite factor breakdown, and recent sessions list. Panel uses spring physics animation and dismisses on Escape. Remaining: session wizard, matrix planner, parameters panel.
-**Last activity:** 2026-02-08 — Completed 31-03-PLAN.md
+**Plan:** 4/6 complete (31-01 through 31-04 done)
+**Status:** Phase 31 in progress. All core seat racing components migrated to V3 design tokens. Session wizard overhauled: consolidated to 3-step flow (Details, Pieces+Athletes, Review), added segmented time input (MM:SS.T with auto-tab), horizontal slide transitions, and rankings impact preview (before/after comparison). Remaining: data visualizations, matrix planner overhaul.
+**Last activity:** 2026-02-08 — Completed 31-04-PLAN.md
 
 ## Project Reference
 
