@@ -4,9 +4,9 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 33 (Regattas & Rankings Migration) — In Progress
-**Plan:** 4/6 complete
-**Status:** Phase 33 in progress. Plan 33-04 complete: Animated ranking rows with Framer Motion layout transitions, inline speed sparklines (recharts), NCAA CSV export dialog, and polished results entry form with V3 visual hierarchy. Rankings now animate smoothly on position changes with performance optimization (top 20 rows only).
-**Last activity:** 2026-02-08 — Completed 33-04-PLAN.md (animated rankings, NCAA export, polished results entry)
+**Plan:** 5/6 complete
+**Status:** Phase 33 in progress. Plan 33-05 complete: Keyboard shortcuts (N/R/?/E), optimistic UI with offline queuing on all regatta/race/result mutations, skeleton loaders replacing all spinners, and offline queue indicator. Cross-cutting concerns (CW-01, CW-02, CW-03, RT-04) fulfilled for regattas/rankings domain.
+**Last activity:** 2026-02-08 — Completed 33-05-PLAN.md (keyboard shortcuts, optimistic UI, skeleton loaders)
 
 ## Project Reference
 
