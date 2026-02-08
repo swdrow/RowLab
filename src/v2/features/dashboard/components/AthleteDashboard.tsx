@@ -91,7 +91,7 @@ export function AthleteDashboard() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
                 isEditing
                   ? 'bg-accent-primary/10 border-accent-primary/20 text-accent-primary'
-                  : 'border-bdr-default text-txt-secondary hover:text-txt-primary hover:border-bdr-focus'
+                  : 'border-ink-border text-txt-secondary hover:text-txt-primary hover:border-bdr-focus'
               }`}
             >
               {isEditing ? (
@@ -113,7 +113,7 @@ export function AthleteDashboard() {
         {teamCount === 0 ? (
           // No teams: Personal stats only
           <div className="space-y-6">
-            <div className="bg-surface-elevated border border-bdr-default rounded-xl p-6">
+            <div className="bg-surface-elevated border border-ink-border rounded-xl p-6">
               <PersonalStatsWidget
                 widgetId="personal-stats"
                 size="expanded"
@@ -122,7 +122,7 @@ export function AthleteDashboard() {
             </div>
 
             {/* Join team message */}
-            <div className="bg-surface-default border border-bdr-default rounded-lg p-6 text-center">
+            <div className="bg-surface-default border border-ink-border rounded-lg p-6 text-center">
               <p className="text-txt-muted">
                 Join a team to see team-specific data and compete with your teammates
               </p>
@@ -137,7 +137,7 @@ export function AthleteDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={SPRING_CONFIG}
-                className={`bg-surface-elevated border border-bdr-default rounded-xl p-6 ${
+                className={`bg-surface-elevated border border-ink-border rounded-xl p-6 ${
                   isEditing ? 'ring-2 ring-accent-primary/20 animate-pulse-slow' : ''
                 }`}
               >
@@ -177,7 +177,7 @@ export function AthleteDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={SPRING_CONFIG}
-              className={`bg-surface-elevated border border-bdr-default rounded-xl p-6 ${
+              className={`bg-surface-elevated border border-ink-border rounded-xl p-6 ${
                 isEditing ? 'ring-2 ring-accent-primary/20 animate-pulse-slow' : ''
               }`}
             >
@@ -217,7 +217,7 @@ export function AthleteDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg
-              bg-surface-elevated border border-bdr-default shadow-xl"
+              bg-surface-elevated border border-ink-border shadow-xl"
           >
             <p className="text-sm text-txt-secondary">
               Customize your dashboard. Click "Done Editing" to save.

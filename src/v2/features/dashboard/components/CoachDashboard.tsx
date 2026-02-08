@@ -178,7 +178,7 @@ export const CoachDashboard: React.FC = () => {
             className={`px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] ${
               isEditing
                 ? 'bg-[var(--color-interactive-primary)] text-white hover:bg-[var(--color-interactive-hover)]'
-                : 'border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)]'
+                : 'border border-ink-border text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)]'
             }`}
           >
             {isEditing ? 'Done' : 'Edit Layout'}
@@ -226,7 +226,7 @@ export const CoachDashboard: React.FC = () => {
           {[6, 3, 3, 4, 4, 4].map((span, i) => (
             <div
               key={i}
-              className={`col-span-${span} h-48 rounded-xl bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] animate-pulse`}
+              className={`col-span-${span} h-48 rounded-xl bg-[var(--color-bg-surface-elevated)] border border-ink-border animate-pulse`}
             />
           ))}
         </div>
@@ -234,7 +234,7 @@ export const CoachDashboard: React.FC = () => {
 
       {/* Edit Mode Instructions */}
       {isEditing && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-[var(--color-bg-surface-elevated)] border border-ink-border rounded-lg shadow-lg">
           <p className="text-sm text-[var(--color-text-secondary)]">
             <strong className="text-[var(--color-text-primary)]">Drag</strong> widgets to rearrange.{' '}
             <strong className="text-[var(--color-text-primary)]">Click size</strong> to resize.
@@ -304,11 +304,11 @@ const WidgetCard: React.FC<WidgetCardProps> = ({
   return (
     <div
       data-tour={getTourAttribute()}
-      className="h-full relative glass-card bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-xl overflow-hidden transition-all hover:border-[var(--color-border-hover)]"
+      className="h-full relative glass-card bg-[var(--color-bg-surface-elevated)] border border-ink-border rounded-xl overflow-hidden transition-all hover:border-accent-copper/30"
     >
       {/* Edit Mode Header */}
       {isEditing && (
-        <div className="flex items-center justify-between px-3 py-2 bg-[var(--color-bg-base)] border-b border-[var(--color-border-default)]">
+        <div className="flex items-center justify-between px-3 py-2 bg-[var(--color-bg-base)] border-b border-ink-border">
           {/* Drag Handle */}
           <div className="flex items-center gap-2">
             <div className="widget-drag-handle cursor-grab active:cursor-grabbing">
