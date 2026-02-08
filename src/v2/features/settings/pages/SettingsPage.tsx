@@ -183,51 +183,70 @@ export const SettingsPage: React.FC = () => {
   }
 
   return (
-    <SettingsLayout
-      activeTab={activeTab}
-      onTabChange={handleTabChange}
-      isOwner={isOwner}
-      hasChanges={hasChanges}
-      onSave={handleSave}
-      saving={isUpdating}
-      saved={saved}
-      error={updateError?.message}
-    >
-      <motion.div
-        key={activeTab}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
-      >
-        {activeTab === 'profile' && profile && (
-          <>
-            <SetupChecklist />
-            <ProfileSection profile={profile} onChange={handleProfileChange} />
-          </>
-        )}
-        {activeTab === 'preferences' && preferences && (
-          <PreferencesSection preferences={preferences} onChange={handlePreferencesChange} />
-        )}
-        {activeTab === 'security' && profile && (
-          <SecuritySection
-            email={profile.email}
-            onEmailChange={(v) => handleProfileChange('email', v)}
-            onSignOut={handleSignOut}
-            onDeleteAccount={handleDeleteAccount}
-          />
-        )}
-        {activeTab === 'integrations' && <IntegrationsSection />}
-        {activeTab === 'notifications' && <NotificationsSection />}
-        {activeTab === 'features' && <FeaturesSection />}
-        {activeTab === 'team' && isOwner && <TeamSection isOwner={isOwner} />}
-        {activeTab === 'team' && !isOwner && (
-          <div className="rounded-xl bg-surface-elevated border border-status-warning/20 p-8 text-center">
-            <p className="text-txt-secondary">Team settings are only available to team owners.</p>
+    <div className="space-y-6">
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+        <div className="relative flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              CONFIGURATION
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Settings
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">Manage your team and account settings</p>
           </div>
-        )}
-        {activeTab === 'billing' && <BillingSection isOwner={isOwner} />}
-      </motion.div>
-    </SettingsLayout>
+        </div>
+      </div>
+
+      <SettingsLayout
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        isOwner={isOwner}
+        hasChanges={hasChanges}
+        onSave={handleSave}
+        saving={isUpdating}
+        saved={saved}
+        error={updateError?.message}
+      >
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {activeTab === 'profile' && profile && (
+            <>
+              <SetupChecklist />
+              <ProfileSection profile={profile} onChange={handleProfileChange} />
+            </>
+          )}
+          {activeTab === 'preferences' && preferences && (
+            <PreferencesSection preferences={preferences} onChange={handlePreferencesChange} />
+          )}
+          {activeTab === 'security' && profile && (
+            <SecuritySection
+              email={profile.email}
+              onEmailChange={(v) => handleProfileChange('email', v)}
+              onSignOut={handleSignOut}
+              onDeleteAccount={handleDeleteAccount}
+            />
+          )}
+          {activeTab === 'integrations' && <IntegrationsSection />}
+          {activeTab === 'notifications' && <NotificationsSection />}
+          {activeTab === 'features' && <FeaturesSection />}
+          {activeTab === 'team' && isOwner && <TeamSection isOwner={isOwner} />}
+          {activeTab === 'team' && !isOwner && (
+            <div className="rounded-xl bg-ink-raised border border-ink-border p-8 text-center">
+              <p className="text-ink-secondary">Team settings are only available to team owners.</p>
+            </div>
+          )}
+          {activeTab === 'billing' && <BillingSection isOwner={isOwner} />}
+        </motion.div>
+      </SettingsLayout>
+    </div>
   );
 };
 
