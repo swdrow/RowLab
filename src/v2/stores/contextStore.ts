@@ -14,8 +14,6 @@ export const CONTEXT_CONFIGS: ContextConfig[] = [
     shortcut: '⌘1',
     navItems: [
       { to: '/app', label: 'Dashboard', icon: 'home' },
-      { to: '/app/workouts', label: 'My Workouts', icon: 'activity' },
-      { to: '/app/progress', label: 'Progress', icon: 'trending-up' },
       { to: '/app/achievements', label: 'Achievements', icon: 'trophy' },
       { to: '/app/challenges', label: 'Challenges', icon: 'flag' },
     ],

@@ -113,21 +113,28 @@ export function useOnboardingStatus(): OnboardingStatusReturn {
   // Load from localStorage on mount
   const [storage, setStorage] = useState<OnboardingStorage>(loadOnboardingStatus);
 
+  const queriesEnabled = isAuthenticated && isInitialized && !!activeTeamId && !storage.dismissed;
+
   // Fetch athletes count for implicit completion
-  const { data: athletesCount = 0 } = useQuery({
+  const { data: athletesCount = 0, isFetched: athletesFetched } = useQuery({
     queryKey: queryKeys.athletes.count(activeTeamId || ''),
     queryFn: fetchAthletesCount,
-    enabled: isAuthenticated && isInitialized && !!activeTeamId && !storage.dismissed,
+    enabled: queriesEnabled,
     staleTime: 30_000, // 30s
   });
 
   // Fetch sessions count for implicit completion
-  const { data: sessionsCount = 0 } = useQuery({
+  const { data: sessionsCount = 0, isFetched: sessionsFetched } = useQuery({
     queryKey: queryKeys.sessions.count(activeTeamId || ''),
     queryFn: fetchSessionsCount,
-    enabled: isAuthenticated && isInitialized && !!activeTeamId && !storage.dismissed,
+    enabled: queriesEnabled,
     staleTime: 30_000, // 30s
   });
+
+  // Don't show wizard until implicit completion queries have resolved
+  // isFetched is false until the query completes at least once, preventing the wizard
+  // from flashing while we check if the user already has athletes + sessions
+  const implicitCheckPending = queriesEnabled && (!athletesFetched || !sessionsFetched);
 
   // Update localStorage when storage changes
   useEffect(() => {
@@ -151,9 +158,10 @@ export function useOnboardingStatus(): OnboardingStatusReturn {
       completed.push('setup-practice');
     }
 
-    // Explore step: auto-complete if team already has athletes AND sessions
-    // (user has clearly already set up their team — no need for onboarding)
-    if (athletesCount > 0 && sessionsCount > 0) {
+    // If user has athletes, they've set up their team and don't need onboarding.
+    // Auto-complete all remaining steps to prevent the wizard from nagging.
+    if (athletesCount > 0) {
+      if (!completed.includes('setup-practice')) completed.push('setup-practice');
       completed.push('explore');
     }
 
@@ -215,10 +223,19 @@ export function useOnboardingStatus(): OnboardingStatusReturn {
   }, [activeTeamRole]);
 
   const shouldShowWizard = useMemo(() => {
+    // Don't flash wizard while checking if user already has data (which auto-completes steps)
+    if (implicitCheckPending) return false;
     return (
       isAuthenticated && isInitialized && !isOnboardingComplete && canManageTeam && !!activeTeamId
     );
-  }, [isAuthenticated, isInitialized, isOnboardingComplete, canManageTeam, activeTeamId]);
+  }, [
+    isAuthenticated,
+    isInitialized,
+    isOnboardingComplete,
+    canManageTeam,
+    activeTeamId,
+    implicitCheckPending,
+  ]);
 
   // Mark step as complete
   const completeStep = useCallback((stepId: string) => {

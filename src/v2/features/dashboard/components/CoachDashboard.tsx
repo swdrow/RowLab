@@ -39,7 +39,8 @@ export const CoachDashboard: React.FC = () => {
   const { summary: exceptionSummary, widgetExceptions } = useExceptions(activeTeamId || '');
 
   // Container width measurement using react-grid-layout v2 hook
-  const { containerRef, width: containerWidth } = useContainerWidth();
+  // Must check `mounted` before rendering grid — width is 0 until ResizeObserver fires
+  const { containerRef, width: containerWidth, mounted } = useContainerWidth();
 
   // Auto-launch tour on first visit
   useTour('coach-dashboard', { autoStart: true, delay: 800 });
@@ -103,6 +104,8 @@ export const CoachDashboard: React.FC = () => {
   // Handle layout change from drag/drop
   const handleLayoutChange = (newLayout: RGLLayout[]) => {
     if (!isEditing) return;
+    // Don't save layout when container width hasn't been measured yet
+    if (!containerWidth || containerWidth < 100) return;
 
     // Update widget positions
     const updatedWidgets = layout.widgets.map((widget) => {
@@ -188,32 +191,46 @@ export const CoachDashboard: React.FC = () => {
         <ExceptionBanner summary={exceptionSummary} />
       </div>
 
-      {/* Bento Grid */}
-      <ResponsiveGridLayout
-        className="dashboard-grid"
-        layouts={gridLayouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768 }}
-        cols={{ lg: 12, md: 10, sm: 6 }}
-        rowHeight={60}
-        width={containerWidth}
-        margin={[16, 16]}
-        isDraggable={isEditing}
-        isResizable={false} // Use size presets only
-        draggableHandle=".widget-drag-handle"
-        onLayoutChange={handleLayoutChange}
-      >
-        {layout.widgets.map((widget) => (
-          <div key={widget.id} className={`widget-container ${isEditing ? 'widget-editing' : ''}`}>
-            <WidgetCard
-              widget={widget}
-              isEditing={isEditing}
-              exceptions={widgetExceptions[widget.id] || []}
-              onSizeChange={(newSize) => changeWidgetSize(widget.id, newSize)}
-              onRemove={() => removeWidget(widget.id)}
+      {/* Bento Grid — only render when container width is measured */}
+      {mounted ? (
+        <ResponsiveGridLayout
+          className="dashboard-grid"
+          layouts={gridLayouts}
+          breakpoints={{ lg: 900, md: 600, sm: 0 }}
+          cols={{ lg: 12, md: 10, sm: 6 }}
+          rowHeight={60}
+          width={containerWidth}
+          margin={[16, 16]}
+          isDraggable={isEditing}
+          isResizable={false} // Use size presets only
+          draggableHandle=".widget-drag-handle"
+          onLayoutChange={handleLayoutChange}
+        >
+          {layout.widgets.map((widget) => (
+            <div
+              key={widget.id}
+              className={`widget-container ${isEditing ? 'widget-editing' : ''}`}
+            >
+              <WidgetCard
+                widget={widget}
+                isEditing={isEditing}
+                exceptions={widgetExceptions[widget.id] || []}
+                onSizeChange={(newSize) => changeWidgetSize(widget.id, newSize)}
+                onRemove={() => removeWidget(widget.id)}
+              />
+            </div>
+          ))}
+        </ResponsiveGridLayout>
+      ) : (
+        <div className="grid grid-cols-12 gap-4">
+          {[6, 3, 3, 4, 4, 4].map((span, i) => (
+            <div
+              key={i}
+              className={`col-span-${span} h-48 rounded-xl bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] animate-pulse`}
             />
-          </div>
-        ))}
-      </ResponsiveGridLayout>
+          ))}
+        </div>
+      )}
 
       {/* Edit Mode Instructions */}
       {isEditing && (

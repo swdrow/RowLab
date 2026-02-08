@@ -45,8 +45,17 @@ export function useDashboardLayout(role: 'coach' | 'athlete'): UseDashboardLayou
     const stored = localStorage.getItem(storageKey);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        return parsed as DashboardLayout;
+        const parsed = JSON.parse(stored) as DashboardLayout;
+        // Validate layout isn't corrupted (e.g. all widgets stacked at x=0 from width=0 render)
+        if (parsed.widgets?.length > 1) {
+          const allSameX = parsed.widgets.every((w) => w.position.x === 0);
+          if (allSameX) {
+            console.warn('Detected corrupt staircase layout in localStorage, resetting to default');
+            localStorage.removeItem(storageKey);
+            return getDefaultLayout(role);
+          }
+        }
+        return parsed;
       } catch (e) {
         console.error('Failed to parse stored layout:', e);
       }
