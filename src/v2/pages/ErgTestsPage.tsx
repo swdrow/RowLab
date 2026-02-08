@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useErgTests } from '@v2/hooks/useErgTests';
 import { useAthletes } from '@v2/hooks/useAthletes';
+import { useErgKeyboard } from '@v2/hooks/useErgKeyboard';
 import { useRequireAuth } from '../../hooks/useAuth';
 import { CrudModal } from '@v2/components/common/CrudModal';
 import {
@@ -10,7 +12,7 @@ import {
   TeamC2StatusList,
   ErgCSVImportModal,
 } from '@v2/components/erg';
-import { Plus, Network, Upload } from 'lucide-react';
+import { Plus, Network, Upload, Keyboard } from 'lucide-react';
 import { ErgPageSkeleton } from '@v2/features/erg/components/ErgSkeleton';
 import type {
   ErgTest,
@@ -53,6 +55,31 @@ export function ErgTestsPage() {
 
   // Fetch athletes for form dropdown
   const { athletes } = useAthletes();
+
+  // Keyboard shortcuts for erg test navigation
+  const { selectedIndex, setSelectedIndex, showHelp, setShowHelp } = useErgKeyboard({
+    tests,
+    onEdit: (test: ErgTest) => {
+      setEditingTest(test);
+      setIsModalOpen(true);
+    },
+    onDelete: (testId: string) => {
+      const test = tests.find((t) => t.id === testId);
+      if (!test) return;
+      const athleteName = test.athlete
+        ? `${test.athlete.firstName} ${test.athlete.lastName}`
+        : 'this athlete';
+      const testDate = new Date(test.testDate).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+      if (confirm(`Delete ${test.testType} test for ${athleteName} on ${testDate}?`)) {
+        deleteTest(testId);
+      }
+    },
+    enabled: !isModalOpen && !isImportModalOpen,
+  });
 
   const handleOpenAddModal = () => {
     setEditingTest(null);
@@ -190,6 +217,7 @@ export function ErgTestsPage() {
             onEdit={handleOpenEditModal}
             onDelete={handleDelete}
             onRowClick={handleRowClick}
+            selectedIndex={selectedIndex}
           />
         </div>
 
@@ -222,6 +250,71 @@ export function ErgTestsPage() {
         onClose={handleCloseImportModal}
         onSuccess={handleImportSuccess}
       />
+
+      {/* Keyboard Shortcuts Help Overlay */}
+      <AnimatePresence>
+        {showHelp && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="fixed bottom-6 right-6 z-50 w-72 rounded-2xl overflow-hidden
+              bg-white/[0.03] backdrop-blur-xl border border-white/10
+              shadow-2xl shadow-black/50"
+          >
+            <div className="relative p-4">
+              {/* Top gradient line */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Keyboard size={16} className="text-interactive-primary" />
+                  <h3 className="text-sm font-semibold text-txt-primary">Keyboard Shortcuts</h3>
+                </div>
+                <button
+                  onClick={() => setShowHelp(false)}
+                  className="text-txt-tertiary hover:text-txt-primary transition-colors text-xs"
+                >
+                  Esc
+                </button>
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <ShortcutRow keys={['J', 'K']} label="Navigate rows" />
+                <ShortcutRow keys={['E']} label="Edit selected" />
+                <ShortcutRow keys={['Del']} label="Delete selected" />
+                <ShortcutRow keys={['/']} label="Focus filter" />
+                <ShortcutRow keys={['?']} label="Toggle this help" />
+                <ShortcutRow keys={['Esc']} label="Clear selection" />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * Renders a single keyboard shortcut row for the help overlay.
+ */
+function ShortcutRow({ keys, label }: { keys: string[]; label: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-txt-secondary">{label}</span>
+      <div className="flex items-center gap-1">
+        {keys.map((key) => (
+          <kbd
+            key={key}
+            className="px-1.5 py-0.5 text-xs font-mono rounded-md
+              bg-white/5 border border-white/10 text-txt-primary
+              shadow-[0_1px_0_rgba(255,255,255,0.06)]"
+          >
+            {key}
+          </kbd>
+        ))}
+      </div>
     </div>
   );
 }
