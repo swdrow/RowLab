@@ -1,3 +1,8 @@
+/**
+ * @deprecated V1 Legacy — replaced by V2/V3 erg data components.
+ * See: src/v2/pages/ErgTestsPage.tsx, src/v2/components/erg/
+ * Removal planned: Phase 36 (V1/V2 Cleanup)
+ */
 import React, { useState, useEffect } from 'react';
 import useAuthStore from '../../store/authStore';
 import AddErgTestModal from './AddErgTestModal';
@@ -61,20 +66,16 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
     });
   };
 
-  const testTypes = [...new Set(tests.map(t => t.testType))];
-  const filteredTests = filterType === 'all'
-    ? tests
-    : tests.filter(t => t.testType === filterType);
+  const testTypes = [...new Set(tests.map((t) => t.testType))];
+  const filteredTests =
+    filterType === 'all' ? tests : tests.filter((t) => t.testType === filterType);
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative glass-card rounded-2xl p-6 w-full max-w-2xl mx-4 animate-slide-up max-h-[85vh] overflow-hidden flex flex-col">
@@ -83,7 +84,12 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
           className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
@@ -91,9 +97,7 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
           <h2 className="text-2xl font-bold text-text-primary">
             Erg Data: {athlete?.firstName} {athlete?.lastName}
           </h2>
-          <p className="text-sm text-text-secondary mt-1">
-            Performance history and test results
-          </p>
+          <p className="text-sm text-text-secondary mt-1">Performance history and test results</p>
         </div>
 
         {/* Controls */}
@@ -106,8 +110,10 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
               className="px-3 py-1.5 rounded-lg border border-white/10 bg-void-elevated text-text-primary text-sm"
             >
               <option value="all">All Tests</option>
-              {testTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
+              {testTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
               ))}
             </select>
           </div>
@@ -133,8 +139,20 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <svg className="animate-spin h-8 w-8 text-blade-blue" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
             </div>
           ) : filteredTests.length === 0 ? (
@@ -163,38 +181,30 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
                         <span className="px-2 py-1 bg-white/10 text-text-primary text-sm font-medium rounded border border-white/10">
                           {test.testType}
                         </span>
-                        <span className="text-2xl font-bold text-text-primary">
-                          {test.result}
-                        </span>
+                        <span className="text-2xl font-bold text-text-primary">{test.result}</span>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm text-text-secondary">
                         <div>
-                          <span className="text-text-muted">Date:</span>{' '}
-                          {formatDate(test.testDate)}
+                          <span className="text-text-muted">Date:</span> {formatDate(test.testDate)}
                         </div>
                         {test.split && (
                           <div>
-                            <span className="text-text-muted">Split:</span>{' '}
-                            {test.split}
+                            <span className="text-text-muted">Split:</span> {test.split}
                           </div>
                         )}
                         {test.strokeRate && (
                           <div>
-                            <span className="text-text-muted">Rate:</span>{' '}
-                            {test.strokeRate} spm
+                            <span className="text-text-muted">Rate:</span> {test.strokeRate} spm
                           </div>
                         )}
                         {test.watts && (
                           <div>
-                            <span className="text-text-muted">Watts:</span>{' '}
-                            {test.watts}W
+                            <span className="text-text-muted">Watts:</span> {test.watts}W
                           </div>
                         )}
                       </div>
                       {test.notes && (
-                        <p className="text-sm text-text-muted mt-2 italic">
-                          {test.notes}
-                        </p>
+                        <p className="text-sm text-text-muted mt-2 italic">{test.notes}</p>
                       )}
                     </div>
                     {isAuthenticated && (
@@ -203,8 +213,18 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
                         className="ml-4 p-2 text-danger-red hover:text-danger-red/80 transition-colors"
                         title="Delete test"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
                         </svg>
                       </button>
                     )}
@@ -219,7 +239,8 @@ function ErgDataModal({ athlete, isOpen, onClose }) {
         {filteredTests.length > 0 && (
           <div className="mt-4 pt-4 border-t border-white/10">
             <div className="text-sm text-text-secondary">
-              <span className="font-medium">{filteredTests.length}</span> test{filteredTests.length !== 1 ? 's' : ''} recorded
+              <span className="font-medium">{filteredTests.length}</span> test
+              {filteredTests.length !== 1 ? 's' : ''} recorded
               {filterType !== 'all' && ` (${filterType})`}
             </div>
           </div>

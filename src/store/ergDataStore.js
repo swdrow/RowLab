@@ -1,13 +1,13 @@
 /**
- * @deprecated Phase 25-04
+ * @deprecated V1 Legacy — replaced by V2/V3 erg data components.
+ * See: src/v2/pages/ErgTestsPage.tsx, src/v2/hooks/useErgTests.ts
+ * Removal planned: Phase 36 (V1/V2 Cleanup)
  *
  * This V1 Zustand store has been replaced by V2 TanStack Query hooks:
  * - useErgTests (src/v2/hooks/useErgTests.ts)
  *
  * V1 legacy components still reference this store. Do NOT add new functionality here.
  * New erg data features should use the V2 hooks.
- *
- * TODO(phase-25-08): Complete V1 → V2 migration and delete this file
  */
 
 import { create } from 'zustand';
@@ -72,9 +72,7 @@ export const useErgDataStore = create((set, get) => ({
       });
 
       const queryString = params.toString();
-      const url = queryString
-        ? `/api/v1/erg-tests?${queryString}`
-        : '/api/v1/erg-tests';
+      const url = queryString ? `/api/v1/erg-tests?${queryString}` : '/api/v1/erg-tests';
 
       const response = await authenticatedFetch(url);
       const data = await response.json();
@@ -160,9 +158,7 @@ export const useErgDataStore = create((set, get) => ({
 
       if (data.success) {
         set((state) => ({
-          ergTests: state.ergTests.map((t) =>
-            t.id === testId ? data.data.test : t
-          ),
+          ergTests: state.ergTests.map((t) => (t.id === testId ? data.data.test : t)),
           loading: false,
         }));
         return data.data.test;
@@ -218,9 +214,7 @@ export const useErgDataStore = create((set, get) => ({
       });
 
       const queryString = params.toString();
-      const url = queryString
-        ? `/api/v1/workouts?${queryString}`
-        : '/api/v1/workouts';
+      const url = queryString ? `/api/v1/workouts?${queryString}` : '/api/v1/workouts';
 
       const response = await authenticatedFetch(url);
       const data = await response.json();

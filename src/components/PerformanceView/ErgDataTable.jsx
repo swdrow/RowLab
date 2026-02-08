@@ -1,3 +1,8 @@
+/**
+ * @deprecated V1 Legacy — replaced by V2/V3 erg data components.
+ * See: src/v2/pages/ErgTestsPage.tsx, src/v2/components/erg/ErgTestsTable.tsx
+ * Removal planned: Phase 36 (V1/V2 Cleanup)
+ */
 import React from 'react';
 
 /**
@@ -44,9 +49,7 @@ const ErgDataTable = ({ data }) => {
                 <td className="px-4 py-3 text-sm font-mono tabular-nums text-text-primary">
                   {test.date}
                 </td>
-                <td className="px-4 py-3 text-sm font-medium text-text-primary">
-                  {test.testType}
-                </td>
+                <td className="px-4 py-3 text-sm font-medium text-text-primary">{test.testType}</td>
                 <td className="px-4 py-3 text-sm font-mono tabular-nums text-text-primary font-semibold">
                   {test.result}
                 </td>

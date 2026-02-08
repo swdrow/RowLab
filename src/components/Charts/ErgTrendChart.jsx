@@ -1,3 +1,8 @@
+/**
+ * @deprecated V1 Legacy — replaced by V2/V3 erg data components.
+ * See: src/v2/pages/ErgTestsPage.tsx, src/v2/components/erg/ErgProgressChart.tsx
+ * Removal planned: Phase 36 (V1/V2 Cleanup)
+ */
 import React, { useMemo, useState } from 'react';
 import {
   LineChart,
@@ -19,7 +24,7 @@ function ErgTrendChart({ ergTests = [], className = '' }) {
 
   // Get unique test types
   const testTypes = useMemo(() => {
-    const types = new Set(ergTests.map(t => t.testType));
+    const types = new Set(ergTests.map((t) => t.testType));
     return ['all', ...Array.from(types).sort()];
   }, [ergTests]);
 
@@ -28,15 +33,15 @@ function ErgTrendChart({ ergTests = [], className = '' }) {
     let filtered = [...ergTests];
 
     if (selectedType !== 'all') {
-      filtered = filtered.filter(t => t.testType === selectedType);
+      filtered = filtered.filter((t) => t.testType === selectedType);
     }
 
     // Sort by date ascending
     filtered.sort((a, b) => new Date(a.testDate) - new Date(b.testDate));
 
     // Transform for chart
-    return filtered.map(test => {
-      const split = test.splitSeconds || (test.timeSeconds / (test.distanceM / 500));
+    return filtered.map((test) => {
+      const split = test.splitSeconds || test.timeSeconds / (test.distanceM / 500);
       return {
         date: new Date(test.testDate).toLocaleDateString('en-US', {
           month: 'short',
@@ -89,15 +94,16 @@ function ErgTrendChart({ ergTests = [], className = '' }) {
     <div className={className}>
       {/* Filter buttons */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {testTypes.map(type => (
+        {testTypes.map((type) => (
           <button
             key={type}
             onClick={() => setSelectedType(type)}
             className={`
               px-3 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider transition-all
-              ${selectedType === type
-                ? 'bg-blade-blue/20 text-blade-blue border border-blade-blue/30'
-                : 'bg-void-elevated/50 text-text-muted border border-white/5 hover:border-white/10'
+              ${
+                selectedType === type
+                  ? 'bg-blade-blue/20 text-blade-blue border border-blade-blue/30'
+                  : 'bg-void-elevated/50 text-text-muted border border-white/5 hover:border-white/10'
               }
             `}
           >
@@ -109,10 +115,7 @@ function ErgTrendChart({ ergTests = [], className = '' }) {
       {/* Chart */}
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
-          >
+          <LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="rgba(255, 255, 255, 0.05)"

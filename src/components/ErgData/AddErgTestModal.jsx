@@ -1,3 +1,8 @@
+/**
+ * @deprecated V1 Legacy — replaced by V2/V3 erg data components.
+ * See: src/v2/pages/ErgTestsPage.tsx, src/v2/components/erg/ErgTestForm.tsx
+ * Removal planned: Phase 36 (V1/V2 Cleanup)
+ */
 import React, { useState } from 'react';
 import useAuthStore from '../../store/authStore';
 import { handleApiResponse } from '@utils/api';
@@ -23,7 +28,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
   };
 
@@ -93,10 +98,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={handleClose}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleClose} />
 
       {/* Modal */}
       <div className="relative glass-card rounded-2xl p-6 w-full max-w-md mx-4 animate-slide-up">
@@ -105,15 +107,18 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
           className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
         <div className="text-center mb-6">
           <div className="text-4xl mb-2">🚣</div>
-          <h2 className="text-xl font-bold text-text-primary">
-            Add Erg Test
-          </h2>
+          <h2 className="text-xl font-bold text-text-primary">Add Erg Test</h2>
           <p className="text-sm text-text-secondary mt-1">
             {athlete?.firstName} {athlete?.lastName}
           </p>
@@ -128,9 +133,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-1">
-                Date *
-              </label>
+              <label className="block text-sm font-medium text-text-primary mb-1">Date *</label>
               <input
                 type="date"
                 name="testDate"
@@ -152,8 +155,10 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
                 className="w-full px-3 py-2 rounded-lg border border-white/[0.08] bg-void-elevated text-text-primary focus:ring-2 focus:ring-blade-blue/50 focus:border-blade-blue/30 outline-none transition text-sm"
                 required
               >
-                {testTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
+                {testTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
                 ))}
               </select>
             </div>
@@ -206,9 +211,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-1">
-                Watts
-              </label>
+              <label className="block text-sm font-medium text-text-primary mb-1">Watts</label>
               <input
                 type="number"
                 name="watts"
@@ -223,9 +226,7 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1">
-              Notes
-            </label>
+            <label className="block text-sm font-medium text-text-primary mb-1">Notes</label>
             <textarea
               name="notes"
               value={formData.notes}
@@ -244,8 +245,20 @@ function AddErgTestModal({ athlete, isOpen, onClose, onSuccess }) {
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
                 <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
                 </svg>
                 Saving...
               </span>
