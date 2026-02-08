@@ -3,13 +3,11 @@ import { FileDown, Loader2 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { PrintableLineup } from './PrintableLineup';
 import { exportLineupToPdf } from '@v2/utils/lineupPdfExport';
-import type { ActiveBoat } from '@/types';
-
 /**
  * Props for ExportPDFButton
  */
 interface ExportPDFButtonProps {
-  boats: ActiveBoat[];
+  boats: any[]; // Accepts ActiveBoat[] or BoatInstance[] — both have seats, name, etc.
   lineupName?: string;
   className?: string;
 }
@@ -61,7 +59,7 @@ export function ExportPDFButton({
       }
 
       // Export to PDF
-      await exportLineupToPdf(printRef.current, lineupName, { format: 'letter' });
+      await exportLineupToPdf(printRef.current, lineupName);
     } catch (error) {
       console.error('PDF export failed:', error);
       // TODO: Show error toast when toast system is integrated

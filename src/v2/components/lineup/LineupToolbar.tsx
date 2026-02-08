@@ -5,7 +5,8 @@ import { useLineupDraft } from '../../hooks/useLineupDraft';
 import { ExportPDFButton } from './ExportPDFButton';
 import { VersionHistory } from './VersionHistory';
 import { SaveLineupDialog } from './SaveLineupDialog';
-import type { Lineup } from '../../hooks/useLineups';
+import type { Lineup, LineupAssignment } from '../../hooks/useLineups';
+import type { ActiveBoat } from '@/types';
 
 /**
  * Props for LineupToolbar
@@ -14,6 +15,9 @@ interface LineupToolbarProps {
   className?: string;
   lineupId: string | null;
   cancelAutoSave?: () => void;
+  boats?: ActiveBoat[];
+  assignments?: LineupAssignment[];
+  onLoadLineup?: (lineupId: string) => void;
 }
 
 /**
@@ -38,7 +42,14 @@ interface LineupToolbarProps {
  * "Undo/redo covers every action - each drag, swap, removal is individually undoable"
  * "Version history accessed via dropdown menu - compact, keeps builder clean"
  */
-export function LineupToolbar({ className = '', lineupId, cancelAutoSave }: LineupToolbarProps) {
+export function LineupToolbar({
+  className = '',
+  lineupId,
+  cancelAutoSave,
+  boats = [],
+  assignments = [],
+  onLoadLineup,
+}: LineupToolbarProps) {
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
   const [lineupToUpdate, setLineupToUpdate] = useState<Lineup | null>(null);
 
@@ -150,7 +161,7 @@ export function LineupToolbar({ className = '', lineupId, cancelAutoSave }: Line
       <div className="w-px h-8 bg-bdr-default mx-1" />
 
       {/* Export PDF Button */}
-      <ExportPDFButton />
+      <ExportPDFButton boats={boats} />
 
       {/* Separator */}
       <div className="w-px h-8 bg-bdr-default mx-1" />
@@ -179,7 +190,11 @@ export function LineupToolbar({ className = '', lineupId, cancelAutoSave }: Line
       </button>
 
       {/* Version history dropdown */}
-      <VersionHistory onSaveDialogOpen={handleSaveDialogOpen} />
+      <VersionHistory
+        onSaveDialogOpen={handleSaveDialogOpen}
+        onLoadLineup={onLoadLineup || (() => {})}
+        currentLineupId={lineupId}
+      />
 
       {/* Save/Update dialog */}
       <SaveLineupDialog
@@ -187,6 +202,8 @@ export function LineupToolbar({ className = '', lineupId, cancelAutoSave }: Line
         onClose={handleSaveDialogClose}
         existingLineup={lineupToUpdate}
         onSuccess={handleSaveSuccess}
+        assignments={assignments}
+        lineupId={lineupId}
       />
     </div>
   );

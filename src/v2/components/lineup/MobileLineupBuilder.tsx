@@ -8,7 +8,7 @@ import {
   createAssignCommand,
   createRemoveCommand,
 } from '@v2/hooks/useLineupCommands';
-import type { Athlete } from '@v2/types/lineup';
+import type { Athlete, BoatConfig } from '@v2/types/lineup';
 import type { ActiveBoat } from '@/types';
 
 /**
@@ -26,6 +26,8 @@ interface MobileLineupBuilderProps {
   ) => Promise<void>;
   onRemoveAthlete: (boatId: string, seatNumber: number, isCoxswain: boolean) => Promise<void>;
   cancelAutoSave?: () => void;
+  boatConfigs?: BoatConfig[];
+  onAddBoat?: (configId: string) => void;
 }
 
 /**
@@ -67,6 +69,8 @@ export function MobileLineupBuilder({
   onAssignAthlete,
   onRemoveAthlete,
   cancelAutoSave,
+  boatConfigs = [],
+  onAddBoat,
 }: MobileLineupBuilderProps) {
   const { executeCommand, undo, redo, canUndo, canRedo } = useLineupCommands(
     lineupId,
@@ -157,7 +161,7 @@ export function MobileLineupBuilder({
       <div className="flex-1 overflow-y-auto p-4">
         {/* Add Boat Button */}
         <div className="mb-4">
-          <AddBoatButton />
+          <AddBoatButton boatConfigs={boatConfigs} onAddBoat={onAddBoat || (() => {})} />
         </div>
 
         {/* Empty State */}

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   DndContext,
   DragOverlay,
@@ -19,6 +20,7 @@ import {
   createSwapCommand,
 } from '@v2/hooks/useLineupCommands';
 import { useLineupKeyboard } from '@v2/hooks/useLineupKeyboard';
+import { useAthletes } from '@v2/hooks/useAthletes';
 import type { LineupAssignment } from '@v2/hooks/useLineups';
 import { AthleteBank } from './AthleteBank';
 import { BoatView } from './BoatView';
@@ -27,8 +29,21 @@ import { LineupToolbar } from './LineupToolbar';
 import { BiometricsPanel } from './BiometricsPanel';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
 import { MobileLineupBuilder } from './MobileLineupBuilder';
-import type { Athlete } from '@v2/types/lineup';
+import type { Athlete, BoatConfig } from '@v2/types/lineup';
 import type { AthleteSource } from './DraggableAthleteCard';
+
+/**
+ * Default boat configurations available in the lineup builder
+ */
+const DEFAULT_BOAT_CONFIGS: BoatConfig[] = [
+  { name: '8+', numSeats: 8, hasCoxswain: true },
+  { name: '4+', numSeats: 4, hasCoxswain: true },
+  { name: '4-', numSeats: 4, hasCoxswain: false },
+  { name: '4x', numSeats: 4, hasCoxswain: false },
+  { name: '2x', numSeats: 2, hasCoxswain: false },
+  { name: '2-', numSeats: 2, hasCoxswain: false },
+  { name: '1x', numSeats: 1, hasCoxswain: false },
+];
 
 /**
  * Props for LineupWorkspace
@@ -71,14 +86,26 @@ export function LineupWorkspace({ lineupId, className = '' }: LineupWorkspacePro
   const assignToCoxswain = useLineupStore((state) => state.assignToCoxswain);
   const removeFromSeat = useLineupStore((state) => state.removeFromSeat);
   const removeFromCoxswain = useLineupStore((state) => state.removeFromCoxswain);
+  const addBoat = useLineupStore((state) => state.addBoat);
 
   // V2 hooks for draft management and command-based undo
-  const { autoSave, cancelAutoSave } = useLineupDraft(lineupId);
+  const { draft, autoSave, cancelAutoSave } = useLineupDraft(lineupId);
+  const { allAthletes } = useAthletes();
   const { executeCommand } = useLineupCommands(lineupId, cancelAutoSave);
+
+  const [, setSearchParams] = useSearchParams();
 
   const [, setActiveId] = useState<string | null>(null);
   const [activeAthlete, setActiveAthlete] = useState<Athlete | null>(null);
   const [activeSource, setActiveSource] = useState<AthleteSource | null>(null);
+
+  // Load a lineup by updating URL params
+  const handleLoadLineup = useCallback(
+    (id: string) => {
+      setSearchParams({ id });
+    },
+    [setSearchParams]
+  );
 
   // Mobile detection - 768px breakpoint
   const [isMobile, setIsMobile] = useState(false);
@@ -291,17 +318,30 @@ export function LineupWorkspace({ lineupId, className = '' }: LineupWorkspacePro
       <div className={`h-full ${className}`}>
         <MobileLineupBuilder
           boats={activeBoats}
-          athletes={[]} // TODO: get from useAthletes hook in parent
+          athletes={allAthletes}
           lineupId={lineupId}
-          onAssignAthlete={async ({ boatId, seatNumber, athleteId, isCoxswain }) => {
-            // Simplified mutation for mobile - full implementation needs to build complete assignments
-            autoSave({ assignments: [] });
+          onAssignAthlete={async (boatId, seatNumber, athleteId, isCoxswain) => {
+            if (isCoxswain) {
+              assignToCoxswain(boatId, allAthletes.find((a) => a.id === athleteId) || null);
+            } else {
+              assignToSeat(boatId, seatNumber, allAthletes.find((a) => a.id === athleteId) || null);
+            }
           }}
-          onRemoveAthlete={async ({ boatId, seatNumber, isCoxswain }) => {
-            // Simplified mutation for mobile
-            autoSave({ assignments: [] });
+          onRemoveAthlete={async (boatId, seatNumber, isCoxswain) => {
+            if (isCoxswain) {
+              removeFromCoxswain(boatId);
+            } else {
+              removeFromSeat(boatId, seatNumber);
+            }
           }}
           cancelAutoSave={cancelAutoSave}
+          boatConfigs={DEFAULT_BOAT_CONFIGS}
+          onAddBoat={(configName) => {
+            const config = DEFAULT_BOAT_CONFIGS.find((c) => c.name === configName);
+            if (config) {
+              addBoat(config);
+            }
+          }}
         />
       </div>
     );
@@ -342,13 +382,19 @@ export function LineupWorkspace({ lineupId, className = '' }: LineupWorkspacePro
 
       <div className={`flex h-full ${className}`}>
         {/* Athlete Bank - Left Sidebar */}
-        <AthleteBank />
+        <AthleteBank lineupId={lineupId} />
 
         {/* Main Workspace - Boats */}
         <div className="flex-1 overflow-y-auto p-6 bg-bg-base">
           {/* Toolbar with undo/redo and future action buttons */}
           <div className="mb-4">
-            <LineupToolbar lineupId={lineupId} cancelAutoSave={cancelAutoSave} />
+            <LineupToolbar
+              lineupId={lineupId}
+              cancelAutoSave={cancelAutoSave}
+              boats={activeBoats}
+              assignments={draft?.assignments || []}
+              onLoadLineup={handleLoadLineup}
+            />
           </div>
 
           {/* Biometrics Panel - Live stats for current lineup */}
@@ -360,7 +406,15 @@ export function LineupWorkspace({ lineupId, className = '' }: LineupWorkspacePro
 
           {/* Add Boat Button */}
           <div className="mb-6">
-            <AddBoatButton />
+            <AddBoatButton
+              boatConfigs={DEFAULT_BOAT_CONFIGS}
+              onAddBoat={(configName) => {
+                const config = DEFAULT_BOAT_CONFIGS.find((c) => c.name === configName);
+                if (config) {
+                  addBoat(config);
+                }
+              }}
+            />
           </div>
 
           {/* Empty State */}
