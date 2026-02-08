@@ -45,7 +45,14 @@ export function AssignmentManager({
   const defaultStartDate = format(new Date(), 'yyyy-MM-dd');
   const defaultEndDate = plan?.endDate || format(addWeeks(new Date(), 4), 'yyyy-MM-dd');
 
-  const { register, handleSubmit, control, watch, setValue, formState: { errors } } = useForm<AssignmentFormValues>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<AssignmentFormValues>({
     resolver: zodResolver(assignmentSchema),
     defaultValues: {
       planId: plan?.id || '',
@@ -62,9 +69,7 @@ export function AssignmentManager({
 
   // Get athletes already assigned to this plan
   const assignedAthleteIds = new Set(
-    existingAssignments
-      .filter((a) => a.status === 'active')
-      .map((a) => a.athleteId)
+    existingAssignments.filter((a) => a.status === 'active').map((a) => a.athleteId)
   );
 
   // Handle select all toggle
@@ -72,9 +77,7 @@ export function AssignmentManager({
     if (selectAll) {
       setValue('athleteIds', []);
     } else {
-      const availableIds = athletes
-        .filter((a) => !assignedAthleteIds.has(a.id))
-        .map((a) => a.id);
+      const availableIds = athletes.filter((a) => !assignedAthleteIds.has(a.id)).map((a) => a.id);
       setValue('athleteIds', availableIds);
     }
     setSelectAll(!selectAll);
@@ -110,30 +113,34 @@ export function AssignmentManager({
             <select
               id="planId"
               {...register('planId')}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+              className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                          text-txt-primary
-                         focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                         focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
             >
               <option value="">Select a plan...</option>
-              {plans.filter((p) => !p.isTemplate).map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
+              {plans
+                .filter((p) => !p.isTemplate)
+                .map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
             </select>
             {errors.planId && (
-              <p className="mt-1 text-sm text-accent-destructive">{errors.planId.message}</p>
+              <p className="mt-1 text-sm text-data-poor">{errors.planId.message}</p>
             )}
           </div>
         )}
 
         {/* Selected Plan Info */}
         {selectedPlan && (
-          <div className="p-4 bg-surface-elevated rounded-lg border border-bdr-default">
+          <div className="p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default">
             <h4 className="font-medium text-txt-primary">{selectedPlan.name}</h4>
             {selectedPlan.description && (
               <p className="text-sm text-txt-tertiary mt-1">{selectedPlan.description}</p>
             )}
             {selectedPlan.phase && (
-              <span className="inline-block mt-2 px-2 py-0.5 text-xs font-medium bg-accent-primary/20 text-accent-primary rounded">
+              <span className="inline-block mt-2 px-2 py-0.5 text-xs font-medium bg-interactive-primary/20 text-interactive-primary rounded">
                 {selectedPlan.phase}
               </span>
             )}
@@ -150,12 +157,12 @@ export function AssignmentManager({
               id="startDate"
               type="date"
               {...register('startDate')}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+              className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                          text-txt-primary
-                         focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                         focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
             />
             {errors.startDate && (
-              <p className="mt-1 text-sm text-accent-destructive">{errors.startDate.message}</p>
+              <p className="mt-1 text-sm text-data-poor">{errors.startDate.message}</p>
             )}
           </div>
 
@@ -167,9 +174,9 @@ export function AssignmentManager({
               id="endDate"
               type="date"
               {...register('endDate')}
-              className="w-full px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+              className="w-full px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                          text-txt-primary
-                         focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                         focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
             />
           </div>
         </div>
@@ -177,13 +184,11 @@ export function AssignmentManager({
         {/* Athlete Selection */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-txt-primary">
-              Assign to Athletes *
-            </label>
+            <label className="text-sm font-medium text-txt-primary">Assign to Athletes *</label>
             <button
               type="button"
               onClick={handleSelectAll}
-              className="text-sm text-accent-primary hover:text-accent-primary-hover"
+              className="text-sm text-interactive-primary hover:text-interactive-primary-hover"
             >
               {selectAll ? 'Deselect All' : 'Select All Available'}
             </button>
@@ -207,8 +212,8 @@ export function AssignmentManager({
                       <label
                         key={athlete.id}
                         className={`flex items-center gap-3 px-4 py-3 cursor-pointer
-                          ${isAssigned ? 'opacity-50 cursor-not-allowed' : 'hover:bg-surface-elevated'}
-                          ${isSelected ? 'bg-accent-primary/10' : ''}`}
+                          ${isAssigned ? 'opacity-50 cursor-not-allowed' : 'hover:bg-bg-surface-elevated'}
+                          ${isSelected ? 'bg-interactive-primary/10' : ''}`}
                       >
                         <input
                           type="checkbox"
@@ -220,18 +225,23 @@ export function AssignmentManager({
                               : (field.value || []).filter((id) => id !== athlete.id);
                             field.onChange(newValue);
                           }}
-                          className="w-4 h-4 rounded border-bdr-default bg-surface-default
-                                     text-accent-primary focus:ring-accent-primary focus:ring-offset-0"
+                          className="w-4 h-4 rounded border-bdr-default bg-bg-surface
+                                     text-interactive-primary focus:ring-interactive-primary focus:ring-offset-0"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-txt-primary truncate">
                             {athlete.name}
                           </div>
                           {athlete.side && (
-                            <span className={`text-xs ${
-                              athlete.side === 'Port' ? 'text-red-400' :
-                              athlete.side === 'Starboard' ? 'text-green-400' : 'text-txt-tertiary'
-                            }`}>
+                            <span
+                              className={`text-xs ${
+                                athlete.side === 'Port'
+                                  ? 'text-data-poor'
+                                  : athlete.side === 'Starboard'
+                                    ? 'text-data-excellent'
+                                    : 'text-txt-tertiary'
+                              }`}
+                            >
                               {athlete.side}
                             </span>
                           )}
@@ -248,7 +258,7 @@ export function AssignmentManager({
           )}
 
           {errors.athleteIds && (
-            <p className="mt-1 text-sm text-accent-destructive">{errors.athleteIds.message}</p>
+            <p className="mt-1 text-sm text-data-poor">{errors.athleteIds.message}</p>
           )}
 
           <div className="mt-2 text-sm text-txt-secondary">
@@ -271,12 +281,14 @@ export function AssignmentManager({
           <button
             type="submit"
             disabled={isCreating || watchAthleteIds.length === 0}
-            className="px-4 py-2 text-sm font-medium text-white bg-accent-primary
-                       rounded-md hover:bg-accent-primary-hover
+            className="px-4 py-2 text-sm font-medium text-txt-inverse bg-interactive-primary
+                       rounded-md hover:bg-interactive-primary-hover
                        disabled:opacity-50 disabled:cursor-not-allowed
                        transition-colors"
           >
-            {isCreating ? 'Assigning...' : `Assign to ${watchAthleteIds.length} Athlete${watchAthleteIds.length !== 1 ? 's' : ''}`}
+            {isCreating
+              ? 'Assigning...'
+              : `Assign to ${watchAthleteIds.length} Athlete${watchAthleteIds.length !== 1 ? 's' : ''}`}
           </button>
         </div>
       </form>

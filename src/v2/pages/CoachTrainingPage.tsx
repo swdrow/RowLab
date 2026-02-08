@@ -1,6 +1,6 @@
 // src/v2/pages/CoachTrainingPage.tsx
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Tab, Dialog, Transition } from '@headlessui/react';
 import { format, startOfWeek } from 'date-fns';
 import { Calendar, Shield, Clipboard, Plus, FileText } from 'lucide-react';
@@ -50,6 +50,15 @@ export function CoachTrainingPage() {
   const { plans, isLoading: loadingPlans } = useTrainingPlans();
   const { createWorkout, isCreating } = useCreateWorkout();
 
+  // Resolve CSS vars for periodization block colors
+  const blockColors = useMemo(() => {
+    const style = getComputedStyle(document.documentElement);
+    return {
+      base: style.getPropertyValue('--data-good').trim() || '#3b82f6',
+      build: style.getPropertyValue('--data-warning').trim() || '#f59e0b',
+    };
+  }, []);
+
   // Demo periodization blocks (would come from API in production)
   const periodizationBlocks: PeriodizationBlock[] = [
     {
@@ -60,7 +69,7 @@ export function CoachTrainingPage() {
       endDate: '2026-03-01',
       weeklyTSSTarget: 400,
       focusAreas: ['Aerobic Endurance', 'Technique'],
-      color: '#3b82f6',
+      color: blockColors.base,
     },
     {
       id: '2',
@@ -70,7 +79,7 @@ export function CoachTrainingPage() {
       endDate: '2026-04-15',
       weeklyTSSTarget: 500,
       focusAreas: ['Power Development', 'Race Pace'],
-      color: '#f59e0b',
+      color: blockColors.build,
     },
   ];
 
@@ -121,7 +130,7 @@ export function CoachTrainingPage() {
       </div>
 
       {/* Periodization Timeline */}
-      <div className="mb-6 p-4 bg-surface-elevated rounded-lg border border-bdr-default">
+      <div className="mb-6 p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default">
         <PeriodizationTimeline
           blocks={periodizationBlocks}
           startDate={new Date('2026-01-01')}
@@ -136,15 +145,16 @@ export function CoachTrainingPage() {
         selectedIndex={tabs.findIndex((t) => t.key === activeTab)}
         onChange={(index) => setActiveTab(tabs[index].key)}
       >
-        <Tab.List className="flex items-center gap-1 p-1 bg-surface-elevated rounded-lg mb-6">
+        <Tab.List className="flex items-center gap-1 p-1 bg-bg-surface-elevated rounded-lg mb-6">
           {tabs.map((tab) => (
             <Tab
               key={tab.key}
               className={({ selected }) =>
                 `flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors
-                ${selected
-                  ? 'bg-accent-primary text-white'
-                  : 'text-txt-secondary hover:text-txt-primary hover:bg-surface-default'
+                ${
+                  selected
+                    ? 'bg-interactive-primary text-txt-inverse'
+                    : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-hover'
                 }`
               }
             >
@@ -162,14 +172,16 @@ export function CoachTrainingPage() {
                 <select
                   value={selectedPlanId || ''}
                   onChange={(e) => setSelectedPlanId(e.target.value || null)}
-                  className="px-3 py-2 bg-surface-default border border-bdr-default rounded-md
+                  className="px-3 py-2 bg-bg-surface border border-bdr-default rounded-md
                              text-txt-primary text-sm
-                             focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                             focus:outline-none focus:ring-2 focus:ring-interactive-primary"
                   aria-label="Filter training calendar by plan"
                 >
                   <option value="">All Plans</option>
                   {plans?.map((plan) => (
-                    <option key={plan.id} value={plan.id}>{plan.name}</option>
+                    <option key={plan.id} value={plan.id}>
+                      {plan.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -177,8 +189,8 @@ export function CoachTrainingPage() {
               <button
                 onClick={() => setShowWorkoutModal(true)}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                           bg-accent-primary text-white rounded-md
-                           hover:bg-accent-primary-hover transition-colors"
+                           bg-interactive-primary text-txt-inverse rounded-md
+                           hover:bg-interactive-primary-hover transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Add Workout
@@ -189,7 +201,7 @@ export function CoachTrainingPage() {
               planId={selectedPlanId || undefined}
               onSelectEvent={handleSelectEvent}
               onSelectSlot={handleSelectSlot}
-              className="bg-surface-elevated rounded-lg border border-bdr-default p-4"
+              className="bg-bg-surface-elevated rounded-lg border border-bdr-default p-4"
             />
           </Tab.Panel>
 
@@ -200,7 +212,7 @@ export function CoachTrainingPage() {
                 onClick={() => setShowAuditModal(true)}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium
                            border border-bdr-default text-txt-primary rounded-md
-                           hover:bg-surface-elevated transition-colors"
+                           hover:bg-bg-surface-elevated transition-colors"
               >
                 <FileText className="w-4 h-4" />
                 Generate Audit Report
@@ -219,8 +231,8 @@ export function CoachTrainingPage() {
                   <h3 className="text-lg font-semibold text-txt-primary">Training Plans</h3>
                   <button
                     className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                               bg-accent-primary text-white rounded-md
-                               hover:bg-accent-primary-hover transition-colors"
+                               bg-interactive-primary text-txt-inverse rounded-md
+                               hover:bg-interactive-primary-hover transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                     New Plan
@@ -229,7 +241,7 @@ export function CoachTrainingPage() {
 
                 {loadingPlans ? (
                   <div className="flex items-center justify-center h-48">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary" />
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-interactive-primary" />
                   </div>
                 ) : !plans || plans.length === 0 ? (
                   <div className="text-center py-12 text-txt-tertiary">
@@ -240,8 +252,8 @@ export function CoachTrainingPage() {
                     {plans.map((plan) => (
                       <div
                         key={plan.id}
-                        className="p-4 bg-surface-elevated rounded-lg border border-bdr-default
-                                   hover:border-accent-primary/50 transition-colors cursor-pointer"
+                        className="p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default
+                                   hover:border-interactive-primary/50 transition-colors cursor-pointer"
                         onClick={() => setSelectedPlanId(plan.id)}
                       >
                         <div className="flex items-center justify-between">
@@ -255,7 +267,7 @@ export function CoachTrainingPage() {
                           </div>
                           <div className="flex items-center gap-2">
                             {plan.phase && (
-                              <span className="px-2 py-0.5 text-xs font-medium bg-accent-primary/20 text-accent-primary rounded">
+                              <span className="px-2 py-0.5 text-xs font-medium bg-interactive-primary/20 text-interactive-primary rounded">
                                 {plan.phase}
                               </span>
                             )}
@@ -265,8 +277,8 @@ export function CoachTrainingPage() {
                                 setSelectedPlanId(plan.id);
                                 setShowAssignmentModal(true);
                               }}
-                              className="px-2 py-1 text-xs font-medium text-accent-primary
-                                         hover:bg-accent-primary/10 rounded transition-colors"
+                              className="px-2 py-1 text-xs font-medium text-interactive-primary
+                                         hover:bg-interactive-primary/10 rounded transition-colors"
                             >
                               Assign
                             </button>
@@ -280,18 +292,18 @@ export function CoachTrainingPage() {
 
               {/* Quick Stats */}
               <div className="space-y-4">
-                <div className="p-4 bg-surface-elevated rounded-lg border border-bdr-default">
+                <div className="p-4 bg-bg-surface-elevated rounded-lg border border-bdr-default">
                   <h4 className="font-medium text-txt-primary mb-3">Quick Stats</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-txt-secondary">Active Plans</span>
-                      <span className="font-medium text-txt-primary">
+                      <span className="font-medium font-mono text-txt-primary">
                         {plans?.filter((p) => !p.isTemplate).length || 0}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-txt-secondary">Templates</span>
-                      <span className="font-medium text-txt-primary">
+                      <span className="font-medium font-mono text-txt-primary">
                         {plans?.filter((p) => p.isTemplate).length || 0}
                       </span>
                     </div>
@@ -335,7 +347,7 @@ export function CoachTrainingPage() {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-2xl bg-surface-default rounded-lg shadow-xl border border-bdr-default p-6">
+              <Dialog.Panel className="w-full max-w-2xl bg-bg-surface rounded-lg shadow-xl border border-bdr-default p-6">
                 <Dialog.Title className="text-lg font-semibold text-txt-primary mb-4">
                   {selectedSlot ? 'Create Workout' : 'Add Workout'}
                 </Dialog.Title>
@@ -357,11 +369,7 @@ export function CoachTrainingPage() {
 
       {/* Assignment Modal */}
       <Transition appear show={showAssignmentModal} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => setShowAssignmentModal(false)}
-        >
+        <Dialog as="div" className="relative z-50" onClose={() => setShowAssignmentModal(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -384,7 +392,7 @@ export function CoachTrainingPage() {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-2xl bg-surface-default rounded-lg shadow-xl border border-bdr-default p-6">
+              <Dialog.Panel className="w-full max-w-2xl bg-bg-surface rounded-lg shadow-xl border border-bdr-default p-6">
                 <Dialog.Title className="text-lg font-semibold text-txt-primary mb-4">
                   Assign Training Plan
                 </Dialog.Title>
@@ -401,11 +409,7 @@ export function CoachTrainingPage() {
 
       {/* Audit Report Modal */}
       <Transition appear show={showAuditModal} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => setShowAuditModal(false)}
-        >
+        <Dialog as="div" className="relative z-50" onClose={() => setShowAuditModal(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -428,7 +432,7 @@ export function CoachTrainingPage() {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-4xl bg-surface-default rounded-lg shadow-xl border border-bdr-default p-6 my-8">
+              <Dialog.Panel className="w-full max-w-4xl bg-bg-surface rounded-lg shadow-xl border border-bdr-default p-6 my-8">
                 <NCAAAuditReport
                   weekStart={startOfWeek(new Date(), { weekStartsOn: 1 })}
                   teamName="Team"

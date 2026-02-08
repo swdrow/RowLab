@@ -72,7 +72,13 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
     },
   });
 
-  const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting } } = methods;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors, isSubmitting },
+  } = methods;
   const sessionType = useWatch({ control, name: 'type' }) || 'ERG';
   const sessionDate = useWatch({ control, name: 'date' }) || new Date().toISOString().split('T')[0];
   const recurrenceRule = useWatch({ control, name: 'recurrenceRule' });
@@ -109,12 +115,10 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
             <input
               {...register('name')}
               placeholder="e.g., Morning Erg, Afternoon Row"
-              className="w-full px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                text-txt-primary placeholder:text-txt-muted focus:outline-none focus:border-accent-primary"
+              className="w-full px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                text-txt-primary placeholder:text-txt-muted focus:outline-none focus:border-interactive-primary"
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-data-poor text-sm mt-1">{errors.name.message}</p>}
           </div>
 
           {/* Type */}
@@ -122,8 +126,8 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
             <label className="block text-sm text-txt-secondary mb-1">Session Type</label>
             <select
               {...register('type')}
-              className="w-full px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                text-txt-primary focus:outline-none focus:border-accent-primary"
+              className="w-full px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                text-txt-primary focus:outline-none focus:border-interactive-primary"
             >
               {SESSION_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
@@ -140,8 +144,8 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
               <input
                 type="date"
                 {...register('date')}
-                className="w-full px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                  text-txt-primary focus:outline-none focus:border-accent-primary"
+                className="w-full px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                  text-txt-primary focus:outline-none focus:border-interactive-primary"
               />
             </div>
             <div>
@@ -149,8 +153,8 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
               <input
                 type="time"
                 {...register('startTime')}
-                className="w-full px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                  text-txt-primary focus:outline-none focus:border-accent-primary"
+                className="w-full px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                  text-txt-primary focus:outline-none focus:border-interactive-primary"
               />
             </div>
             <div>
@@ -158,8 +162,8 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
               <input
                 type="time"
                 {...register('endTime')}
-                className="w-full px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                  text-txt-primary focus:outline-none focus:border-accent-primary"
+                className="w-full px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                  text-txt-primary focus:outline-none focus:border-interactive-primary"
               />
             </div>
           </div>
@@ -171,8 +175,8 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
               {...register('notes')}
               rows={2}
               placeholder="Any notes for this session..."
-              className="w-full px-3 py-2 rounded-lg bg-surface-default border border-bdr-default
-                text-txt-primary placeholder:text-txt-muted focus:outline-none focus:border-accent-primary resize-none"
+              className="w-full px-3 py-2 rounded-lg bg-bg-surface border border-bdr-default
+                text-txt-primary placeholder:text-txt-muted focus:outline-none focus:border-interactive-primary resize-none"
             />
           </div>
 
@@ -181,9 +185,11 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
             <input
               type="checkbox"
               {...register('athleteVisibility')}
-              className="w-4 h-4 rounded border-bdr-default text-accent-primary focus:ring-accent-primary"
+              className="w-4 h-4 rounded border-bdr-default text-interactive-primary focus:ring-interactive-primary"
             />
-            <span className="text-txt-primary">Athletes can see session details before it starts</span>
+            <span className="text-txt-primary">
+              Athletes can see session details before it starts
+            </span>
           </label>
         </div>
 
@@ -218,8 +224,8 @@ export function SessionForm({ onSuccess, onCancel }: SessionFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-lg bg-accent-primary text-white font-medium
-              hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 rounded-lg bg-interactive-primary text-txt-inverse font-medium
+              hover:bg-interactive-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isSubmitting ? 'Creating...' : 'Create Session'}
           </button>

@@ -1,7 +1,16 @@
 // src/v2/components/training/assignments/AthleteWorkoutView.tsx
 
 import React, { useMemo, useState } from 'react';
-import { format, parseISO, isToday, isPast, isFuture, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
+import {
+  format,
+  parseISO,
+  isToday,
+  isPast,
+  isFuture,
+  startOfWeek,
+  endOfWeek,
+  addWeeks,
+} from 'date-fns';
 import { useAthleteAssignments, useMarkWorkoutComplete } from '../../../hooks/useAssignments';
 import { getWorkoutTypeColor } from '../../../utils/calendarHelpers';
 import type { PlannedWorkout, WorkoutCompletion } from '../../../types/training';
@@ -43,9 +52,7 @@ export function AthleteWorkoutView({
 
   // Merge workouts with completion status
   const workoutsWithStatus: WorkoutWithStatus[] = useMemo(() => {
-    const completionMap = new Map(
-      completions.map((c) => [c.plannedWorkoutId, c])
-    );
+    const completionMap = new Map(completions.map((c) => [c.plannedWorkoutId, c]));
 
     return workouts
       .filter((w) => w.scheduledDate)
@@ -89,15 +96,11 @@ export function AthleteWorkoutView({
   }, [workoutsWithStatus]);
 
   const navigateWeek = (direction: 'prev' | 'next') => {
-    setWeekOffset((prev) => direction === 'next' ? prev + 1 : prev - 1);
+    setWeekOffset((prev) => (direction === 'next' ? prev + 1 : prev - 1));
   };
 
   if (error) {
-    return (
-      <div className="text-center py-8 text-txt-tertiary">
-        Failed to load workouts
-      </div>
-    );
+    return <div className="text-center py-8 text-txt-tertiary">Failed to load workouts</div>;
   }
 
   return (
@@ -120,15 +123,21 @@ export function AthleteWorkoutView({
             aria-label="Previous week"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <button
             onClick={() => setWeekOffset(0)}
             className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-              ${weekOffset === 0
-                ? 'bg-accent-primary text-white'
-                : 'text-txt-secondary hover:text-txt-primary'
+              ${
+                weekOffset === 0
+                  ? 'bg-interactive-primary text-txt-inverse'
+                  : 'text-txt-secondary hover:text-txt-primary'
               }`}
           >
             This Week
@@ -148,12 +157,22 @@ export function AthleteWorkoutView({
       {/* Workout List */}
       {isLoading ? (
         <div className="flex items-center justify-center h-48">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-interactive-primary" />
         </div>
       ) : workoutsWithStatus.length === 0 ? (
         <div className="text-center py-12 text-txt-tertiary">
-          <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          <svg
+            className="w-12 h-12 mx-auto mb-3 opacity-50"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
           </svg>
           <p>No workouts scheduled for this week</p>
         </div>
@@ -165,9 +184,11 @@ export function AthleteWorkoutView({
 
             return (
               <div key={day}>
-                <h3 className={`text-sm font-medium mb-2 ${
-                  isCurrentDay ? 'text-accent-primary' : 'text-txt-secondary'
-                }`}>
+                <h3
+                  className={`text-sm font-medium mb-2 ${
+                    isCurrentDay ? 'text-interactive-primary' : 'text-txt-secondary'
+                  }`}
+                >
                   {isCurrentDay ? 'Today' : format(dayDate, 'EEEE, MMM d')}
                 </h3>
 
@@ -176,11 +197,12 @@ export function AthleteWorkoutView({
                     <div
                       key={workout.id}
                       className={`p-4 rounded-lg border transition-all
-                        ${workout.isCompleted
-                          ? 'bg-accent-success/10 border-accent-success/30'
-                          : workout.isPastDue
-                            ? 'bg-accent-destructive/10 border-accent-destructive/30'
-                            : 'bg-surface-elevated border-bdr-default'
+                        ${
+                          workout.isCompleted
+                            ? 'bg-data-excellent/10 border-data-excellent/30'
+                            : workout.isPastDue
+                              ? 'bg-data-poor/10 border-data-poor/30'
+                              : 'bg-bg-surface-elevated border-bdr-default'
                         }`}
                     >
                       <div className="flex items-start justify-between gap-4">
@@ -203,25 +225,33 @@ export function AthleteWorkoutView({
 
                           <div className="flex flex-wrap gap-3 mt-2 text-xs text-txt-secondary">
                             {workout.duration && (
-                              <span>{Math.round(workout.duration / 60)} min</span>
+                              <span className="font-mono">
+                                {Math.round(workout.duration / 60)} min
+                              </span>
                             )}
                             {workout.distance && (
-                              <span>{workout.distance.toLocaleString()}m</span>
+                              <span className="font-mono">
+                                {workout.distance.toLocaleString()}m
+                              </span>
                             )}
                             {workout.intensity && (
                               <span className="capitalize">{workout.intensity}</span>
                             )}
                             {workout.estimatedTSS && (
-                              <span>TSS: {workout.estimatedTSS}</span>
+                              <span className="font-mono">TSS: {workout.estimatedTSS}</span>
                             )}
                           </div>
                         </div>
 
                         <div className="flex-shrink-0">
                           {workout.isCompleted ? (
-                            <div className="flex items-center gap-1 text-accent-success">
+                            <div className="flex items-center gap-1 text-data-excellent">
                               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                  clipRule="evenodd"
+                                />
                               </svg>
                               <span className="text-sm font-medium">Done</span>
                             </div>
@@ -229,9 +259,9 @@ export function AthleteWorkoutView({
                             <button
                               onClick={() => handleMarkComplete(workout)}
                               disabled={isMarking}
-                              className="px-3 py-1.5 text-sm font-medium text-accent-primary
-                                         border border-accent-primary rounded-md
-                                         hover:bg-accent-primary hover:text-white
+                              className="px-3 py-1.5 text-sm font-medium text-interactive-primary
+                                         border border-interactive-primary rounded-md
+                                         hover:bg-interactive-primary hover:text-txt-inverse
                                          disabled:opacity-50 transition-colors"
                             >
                               Mark Complete
@@ -250,16 +280,17 @@ export function AthleteWorkoutView({
 
       {/* Summary */}
       {workoutsWithStatus.length > 0 && (
-        <div className="mt-6 p-4 bg-surface-sunken rounded-lg">
+        <div className="mt-6 p-4 bg-bg-surface rounded-lg">
           <div className="flex items-center justify-between text-sm">
             <span className="text-txt-secondary">Week Summary</span>
-            <span className="font-medium text-txt-primary">
-              {workoutsWithStatus.filter((w) => w.isCompleted).length} / {workoutsWithStatus.length} completed
+            <span className="font-medium font-mono text-txt-primary">
+              {workoutsWithStatus.filter((w) => w.isCompleted).length} / {workoutsWithStatus.length}{' '}
+              completed
             </span>
           </div>
-          <div className="mt-2 h-2 bg-surface-default rounded-full overflow-hidden">
+          <div className="mt-2 h-2 bg-bg-surface-elevated rounded-full overflow-hidden">
             <div
-              className="h-full bg-accent-success transition-all"
+              className="h-full bg-data-excellent transition-all"
               style={{
                 width: `${(workoutsWithStatus.filter((w) => w.isCompleted).length / workoutsWithStatus.length) * 100}%`,
               }}
