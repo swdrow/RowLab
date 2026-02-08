@@ -10,21 +10,21 @@ export const DEFAULT_WEIGHT_PROFILES = [
   {
     id: 'performance-first',
     name: 'Performance-First',
-    weights: { onWater: 0.85, erg: 0.10, attendance: 0.05 },
+    weights: { onWater: 0.85, erg: 0.1, attendance: 0.05 },
     isDefault: false,
     isCustom: false,
   },
   {
     id: 'balanced',
     name: 'Balanced',
-    weights: { onWater: 0.75, erg: 0.15, attendance: 0.10 },
+    weights: { onWater: 0.75, erg: 0.15, attendance: 0.1 },
     isDefault: true,
     isCustom: false,
   },
   {
     id: 'reliability',
     name: 'Reliability-Focus',
-    weights: { onWater: 0.65, erg: 0.15, attendance: 0.20 },
+    weights: { onWater: 0.65, erg: 0.15, attendance: 0.2 },
     isDefault: false,
     isCustom: false,
   },
@@ -35,12 +35,12 @@ export const DEFAULT_WEIGHT_PROFILES = [
 // ============================================
 
 const ERG_TEST_WEIGHTS = {
-  '2000m': 1.0,     // Gold standard
+  '2000m': 1.0, // Gold standard
   '2k': 1.0,
-  '6000m': 0.8,     // Endurance test
+  '6000m': 0.8, // Endurance test
   '6k': 0.8,
-  '500m': 0.6,      // Sprint test
-  'steady_state': 0.3  // Practice observation
+  '500m': 0.6, // Sprint test
+  steady_state: 0.3, // Practice observation
 };
 
 // ============================================
@@ -64,11 +64,11 @@ export function getWeightProfile(profileId, customWeights = null) {
     };
   }
 
-  const profile = DEFAULT_WEIGHT_PROFILES.find(p => p.id === profileId);
+  const profile = DEFAULT_WEIGHT_PROFILES.find((p) => p.id === profileId);
   if (profile) return profile;
 
   // Return default
-  return DEFAULT_WEIGHT_PROFILES.find(p => p.isDefault);
+  return DEFAULT_WEIGHT_PROFILES.find((p) => p.isDefault);
 }
 
 /**
@@ -90,8 +90,8 @@ export async function calculateCompositeRankings(teamId, options = {}) {
     getAttendanceData(teamId),
     prisma.athlete.findMany({
       where: { teamId, status: 'active' },
-      select: { id: true, firstName: true, lastName: true, side: true }
-    })
+      select: { id: true, firstName: true, lastName: true, side: true },
+    }),
   ]);
 
   // Normalize each component to [0, 1]
@@ -100,16 +100,19 @@ export async function calculateCompositeRankings(teamId, options = {}) {
   const normalizedAttendance = normalizeScores(attendanceData, 'asc'); // Higher attendance = better
 
   // Calculate composite for each athlete
-  const rankings = athletes.map(athlete => {
+  const rankings = athletes.map((athlete) => {
     const onWater = normalizedOnWater.get(athlete.id) || { score: 0, dataPoints: 0, confidence: 0 };
     const erg = normalizedErg.get(athlete.id) || { score: 0, dataPoints: 0, confidence: 0 };
-    const attendance = normalizedAttendance.get(athlete.id) || { score: 0, dataPoints: 0, confidence: 0 };
+    const attendance = normalizedAttendance.get(athlete.id) || {
+      score: 0,
+      dataPoints: 0,
+      confidence: 0,
+    };
 
-    const compositeScore = (
+    const compositeScore =
       onWater.score * weights.onWater +
       erg.score * weights.erg +
-      attendance.score * weights.attendance
-    );
+      attendance.score * weights.attendance;
 
     const breakdown = [
       {
@@ -119,7 +122,7 @@ export async function calculateCompositeRankings(teamId, options = {}) {
         weight: weights.onWater,
         contribution: onWater.score * weights.onWater,
         dataPoints: onWater.dataPoints,
-        confidence: onWater.confidence
+        confidence: onWater.confidence,
       },
       {
         source: 'erg',
@@ -128,7 +131,7 @@ export async function calculateCompositeRankings(teamId, options = {}) {
         weight: weights.erg,
         contribution: erg.score * weights.erg,
         dataPoints: erg.dataPoints,
-        confidence: erg.confidence
+        confidence: erg.confidence,
       },
       {
         source: 'attendance',
@@ -137,15 +140,11 @@ export async function calculateCompositeRankings(teamId, options = {}) {
         weight: weights.attendance,
         contribution: attendance.score * weights.attendance,
         dataPoints: attendance.dataPoints,
-        confidence: attendance.confidence
-      }
+        confidence: attendance.confidence,
+      },
     ];
 
-    const overallConfidence = Math.min(
-      onWater.confidence,
-      erg.confidence,
-      attendance.confidence
-    );
+    const overallConfidence = Math.min(onWater.confidence, erg.confidence, attendance.confidence);
 
     return {
       athleteId: athlete.id,
@@ -153,12 +152,12 @@ export async function calculateCompositeRankings(teamId, options = {}) {
         id: athlete.id,
         firstName: athlete.firstName,
         lastName: athlete.lastName,
-        side: athlete.side
+        side: athlete.side,
       },
       compositeScore,
       breakdown,
       overallConfidence,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
   });
 
@@ -166,8 +165,8 @@ export async function calculateCompositeRankings(teamId, options = {}) {
   rankings.sort((a, b) => {
     if (Math.abs(a.compositeScore - b.compositeScore) < 0.001) {
       // Tie-break by on-water contribution
-      const aOnWater = a.breakdown.find(c => c.source === 'onWater')?.rawScore || 0;
-      const bOnWater = b.breakdown.find(c => c.source === 'onWater')?.rawScore || 0;
+      const aOnWater = a.breakdown.find((c) => c.source === 'onWater')?.rawScore || 0;
+      const bOnWater = b.breakdown.find((c) => c.source === 'onWater')?.rawScore || 0;
       return bOnWater - aOnWater;
     }
     return b.compositeScore - a.compositeScore;
@@ -182,7 +181,7 @@ export async function calculateCompositeRankings(teamId, options = {}) {
     teamId,
     profile,
     rankings,
-    calculatedAt: new Date().toISOString()
+    calculatedAt: new Date().toISOString(),
   };
 }
 
@@ -194,12 +193,12 @@ export function normalizeScores(dataMap, direction = 'asc') {
 
   if (dataMap.size === 0) return normalized;
 
-  const values = Array.from(dataMap.values()).map(d => d.value);
+  const values = Array.from(dataMap.values()).map((d) => d.value);
 
   if (values.length === 0) return normalized;
 
   const avg = mean(values);
-  const std = standardDeviation(values);
+  const std = values.length > 1 ? standardDeviation(values) : 0;
 
   dataMap.forEach((data, athleteId) => {
     let z = std > 0 ? (data.value - avg) / std : 0;
@@ -217,7 +216,7 @@ export function normalizeScores(dataMap, direction = 'asc') {
       score,
       raw: data.value,
       dataPoints: data.dataPoints,
-      confidence
+      confidence,
     });
   });
 
@@ -237,8 +236,8 @@ async function getOnWaterRatings(teamId) {
   const dataMap = new Map();
   for (const rating of ratings) {
     dataMap.set(rating.athleteId, {
-      value: rating.ratingValue,
-      dataPoints: rating.racesCount
+      value: Number(rating.ratingValue),
+      dataPoints: rating.racesCount || 0,
     });
   }
 
@@ -256,11 +255,11 @@ async function getErgPerformanceData(teamId) {
   const ergTests = await prisma.ergScore.findMany({
     where: {
       athlete: { teamId },
-      date: { gte: ninetyDaysAgo }
+      date: { gte: ninetyDaysAgo },
     },
     include: {
-      athlete: { select: { id: true } }
-    }
+      athlete: { select: { id: true } },
+    },
   });
 
   // Group by athlete and calculate weighted score
@@ -292,7 +291,7 @@ async function getErgPerformanceData(teamId) {
     const avgScore = data.totalWeight > 0 ? data.weightedSum / data.totalWeight : 0;
     result.set(athleteId, {
       value: avgScore,
-      dataPoints: data.dataPoints
+      dataPoints: data.dataPoints,
     });
   });
 
@@ -309,11 +308,11 @@ async function getAttendanceData(teamId) {
   const attendance = await prisma.attendanceRecord.findMany({
     where: {
       athlete: { teamId },
-      date: { gte: thirtyDaysAgo }
+      date: { gte: thirtyDaysAgo },
     },
     include: {
-      athlete: { select: { id: true } }
-    }
+      athlete: { select: { id: true } },
+    },
   });
 
   // Group by athlete and calculate attendance rate
@@ -339,7 +338,7 @@ async function getAttendanceData(teamId) {
     const rate = data.total > 0 ? data.present / data.total : 0;
     result.set(athleteId, {
       value: rate,
-      dataPoints: data.total
+      dataPoints: data.total,
     });
   });
 
@@ -357,5 +356,5 @@ export default {
   DEFAULT_WEIGHT_PROFILES,
   getWeightProfile,
   calculateCompositeRankings,
-  normalizeScores
+  normalizeScores,
 };

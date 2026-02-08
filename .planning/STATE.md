@@ -4,9 +4,9 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 31 (Seat Racing Migration) — In Progress
-**Plan:** 4/6 complete (31-01 through 31-04 done)
-**Status:** Phase 31 in progress. All core seat racing components migrated to V3 design tokens. Session wizard overhauled: consolidated to 3-step flow (Details, Pieces+Athletes, Review), added segmented time input (MM:SS.T with auto-tab), horizontal slide transitions, and rankings impact preview (before/after comparison). Remaining: data visualizations, matrix planner overhaul.
-**Last activity:** 2026-02-08 — Completed 31-04-PLAN.md
+**Plan:** 5/6 complete (31-01 through 31-05 done)
+**Status:** Phase 31 in progress. All seat racing pages migrated to V3 design tokens with keyboard shortcuts, optimistic UI, and skeleton loaders. Matrix planner has driver.js guided tour (4 steps), balance score as numeric progress bar, and Generate Session pre-fills wizard. Keyboard shortcuts: N (new), R (recalculate), ? (help), Escape (close). No spinners remain - all loading states use skeletons.
+**Last activity:** 2026-02-08 — Completed 31-05-PLAN.md
 
 ## Project Reference
 
@@ -92,7 +92,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 28 | Athletes Feature Migration | Complete ✅ | 8/8 |
 | 29 | Lineup Builder Migration | Complete ✅ | 5/5 |
 | 30 | Erg Data Migration | Complete ✅ | 4/4 |
-| 31 | Seat Racing Migration | In Progress | 3/6 |
+| 31 | Seat Racing Migration | In Progress | 5/6 |
 | 32-36 | Feature Modules | Planned | TBD |
 
 v3.0 Progress: █████████████████░░ (7 phases complete, 1 in progress, 5 remaining)
@@ -492,9 +492,9 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Completed 31-01-PLAN.md (V3 token migration + animated UI components)
+**Stopped at:** Completed 31-05-PLAN.md (Matrix planner, keyboard shortcuts, optimistic UI, skeleton loaders)
 **Resume file:** None
-**Resume with:** `/gsd:execute-plan 31-02` to continue Seat Racing Migration
+**Resume with:** `/gsd:execute-plan 31-06` to continue Seat Racing Migration (if plan exists)
 
 ## Roadmap Evolution
 
