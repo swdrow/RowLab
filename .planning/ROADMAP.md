@@ -1221,7 +1221,15 @@ Plans:
 6. User sees connection health indicator (green/yellow/red dot)
 7. User's offline mutations queue and sync automatically on reconnect
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 33-01-PLAN.md — V3 token migration for regatta components (10 files)
+- [ ] 33-02-PLAN.md — V3 token migration for rankings components + pages (7 files)
+- [ ] 33-03-PLAN.md — WebSocket infrastructure (server race day events, client hooks, connection indicator)
+- [ ] 33-04-PLAN.md — Animated rankings, NCAA export, improved results entry
+- [ ] 33-05-PLAN.md — Keyboard shortcuts, optimistic UI, skeleton loaders, offline queue
+- [ ] 33-06-PLAN.md — Human verification checkpoint
 
 ---
 
@@ -1368,7 +1376,7 @@ The following requirements apply across all v3.0 phases:
 | 30 | Erg Data Migration | 6 | 4 | Complete ✅ |
 | 31 | Seat Racing Migration | 6 | 6 | Complete ✅ |
 | 32 | Training & Attendance Migration | 9 | 6 | Complete ✅ |
-| 33 | Regattas & Rankings Migration | 10 | TBD | Not started |
+| 33 | Regattas & Rankings Migration | 10 | 6 | Not started |
 | 34 | Gamification & Activity Feed Migration | 9 | TBD | Not started |
 | 35 | Mobile Responsiveness & Performance | 15 | TBD | Not started |
 | 36 | V1/V2 Cleanup | 3 | TBD | Not started |
