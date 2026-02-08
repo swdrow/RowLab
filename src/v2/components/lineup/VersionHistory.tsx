@@ -121,6 +121,7 @@ export function VersionHistory({
    * Count boats in lineup
    */
   const getBoatCount = (lineup: Lineup): number => {
+    if (!lineup.assignments?.length) return 0;
     const boatClasses = new Set(lineup.assignments.map((a) => a.boatClass));
     return boatClasses.size;
   };

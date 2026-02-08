@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   DndContext,
@@ -89,11 +89,41 @@ export function LineupWorkspace({ lineupId, className = '' }: LineupWorkspacePro
   const addBoat = useLineupStore((state) => state.addBoat);
 
   // V2 hooks for draft management and command-based undo
-  const { draft, autoSave, cancelAutoSave } = useLineupDraft(lineupId);
+  const { autoSave, cancelAutoSave } = useLineupDraft(lineupId);
   const { allAthletes } = useAthletes();
   const { executeCommand } = useLineupCommands(lineupId, cancelAutoSave);
 
   const [, setSearchParams] = useSearchParams();
+
+  // Derive assignments from V1 store's activeBoats for save/export
+  const currentAssignments: LineupAssignment[] = useMemo(() => {
+    const assignments: LineupAssignment[] = [];
+    activeBoats.forEach((boat: any) => {
+      boat.seats.forEach((seat: any) => {
+        if (seat.athlete?.id) {
+          assignments.push({
+            athleteId: seat.athlete.id,
+            boatClass: boat.name || boat.boatClass || '8+',
+            shellName: boat.shellName || null,
+            seatNumber: seat.seatNumber,
+            side: seat.side || 'Port',
+            isCoxswain: false,
+          });
+        }
+      });
+      if (boat.coxswain?.id) {
+        assignments.push({
+          athleteId: boat.coxswain.id,
+          boatClass: boat.name || boat.boatClass || '8+',
+          shellName: boat.shellName || null,
+          seatNumber: 0,
+          side: 'Port',
+          isCoxswain: true,
+        });
+      }
+    });
+    return assignments;
+  }, [activeBoats]);
 
   const [, setActiveId] = useState<string | null>(null);
   const [activeAthlete, setActiveAthlete] = useState<Athlete | null>(null);
@@ -392,7 +422,7 @@ export function LineupWorkspace({ lineupId, className = '' }: LineupWorkspacePro
               lineupId={lineupId}
               cancelAutoSave={cancelAutoSave}
               boats={activeBoats}
-              assignments={draft?.assignments || []}
+              assignments={currentAssignments}
               onLoadLineup={handleLoadLineup}
             />
           </div>
