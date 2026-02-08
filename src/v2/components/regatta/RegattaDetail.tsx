@@ -78,29 +78,29 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
   return (
     <div className="space-y-6">
       {/* Header card */}
-      <div className="relative rounded-2xl p-px bg-gradient-to-b from-white/[0.12] to-white/[0.02]">
-        <div className="relative rounded-[15px] bg-ink-raised overflow-hidden shadow-card p-6">
-          {/* Top highlight */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent" />
+      <div className="relative rounded-2xl bg-ink-raised overflow-hidden shadow-card border border-ink-border">
+        {/* Top copper accent bar */}
+        <div className="h-1 bg-gradient-to-r from-accent-copper via-accent-copper/60 to-transparent" />
 
+        <div className="p-6">
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-2xl font-display font-bold text-ink-bright">{regatta.name}</h2>
               <div className="flex items-center gap-4 mt-2.5 text-sm text-ink-secondary">
                 <span className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-ink-tertiary" />
+                  <Calendar className="w-4 h-4 text-accent-copper/60" />
                   {format(parseISO(regatta.date), 'MMMM d, yyyy')}
                   {isMultiDay && ` — ${format(parseISO(regatta.endDate!), 'MMMM d, yyyy')}`}
                 </span>
                 {regatta.location && (
                   <span className="flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-ink-tertiary" />
+                    <MapPin className="w-4 h-4 text-accent-copper/60" />
                     {regatta.location}
                   </span>
                 )}
                 {regatta.courseType && (
                   <span className="flex items-center gap-1.5">
-                    <Flag className="w-4 h-4 text-ink-tertiary" />
+                    <Flag className="w-4 h-4 text-accent-copper/60" />
                     {regatta.courseType}
                   </span>
                 )}
@@ -113,14 +113,14 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
                   href={regatta.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-xl hover:bg-white/[0.05] transition-colors text-ink-secondary"
+                  className="p-2 rounded-xl hover:bg-ink-hover transition-colors text-ink-secondary"
                 >
                   <ExternalLink className="w-5 h-5" />
                 </a>
               )}
               <button
                 onClick={onEdit}
-                className="p-2 rounded-xl hover:bg-white/[0.05] transition-colors text-ink-secondary"
+                className="p-2 rounded-xl hover:bg-ink-hover transition-colors text-ink-secondary"
               >
                 <Edit className="w-5 h-5" />
               </button>
@@ -128,8 +128,8 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
           </div>
 
           {regatta.teamGoals && (
-            <div className="mt-5 p-4 rounded-xl bg-data-good/[0.06] border border-data-good/[0.12]">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-data-good mb-1">
+            <div className="mt-5 p-4 rounded-xl bg-accent-copper/[0.06] border border-accent-copper/[0.15]">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-accent-copper mb-1">
                 Team Goals
               </p>
               <p className="text-sm text-ink-body">{regatta.teamGoals}</p>
@@ -142,17 +142,18 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h3 className="text-xs font-semibold text-ink-secondary uppercase tracking-[0.15em]">
+            <div className="w-1.5 h-4 rounded-full bg-accent-copper" />
+            <h3 className="text-xs font-bold text-accent-copper uppercase tracking-[0.2em]">
               Events
             </h3>
-            <div className="flex-1 h-px bg-gradient-to-r from-ink-border to-transparent w-20" />
+            <div className="flex-1 h-px bg-gradient-to-r from-accent-copper/20 to-transparent w-20" />
           </div>
           <button
             onClick={() => setModalContent({ type: 'event' })}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium
-                     bg-gradient-to-b from-accent-primary to-accent-primary/90
+                     bg-gradient-to-b from-accent-copper to-accent-copper-hover
                      text-white rounded-xl
-                     shadow-glow-blue hover:shadow-glow-blue-lg
+                     shadow-glow-copper hover:shadow-glow-copper-lg
                      hover:-translate-y-px active:translate-y-0
                      transition-all duration-150"
           >
@@ -162,11 +163,12 @@ export function RegattaDetail({ regatta, onEdit }: RegattaDetailProps) {
         </div>
 
         {!regatta.events || regatta.events.length === 0 ? (
-          <div className="relative text-center py-16 rounded-2xl border border-white/[0.06] bg-white/[0.01] overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-accent-primary/[0.02] to-transparent pointer-events-none" />
-            <Flag className="w-12 h-12 mx-auto mb-3 text-ink-muted" strokeWidth={1} />
-            <p className="text-ink-body font-medium">No events yet</p>
-            <p className="text-sm text-ink-tertiary mt-1">
+          <div className="relative text-center py-16 rounded-2xl border border-ink-border bg-ink-raised overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.04] to-transparent pointer-events-none" />
+            <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+            <Flag className="w-14 h-14 mx-auto mb-4 text-accent-copper/30" strokeWidth={1} />
+            <p className="text-lg font-display font-semibold text-ink-primary">No events yet</p>
+            <p className="text-sm text-ink-tertiary mt-1.5">
               Add events to start building your race schedule
             </p>
           </div>
@@ -268,70 +270,68 @@ function EventCard({
   const raceCount = event.races?.length || 0;
 
   return (
-    <div className="relative rounded-2xl p-px bg-gradient-to-b from-white/[0.10] to-white/[0.02]">
-      <div className="rounded-[15px] bg-ink-raised overflow-hidden shadow-card">
-        {/* Event header */}
-        <div
-          className="flex items-center justify-between p-4 cursor-pointer hover:bg-white/[0.02] transition-colors"
-          onClick={onToggle}
-        >
-          <div className="flex items-center gap-3">
-            {isExpanded ? (
-              <ChevronDown className="w-4 h-4 text-ink-muted" />
-            ) : (
-              <ChevronRight className="w-4 h-4 text-ink-muted" />
-            )}
-            <div>
-              <h4 className="font-semibold text-ink-bright text-sm">{event.name}</h4>
-              <p className="text-xs text-ink-secondary mt-0.5">
-                {raceCount} {raceCount === 1 ? 'race' : 'races'}
-                {event.scheduledDay && (
-                  <span className="ml-2 text-ink-tertiary">Day {event.scheduledDay}</span>
-                )}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={onAddRace}
-              className="p-1.5 rounded-lg hover:bg-white/[0.05] text-ink-muted hover:text-ink-primary transition-colors"
-              title="Add race"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-            <button
-              onClick={onDeleteEvent}
-              className="p-1.5 rounded-lg hover:bg-data-poor/[0.08] text-ink-muted hover:text-data-poor transition-colors"
-              title="Delete event"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
+    <div className="rounded-2xl bg-ink-raised overflow-hidden shadow-card border border-ink-border hover:border-accent-copper/20 transition-colors">
+      {/* Event header */}
+      <div
+        className="flex items-center justify-between p-4 cursor-pointer hover:bg-ink-hover transition-colors"
+        onClick={onToggle}
+      >
+        <div className="flex items-center gap-3">
+          {isExpanded ? (
+            <ChevronDown className="w-4 h-4 text-ink-muted" />
+          ) : (
+            <ChevronRight className="w-4 h-4 text-ink-muted" />
+          )}
+          <div>
+            <h4 className="font-semibold text-ink-bright text-sm">{event.name}</h4>
+            <p className="text-xs text-ink-secondary mt-0.5">
+              {raceCount} {raceCount === 1 ? 'race' : 'races'}
+              {event.scheduledDay && (
+                <span className="ml-2 text-ink-tertiary">Day {event.scheduledDay}</span>
+              )}
+            </p>
           </div>
         </div>
 
-        {/* Races */}
-        <AnimatePresence>
-          {isExpanded && event.races && event.races.length > 0 && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="border-t border-white/[0.04]"
-            >
-              {event.races.map((race) => (
-                <RaceRow
-                  key={race.id}
-                  race={race}
-                  onAddResults={() => onAddResults(race)}
-                  onDelete={() => onDeleteRace(race.id)}
-                  winnerTime={getWinnerTime(race.results || [])}
-                />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <button
+            onClick={onAddRace}
+            className="p-1.5 rounded-lg hover:bg-white/[0.05] text-ink-muted hover:text-ink-primary transition-colors"
+            title="Add race"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onDeleteEvent}
+            className="p-1.5 rounded-lg hover:bg-data-poor/[0.08] text-ink-muted hover:text-data-poor transition-colors"
+            title="Delete event"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
+
+      {/* Races */}
+      <AnimatePresence>
+        {isExpanded && event.races && event.races.length > 0 && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="border-t border-ink-border"
+          >
+            {event.races.map((race) => (
+              <RaceRow
+                key={race.id}
+                race={race}
+                onAddResults={() => onAddResults(race)}
+                onDelete={() => onDeleteRace(race.id)}
+                winnerTime={getWinnerTime(race.results || [])}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -351,7 +351,7 @@ function RaceRow({
   const ownResult = race.results?.find((r) => r.isOwnTeam);
 
   return (
-    <div className="px-5 py-3.5 border-b border-white/[0.03] last:border-b-0 hover:bg-white/[0.015] transition-colors">
+    <div className="px-5 py-3.5 border-b border-ink-border/50 last:border-b-0 hover:bg-ink-hover/50 transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div>

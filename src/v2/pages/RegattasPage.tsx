@@ -112,128 +112,143 @@ export function RegattasPage() {
   // Show detail view if regattaId is present
   if (regattaId) {
     return (
-      <div className="p-6 max-w-5xl mx-auto">
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-2 text-sm text-ink-secondary hover:text-ink-bright
-                     transition-colors mb-6 group"
-        >
-          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          All Regattas
-        </button>
+      <div className="max-w-5xl mx-auto">
+        <div className="px-6 pt-6">
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 text-sm text-accent-copper hover:text-accent-copper-hover
+                       transition-colors mb-6 group font-medium"
+          >
+            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+            All Regattas
+          </button>
 
-        {loadingDetail ? (
-          <RegattaDetailSkeleton />
-        ) : selectedRegatta ? (
-          <RegattaDetail
-            regatta={selectedRegatta}
-            onEdit={() => setEditingRegatta(selectedRegatta)}
-          />
-        ) : (
-          <div className="text-center py-12 text-ink-secondary">Regatta not found</div>
-        )}
+          {loadingDetail ? (
+            <RegattaDetailSkeleton />
+          ) : selectedRegatta ? (
+            <RegattaDetail
+              regatta={selectedRegatta}
+              onEdit={() => setEditingRegatta(selectedRegatta)}
+            />
+          ) : (
+            <div className="text-center py-12 text-ink-secondary">Regatta not found</div>
+          )}
+        </div>
       </div>
     );
   }
 
   // List/Calendar view
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-display font-bold bg-gradient-to-b from-ink-bright to-ink-body bg-clip-text text-transparent">
-            Regattas
-          </h1>
-          <p className="text-sm text-ink-secondary mt-1.5">
-            Manage races, results, and team rankings
-          </p>
-        </div>
+    <div className="max-w-5xl mx-auto">
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        {/* Decorative copper line at bottom */}
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
 
-        <div className="flex items-center gap-3">
-          {/* View toggle */}
-          <div className="flex rounded-xl p-1 bg-ink-deep/50 border border-white/[0.06]">
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-all duration-150 ${
-                viewMode === 'list'
-                  ? 'bg-white/[0.08] text-ink-bright shadow-sm'
-                  : 'text-ink-muted hover:text-ink-secondary'
-              }`}
-              title="List view"
-            >
-              <List className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode('calendar')}
-              className={`p-2 rounded-lg transition-all duration-150 ${
-                viewMode === 'calendar'
-                  ? 'bg-white/[0.08] text-ink-bright shadow-sm'
-                  : 'text-ink-muted hover:text-ink-secondary'
-              }`}
-              title="Calendar view"
-            >
-              <CalendarIcon className="w-4 h-4" />
-            </button>
+        <div className="relative flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              Race Management
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Regattas
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">
+              Manage races, results, and team rankings
+            </p>
           </div>
 
-          {/* Create button with glow */}
-          <button
-            onClick={() => setIsFormOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium
-                     bg-gradient-to-b from-accent-primary to-accent-primary/90
-                     text-white rounded-xl
-                     shadow-glow-blue hover:shadow-glow-blue-lg
-                     hover:-translate-y-px active:translate-y-0
-                     transition-all duration-150"
-          >
-            <Plus className="w-4 h-4" />
-            New Regatta
-          </button>
+          <div className="flex items-center gap-3">
+            {/* View toggle */}
+            <div className="flex rounded-xl p-1 bg-ink-well border border-ink-border">
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-lg transition-all duration-150 ${
+                  viewMode === 'list'
+                    ? 'bg-accent-copper/[0.12] text-accent-copper shadow-sm'
+                    : 'text-ink-muted hover:text-ink-secondary'
+                }`}
+                title="List view"
+              >
+                <List className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('calendar')}
+                className={`p-2 rounded-lg transition-all duration-150 ${
+                  viewMode === 'calendar'
+                    ? 'bg-accent-copper/[0.12] text-accent-copper shadow-sm'
+                    : 'text-ink-muted hover:text-ink-secondary'
+                }`}
+                title="Calendar view"
+              >
+                <CalendarIcon className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Create button with glow */}
+            <button
+              onClick={() => setIsFormOpen(true)}
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium
+                       bg-gradient-to-b from-accent-copper to-accent-copper-hover
+                       text-white rounded-xl
+                       shadow-glow-copper hover:shadow-glow-copper-lg
+                       hover:-translate-y-px active:translate-y-0
+                       transition-all duration-150"
+            >
+              <Plus className="w-4 h-4" />
+              New Regatta
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <AnimatePresence mode="wait">
-        {viewMode === 'list' ? (
-          <motion.div
-            key="list"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {loadingRegattas ? (
-              <RegattaListSkeleton />
-            ) : (
-              <RegattaList
+      <div className="px-6">
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          {viewMode === 'list' ? (
+            <motion.div
+              key="list"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {loadingRegattas ? (
+                <RegattaListSkeleton />
+              ) : (
+                <RegattaList
+                  regattas={regattas || []}
+                  isLoading={false}
+                  onSelect={handleSelectRegatta}
+                  onEdit={setEditingRegatta}
+                  onDelete={setDeleteConfirm}
+                  onDuplicate={handleDuplicate}
+                />
+              )}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="calendar"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <RegattaCalendar
                 regattas={regattas || []}
-                isLoading={false}
-                onSelect={handleSelectRegatta}
-                onEdit={setEditingRegatta}
-                onDelete={setDeleteConfirm}
-                onDuplicate={handleDuplicate}
+                onSelectRegatta={handleSelectRegatta}
+                onSelectDate={() => {
+                  setIsFormOpen(true);
+                }}
               />
-            )}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="calendar"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <RegattaCalendar
-              regattas={regattas || []}
-              onSelectRegatta={handleSelectRegatta}
-              onSelectDate={() => {
-                setIsFormOpen(true);
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      {/* end px-6 wrapper */}
 
       {/* Create/Edit Modal */}
       <Dialog

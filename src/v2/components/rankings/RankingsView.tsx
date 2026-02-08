@@ -46,8 +46,8 @@ export function RankingsView({ onSelectTeam }: RankingsViewProps) {
               onClick={() => setSelectedBoatClass(bc.value)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 ${
                 selectedBoatClass === bc.value
-                  ? 'bg-gradient-to-b from-accent-primary to-accent-primary/90 text-white shadow-glow-blue'
-                  : 'bg-white/[0.03] text-ink-secondary border border-white/[0.06] hover:bg-white/[0.06] hover:text-ink-primary hover:border-white/[0.10]'
+                  ? 'bg-gradient-to-b from-accent-copper to-accent-copper-hover text-white shadow-glow-copper'
+                  : 'bg-ink-well text-ink-secondary border border-ink-border hover:bg-ink-hover hover:text-ink-primary hover:border-accent-copper/20'
               }`}
             >
               {bc.label}
@@ -58,70 +58,74 @@ export function RankingsView({ onSelectTeam }: RankingsViewProps) {
 
       {/* Rankings table */}
       {selectedBoatClass && (
-        <div className="relative rounded-2xl p-px bg-gradient-to-b from-white/[0.12] to-white/[0.02]">
-          <div className="rounded-[15px] bg-ink-raised overflow-hidden shadow-card">
-            {/* Header */}
-            <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
-              <h3 className="font-display font-semibold text-ink-bright text-lg">
-                {boatClasses.find((bc) => bc.value === selectedBoatClass)?.label} Rankings
-              </h3>
-              {ourRanking && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-copper/[0.08] ring-1 ring-accent-copper/20">
-                  <Medal className="w-4 h-4 text-accent-copper" />
-                  <span className="text-sm font-semibold text-accent-copper tabular-nums">
-                    Ranked #{ourRanking.rank}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Table header row */}
-            <div className="flex items-center gap-4 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted border-b border-white/[0.04]">
-              <div className="w-10 text-center">#</div>
-              <div className="w-14">Trend</div>
-              <div className="flex-1">Team</div>
-              <div className="text-right w-24">Speed</div>
-              <div className="w-20 text-center">Conf.</div>
-              <div className="w-24 text-right">Updated</div>
-            </div>
-
-            {loadingRankings ? (
-              <div className="p-4">
-                <RankingsSkeleton />
-              </div>
-            ) : rankings && rankings.length > 0 ? (
-              <LayoutGroup>
-                <AnimatePresence initial={false}>
-                  <div>
-                    {rankings.map((team, index) => (
-                      <RankingRow
-                        key={team.teamId || `${team.teamName}-${team.boatClass}`}
-                        rank={team.rank || index + 1}
-                        teamName={team.teamName || 'Unknown'}
-                        speed={team.adjustedSpeed}
-                        boatClass={selectedBoatClass}
-                        previousRank={(team as any).previousRank}
-                        sampleCount={team.sampleCount}
-                        lastUpdated={team.lastCalculatedAt}
-                        isOwnTeam={team.teamName === 'Our Team'}
-                        onClick={() => onSelectTeam?.(team.teamName || '', selectedBoatClass!)}
-                        {...(index < 20 ? {} : { layout: false })}
-                      />
-                    ))}
-                  </div>
-                </AnimatePresence>
-              </LayoutGroup>
-            ) : (
-              <div className="relative py-16 text-center overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-accent-primary/[0.02] to-transparent pointer-events-none" />
-                <TrendingUp className="w-12 h-12 mx-auto mb-3 text-ink-muted" strokeWidth={1} />
-                <p className="text-ink-body font-medium">No rankings data for this boat class</p>
-                <p className="text-sm text-ink-tertiary mt-1">
-                  Add race results to generate rankings
-                </p>
+        <div className="rounded-2xl bg-ink-raised overflow-hidden shadow-card border border-ink-border">
+          {/* Header with copper accent */}
+          <div className="relative px-5 py-4 border-b border-ink-border flex items-center justify-between">
+            <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-accent-copper/50 to-transparent" />
+            <h3 className="font-display font-semibold text-ink-bright text-lg">
+              {boatClasses.find((bc) => bc.value === selectedBoatClass)?.label} Rankings
+            </h3>
+            {ourRanking && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-copper/[0.10] ring-1 ring-accent-copper/25 shadow-glow-copper">
+                <Medal className="w-4 h-4 text-accent-copper" />
+                <span className="text-sm font-bold text-accent-copper tabular-nums">
+                  Ranked #{ourRanking.rank}
+                </span>
               </div>
             )}
           </div>
+
+          {/* Table header row */}
+          <div className="flex items-center gap-4 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted border-b border-ink-border bg-ink-deep/30">
+            <div className="w-10 text-center">#</div>
+            <div className="w-14">Trend</div>
+            <div className="flex-1">Team</div>
+            <div className="text-right w-24">Speed</div>
+            <div className="w-20 text-center">Conf.</div>
+            <div className="w-24 text-right">Updated</div>
+          </div>
+
+          {loadingRankings ? (
+            <div className="p-4">
+              <RankingsSkeleton />
+            </div>
+          ) : rankings && rankings.length > 0 ? (
+            <LayoutGroup>
+              <AnimatePresence initial={false}>
+                <div>
+                  {rankings.map((team, index) => (
+                    <RankingRow
+                      key={team.teamId || `${team.teamName}-${team.boatClass}`}
+                      rank={team.rank || index + 1}
+                      teamName={team.teamName || 'Unknown'}
+                      speed={team.adjustedSpeed}
+                      boatClass={selectedBoatClass}
+                      previousRank={(team as any).previousRank}
+                      sampleCount={team.sampleCount}
+                      lastUpdated={team.lastCalculatedAt}
+                      isOwnTeam={team.teamName === 'Our Team'}
+                      onClick={() => onSelectTeam?.(team.teamName || '', selectedBoatClass!)}
+                      {...(index < 20 ? {} : { layout: false })}
+                    />
+                  ))}
+                </div>
+              </AnimatePresence>
+            </LayoutGroup>
+          ) : (
+            <div className="relative py-16 text-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.03] to-transparent pointer-events-none" />
+              <TrendingUp
+                className="w-14 h-14 mx-auto mb-4 text-accent-copper/30"
+                strokeWidth={1}
+              />
+              <p className="text-lg font-display font-semibold text-ink-primary">
+                No rankings data for this boat class
+              </p>
+              <p className="text-sm text-ink-tertiary mt-1.5">
+                Add race results to generate rankings
+              </p>
+            </div>
+          )}
         </div>
       )}
 

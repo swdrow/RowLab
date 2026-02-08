@@ -58,151 +58,163 @@ export function RankingsPage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-display font-bold bg-gradient-to-b from-ink-bright to-ink-body bg-clip-text text-transparent">
-            Team Rankings
-          </h1>
-          <p className="text-sm text-ink-secondary mt-1.5">
-            Compare your team's speed against competitors
-          </p>
-        </div>
+    <div className="max-w-5xl mx-auto">
+      {/* Hero Header */}
+      <div className="relative px-6 pt-8 pb-6 mb-2 overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-copper/[0.06] via-accent-copper/[0.02] to-transparent pointer-events-none" />
+        {/* Decorative copper line at bottom */}
+        <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsExportOpen(true)}
-            disabled={!rankings || rankings.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium
-                     bg-gradient-to-b from-accent-copper to-accent-copper/90
-                     text-white rounded-xl
-                     shadow-[0_0_20px_-5px_rgba(184,115,51,0.4)]
-                     hover:shadow-[0_0_30px_-5px_rgba(184,115,51,0.5)]
-                     hover:-translate-y-px active:translate-y-0
-                     transition-all duration-150
-                     disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0"
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            Export for NCAA
-          </button>
-          <button
-            onClick={() => setIsImportOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium
-                     text-ink-primary rounded-xl border border-white/[0.08]
-                     hover:bg-white/[0.04] hover:border-white/[0.12]
-                     transition-all duration-150"
-          >
-            <Plus className="w-4 h-4" />
-            Add External Ranking
-          </button>
+        <div className="relative flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+              Competitive Analysis
+            </p>
+            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+              Team Rankings
+            </h1>
+            <p className="text-sm text-ink-secondary mt-2">
+              Compare your team's speed against competitors
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsExportOpen(true)}
+              disabled={!rankings || rankings.length === 0}
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium
+                       bg-gradient-to-b from-accent-copper to-accent-copper-hover
+                       text-white rounded-xl
+                       shadow-glow-copper hover:shadow-glow-copper-lg
+                       hover:-translate-y-px active:translate-y-0
+                       transition-all duration-150
+                       disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              Export for NCAA
+            </button>
+            <button
+              onClick={() => setIsImportOpen(true)}
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium
+                       text-ink-primary rounded-xl border border-ink-border
+                       hover:bg-ink-hover hover:border-accent-copper/20
+                       transition-all duration-150"
+            >
+              <Plus className="w-4 h-4" />
+              Add External Ranking
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <Tab.Group>
-        <Tab.List className="flex gap-1 mb-8 border-b border-white/[0.06]">
-          <Tab
-            className={({ selected }) =>
-              `px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-all duration-150 ${
-                selected
-                  ? 'border-accent-primary text-ink-bright'
-                  : 'border-transparent text-ink-secondary hover:text-ink-body hover:border-white/[0.08]'
-              }`
-            }
-          >
-            Speed Rankings
-          </Tab>
-          <Tab
-            className={({ selected }) =>
-              `px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-all duration-150 ${
-                selected
-                  ? 'border-accent-primary text-ink-bright'
-                  : 'border-transparent text-ink-secondary hover:text-ink-body hover:border-white/[0.08]'
-              }`
-            }
-          >
-            Head-to-Head
-          </Tab>
-        </Tab.List>
+      <div className="px-6">
+        {/* Tabs */}
+        <Tab.Group>
+          <Tab.List className="flex gap-1 mb-8 border-b border-ink-border">
+            <Tab
+              className={({ selected }) =>
+                `px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-all duration-150 ${
+                  selected
+                    ? 'border-accent-copper text-ink-bright'
+                    : 'border-transparent text-ink-secondary hover:text-ink-body hover:border-ink-border'
+                }`
+              }
+            >
+              Speed Rankings
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                `px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-all duration-150 ${
+                  selected
+                    ? 'border-accent-copper text-ink-bright'
+                    : 'border-transparent text-ink-secondary hover:text-ink-body hover:border-ink-border'
+                }`
+              }
+            >
+              Head-to-Head
+            </Tab>
+          </Tab.List>
 
-        <Tab.Panels>
-          {/* Speed Rankings */}
-          <Tab.Panel>
-            {!rankings ? <RankingsSkeleton /> : <RankingsView onSelectTeam={handleSelectTeam} />}
-          </Tab.Panel>
+          <Tab.Panels>
+            {/* Speed Rankings */}
+            <Tab.Panel>
+              {!rankings ? <RankingsSkeleton /> : <RankingsView onSelectTeam={handleSelectTeam} />}
+            </Tab.Panel>
 
-          {/* Head-to-Head */}
-          <Tab.Panel>
-            <div className="space-y-6">
-              {/* Team and boat class selectors */}
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-xs font-semibold text-ink-secondary uppercase tracking-[0.1em] mb-2">
-                    Compare against
-                  </label>
-                  <select
-                    value={selectedComparison?.opponent || ''}
-                    onChange={(e) =>
-                      setSelectedComparison((prev) => ({
-                        opponent: e.target.value,
-                        boatClass: prev?.boatClass || boatClasses[0]?.value || '8+',
-                      }))
-                    }
-                    className="w-full px-4 py-2.5 bg-ink-well border border-white/[0.08] rounded-xl
+            {/* Head-to-Head */}
+            <Tab.Panel>
+              <div className="space-y-6">
+                {/* Team and boat class selectors */}
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-xs font-semibold text-ink-secondary uppercase tracking-[0.1em] mb-2">
+                      Compare against
+                    </label>
+                    <select
+                      value={selectedComparison?.opponent || ''}
+                      onChange={(e) =>
+                        setSelectedComparison((prev) => ({
+                          opponent: e.target.value,
+                          boatClass: prev?.boatClass || boatClasses[0]?.value || '8+',
+                        }))
+                      }
+                      className="w-full px-4 py-2.5 bg-ink-well border border-white/[0.08] rounded-xl
                              text-ink-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30
                              focus:border-accent-primary/50 transition-all"
-                  >
-                    <option value="">Select a team</option>
-                    {externalTeams?.map((team) => (
-                      <option key={team.id} value={team.name}>
-                        {team.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    >
+                      <option value="">Select a team</option>
+                      {externalTeams?.map((team) => (
+                        <option key={team.id} value={team.name}>
+                          {team.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div className="w-48">
-                  <label className="block text-xs font-semibold text-ink-secondary uppercase tracking-[0.1em] mb-2">
-                    Boat Class
-                  </label>
-                  <select
-                    value={selectedComparison?.boatClass || ''}
-                    onChange={(e) =>
-                      setSelectedComparison((prev) => ({
-                        opponent: prev?.opponent || '',
-                        boatClass: e.target.value,
-                      }))
-                    }
-                    className="w-full px-4 py-2.5 bg-ink-well border border-white/[0.08] rounded-xl
+                  <div className="w-48">
+                    <label className="block text-xs font-semibold text-ink-secondary uppercase tracking-[0.1em] mb-2">
+                      Boat Class
+                    </label>
+                    <select
+                      value={selectedComparison?.boatClass || ''}
+                      onChange={(e) =>
+                        setSelectedComparison((prev) => ({
+                          opponent: prev?.opponent || '',
+                          boatClass: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-2.5 bg-ink-well border border-white/[0.08] rounded-xl
                              text-ink-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30
                              focus:border-accent-primary/50 transition-all"
-                  >
-                    {boatClasses.map((bc) => (
-                      <option key={bc.value} value={bc.value}>
-                        {bc.label}
-                      </option>
-                    ))}
-                  </select>
+                    >
+                      {boatClasses.map((bc) => (
+                        <option key={bc.value} value={bc.value}>
+                          {bc.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
+
+                {/* Head-to-head comparison */}
+                {selectedComparison?.opponent ? (
+                  <HeadToHeadTable
+                    opponent={selectedComparison.opponent}
+                    boatClass={selectedComparison.boatClass}
+                  />
+                ) : (
+                  <div className="relative text-center py-16 rounded-2xl border border-white/[0.06] bg-white/[0.01] overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-accent-primary/[0.02] to-transparent pointer-events-none" />
+                    <p className="text-ink-secondary">Select a team to compare your race history</p>
+                  </div>
+                )}
               </div>
-
-              {/* Head-to-head comparison */}
-              {selectedComparison?.opponent ? (
-                <HeadToHeadTable
-                  opponent={selectedComparison.opponent}
-                  boatClass={selectedComparison.boatClass}
-                />
-              ) : (
-                <div className="relative text-center py-16 rounded-2xl border border-white/[0.06] bg-white/[0.01] overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-b from-accent-primary/[0.02] to-transparent pointer-events-none" />
-                  <p className="text-ink-secondary">Select a team to compare your race history</p>
-                </div>
-              )}
-            </div>
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
+      </div>
+      {/* end px-6 wrapper */}
 
       {/* Import Modal */}
       <Dialog open={isImportOpen} onClose={() => setIsImportOpen(false)} className="relative z-50">

@@ -320,6 +320,10 @@ export default {
         'glow-blue': '0 0 0 1px rgba(0,112,243,0.3), 0 0 20px -5px rgba(0,112,243,0.4)',
         'glow-blue-lg': '0 0 0 1px rgba(0,112,243,0.4), 0 0 30px -5px rgba(0,112,243,0.5)',
 
+        // Copper glow for warm accent actions
+        'glow-copper': '0 0 0 1px rgba(184,115,51,0.3), 0 0 20px -5px rgba(184,115,51,0.4)',
+        'glow-copper-lg': '0 0 0 1px rgba(184,115,51,0.4), 0 0 30px -5px rgba(184,115,51,0.5)',
+
         // Inset for inputs
         inner: 'inset 0 1px 2px rgba(0,0,0,0.2)',
 
