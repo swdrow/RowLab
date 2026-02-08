@@ -99,9 +99,12 @@ export function ContextRail() {
 
   return (
     <nav
-      className="w-16 h-full bg-ink-base border-r border-ink-border flex flex-col items-center py-4 gap-2"
+      className="relative w-16 h-full bg-ink-base border-r border-ink-border flex flex-col items-center py-4 gap-2"
       aria-label="Workspace contexts"
     >
+      {/* Copper gradient divider at bottom */}
+      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
+
       {contexts.map((context) => {
         const isActive = activeContext === context.id;
         const Icon = context.icon;
@@ -112,13 +115,13 @@ export function ContextRail() {
             onClick={() => setActiveContext(context.id)}
             aria-label={context.ariaLabel}
             aria-current={isActive ? 'page' : undefined}
-            className="relative w-12 h-12 rounded-lg flex items-center justify-center hover:bg-ink-raised transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-ink-base"
+            className="relative w-12 h-12 rounded-lg flex items-center justify-center hover:bg-accent-copper/[0.08] transition-colors focus:outline-none focus:ring-2 focus:ring-accent-copper/30 focus:ring-offset-2 focus:ring-offset-ink-base"
           >
-            {/* Active indicator background - monochrome, animates between buttons */}
+            {/* Active indicator background - copper accent, animates between buttons */}
             {isActive && (
               <motion.div
                 layoutId="activeContext"
-                className="absolute inset-0 bg-ink-raised rounded-lg"
+                className="absolute inset-0 bg-accent-copper rounded-lg"
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
@@ -126,7 +129,7 @@ export function ContextRail() {
             {/* Icon - relative positioning to appear above indicator */}
             <Icon
               className={`relative w-6 h-6 transition-colors ${
-                isActive ? 'text-ink-bright' : 'text-ink-secondary'
+                isActive ? 'text-white' : 'text-ink-secondary'
               }`}
             />
           </button>

@@ -121,8 +121,11 @@ export function WorkspaceSidebar({ onNavigate }: WorkspaceSidebarProps = {}) {
   return (
     <nav
       aria-label={`${activeContext} workspace navigation`}
-      className="workspace-sidebar flex flex-col gap-1 p-4 w-64 h-full bg-ink-base border-r border-ink-border"
+      className="workspace-sidebar relative flex flex-col gap-1 p-4 w-64 h-full bg-ink-base border-r border-ink-border"
     >
+      {/* Copper gradient accent at top */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent-copper/20 to-transparent" />
+
       {visibleNavItems.map((item) => {
         const isActive = location.pathname === item.to;
         const IconComponent = ICON_MAP[item.icon as keyof typeof ICON_MAP];
@@ -134,11 +137,11 @@ export function WorkspaceSidebar({ onNavigate }: WorkspaceSidebarProps = {}) {
             onClick={onNavigate}
             aria-current={isActive ? 'page' : undefined}
             className={cn(
-              'flex items-center gap-3 px-3 py-2 rounded-lg',
+              'flex items-center gap-3 py-2 rounded-lg',
               'transition-colors duration-150',
               isActive
-                ? 'text-ink-bright bg-ink-raised'
-                : 'text-ink-secondary hover:text-ink-primary hover:bg-ink-raised/50'
+                ? 'bg-accent-copper/[0.08] text-accent-copper border-l-2 border-accent-copper font-semibold pl-[10px] pr-3'
+                : 'text-ink-secondary hover:text-ink-body hover:bg-ink-hover px-3'
             )}
           >
             {IconComponent && <IconComponent className="w-5 h-5" />}
