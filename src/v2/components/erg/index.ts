@@ -8,6 +8,7 @@ export { ErgCSVImportModal } from './ErgCSVImportModal';
 export { ErgImportPreview } from './ErgImportPreview';
 export { ErgColumnMapper } from './ErgColumnMapper';
 export { ErgEmptyState, ErgNoResultsState } from './ErgEmptyState';
+export { ErgLeaderboard } from './ErgLeaderboard';
 
 export type { ErgTestFiltersProps } from './ErgTestFilters';
 export type { ErgTestFormProps } from './ErgTestForm';

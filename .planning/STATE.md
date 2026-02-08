@@ -4,9 +4,9 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 30 (Erg Data Migration) — In Progress
-**Plan:** 2/4 complete (30-01 pending, 30-02 done)
-**Status:** Erg page skeleton loaders (CW-03) and keyboard shortcuts (CW-02) implemented. Ready for 30-03.
-**Last activity:** 2026-02-08 — Completed 30-02-PLAN.md
+**Plan:** 3/4 complete (30-01, 30-02 done)
+**Status:** Erg component color migration (30-01), skeleton loaders (30-02), keyboard shortcuts complete. Ready for 30-03.
+**Last activity:** 2026-02-08 — Completed 30-01-PLAN.md
 
 ## Project Reference
 
@@ -91,7 +91,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 27 | Dashboard Rebuild | Complete ✅ | 7/7 |
 | 28 | Athletes Feature Migration | Complete ✅ | 8/8 |
 | 29 | Lineup Builder Migration | Complete ✅ | 5/5 |
-| 30 | Erg Data Migration | In Progress | 2/4 |
+| 30 | Erg Data Migration | In Progress | 3/4 |
 | 31-36 | Feature Modules | Planned | TBD |
 
 v3.0 Progress: ████████████████░ (6 phases complete, 7 remaining)
@@ -491,7 +491,7 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-08
-**Stopped at:** Completed 30-02-PLAN.md (erg skeleton loaders + keyboard shortcuts)
+**Stopped at:** Completed 30-01-PLAN.md (erg component color migration to V3 design tokens)
 **Resume file:** None
 **Resume with:** `/gsd:execute-phase 30` to continue with 30-03
 
@@ -517,7 +517,7 @@ Key architectural decisions carrying forward:
 
 **v3.0 — App Redesign** (In Progress)
 
-Phase 30 (Erg Data Migration) in progress. Plan 02 of 4 complete.
+Phase 30 (Erg Data Migration) in progress. Plan 03 of 4 complete.
 
 **v3.0 Progress:**
 - Phase 24: Foundation & Design System ✅
@@ -526,7 +526,7 @@ Phase 30 (Erg Data Migration) in progress. Plan 02 of 4 complete.
 - Phase 27: Dashboard Rebuild ✅
 - Phase 28: Athletes Feature Migration ✅
 - Phase 29: Lineup Builder Migration ✅
-- Phase 30: Erg Data Migration (2/4 plans)
+- Phase 30: Erg Data Migration (3/4 plans)
 - Phases 31-36: Planned
 
 To continue, run `/gsd:execute-phase 30` to execute next plan.
