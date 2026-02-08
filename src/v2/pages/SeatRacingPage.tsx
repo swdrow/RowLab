@@ -9,6 +9,7 @@ import { useRequireAuth } from '../../hooks/useAuth';
 import {
   RankingsChart,
   RankingsTable,
+  RankingDetailPanel,
   SessionList,
   SessionDetail,
   SessionWizard,
@@ -71,6 +72,7 @@ export function SeatRacingPage() {
   // Modal/panel state
   const [showWizard, setShowWizard] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedAthleteId, setSelectedAthleteId] = useState<string | null>(null);
 
   // Auth - redirects to login if not authenticated
   const { isLoading: isAuthLoading } = useRequireAuth();
@@ -121,9 +123,7 @@ export function SeatRacingPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold text-txt-primary">Seat Racing</h1>
-            <p className="text-sm text-txt-tertiary mt-1">
-              ELO rankings and session history
-            </p>
+            <p className="text-sm text-txt-tertiary mt-1">ELO rankings and session history</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -198,9 +198,7 @@ export function SeatRacingPage() {
               <div className="flex-shrink-0 px-6 py-4 border-b border-bdr-default bg-bg-surface">
                 {/* Side filter buttons */}
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-txt-secondary mr-2">
-                    Filter:
-                  </span>
+                  <span className="text-sm font-medium text-txt-secondary mr-2">Filter:</span>
                   <button
                     onClick={() => setSideFilter('all')}
                     className={`
@@ -260,6 +258,7 @@ export function SeatRacingPage() {
                       ratings={ratings}
                       isLoading={isLoadingRatings}
                       onRecalculate={recalculate}
+                      onAthleteClick={setSelectedAthleteId}
                     />
                   </div>
 
@@ -352,10 +351,7 @@ export function SeatRacingPage() {
                   </div>
 
                   {/* Wizard */}
-                  <SessionWizard
-                    onComplete={handleWizardSuccess}
-                    onCancel={handleCloseWizard}
-                  />
+                  <SessionWizard onComplete={handleWizardSuccess} onCancel={handleCloseWizard} />
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -409,6 +405,13 @@ export function SeatRacingPage() {
           </div>
         </Dialog>
       </Transition>
+
+      {/* Ranking Detail Panel */}
+      <RankingDetailPanel
+        athleteId={selectedAthleteId}
+        isOpen={selectedAthleteId !== null}
+        onClose={() => setSelectedAthleteId(null)}
+      />
     </div>
   );
 }
