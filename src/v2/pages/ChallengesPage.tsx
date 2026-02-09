@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { ChallengeList, LeaderboardLive } from '../features/gamification';
+import { SeasonMilestoneTimeline } from '../features/gamification/components/SeasonMilestoneTimeline';
 import { useChallenge } from '../hooks/useChallenges';
 import { useGamificationEnabled } from '../hooks/useGamificationPreference';
 import { ArrowLeft, Trophy, Users, Calendar, Flag, Target } from 'lucide-react';
@@ -150,6 +151,18 @@ export function ChallengesPage() {
       </div>
 
       <div className="px-6 space-y-8">
+        {/* Season Journey */}
+        <section>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-1.5 h-1.5 rounded-full bg-accent-primary" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-primary">
+              Season Journey
+            </span>
+            <div className="flex-1 h-px bg-gradient-to-r from-accent-primary/20 to-transparent" />
+          </div>
+          <SeasonMilestoneTimeline compact />
+        </section>
+
         {/* Team Challenges Section (Prominent) */}
         <TeamChallengesSection />
 

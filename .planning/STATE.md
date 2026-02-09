@@ -3,11 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.0 — App Redesign
-**Phase:** 34 (Gamification & Activity Feed Migration) — In Progress
-**Plan:** 6/6 complete
-**Status:** ActivityFeedTimeline container created with vertical connector and date grouping. ActivityCard refactored as dispatcher to typed cards. All 6 typed activity cards integrated. Ready for Plan 04 (command palette) and Plan 05 (activity feed real-time).
-**Next Plan:** 34-04 (Command Palette Actions) or 34-05 (Activity Feed Real-time)
-**Last activity:** 2026-02-09 — Completed 34-07 (ActivityFeedTimeline & dispatcher)
+**Phase:** 34 (Gamification & Activity Feed Migration) — Wave 2 Complete
+**Plan:** 8/8 complete
+**Status:** All gamification components migrated to V3 tokens. PinnedBadges integrated into athlete profiles. Team Challenges section added to Challenges page with progress bars and CTAs. Phase 34 COMPLETE. Ready for Phase 35 (Mobile Responsiveness).
+**Next Plan:** 35-01 (Mobile Audit) or Phase 36
+**Last activity:** 2026-02-09 — Completed 34-08 (Gamification Integration)
 
 ## Project Reference
 
@@ -96,7 +96,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 31 | Seat Racing Migration | Complete ✅ | 6/6 |
 | 32 | Training & Attendance Migration | Complete ✅ | 6/6 |
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
-| 34 | Gamification & Activity Feed Migration | In Progress | 6/6 |
+| 34 | Gamification & Activity Feed Migration | Complete ✅ | 8/8 |
 | 35 | Mobile Responsiveness & Performance | Not started | TBD |
 | 36 | V1/V2 Cleanup | Not started | TBD |
 | 37 | Warm Copper Design Sweep | Paused | 2/6 |
@@ -504,9 +504,9 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-09
-**Stopped at:** Phase 34, Plan 07 complete. ActivityFeedTimeline container created. ActivityCard refactored as dispatcher to typed cards.
+**Stopped at:** Phase 34 COMPLETE (8/8 plans). PinnedBadges integrated into athlete profiles. Team Challenges section added to Challenges page.
 **Resume file:** None
-**Resume with:** Continue with Phase 34 Plan 04 (Command Palette Actions) or Plan 05 (Activity Feed Real-time)
+**Resume with:** Begin Phase 35 (Mobile Responsiveness & Performance) or Phase 36 (V1/V2 Cleanup)
 
 ## Roadmap Evolution
 
@@ -914,6 +914,14 @@ Phase 13 delivered the cross-feature integration layer:
 | 33-03 | Debounce cache invalidation by 2 seconds on live events | Prevents broadcast storm when 10+ users watch same regatta (RESEARCH.md Pitfall 3), server-side rate limiting would still cause thundering herd |
 | 33-03 | Add getSocket() method to collaborationService | Encapsulation - race day features access socket without knowing connection management details, better abstraction |
 | 33-03 | Use raceday:* event prefix for namespacing | Avoids collision with collaboration events (session:*, lineup:*), simpler than Socket.IO namespaces |
+
+### v3.0 Decisions (Phase 34)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 34-08 | PinnedBadges render in athlete profile header | Above-the-fold visibility without scrolling, naturally associated with athlete identity, quiet gamification (no badges = no section) |
+| 34-08 | Team Challenges get dedicated section above All Challenges | GM-03 requirement for prominent display. Collective challenges need high visibility for team engagement. Separation enables focused team vs individual framing. |
+| 34-08 | Quiet empty states for gamification features | No achievements = no badges section. No team challenges = subtle invitation to create. Avoids anxious "You have no achievements!" messaging. |
 
 ### v3.0 Decisions (Phase 37)
 

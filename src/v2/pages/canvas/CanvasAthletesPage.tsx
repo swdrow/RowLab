@@ -565,7 +565,7 @@ export function CanvasAthletesPage() {
       <div className="flex-1 overflow-hidden px-6">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-ink-muted font-mono text-sm animate-pulse">Loading athletes...</p>
+            <CanvasConsoleReadout items={[{ label: 'STATUS', value: 'LOADING ATHLETES' }]} />
           </div>
         ) : allAthletes.length === 0 ? (
           <div className="flex items-center justify-center h-full">

@@ -268,7 +268,9 @@ export function SeatRacingPage() {
   if (isAuthLoading) {
     return (
       <div className="flex items-center justify-center h-full bg-ink-default">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-copper" />
+        <div className="text-xs font-mono text-ink-muted uppercase tracking-wider">
+          Authenticating...
+        </div>
       </div>
     );
   }
