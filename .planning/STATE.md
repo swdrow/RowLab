@@ -4,10 +4,10 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 36 (Dead Code Cleanup) — IN PROGRESS
-**Plan:** 2/5 complete (3 commits)
-**Status:** Completed 36-02: Deleted 19 dead V1 pages + 6 dead layouts (10,128 LOC removed), preserved auth/landing/callback pages, eliminated src/layouts/ directory.
-**Next Plan:** 36-03 (Remove V1 components and hooks)
-**Last activity:** 2026-02-09 — Completed 36-02-PLAN.md: Dead V1 pages and layouts removal
+**Plan:** 3/5 complete (6 commits)
+**Status:** Completed 36-03: Deleted 131 dead V1 components (25,774 LOC removed), preserved only Auth/ and App.jsx-critical components, fixed broken import paths in gamification.
+**Next Plan:** 36-04 (Remove V1 hooks and stores)
+**Last activity:** 2026-02-09 — Completed 36-03-PLAN.md: Dead V1 components removal
 
 ## Project Reference
 
@@ -98,7 +98,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
 | 34 | Gamification & Activity Feed Migration | Complete ✅ | 8/8 |
 | 35 | Canvas Promotion + Mobile | Complete ✅ | 11/11 |
-| 36 | Dead Code Cleanup | In Progress | 2/5 |
+| 36 | Dead Code Cleanup | In Progress | 3/5 |
 
 v3.0 Progress: ██████████████████░░ (11 phases complete, 1 in progress, 1 remaining)
 
@@ -967,6 +967,9 @@ Phase 13 delivered the cross-feature integration layer:
 | 38-06 | Use TanStack Virtual for table view only | Athletes page is the only page with 500+ rows. Grid and compact views handle virtualization internally. Table view needs explicit virtualization. |
 | 38-06 | Reuse ALL V2 data hooks and interaction logic | Data fetching, keyboard shortcuts, CSV import, and selection logic are well-tested. Only redesigned the display layer for Canvas styling. |
 | 38-06 | Console readout bulk actions at bottom | Canvas design uses console readouts, not floating action bars. Sticky bottom bar with monospace labels matches instrument panel pattern. |
+| 36-03 | Preserve minimal component set for auth/landing | Only kept components directly imported by auth pages, landing page, and App.jsx (Auth/, LoadingFallback, SplashScreen, LegacyRedirect, ui/SpotlightCard) |
+| 36-03 | Clean ui directory except SpotlightCard | Deleted all V1 ui components except SpotlightCard which is still used by InviteClaimPage |
+| 36-03 | Fix bugs before deletion to prevent build errors | Corrected broken import paths in gamification components before deleting src/components/ui/ (Deviation Rule 1) |
 
 ---
-*Last updated: 2026-02-09 — Phase 35 Plan 11 Complete (Accessibility tests, coverage threshold, Lighthouse CI)*
+*Last updated: 2026-02-09 — Phase 36 Plan 03 Complete (Dead V1 components removed)*
