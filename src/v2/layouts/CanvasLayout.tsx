@@ -93,7 +93,10 @@ export function CanvasLayout() {
   }
 
   return (
-    <div className="v2 min-h-screen bg-ink-deep relative overflow-hidden" style={atmosphereVars}>
+    <div
+      className="v2 canvas-layout min-h-screen bg-ink-deep relative overflow-hidden"
+      style={atmosphereVars}
+    >
       {/* ============================================ */}
       {/* BREATHING ATMOSPHERE — animated CSS gradient layers */}
       {/* These drift independently via canvas-atmosphere.css keyframes */}

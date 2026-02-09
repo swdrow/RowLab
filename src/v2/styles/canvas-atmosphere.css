@@ -14,6 +14,17 @@
  */
 
 /* ============================================
+   FONT OVERRIDE
+   Canvas uses sans-serif only. Override the serif display font
+   so any child pages using font-display render in Inter instead.
+   ============================================ */
+
+.canvas-layout {
+  --font-display:
+    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ============================================
    LAYER 1: PRIMARY NEBULA
    The main zone-colored gradient blob. Drifts diagonally.
    ============================================ */
