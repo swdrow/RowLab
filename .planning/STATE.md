@@ -96,7 +96,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 31 | Seat Racing Migration | Complete ✅ | 6/6 |
 | 32 | Training & Attendance Migration | Complete ✅ | 6/6 |
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
-| 34 | Gamification & Activity Feed Migration | Not started | TBD |
+| 34 | Gamification & Activity Feed Migration | Planned | 0/6 |
 | 35 | Mobile Responsiveness & Performance | Not started | TBD |
 | 36 | V1/V2 Cleanup | Not started | TBD |
 | 37 | Warm Copper Design Sweep | Paused | 2/6 |

@@ -1249,7 +1249,15 @@ Plans:
 5. User can trigger actions from command palette (Create athlete, Start practice, Log erg test)
 6. User can see recent commands and context-aware suggestions in cmd+k with keyboard shortcuts displayed
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 34-01-PLAN.md — Skeleton loader system (base + card/table/list variants with shimmer)
+- [ ] 34-02-PLAN.md — Activity feed typed cards (6 card types + timeline connector)
+- [ ] 34-03-PLAN.md — Gamification V3 design migration + athlete profile integration
+- [ ] 34-04-PLAN.md — Command palette actions + keyboard shortcuts system
+- [ ] 34-05-PLAN.md — Season milestones + optimistic UI for gamification mutations
+- [ ] 34-06-PLAN.md — Integration wiring + skeleton loader deployment + verification
 
 ---
 
