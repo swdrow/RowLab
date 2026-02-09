@@ -1,41 +1,78 @@
 /**
- * CanvasDashboard - Redesigned dashboard for The Canvas prototype
+ * CanvasDashboard - Dashboard for The Canvas prototype
  *
- * No hero header, no card boxes — data floats in the canvas.
- * Large-format numbers, spatial depth, glass treatments.
- * Zone: Home (warm amber ambient glow).
+ * Design philosophy (from landing page):
+ * - Solid surfaces with hard borders, NOT frosted glass
+ * - Data numbers are the ONLY chromatic elements
+ * - Chrome is monochrome (inkwell palette)
+ * - Subtle micro-animations that feel purposeful
+ * - Strong contrast between surface layers
  *
  * This is a DESIGN PROTOTYPE — uses demo data for visual impact.
- *
- * Design: design/canvas branch prototype
  */
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import {
   TrendingUp,
   TrendingDown,
   Clock,
   Users,
-  Zap,
   ChevronRight,
   Waves,
   Calendar,
   Award,
   Activity,
+  ArrowUpRight,
 } from 'lucide-react';
 
 // ============================================
 // DEMO DATA — prototype visual content
 // ============================================
 
-const METRICS = {
-  activeAthletes: 24,
-  attendanceRate: 91,
-  avgSplit: '1:48.3',
-  upcomingSessions: 3,
-  prsThisWeek: 5,
-  teamRank: 4,
-};
+const METRICS = [
+  {
+    id: 'athletes',
+    label: 'Active Athletes',
+    value: 24,
+    suffix: '',
+    icon: Users,
+    sparkData: [18, 19, 20, 22, 21, 23, 24],
+    dataColor: 'var(--data-good)',
+    trend: { value: '+3', up: true },
+  },
+  {
+    id: 'attendance',
+    label: 'Attendance',
+    value: 91,
+    suffix: '%',
+    icon: Activity,
+    sparkData: [85, 87, 88, 90, 89, 92, 91],
+    dataColor: 'var(--data-excellent)',
+    trend: { value: '+3%', up: true },
+  },
+  {
+    id: 'split',
+    label: 'Avg 2k Split',
+    value: '1:48.3',
+    suffix: '',
+    icon: Waves,
+    sparkData: [110, 109, 108.5, 109, 108, 107.5, 108.3],
+    dataColor: 'var(--data-good)',
+    trend: { value: '-1.2s', up: true },
+  },
+  {
+    id: 'prs',
+    label: 'PRs This Week',
+    value: 5,
+    suffix: '',
+    icon: Award,
+    sparkData: [1, 2, 1, 3, 2, 4, 5],
+    dataColor: 'var(--data-warning)',
+    trend: { value: '+2', up: true },
+  },
+] as const;
 
 const RECENT_ACTIVITY = [
   {
@@ -44,7 +81,7 @@ const RECENT_ACTIVITY = [
     action: 'PR on 2k',
     value: '7:12.4',
     time: '2h ago',
-    trend: 'up' as const,
+    positive: true,
   },
   {
     id: 2,
@@ -52,7 +89,7 @@ const RECENT_ACTIVITY = [
     action: 'Completed 6k test',
     value: '22:48.1',
     time: '3h ago',
-    trend: 'up' as const,
+    positive: true,
   },
   {
     id: 3,
@@ -60,7 +97,7 @@ const RECENT_ACTIVITY = [
     action: 'Attendance streak',
     value: '14 days',
     time: '5h ago',
-    trend: 'up' as const,
+    positive: true,
   },
   {
     id: 4,
@@ -68,7 +105,15 @@ const RECENT_ACTIVITY = [
     action: 'Split improvement',
     value: '-1.2s',
     time: '1d ago',
-    trend: 'up' as const,
+    positive: true,
+  },
+  {
+    id: 5,
+    athlete: 'Lily M.',
+    action: 'Missed practice',
+    value: '—',
+    time: '1d ago',
+    positive: false,
   },
 ];
 
@@ -79,16 +124,49 @@ const UPCOMING = [
 ];
 
 // ============================================
-// SPARKLINE COMPONENT
+// ANIMATED NUMBER — counts up on mount
+// ============================================
+
+function AnimatedNumber({ value, duration = 1.2 }: { value: number | string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const numValue = typeof value === 'number' ? value : parseFloat(value.replace(':', ''));
+  const isTime = typeof value === 'string' && value.includes(':');
+
+  useEffect(() => {
+    if (!ref.current) return;
+    if (isTime) {
+      // For time values, just set directly
+      ref.current.textContent = String(value);
+      return;
+    }
+    const controls = animate(0, numValue, {
+      duration,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (latest) => {
+        if (ref.current) {
+          ref.current.textContent = Number.isInteger(numValue)
+            ? Math.round(latest).toString()
+            : latest.toFixed(1);
+        }
+      },
+    });
+    return () => controls.stop();
+  }, [numValue, duration, isTime, value]);
+
+  return <span ref={ref}>{String(value)}</span>;
+}
+
+// ============================================
+// SPARKLINE — clean, no fill, just the line
 // ============================================
 
 function Sparkline({
   data,
   color,
-  width = 80,
-  height = 24,
+  width = 72,
+  height = 28,
 }: {
-  data: number[];
+  data: readonly number[];
   color: string;
   width?: number;
   height?: number;
@@ -96,23 +174,25 @@ function Sparkline({
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
+  const padding = 2;
 
   const points = data
     .map((v, i) => {
       const x = (i / (data.length - 1)) * width;
-      const y = height - ((v - min) / range) * height;
+      const y = padding + (height - padding * 2) - ((v - min) / range) * (height - padding * 2);
       return `${x},${y}`;
     })
     .join(' ');
 
+  // End dot position
+  const lastX = width;
+  const lastY =
+    padding +
+    (height - padding * 2) -
+    ((data[data.length - 1] - min) / range) * (height - padding * 2);
+
   return (
     <svg width={width} height={height} className="inline-block">
-      <defs>
-        <linearGradient id={`spark-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity={0.3} />
-          <stop offset="100%" stopColor={color} stopOpacity={0} />
-        </linearGradient>
-      </defs>
       <polyline
         points={points}
         fill="none"
@@ -120,12 +200,10 @@ function Sparkline({
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
+        opacity={0.6}
       />
-      {/* Area fill */}
-      <polygon
-        points={`0,${height} ${points} ${width},${height}`}
-        fill={`url(#spark-${color.replace('#', '')})`}
-      />
+      {/* End dot — the current value */}
+      <circle cx={lastX} cy={lastY} r={2.5} fill={color} />
     </svg>
   );
 }
@@ -134,26 +212,20 @@ function Sparkline({
 // STAGGER ANIMATION HELPERS
 // ============================================
 
-const containerVariants = {
+const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.1,
-    },
+    transition: { staggerChildren: 0.05, delayChildren: 0.08 },
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.16, 1, 0.3, 1],
-    },
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -167,111 +239,101 @@ export function CanvasDashboard() {
     now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening';
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-8"
-    >
+    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-6">
       {/* ============================================ */}
-      {/* HERO GREETING — large, editorial feel */}
+      {/* HERO — tight, contrasty, no fluff */}
       {/* ============================================ */}
-      <motion.div variants={itemVariants} className="pt-4">
-        <p className="text-sm font-medium text-ink-tertiary uppercase tracking-[0.2em] mb-2">
+      <motion.div variants={fadeUp} className="pt-2 pb-4 border-b border-ink-border">
+        <p className="text-xs font-medium text-ink-muted uppercase tracking-[0.15em] mb-1">
           {greeting}
         </p>
-        <h1 className="text-5xl sm:text-6xl font-semibold text-ink-bright tracking-tight leading-[1.05]">
-          Your Team
-          <br />
-          <span className="text-ink-secondary font-normal">at a Glance</span>
+        <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-[1.1]">
+          Dashboard
         </h1>
       </motion.div>
 
       {/* ============================================ */}
-      {/* PRIMARY METRICS — floating large-format numbers */}
+      {/* METRICS — solid cards, data-colored numbers */}
       {/* ============================================ */}
-      <motion.div
-        variants={itemVariants}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
-      >
-        {/* Active Athletes */}
-        <MetricFloat
-          label="Active Athletes"
-          value={METRICS.activeAthletes.toString()}
-          suffix=""
-          icon={<Users size={16} />}
-          sparkData={[18, 19, 20, 22, 21, 23, 24]}
-          sparkColor="#FBBF24"
-          accent="amber"
-        />
+      <motion.div variants={fadeUp} className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {METRICS.map((m) => {
+          const Icon = m.icon;
+          return (
+            <motion.div
+              key={m.id}
+              className="bg-ink-raised border border-ink-border rounded-lg p-4
+                         hover:border-ink-border-strong transition-colors duration-150 group"
+              whileHover={{ y: -1 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+            >
+              {/* Label row */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1.5">
+                  <Icon size={13} className="text-ink-muted" />
+                  <span className="text-[11px] font-medium text-ink-tertiary uppercase tracking-wider">
+                    {m.label}
+                  </span>
+                </div>
+                <Sparkline data={m.sparkData} color={m.dataColor} />
+              </div>
 
-        {/* Attendance Rate */}
-        <MetricFloat
-          label="Attendance"
-          value={METRICS.attendanceRate.toString()}
-          suffix="%"
-          icon={<Activity size={16} />}
-          sparkData={[85, 87, 88, 90, 89, 92, 91]}
-          sparkColor="#14B8A6"
-          accent="teal"
-          trend="+3%"
-          trendUp
-        />
+              {/* Value — data-colored, the ONLY chromatic element */}
+              <div className="flex items-baseline gap-1">
+                <span
+                  className="text-3xl lg:text-4xl font-mono font-bold tracking-tighter leading-none"
+                  style={{ color: m.dataColor }}
+                >
+                  <AnimatedNumber value={m.value} />
+                </span>
+                {m.suffix && (
+                  <span className="text-lg font-mono text-ink-secondary">{m.suffix}</span>
+                )}
+              </div>
 
-        {/* Average Split */}
-        <MetricFloat
-          label="Avg 2k Split"
-          value={METRICS.avgSplit}
-          icon={<Waves size={16} />}
-          sparkData={[110, 109, 108.5, 109, 108, 107.5, 108.3]}
-          sparkColor="#818CF8"
-          accent="indigo"
-          trend="-1.2s"
-          trendUp
-        />
-
-        {/* PRs This Week */}
-        <MetricFloat
-          label="PRs This Week"
-          value={METRICS.prsThisWeek.toString()}
-          icon={<Award size={16} />}
-          sparkData={[1, 2, 1, 3, 2, 4, 5]}
-          sparkColor="#F87171"
-          accent="red"
-          trend="+2"
-          trendUp
-        />
+              {/* Trend */}
+              <div className="flex items-center gap-1 mt-2">
+                {m.trend.up ? (
+                  <TrendingUp size={11} className="text-ink-secondary" />
+                ) : (
+                  <TrendingDown size={11} className="text-ink-secondary" />
+                )}
+                <span className="text-[11px] text-ink-secondary">{m.trend.value}</span>
+                <span className="text-[11px] text-ink-muted">vs last week</span>
+              </div>
+            </motion.div>
+          );
+        })}
       </motion.div>
 
       {/* ============================================ */}
-      {/* TWO-COLUMN LAYOUT: Activity + Upcoming */}
+      {/* TWO-COLUMN: Activity + Upcoming */}
       {/* ============================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Recent Activity — wider */}
-        <motion.div variants={itemVariants} className="lg:col-span-3">
-          <div className="glass-panel p-6">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-base font-semibold text-ink-primary">Recent Activity</h3>
-              <button className="flex items-center gap-1 text-xs text-ink-tertiary hover:text-ink-primary transition-colors">
-                View all <ChevronRight size={12} />
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+        {/* Recent Activity */}
+        <motion.div variants={fadeUp} className="lg:col-span-3">
+          <div className="bg-ink-raised border border-ink-border rounded-lg">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-ink-border">
+              <h3 className="text-sm font-semibold text-ink-primary">Recent Activity</h3>
+              <button className="flex items-center gap-1 text-xs text-ink-tertiary hover:text-ink-primary transition-colors duration-150">
+                View all <ArrowUpRight size={11} />
               </button>
             </div>
 
-            <div className="space-y-1">
+            <div>
               {RECENT_ACTIVITY.map((item, i) => (
                 <motion.div
                   key={item.id}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex items-center gap-4 py-3 px-3 -mx-3 rounded-xl
-                             hover:bg-white/[0.03] transition-colors duration-150 group cursor-pointer"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 + i * 0.06, duration: 0.3 }}
+                  className="flex items-center gap-3 px-5 py-3
+                             border-b border-ink-border last:border-b-0
+                             hover:bg-ink-hover transition-colors duration-100 cursor-pointer"
                 >
-                  {/* Avatar placeholder */}
+                  {/* Initials */}
                   <div
-                    className="w-9 h-9 rounded-full bg-gradient-to-br from-white/[0.08] to-white/[0.02]
-                                  border border-white/[0.06] flex items-center justify-center
-                                  text-xs font-semibold text-ink-secondary"
+                    className="w-8 h-8 rounded-md bg-ink-base border border-ink-border
+                                  flex items-center justify-center text-[11px] font-semibold text-ink-secondary"
                   >
                     {item.athlete
                       .split(' ')
@@ -282,68 +344,65 @@ export function CanvasDashboard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-ink-primary">{item.athlete}</span>
-                      <span className="text-xs text-ink-tertiary">{item.action}</span>
+                      <span className="text-xs text-ink-muted">{item.action}</span>
                     </div>
-                    <span className="text-xs text-ink-muted">{item.time}</span>
+                    <span className="text-[11px] text-ink-muted">{item.time}</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-mono font-semibold text-ink-bright">
-                      {item.value}
-                    </span>
-                    {item.trend === 'up' && <TrendingUp size={14} className="text-emerald-400" />}
-                  </div>
+                  {/* Value — data-colored */}
+                  <span
+                    className="text-sm font-mono font-semibold"
+                    style={{
+                      color: item.positive ? 'var(--data-excellent)' : 'var(--data-poor)',
+                    }}
+                  >
+                    {item.value}
+                  </span>
                 </motion.div>
               ))}
             </div>
           </div>
         </motion.div>
 
-        {/* Upcoming Sessions — narrower */}
-        <motion.div variants={itemVariants} className="lg:col-span-2">
-          <div className="glass-panel p-6">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-base font-semibold text-ink-primary">Upcoming</h3>
-              <button className="flex items-center gap-1 text-xs text-ink-tertiary hover:text-ink-primary transition-colors">
-                Schedule <ChevronRight size={12} />
+        {/* Upcoming Sessions */}
+        <motion.div variants={fadeUp} className="lg:col-span-2">
+          <div className="bg-ink-raised border border-ink-border rounded-lg">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-ink-border">
+              <h3 className="text-sm font-semibold text-ink-primary">Upcoming</h3>
+              <button className="flex items-center gap-1 text-xs text-ink-tertiary hover:text-ink-primary transition-colors duration-150">
+                Schedule <ArrowUpRight size={11} />
               </button>
             </div>
 
-            <div className="space-y-3">
+            <div>
               {UPCOMING.map((session, i) => (
                 <motion.div
                   key={session.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35 + i * 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="p-4 rounded-xl
-                             bg-white/[0.02] border border-white/[0.04]
-                             hover:bg-white/[0.04] hover:border-white/[0.08]
-                             transition-all duration-200 cursor-pointer group"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.25 + i * 0.08, duration: 0.3 }}
+                  className="px-5 py-4 border-b border-ink-border last:border-b-0
+                             hover:bg-ink-hover transition-colors duration-100 cursor-pointer group"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="text-sm font-semibold text-ink-bright group-hover:text-white transition-colors">
+                      <h4 className="text-sm font-medium text-ink-bright group-hover:text-white transition-colors duration-100">
                         {session.title}
                       </h4>
                       <div className="flex items-center gap-2 mt-1">
-                        <Clock size={12} className="text-ink-muted" />
+                        <Clock size={11} className="text-ink-muted" />
                         <span className="text-xs text-ink-secondary">{session.time}</span>
                       </div>
                     </div>
                     <span
-                      className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded
-                        ${
-                          session.type === 'On Water'
-                            ? 'bg-ink-raised text-ink-secondary border border-ink-border'
-                            : 'bg-ink-raised text-ink-secondary border border-ink-border'
-                        }`}
+                      className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded
+                                     bg-ink-base text-ink-secondary border border-ink-border"
                     >
                       {session.type}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 mt-3">
-                    <Users size={12} className="text-ink-muted" />
+                  <div className="flex items-center gap-1.5 mt-2.5">
+                    <Users size={11} className="text-ink-muted" />
                     <span className="text-xs text-ink-tertiary">{session.athletes} athletes</span>
                   </div>
                 </motion.div>
@@ -354,35 +413,17 @@ export function CanvasDashboard() {
       </div>
 
       {/* ============================================ */}
-      {/* BOTTOM ROW: Quick Stats Band */}
+      {/* BOTTOM BAR — architectural divider, like landing metrics section */}
       {/* ============================================ */}
-      <motion.div variants={itemVariants}>
-        <div
-          className="flex items-center gap-6 py-4 px-6 rounded-2xl
-                        bg-white/[0.02] border border-white/[0.04]"
-        >
-          <StatPill icon={<Zap size={14} />} label="Team Power" value="High" color="#FBBF24" />
-          <div className="w-px h-6 bg-white/[0.06]" />
-          <StatPill
-            icon={<Calendar size={14} />}
-            label="Next Race"
-            value="12 days"
-            color="#F87171"
-          />
-          <div className="w-px h-6 bg-white/[0.06]" />
-          <StatPill
-            icon={<TrendingUp size={14} />}
-            label="Trend"
-            value="Improving"
-            color="#14B8A6"
-          />
-          <div className="w-px h-6 bg-white/[0.06]" />
-          <StatPill
-            icon={<Award size={14} />}
-            label="Ranking"
-            value={`#${METRICS.teamRank}`}
-            color="#818CF8"
-          />
+      <motion.div variants={fadeUp}>
+        <div className="flex items-center gap-0 rounded-lg border border-ink-border overflow-hidden bg-ink-raised">
+          <BottomStat label="Team Power" value="High" />
+          <div className="w-px self-stretch bg-ink-border" />
+          <BottomStat label="Next Race" value="12 days" />
+          <div className="w-px self-stretch bg-ink-border" />
+          <BottomStat label="Trend" value="Improving" />
+          <div className="w-px self-stretch bg-ink-border" />
+          <BottomStat label="Ranking" value="#4" />
         </div>
       </motion.div>
     </motion.div>
@@ -390,136 +431,16 @@ export function CanvasDashboard() {
 }
 
 // ============================================
-// METRIC FLOAT — large-format number, not in a box
+// BOTTOM STAT — clean cell in the bottom bar
 // ============================================
 
-interface MetricFloatProps {
-  label: string;
-  value: string;
-  suffix?: string;
-  icon: React.ReactNode;
-  sparkData: number[];
-  sparkColor: string;
-  accent: string;
-  trend?: string;
-  trendUp?: boolean;
-}
-
-function MetricFloat({
-  label,
-  value,
-  suffix,
-  icon,
-  sparkData,
-  sparkColor,
-  trend,
-  trendUp,
-}: MetricFloatProps) {
+function BottomStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="glass-panel p-5 group cursor-default">
-      {/* Top row: icon + label */}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="text-ink-muted">{icon}</div>
-        <span className="text-xs font-medium text-ink-tertiary uppercase tracking-wider">
-          {label}
-        </span>
-      </div>
-
-      {/* Large number + sparkline */}
-      <div className="flex items-end justify-between">
-        <div>
-          <span className="text-4xl lg:text-5xl font-metric font-bold text-ink-bright tracking-tighter leading-none">
-            {value}
-          </span>
-          {suffix && (
-            <span className="text-2xl lg:text-3xl font-metric text-ink-secondary ml-0.5">
-              {suffix}
-            </span>
-          )}
-        </div>
-        <div className="pb-2">
-          <Sparkline data={sparkData} color={sparkColor} />
-        </div>
-      </div>
-
-      {/* Trend */}
-      {trend && (
-        <div className="flex items-center gap-1 mt-2">
-          {trendUp ? (
-            <TrendingUp size={12} className="text-emerald-400" />
-          ) : (
-            <TrendingDown size={12} className="text-red-400" />
-          )}
-          <span className={`text-xs font-medium ${trendUp ? 'text-emerald-400' : 'text-red-400'}`}>
-            {trend}
-          </span>
-          <span className="text-xs text-ink-muted ml-1">vs last week</span>
-        </div>
-      )}
+    <div className="flex-1 text-center py-3.5 px-4 hover:bg-ink-hover transition-colors duration-100">
+      <p className="text-[10px] text-ink-muted uppercase tracking-wider mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-ink-primary">{value}</p>
     </div>
   );
-}
-
-// ============================================
-// STAT PILL — inline stat for the bottom band
-// ============================================
-
-function StatPill({
-  icon,
-  label,
-  value,
-  color,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div style={{ color }} className="opacity-70">
-        {icon}
-      </div>
-      <div>
-        <p className="text-[10px] text-ink-muted uppercase tracking-wider">{label}</p>
-        <p className="text-sm font-semibold text-ink-primary">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-// ============================================
-// GLOBAL STYLES for glass-panel (injected once)
-// ============================================
-
-const glassPanelStyles = `
-.glass-panel {
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    0 8px 32px rgba(0, 0, 0, 0.15);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    0 12px 40px rgba(0, 0, 0, 0.2);
-}
-`;
-
-if (typeof document !== 'undefined' && !document.getElementById('canvas-glass-panel-styles')) {
-  const styleSheet = document.createElement('style');
-  styleSheet.id = 'canvas-glass-panel-styles';
-  styleSheet.textContent = glassPanelStyles;
-  document.head.appendChild(styleSheet);
 }
 
 export default CanvasDashboard;
