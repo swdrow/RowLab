@@ -26,7 +26,10 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,json}\"",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run typecheck && npm run lint && npm run test:run"
+    "validate": "npm run typecheck && npm run lint && npm run test:run",
+    "lhci": "lhci autorun",
+    "lhci:collect": "lhci collect",
+    "lhci:assert": "lhci assert"
   },
   "prisma": {
     "seed": "node --env-file=.env prisma/seed.js"
@@ -121,6 +124,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
+    "@lhci/cli": "^0.15.1",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
