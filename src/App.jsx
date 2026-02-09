@@ -44,13 +44,17 @@ const AchievementsPage = lazy(() => import('@v2/pages/AchievementsPage'));
 const ChallengesPage = lazy(() => import('@v2/pages/ChallengesPage'));
 const V2AthleteDetailPage = lazy(() => import('./v2/features/athletes/pages/AthleteDetailPage'));
 
-<<<<<<< HEAD
 // Canvas prototype routes (design/canvas branch)
 const CanvasLayout = lazy(() => import('@v2/layouts/CanvasLayout'));
 const CanvasDashboard = lazy(() => import('@v2/pages/canvas/CanvasDashboard'));
 
-=======
->>>>>>> f3ba501 (style(publication): add editorial publication design prototype)
+// Timeline prototype routes (Direction E: chronological stream)
+const TimelineLayout = lazy(() => import('@v2/layouts/TimelineLayout'));
+
+// Gradient Mesh prototype routes (Direction H: vivid gradients + frosted glass)
+const GradientMeshLayout = lazy(() => import('@v2/layouts/GradientMeshLayout'));
+const MeshDashboard = lazy(() => import('@v2/pages/mesh/MeshDashboard'));
+
 // Publication prototype routes (design/publication branch)
 const PublicationLayout = lazy(() => import('@v2/layouts/PublicationLayout'));
 const PublicationDashboard = lazy(() => import('@v2/pages/publication/PublicationDashboard'));
@@ -627,6 +631,233 @@ function App() {
                       }
                     >
                       <V2SeatRacingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="settings"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading settings..." />
+                      }
+                    >
+                      <V2SettingsPage />
+                    </Suspense>
+                  }
+                />
+              </Route>
+            </Route>
+
+            {/* ============================================ */}
+            {/* Timeline prototype routes at /timeline */}
+            {/* Design exploration: Direction E - chronological stream, time-based nav */}
+            {/* ============================================ */}
+            <Route path="/timeline" element={<V2Layout />}>
+              <Route
+                element={
+                  <Suspense
+                    fallback={<LoadingFallback variant="component" message="Loading timeline..." />}
+                  >
+                    <TimelineLayout />
+                  </Suspense>
+                }
+              >
+                <Route index element={null} />
+                <Route
+                  path="athletes"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading athletes..." />
+                      }
+                    >
+                      <V2AthletesPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="training"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading training..." />
+                      }
+                    >
+                      <CoachTrainingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="regattas"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading regattas..." />
+                      }
+                    >
+                      <RegattasPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="erg-tests"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading erg tests..." />
+                      }
+                    >
+                      <V2ErgTestsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="rankings"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading rankings..." />
+                      }
+                    >
+                      <RankingsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="settings"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading settings..." />
+                      }
+                    >
+                      <V2SettingsPage />
+                    </Suspense>
+                  }
+                />
+              </Route>
+            </Route>
+
+            {/* ============================================ */}
+            {/* Gradient Mesh prototype routes at /mesh */}
+            {/* Direction H: vivid gradient mesh bg, frosted glass sidebar, Stripe energy */}
+            {/* ============================================ */}
+            <Route path="/mesh" element={<V2Layout />}>
+              <Route
+                element={
+                  <Suspense
+                    fallback={<LoadingFallback variant="component" message="Loading mesh..." />}
+                  >
+                    <GradientMeshLayout />
+                  </Suspense>
+                }
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading mesh dashboard..." />
+                      }
+                    >
+                      <MeshDashboard />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="athletes"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading athletes..." />
+                      }
+                    >
+                      <V2AthletesPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="attendance"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading attendance..." />
+                      }
+                    >
+                      <V2AttendancePage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="erg-tests"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading erg tests..." />
+                      }
+                    >
+                      <V2ErgTestsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="rankings"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading rankings..." />
+                      }
+                    >
+                      <RankingsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="regattas"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading regattas..." />
+                      }
+                    >
+                      <RegattasPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/seat-racing"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading seat racing..." />
+                      }
+                    >
+                      <V2SeatRacingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/training"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading training..." />
+                      }
+                    >
+                      <CoachTrainingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/lineup-builder"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading lineup builder..." />
+                      }
+                    >
+                      <V2LineupBuilderPage />
                     </Suspense>
                   }
                 />

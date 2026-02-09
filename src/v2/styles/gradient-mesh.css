@@ -1,0 +1,309 @@
+/**
+ * gradient-mesh.css - Animated gradient mesh background system
+ *
+ * Creates a living, breathing mesh gradient background using multiple
+ * independently-animated gradient layers. Inspired by Stripe/Vercel
+ * visual energy. Colors: deep navy, purple, teal, warm amber.
+ *
+ * The mesh animates on a 20-30s cycle per layer, with each layer
+ * moving at a different speed and direction to create organic movement.
+ *
+ * Usage: Apply .gradient-mesh-bg to a fixed/absolute positioned container.
+ */
+
+/* ============================================
+   BASE MESH CONTAINER
+   ============================================ */
+
+.gradient-mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-color: #060918;
+}
+
+/* ============================================
+   GRADIENT LAYER 1 - Deep purple nebula (slowest)
+   Moves diagonally from bottom-left to top-right
+   ============================================ */
+
+.gradient-mesh-bg::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse 80% 60% at 30% 70%,
+    rgba(99, 102, 241, 0.35) 0%,
+    rgba(99, 102, 241, 0.08) 40%,
+    transparent 70%
+  );
+  animation: meshDrift1 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* ============================================
+   GRADIENT LAYER 2 - Teal aurora (medium speed)
+   Moves in a circular orbit
+   ============================================ */
+
+.gradient-mesh-bg::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse 70% 50% at 70% 30%,
+    rgba(20, 184, 166, 0.3) 0%,
+    rgba(20, 184, 166, 0.06) 40%,
+    transparent 65%
+  );
+  animation: meshDrift2 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* ============================================
+   CHILD LAYER 3 - Warm amber accent (fastest)
+   Applied via .gradient-mesh-layer-3 inner div
+   ============================================ */
+
+.gradient-mesh-layer-3 {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse 50% 40% at 50% 60%,
+    rgba(245, 158, 11, 0.2) 0%,
+    rgba(245, 158, 11, 0.04) 35%,
+    transparent 60%
+  );
+  animation: meshDrift3 18s ease-in-out infinite alternate;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* ============================================
+   CHILD LAYER 4 - Deep navy reinforcement
+   Keeps the corners dark and grounded
+   ============================================ */
+
+.gradient-mesh-layer-4 {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 100% 80% at 0% 100%, rgba(15, 23, 42, 0.9) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 80% at 100% 0%, rgba(15, 23, 42, 0.8) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ============================================
+   CHILD LAYER 5 - Pink/magenta accent wash
+   Adds a warm undertone that prevents cold/sterile feeling
+   ============================================ */
+
+.gradient-mesh-layer-5 {
+  position: absolute;
+  inset: -30%;
+  width: 160%;
+  height: 160%;
+  background: radial-gradient(
+    ellipse 40% 35% at 80% 80%,
+    rgba(236, 72, 153, 0.15) 0%,
+    rgba(236, 72, 153, 0.03) 40%,
+    transparent 60%
+  );
+  animation: meshDrift5 25s ease-in-out infinite alternate;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* ============================================
+   NOISE TEXTURE OVERLAY
+   Adds grain/depth to prevent banding
+   ============================================ */
+
+.gradient-mesh-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   Each layer drifts independently for organic motion
+   ============================================ */
+
+@keyframes meshDrift1 {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(5%, -8%) rotate(2deg) scale(1.05);
+  }
+  50% {
+    transform: translate(-3%, -12%) rotate(-1deg) scale(0.98);
+  }
+  75% {
+    transform: translate(8%, -4%) rotate(3deg) scale(1.02);
+  }
+  100% {
+    transform: translate(2%, -10%) rotate(1deg) scale(1.04);
+  }
+}
+
+@keyframes meshDrift2 {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translate(-8%, 6%) rotate(-2deg) scale(1.06);
+  }
+  66% {
+    transform: translate(6%, -5%) rotate(2deg) scale(0.97);
+  }
+  100% {
+    transform: translate(-4%, 8%) rotate(-1deg) scale(1.03);
+  }
+}
+
+@keyframes meshDrift3 {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  20% {
+    transform: translate(10%, -6%) rotate(3deg) scale(1.08);
+  }
+  40% {
+    transform: translate(-5%, 10%) rotate(-2deg) scale(0.95);
+  }
+  60% {
+    transform: translate(8%, 4%) rotate(1deg) scale(1.03);
+  }
+  80% {
+    transform: translate(-8%, -8%) rotate(-3deg) scale(1.06);
+  }
+  100% {
+    transform: translate(3%, -4%) rotate(2deg) scale(1.01);
+  }
+}
+
+@keyframes meshDrift5 {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg);
+  }
+  50% {
+    transform: translate(-6%, 8%) rotate(-2deg);
+  }
+  100% {
+    transform: translate(4%, -6%) rotate(1deg);
+  }
+}
+
+/* ============================================
+   FROSTED GLASS UTILITIES
+   Reusable glass panel styles for mesh prototype
+   ============================================ */
+
+.mesh-glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+    0 0 40px rgba(0, 0, 0, 0.15);
+}
+
+.mesh-glass-strong {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(60px);
+  -webkit-backdrop-filter: blur(60px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+    0 0 60px rgba(0, 0, 0, 0.2);
+}
+
+.mesh-glass-subtle {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Inner glow effect for elevated panels */
+.mesh-glass-glow {
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 20px rgba(99, 102, 241, 0.03),
+    0 0 40px rgba(0, 0, 0, 0.15),
+    0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   GRADIENT TEXT UTILITY
+   ============================================ */
+
+.mesh-gradient-text {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mesh-gradient-text-warm {
+  background: linear-gradient(135deg, #f59e0b, #f472b6, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mesh-gradient-text-cool {
+  background: linear-gradient(135deg, #14b8a6, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============================================
+   SCROLLBAR STYLING (for dark glass context)
+   ============================================ */
+
+.mesh-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mesh-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mesh-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.mesh-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ============================================
+   REDUCED MOTION — respect user preference
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-mesh-bg::before,
+  .gradient-mesh-bg::after,
+  .gradient-mesh-layer-3,
+  .gradient-mesh-layer-5 {
+    animation: none !important;
+  }
+}
