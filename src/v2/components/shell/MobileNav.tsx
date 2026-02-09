@@ -1,34 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronRight } from 'lucide-react';
-import * as Icons from 'lucide-react';
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  Users,
+  Calendar,
+  Trophy,
+  BarChart3,
+  Settings,
+  MoreHorizontal,
+} from 'lucide-react';
 import { SPRING_CONFIG, SPRING_FAST, usePrefersReducedMotion } from '@v2/utils/animations';
 import { useShowMobileLayout } from '@v2/hooks/useBreakpoint';
-import { useContextStore, CONTEXT_CONFIGS } from '@v2/stores/contextStore';
-import type { Context } from '@v2/types/context';
-
-/**
- * Icon map for navigation items
- * Maps icon names from contextStore to Lucide React components
- */
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
-  home: Icons.Home,
-  activity: Icons.Activity,
-  'trending-up': Icons.TrendingUp,
-  users: Icons.Users,
-  calendar: Icons.Calendar,
-  settings: Icons.Settings,
-  user: Icons.User,
-  shield: Icons.Shield,
-  team: Icons.Users,
-  boat: Icons.Ship,
-  layout: Icons.LayoutGrid,
-  clipboard: Icons.ClipboardList,
-  trophy: Icons.Trophy,
-  flag: Icons.Flag,
-  'bar-chart': Icons.BarChart2,
-};
+import { ZONES, useZone, type ZoneConfig } from '@v2/components/shell/CanvasDock';
 
 /**
  * Simple className utility for conditional classes
@@ -38,33 +24,34 @@ function cn(...classes: (string | boolean | undefined | null)[]): string {
 }
 
 /**
- * MobileNav Component
+ * MobileNav Component - Canvas Edition
  *
- * Mobile-optimized navigation component with:
+ * Mobile-optimized navigation component with Canvas ink styling:
  * - Fixed header with hamburger menu
- * - Slide-in drawer with context switcher and navigation
- * - Bottom tab bar for quick access (first 5 items)
+ * - Slide-in drawer with zone navigation
+ * - Bottom tab bar for 6 Canvas zones
  * - 44px minimum tap targets per WCAG 2.1
  * - Safe area insets for notched phones
- * - Context-aware navigation based on active persona
+ * - Zone accent colors on active tabs
  *
  * Layout:
  * - Header: 56px fixed at top
  * - Bottom tabs: 64px fixed at bottom
  * - Content area: between header and tabs
  *
- * Automatically hides on tablet+ viewports (768px+)
+ * Automatically hides on desktop viewports (1024px+)
  */
 export const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const showMobile = useShowMobileLayout();
   const prefersReducedMotion = usePrefersReducedMotion();
-  const { activeContext, setActiveContext, getActiveConfig } = useContextStore();
+  const zone = useZone();
 
-  // Get navigation items for the current context
-  const config = getActiveConfig();
-  const navItems = config?.navItems || [];
+  // Get first 4 zones for bottom tabs, rest in "More" drawer
+  const primaryZones = ZONES.slice(0, 4);
+  const secondaryZones = ZONES.slice(4);
 
   // Close menu when location changes
   useEffect(() => {
@@ -85,16 +72,14 @@ export const MobileNav: React.FC = () => {
 
   if (!showMobile) return null;
 
-  const contextLabels: Record<Context, string> = {
-    me: 'Me',
-    coach: 'Coach',
-    admin: 'Admin',
+  const handleZoneNavigate = (z: ZoneConfig) => {
+    navigate(z.route);
   };
 
   return (
     <>
-      {/* Mobile header with hamburger - warm palette */}
-      <header className="fixed top-0 left-0 right-0 h-14 bg-[var(--color-bg-surface)] border-b border-[var(--color-border-subtle)] z-50 flex items-center justify-between px-4">
+      {/* Mobile header with hamburger - Canvas ink palette */}
+      <header className="fixed top-0 left-0 right-0 h-14 bg-ink-base/80 backdrop-blur-xl border-b border-ink-border z-50 flex items-center justify-between px-4">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2"
@@ -102,17 +87,22 @@ export const MobileNav: React.FC = () => {
           aria-expanded={isOpen}
         >
           {isOpen ? (
-            <X className="w-6 h-6 text-[var(--color-text-primary)]" />
+            <X className="w-6 h-6 text-ink-primary" />
           ) : (
-            <Menu className="w-6 h-6 text-[var(--color-text-primary)]" />
+            <Menu className="w-6 h-6 text-ink-primary" />
           )}
         </button>
-        <span className="text-sm font-semibold text-[var(--color-text-primary)]">
-          RowLab
-        </span>
-        <span className="text-xs font-medium text-[var(--color-text-secondary)] capitalize px-2 py-1 bg-[var(--color-bg-elevated)] rounded">
-          {contextLabels[activeContext]}
-        </span>
+        <span className="text-sm font-semibold text-ink-primary">Canvas</span>
+        <div
+          className="text-xs font-medium px-2 py-1 rounded-md"
+          style={{
+            color: zone.accent,
+            backgroundColor: `rgba(${zone.accentRgb}, 0.1)`,
+            border: `1px solid rgba(${zone.accentRgb}, 0.2)`,
+          }}
+        >
+          {zone.name}
+        </div>
       </header>
 
       {/* Mobile menu overlay */}
@@ -130,97 +120,77 @@ export const MobileNav: React.FC = () => {
               aria-hidden="true"
             />
 
-            {/* Slide-in menu - warm palette */}
+            {/* Slide-in menu - Canvas ink palette */}
             <motion.nav
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={prefersReducedMotion ? { duration: 0 } : SPRING_CONFIG}
-              className="fixed top-14 left-0 bottom-0 w-72 max-w-[calc(100vw-3rem)] bg-[var(--color-bg-base)] border-r border-[var(--color-border-subtle)] z-50 overflow-y-auto flex flex-col"
+              className="fixed top-14 left-0 bottom-0 w-72 max-w-[calc(100vw-3rem)] bg-ink-base border-r border-ink-border z-50 overflow-y-auto flex flex-col"
               aria-label="Mobile navigation"
             >
-              {/* Context Switcher */}
-              <div className="p-4 border-b border-[var(--color-border-subtle)]">
-                <p className="text-xs font-medium text-[var(--color-text-tertiary)] mb-3 uppercase tracking-wider">
-                  Workspace
+              {/* Zone Navigation */}
+              <div className="p-4 border-b border-ink-border">
+                <p className="text-xs font-medium text-ink-tertiary mb-3 uppercase tracking-wider">
+                  Zones
                 </p>
-                <div className="flex gap-2">
-                  {CONTEXT_CONFIGS.map((ctx) => {
-                    const isActive = activeContext === ctx.id;
-                    const IconComponent = ICON_MAP[ctx.icon];
+                <div className="space-y-1">
+                  {ZONES.map((z) => {
+                    const isActive = zone.id === z.id;
+                    const Icon = z.icon;
                     return (
                       <button
-                        key={ctx.id}
-                        onClick={() => setActiveContext(ctx.id as Context)}
+                        key={z.id}
+                        onClick={() => handleZoneNavigate(z)}
                         className={cn(
-                          'flex-1 flex flex-col items-center gap-1 py-3 rounded-lg min-h-[44px] transition-colors',
+                          'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg min-h-[44px] transition-all duration-150',
                           isActive
-                            ? 'bg-[var(--color-interactive-primary)] text-white'
-                            : 'bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]'
+                            ? 'bg-ink-raised text-ink-primary'
+                            : 'text-ink-secondary hover:bg-ink-hover hover:text-ink-primary'
                         )}
+                        style={
+                          isActive
+                            ? {
+                                borderLeft: `3px solid ${z.accent}`,
+                                paddingLeft: '9px',
+                              }
+                            : {}
+                        }
                       >
-                        {IconComponent && <IconComponent className="w-5 h-5" />}
-                        <span className="text-xs font-medium">{ctx.label}</span>
+                        <Icon
+                          className="w-5 h-5 flex-shrink-0"
+                          style={isActive ? { color: z.accent } : {}}
+                        />
+                        <span className="font-medium flex-1 text-left">{z.name}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
-
-              {/* Navigation Items */}
-              <ul className="flex-1 py-2">
-                {navItems.map((item) => {
-                  const isActive = location.pathname === item.to;
-                  const IconComponent = ICON_MAP[item.icon];
-
-                  return (
-                    <li key={item.to}>
-                      <Link
-                        to={item.to}
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          'flex items-center gap-3 px-4 py-3 min-h-[44px] mx-2 rounded-lg transition-colors',
-                          isActive
-                            ? 'bg-[var(--color-interactive-primary)]/10 text-[var(--color-interactive-primary)]'
-                            : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-primary)]'
-                        )}
-                      >
-                        {IconComponent && <IconComponent className="w-5 h-5 flex-shrink-0" />}
-                        <span className="font-medium flex-1">{item.label}</span>
-                        {isActive && (
-                          <ChevronRight className="w-4 h-4 text-[var(--color-interactive-primary)]" />
-                        )}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
             </motion.nav>
           </>
         )}
       </AnimatePresence>
 
-      {/* Bottom tab bar for quick access (first 4 items + more) - warm palette with safe area */}
+      {/* Bottom tab bar for quick access (first 4 zones + More) - Canvas ink with safe area */}
       <nav
-        className="fixed bottom-0 left-0 right-0 bg-[var(--color-bg-surface)] border-t border-[var(--color-border-subtle)] z-50"
+        className="fixed bottom-0 left-0 right-0 bg-ink-base/80 backdrop-blur-xl border-t border-ink-border z-50"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         aria-label="Quick navigation"
       >
         <ul className="flex items-center justify-around h-16 px-2">
-          {navItems.slice(0, 4).map((item) => {
-            const isActive = location.pathname === item.to;
-            const IconComponent = ICON_MAP[item.icon];
+          {primaryZones.map((z) => {
+            const isActive = zone.id === z.id;
+            const Icon = z.icon;
 
             return (
-              <li key={item.to} className="relative">
-                <Link
-                  to={item.to}
+              <li key={z.id} className="relative">
+                <button
+                  onClick={() => handleZoneNavigate(z)}
                   className={cn(
                     'flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[44px] px-3',
-                    'transition-colors duration-100',
-                    isActive
-                      ? 'text-[var(--color-interactive-primary)]'
-                      : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]'
+                    'transition-all duration-150',
+                    isActive ? 'text-ink-primary' : 'text-ink-tertiary hover:text-ink-secondary'
                   )}
                   aria-current={isActive ? 'page' : undefined}
                 >
@@ -228,37 +198,41 @@ export const MobileNav: React.FC = () => {
                   {isActive && !prefersReducedMotion && (
                     <motion.div
                       layoutId="mobile-nav-indicator"
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[var(--color-interactive-primary)] rounded-full"
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
+                      style={{ backgroundColor: z.accent }}
                       transition={SPRING_FAST}
                     />
                   )}
                   {isActive && prefersReducedMotion && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[var(--color-interactive-primary)] rounded-full" />
+                    <div
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
+                      style={{ backgroundColor: z.accent }}
+                    />
                   )}
-                  {IconComponent && <IconComponent className="w-5 h-5" />}
-                  <span className="text-[10px] font-medium truncate max-w-[60px]">
-                    {item.label.split(' ')[0]}
-                  </span>
-                </Link>
+                  <Icon
+                    className="w-5 h-5"
+                    strokeWidth={isActive ? 2.5 : 1.5}
+                    style={isActive ? { color: z.accent } : {}}
+                  />
+                  <span className="text-[10px] font-medium truncate max-w-[60px]">{z.name}</span>
+                </button>
               </li>
             );
           })}
-          {/* More button if there are more than 4 items */}
-          {navItems.length > 4 && (
-            <li>
-              <button
-                onClick={() => setIsOpen(true)}
-                className={cn(
-                  'flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[44px] px-3',
-                  'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors duration-100'
-                )}
-                aria-label="More navigation options"
-              >
-                <Icons.MoreHorizontal className="w-5 h-5" />
-                <span className="text-[10px] font-medium">More</span>
-              </button>
-            </li>
-          )}
+          {/* More button for remaining zones */}
+          <li>
+            <button
+              onClick={() => setIsOpen(true)}
+              className={cn(
+                'flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[44px] px-3',
+                'text-ink-tertiary hover:text-ink-secondary transition-all duration-150'
+              )}
+              aria-label="More navigation options"
+            >
+              <MoreHorizontal className="w-5 h-5" strokeWidth={1.5} />
+              <span className="text-[10px] font-medium">More</span>
+            </button>
+          </li>
         </ul>
       </nav>
     </>
