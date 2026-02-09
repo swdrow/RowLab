@@ -22,12 +22,14 @@ export interface CanvasTicketProps {
 
 export function CanvasTicket({ children, className = '' }: CanvasTicketProps) {
   return (
-    <div className={`canvas-chamfer canvas-ticket bg-ink-raised relative p-4 group ${className}`}>
+    <div
+      className={`canvas-chamfer-sm lg:canvas-chamfer canvas-ticket canvas-ticket-tilt bg-ink-raised relative p-3 lg:p-4 group ${className}`}
+    >
       {/* Top accent line — stops at chamfer cut */}
       <div
         className="absolute top-0 left-0 h-px"
         style={{
-          right: '14px',
+          right: '6px',
           background: 'linear-gradient(to right, rgba(255,255,255,0.06), transparent)',
         }}
       />

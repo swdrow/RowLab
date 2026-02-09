@@ -21,8 +21,8 @@ export interface RuledHeaderProps {
 
 export function RuledHeader({ children, className }: RuledHeaderProps) {
   return (
-    <div className={`canvas-ruled mb-4 mt-2 ${className || ''}`}>
-      <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] select-none">
+    <div className={`canvas-ruled mb-3 lg:mb-4 mt-2 ${className || ''}`}>
+      <span className="text-[9px] lg:text-[10px] font-semibold text-ink-muted uppercase tracking-[0.15em] lg:tracking-[0.2em] select-none">
         {children}
       </span>
     </div>

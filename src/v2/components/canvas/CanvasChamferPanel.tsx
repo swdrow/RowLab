@@ -34,7 +34,7 @@ export function CanvasChamferPanel({
 }: CanvasChamferPanelProps) {
   return (
     <motion.div
-      className={`canvas-chamfer bg-ink-raised relative p-5 group ${featured ? 'col-span-2' : ''} ${className}`}
+      className={`canvas-chamfer-sm lg:canvas-chamfer bg-ink-raised relative p-3 lg:p-5 group ${featured ? 'col-span-2' : ''} ${className}`}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >

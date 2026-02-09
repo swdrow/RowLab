@@ -60,7 +60,7 @@ export function CanvasDataTable<T>({
   if (isLoading) {
     return (
       <div className={`w-full ${className}`}>
-        <div className="w-full overflow-x-auto">
+        <div className="canvas-table-scroll">
           <table className="w-full">
             <thead>
               <tr>
@@ -105,7 +105,7 @@ export function CanvasDataTable<T>({
   if (!data || data.length === 0) {
     return (
       <div className={`w-full ${className}`}>
-        <div className="w-full overflow-x-auto">
+        <div className="canvas-table-scroll">
           <table className="w-full">
             <thead>
               <tr>
@@ -132,12 +132,12 @@ export function CanvasDataTable<T>({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="w-full overflow-x-auto">
+      <div className="canvas-table-scroll">
         <table className="w-full">
           <thead>
             <tr>
               {table.getHeaderGroups().map((headerGroup) =>
-                headerGroup.headers.map((header) => {
+                headerGroup.headers.map((header, colIndex) => {
                   const canSort = header.column.getCanSort();
                   const sortDir = header.column.getIsSorted();
 
@@ -146,8 +146,8 @@ export function CanvasDataTable<T>({
                       key={header.id}
                       onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                       className={`text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-muted border-b border-white/[0.06] ${
-                        canSort ? 'cursor-pointer select-none hover:text-ink-secondary' : ''
-                      }`}
+                        colIndex === 0 ? 'canvas-table-sticky-col' : ''
+                      } ${canSort ? 'cursor-pointer select-none hover:text-ink-secondary' : ''}`}
                     >
                       <div className="flex items-center gap-1.5">
                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -189,14 +189,14 @@ export function CanvasDataTable<T>({
                   />
                 </td>
 
-                {row.getVisibleCells().map((cell) => {
+                {row.getVisibleCells().map((cell, colIndex) => {
                   const isNumeric = typeof cell.getValue() === 'number';
                   return (
                     <td
                       key={cell.id}
                       className={`px-4 py-3 text-ink-primary ${
-                        isNumeric ? 'font-mono tabular-nums' : ''
-                      }`}
+                        colIndex === 0 ? 'canvas-table-sticky-col' : ''
+                      } ${isNumeric ? 'font-mono tabular-nums' : ''}`}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>

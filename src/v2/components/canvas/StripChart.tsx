@@ -28,7 +28,9 @@ export function StripChart({ data, color, delay = 0, className }: StripChartProp
   const range = max - min || 1;
 
   return (
-    <div className={`flex items-end gap-[2px] h-3 mt-3 ${className || ''}`}>
+    <div
+      className={`flex items-end gap-[1.5px] lg:gap-[2px] h-8 lg:h-12 mt-2 lg:mt-3 ${className || ''}`}
+    >
       {data.map((v, i) => {
         const normalized = (v - min) / range;
         const heightPct = 15 + normalized * 85;

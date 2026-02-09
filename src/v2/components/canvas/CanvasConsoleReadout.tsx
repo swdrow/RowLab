@@ -20,15 +20,14 @@ export interface CanvasConsoleReadoutProps {
 
 export function CanvasConsoleReadout({ items, className = '' }: CanvasConsoleReadoutProps) {
   return (
-    <div className={`canvas-console flex items-center flex-wrap gap-y-2 text-xs ${className}`}>
-      {items.map((pair, i) => (
-        <div key={pair.label} className="flex items-center">
-          {i > 0 && <span className="text-ink-muted opacity-25 mx-3 select-none">{'\u2502'}</span>}
+    <div className={`canvas-console canvas-console-grid text-[11px] lg:text-xs ${className}`}>
+      {items.map((pair) => (
+        <div key={pair.label} className="flex items-center justify-between lg:justify-start gap-2">
           <span className="text-ink-muted">{pair.label}</span>
-          <span className="text-ink-primary font-medium ml-2">{pair.value}</span>
+          <span className="text-ink-primary font-medium">{pair.value}</span>
         </div>
       ))}
-      <span className="canvas-cursor text-ink-muted ml-1" />
+      <span className="canvas-cursor text-ink-muted hidden lg:inline" />
     </div>
   );
 }
