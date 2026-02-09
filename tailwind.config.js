@@ -364,6 +364,7 @@ export default {
         'scale-in': 'scaleIn 0.1s ease-out',
         'pulse-subtle': 'pulseSubtle 2s ease-in-out infinite',
         'data-flash': 'dataFlash 0.15s ease-out',
+        shimmer: 'shimmer 2s ease-in-out infinite',
       },
 
       keyframes: {
@@ -394,6 +395,10 @@ export default {
         dataFlash: {
           '0%': { backgroundColor: 'rgba(0, 112, 243, 0.2)' },
           '100%': { backgroundColor: 'transparent' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
       },
 
