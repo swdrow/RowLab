@@ -32,3 +32,21 @@ export type { CanvasLogEntryProps } from './CanvasLogEntry';
 
 export { CanvasConsoleReadout } from './CanvasConsoleReadout';
 export type { CanvasConsoleReadoutProps } from './CanvasConsoleReadout';
+
+export { CanvasDataTable } from './CanvasDataTable';
+export type { CanvasDataTableProps } from './CanvasDataTable';
+
+export { CanvasModal } from './CanvasModal';
+export type { CanvasModalProps } from './CanvasModal';
+
+export { CanvasTabs } from './CanvasTabs';
+export type { CanvasTabsProps } from './CanvasTabs';
+
+export { CanvasFormField } from './CanvasFormField';
+export type { CanvasFormFieldProps } from './CanvasFormField';
+
+export { CanvasButton } from './CanvasButton';
+export type { CanvasButtonProps } from './CanvasButton';
+
+export { CanvasSelect } from './CanvasSelect';
+export type { CanvasSelectProps } from './CanvasSelect';
