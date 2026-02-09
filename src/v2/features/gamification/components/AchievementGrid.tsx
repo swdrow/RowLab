@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAchievements, useTogglePin } from '../../../hooks/useAchievements';
 import { AchievementCard } from './AchievementCard';
-import { Skeleton } from '../../../components/ui/Skeleton';
+import { Skeleton } from '../../components/ui/Skeleton';
 import type { AchievementCategory } from '../../../types/gamification';
 
 interface AchievementGridProps {
