@@ -177,38 +177,47 @@ export function CanvasRegattasPage() {
   return (
     <div className="h-full flex flex-col bg-void">
       {/* Page header — text against void */}
-      <div className="px-6 pt-8 pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-8 pb-6 border-b border-ink-border/30">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
             <div>
               <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-ink-secondary mb-3">
                 RACING
               </p>
-              <h1 className="text-3xl font-semibold text-ink-bright tracking-tight">Regattas</h1>
+              <h1 className="text-2xl lg:text-3xl font-semibold text-ink-bright tracking-tight">
+                Regattas
+              </h1>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full lg:w-auto">
               {/* View toggle */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-1 lg:flex-none">
                 <CanvasButton
                   variant={viewMode === 'list' ? 'primary' : 'secondary'}
                   onClick={() => setViewMode('list')}
-                  className="!px-3 !py-2"
+                  className="!px-3 !py-2 flex-1 lg:flex-none"
                 >
                   <List className="w-4 h-4" />
+                  <span className="sr-only">List view</span>
                 </CanvasButton>
                 <CanvasButton
                   variant={viewMode === 'calendar' ? 'primary' : 'secondary'}
                   onClick={() => setViewMode('calendar')}
-                  className="!px-3 !py-2"
+                  className="!px-3 !py-2 flex-1 lg:flex-none"
                 >
                   <CalendarIcon className="w-4 h-4" />
+                  <span className="sr-only">Calendar view</span>
                 </CanvasButton>
               </div>
 
-              <CanvasButton variant="primary" onClick={() => setIsFormOpen(true)}>
+              <CanvasButton
+                variant="primary"
+                onClick={() => setIsFormOpen(true)}
+                className="flex-1 lg:flex-none"
+              >
                 <Plus className="w-4 h-4" />
-                NEW REGATTA
+                <span className="hidden sm:inline">NEW REGATTA</span>
+                <span className="sm:hidden">NEW</span>
               </CanvasButton>
             </div>
           </div>
@@ -217,7 +226,7 @@ export function CanvasRegattasPage() {
 
       {/* Content */}
       <div className="flex-1 overflow-auto">
-        <div className="max-w-5xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6 py-6">
           <AnimatePresence mode="wait">
             {viewMode === 'list' ? (
               <motion.div
@@ -346,7 +355,7 @@ export function CanvasRegattasPage() {
       </div>
 
       {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-6 py-3 bg-ink-well/20">
+      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[

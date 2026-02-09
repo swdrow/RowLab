@@ -79,31 +79,46 @@ export function CanvasRankingsPage() {
   }, []);
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8 px-4 lg:px-8"
+    >
       {/* ============================================ */}
       {/* HEADER — text against void (no card wrapper) */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col lg:flex-row items-start lg:items-end justify-between pt-2 pb-6 gap-4"
+      >
         <div>
           <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
             Competitive Analysis
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-ink-bright tracking-tight leading-none">
             Team Rankings
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
           <CanvasButton
             variant="primary"
             onClick={() => setIsExportOpen(true)}
             disabled={!rankings || rankings.length === 0}
+            className="flex-1 sm:flex-none justify-center"
           >
             <FileSpreadsheet className="w-4 h-4" />
-            Export for NCAA
+            <span className="hidden sm:inline">Export for NCAA</span>
+            <span className="sm:hidden">Export</span>
           </CanvasButton>
-          <CanvasButton variant="ghost" onClick={() => setIsImportOpen(true)}>
+          <CanvasButton
+            variant="ghost"
+            onClick={() => setIsImportOpen(true)}
+            className="flex-1 sm:flex-none justify-center"
+          >
             <Plus className="w-4 h-4" />
-            Add External Ranking
+            <span className="hidden sm:inline">Add External Ranking</span>
+            <span className="sm:hidden">Add Ranking</span>
           </CanvasButton>
         </div>
       </motion.div>
@@ -142,7 +157,7 @@ export function CanvasRankingsPage() {
             className="mt-8 space-y-6"
           >
             {/* Team and boat class selectors */}
-            <div className="flex gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1">
                 <RuledHeader>Compare against</RuledHeader>
                 <CanvasSelect
@@ -163,7 +178,7 @@ export function CanvasRankingsPage() {
                 />
               </div>
 
-              <div className="w-48">
+              <div className="w-full lg:w-48">
                 <RuledHeader>Boat Class</RuledHeader>
                 <CanvasSelect
                   value={selectedComparison?.boatClass || ''}
@@ -182,16 +197,18 @@ export function CanvasRankingsPage() {
             </div>
 
             {/* Head-to-head comparison */}
-            {selectedComparison?.opponent ? (
-              <HeadToHeadTable
-                opponent={selectedComparison.opponent}
-                boatClass={selectedComparison.boatClass}
-              />
-            ) : (
-              <CanvasConsoleReadout
-                items={[{ label: 'STATUS', value: 'SELECT A TEAM TO COMPARE RACE HISTORY' }]}
-              />
-            )}
+            <div className="canvas-table-scroll -mx-4 lg:mx-0">
+              {selectedComparison?.opponent ? (
+                <HeadToHeadTable
+                  opponent={selectedComparison.opponent}
+                  boatClass={selectedComparison.boatClass}
+                />
+              ) : (
+                <CanvasConsoleReadout
+                  items={[{ label: 'STATUS', value: 'SELECT A TEAM TO COMPARE RACE HISTORY' }]}
+                />
+              )}
+            </div>
           </motion.div>
         )}
       </motion.div>
