@@ -6,9 +6,12 @@ import { WorkspaceSidebar } from '@v2/components/shell/WorkspaceSidebar';
 import { SkipLink } from '@v2/components/shell/SkipLink';
 import { Header } from '@v2/components/shell/Header';
 import { CommandPalette } from '@v2/features/search/components/CommandPalette';
+import { KeyboardShortcutsModal } from '@v2/components/KeyboardShortcutsModal';
+import { useKeyboardShortcuts } from '@v2/hooks/useKeyboardShortcuts';
 import { useContextStore } from '@v2/stores/contextStore';
 import { useRequireAuth } from '@/hooks/useAuth';
 import { LoadingSkeleton, SkeletonLine } from '@v2/components/common';
+import { useCommandPaletteStore } from '@v2/features/search/hooks/useGlobalSearch';
 
 /**
  * ShellLayout Component
@@ -50,9 +53,19 @@ export function ShellLayout() {
   const { activeContext, setActiveContext } = useContextStore();
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
 
   // Require authentication - redirects to login if not authenticated
   const { isLoading: isAuthLoading } = useRequireAuth();
+
+  // Get command palette controls
+  const { open: openPalette } = useCommandPaletteStore();
+
+  // Wire up global keyboard shortcuts
+  useKeyboardShortcuts({
+    onOpenPalette: openPalette,
+    onOpenShortcutsModal: () => setShortcutsModalOpen(true),
+  });
 
   // Mobile detection
   useEffect(() => {
@@ -130,15 +143,17 @@ export function ShellLayout() {
         {/* Global command palette (keyboard shortcut: Cmd/Ctrl+K) */}
         <CommandPalette />
 
+        {/* Keyboard shortcuts modal (?) */}
+        <KeyboardShortcutsModal
+          isOpen={shortcutsModalOpen}
+          onClose={() => setShortcutsModalOpen(false)}
+        />
+
         {/* Skip link for keyboard/screen reader users */}
         <SkipLink />
 
         {/* Screen reader live region for context announcements */}
-        <div
-          aria-live="polite"
-          aria-atomic="true"
-          className="sr-only"
-        >
+        <div aria-live="polite" aria-atomic="true" className="sr-only">
           Switched to {contextLabels[activeContext]} workspace
         </div>
 
@@ -146,7 +161,11 @@ export function ShellLayout() {
         <Header onMenuClick={() => setMobileMenuOpen(true)} />
 
         {/* Main content - full width */}
-        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto bg-ink-deep outline-none">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="flex-1 overflow-y-auto bg-ink-deep outline-none"
+        >
           <Outlet />
         </main>
 
@@ -192,15 +211,17 @@ export function ShellLayout() {
       {/* Global command palette (keyboard shortcut: Cmd/Ctrl+K) */}
       <CommandPalette />
 
+      {/* Keyboard shortcuts modal (?) */}
+      <KeyboardShortcutsModal
+        isOpen={shortcutsModalOpen}
+        onClose={() => setShortcutsModalOpen(false)}
+      />
+
       {/* Skip link for keyboard/screen reader users */}
       <SkipLink />
 
       {/* Screen reader live region for context announcements */}
-      <div
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
         Switched to {contextLabels[activeContext]} workspace
       </div>
 
@@ -217,7 +238,11 @@ export function ShellLayout() {
         </aside>
 
         {/* Main content area */}
-        <main id="main-content" tabIndex={-1} className="h-full overflow-y-auto p-8 bg-ink-deep outline-none">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="h-full overflow-y-auto p-8 bg-ink-deep outline-none"
+        >
           <Outlet />
         </main>
       </div>
