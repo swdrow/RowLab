@@ -679,6 +679,213 @@ function App() {
                     </Suspense>
                   }
                 />
+
+                {/* ---- V2 fallback routes (no Canvas version yet) ---- */}
+                <Route
+                  path="me"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading dashboard..." />
+                      }
+                    >
+                      <MeDashboard />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/dashboard"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading coach dashboard..." />
+                      }
+                    >
+                      <CoachDashboard />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/whiteboard"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading whiteboard..." />
+                      }
+                    >
+                      <CoachWhiteboard />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/fleet"
+                  element={
+                    <Suspense
+                      fallback={<LoadingFallback variant="component" message="Loading fleet..." />}
+                    >
+                      <CoachFleet />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/availability"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading availability..." />
+                      }
+                    >
+                      <CoachAvailability />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="athletes/:id"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading athlete..." />
+                      }
+                    >
+                      <V2AthleteDetailPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/lineup-builder"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading lineup builder..." />
+                      }
+                    >
+                      <V2LineupBuilderPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/seat-racing/advanced-rankings"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback
+                          variant="component"
+                          message="Loading advanced rankings..."
+                        />
+                      }
+                    >
+                      <AdvancedRankingsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/seat-racing/matrix-planner"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading matrix planner..." />
+                      }
+                    >
+                      <MatrixPlannerPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="regattas/:regattaId"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading regatta..." />
+                      }
+                    >
+                      <CanvasRegattasPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="regattas/:regattaId/race-day"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading race day..." />
+                      }
+                    >
+                      <RaceDayCommandCenter />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="training/sessions/:sessionId"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading session..." />
+                      }
+                    >
+                      <SessionDetailPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="training/sessions/:sessionId/live"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading live session..." />
+                      }
+                    >
+                      <LiveSessionPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="recruiting"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading recruiting..." />
+                      }
+                    >
+                      <RecruitingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="achievements"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading achievements..." />
+                      }
+                    >
+                      <AchievementsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="challenges"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading challenges..." />
+                      }
+                    >
+                      <ChallengesPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="challenges/:id"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading challenge..." />
+                      }
+                    >
+                      <ChallengesPage />
+                    </Suspense>
+                  }
+                />
               </Route>
             </Route>
 
