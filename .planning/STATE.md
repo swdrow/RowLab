@@ -3,11 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.0 — App Redesign
-**Phase:** 34 (Gamification & Activity Feed Migration) — COMPLETE ✅
-**Plan:** 8/8 complete (16 commits)
-**Status:** Phase 34 fully complete. Skeleton loaders, typed activity cards, gamification V3 migration, command palette + keyboard shortcuts, season milestones API + timeline, activity feed timeline + dispatcher, achievements in athlete profiles, team challenges, optimistic UI. All pages use skeleton loading states. Build passes.
-**Next Plan:** Phase 35 (Mobile Responsiveness & Performance) or Phase 36 (V1/V2 Cleanup)
-**Last activity:** 2026-02-09 — Completed Phase 34 execution (all 8 plans, 3 waves)
+**Phase:** 35 (Canvas Promotion + Mobile Responsiveness) — IN PROGRESS
+**Plan:** 1/11 complete (1 commit)
+**Status:** Completed 35-01: Canvas design system promoted to /app/* default. All 25 Canvas pages swapped from warm V2 components, all prototype routes removed (/canvas, /timeline, /mesh, /publication). CanvasLayout now serves as primary layout wrapper.
+**Next Plan:** 35-02 (MobileNav Integration)
+**Last activity:** 2026-02-09 — Completed 35-01-PLAN.md: Canvas promotion to production default
 
 ## Project Reference
 
@@ -52,11 +52,11 @@ v2.0 Progress: ██████████████ (9 phases complete) �
 |-------|------|--------|-------|
 | 15 | Feature Toggles & Recruiting | Complete | 10/10 |
 | 16 | Gamification & Engagement | Complete | 12/12 |
-| 17 | Complete Design Overhaul | In Progress | 7/8 |
+| 17 | Complete Design Overhaul | Complete (superseded by Canvas) | 8/8 |
 | 18 | Lineup & Boat Improvements | Complete | 11/11 |
-| 19 | Warm Color Design System & Landing Page | Ready for Verification | 5/6 |
+| 19 | Warm Design System & Landing Page | Complete (superseded by Canvas) | 6/6 |
 
-v2.1 Progress: ████████░░░░░░ (4 phases complete, 2 in progress)
+v2.1 Progress: ██████████████ (5 phases complete) ✅
 
 ### v2.2 Milestone (Planned)
 
@@ -97,12 +97,12 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 32 | Training & Attendance Migration | Complete ✅ | 6/6 |
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
 | 34 | Gamification & Activity Feed Migration | Complete ✅ | 8/8 |
-| 35 | Mobile Responsiveness & Performance | Not started | TBD |
-| 36 | V1/V2 Cleanup | Not started | TBD |
-| 37 | Warm Copper Design Sweep | Paused | 2/6 |
-| 38 | Full Canvas Design System Redesign | Complete ✅ | 7/7 |
+| 35 | Canvas Promotion + Mobile | In Progress | 1/11 |
+| 36 | Dead Code Cleanup | Not started | TBD |
 
-v3.0 Progress: ████████████████████░ (9 phases complete, 1 in progress, 5 remaining)
+v3.0 Progress: ██████████████████░░ (11 phases complete, 2 remaining)
+
+**Removed phases:** Phase 37 (Warm Copper Sweep — superseded by Canvas), Phase 38 (Canvas Redesign — work complete, route swap absorbed into Phase 35)
 
 ## Quick Context
 
@@ -504,9 +504,9 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-09
-**Stopped at:** Phase 34 COMPLETE (8/8 plans). PinnedBadges integrated into athlete profiles. Team Challenges section added to Challenges page.
+**Stopped at:** Phase 35-01 COMPLETE. Canvas design system promoted to /app/* as production default. All prototype routes removed.
 **Resume file:** None
-**Resume with:** Begin Phase 35 (Mobile Responsiveness & Performance) or Phase 36 (V1/V2 Cleanup)
+**Resume with:** Continue Phase 35 with plan 35-02 (MobileNav Integration) or plan 35-05 (Component Accessibility Tests)
 
 ## Roadmap Evolution
 
@@ -922,6 +922,21 @@ Phase 13 delivered the cross-feature integration layer:
 | 34-08 | PinnedBadges render in athlete profile header | Above-the-fold visibility without scrolling, naturally associated with athlete identity, quiet gamification (no badges = no section) |
 | 34-08 | Team Challenges get dedicated section above All Challenges | GM-03 requirement for prominent display. Collective challenges need high visibility for team engagement. Separation enables focused team vs individual framing. |
 | 34-08 | Quiet empty states for gamification features | No achievements = no badges section. No team challenges = subtle invitation to create. Avoids anxious "You have no achievements!" messaging. |
+
+### v3.0 Decisions (Phase 35)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 35-01 | Canvas pages promoted to /app/* as production default | Canvas design validated in Phase 38, ready for production. Warm/copper V2 superseded by Canvas system. |
+| 35-01 | All prototype routes removed (/canvas, /timeline, /mesh, /publication) | Design exploration complete. Canvas selected as final direction. Prototypes no longer needed. |
+| 35-01 | Kept V2 page lazy imports despite being unreferenced | Phase 36 (Dead Code Cleanup) handles systematic removal. Separation of concerns: route promotion (this phase) vs dead code removal (next phase). |
+| 35-02 | 1024px breakpoint for mobile/desktop nav switch | Matches Tailwind 'lg' breakpoint, industry standard for tablet-to-desktop transition, iPad Pro landscape is 1024px |
+| 35-02 | Mobile shows Canvas zone navigation instead of context switcher | Canvas is unified single-workspace experience, no Me/Coach/Admin context switching needed on mobile |
+| 35-02 | Bottom tabs show first 4 zones (Home, Team, Training, Racing) | Fits comfortably in 375px mobile width with 64px tap targets, most-used zones prioritized, remaining zones in "More" drawer |
+| 35-02 | Active tab uses zone accent color for icon + indicator bar | Provides clear visual feedback, matches desktop CanvasDock behavior, Strava-inspired clean design |
+| 35-04 | Install jest-axe for accessibility testing | Phase 35 requires accessibility infrastructure (TC-03), jest-axe provides toHaveNoViolations matcher for component tests |
+| 35-04 | Mock fetch at HTTP layer for API tests | Isolated frontend tests without running backend, fast execution, verifies request/response contracts |
+| 35-04 | Focus smoke tests on auth, lineup, erg-import, C2 sync | Critical user flows that need basic contract verification before later integration/e2e tests |
 
 ### v3.0 Decisions (Phase 37)
 
