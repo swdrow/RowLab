@@ -87,14 +87,17 @@ export function CanvasAdvancedRankingsPage() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        className="flex-shrink-0 px-6 pt-8 pb-6"
+        className="flex-shrink-0 px-4 lg:px-6 pt-8 pb-6"
       >
-        <motion.div variants={fadeUp} className="flex items-end justify-between">
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4"
+        >
           <div>
             <p className="text-xs font-medium text-ink-muted uppercase tracking-[0.15em] mb-1">
               Analytics
             </p>
-            <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-ink-bright tracking-tight leading-none">
               Advanced Rankings
             </h1>
             <p className="text-sm font-mono text-ink-secondary mt-2">
@@ -102,10 +105,11 @@ export function CanvasAdvancedRankingsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link to="/app/coach/seat-racing/matrix-planner">
-              <CanvasButton variant="primary" size="md">
-                Plan Matrix Session
+          <div className="flex items-center gap-3 w-full lg:w-auto">
+            <Link to="/app/coach/seat-racing/matrix-planner" className="flex-1 lg:flex-none">
+              <CanvasButton variant="primary" size="md" className="w-full lg:w-auto">
+                <span className="hidden sm:inline">Plan Matrix Session</span>
+                <span className="sm:hidden">Matrix Session</span>
               </CanvasButton>
             </Link>
           </div>
@@ -117,8 +121,8 @@ export function CanvasAdvancedRankingsPage() {
       {/* ============================================ */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
-          <div className="flex-shrink-0 border-b border-ink-border px-6">
-            <Tab.List className="flex gap-6">
+          <div className="flex-shrink-0 border-b border-ink-border px-4 lg:px-6 overflow-x-auto">
+            <Tab.List className="flex gap-6 min-w-max">
               {TABS.map((tab) => (
                 <Tab key={tab.id} as={Fragment}>
                   {({ selected }) => (
@@ -148,18 +152,28 @@ export function CanvasAdvancedRankingsPage() {
           {/* ============================================ */}
           <Tab.Panels className="flex-1 overflow-y-auto">
             {/* Composite Rankings */}
-            <Tab.Panel className="p-6">
-              <motion.div variants={fadeUp} initial="hidden" animate="visible">
-                <CanvasChamferPanel className="p-6">
+            <Tab.Panel className="p-4 lg:p-6">
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+                className="canvas-table-scroll -mx-4 lg:mx-0"
+              >
+                <CanvasChamferPanel className="p-4 lg:p-6">
                   <CompositeRankings onAthleteClick={handleAthleteClick} />
                 </CanvasChamferPanel>
               </motion.div>
             </Tab.Panel>
 
             {/* Bradley-Terry Rankings */}
-            <Tab.Panel className="p-6">
-              <motion.div variants={fadeUp} initial="hidden" animate="visible">
-                <CanvasChamferPanel className="p-6">
+            <Tab.Panel className="p-4 lg:p-6">
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+                className="canvas-table-scroll -mx-4 lg:mx-0"
+              >
+                <CanvasChamferPanel className="p-4 lg:p-6">
                   <BradleyTerryRankings
                     onAthleteClick={handleAthleteClick}
                     showMethodology={false}
@@ -169,47 +183,56 @@ export function CanvasAdvancedRankingsPage() {
             </Tab.Panel>
 
             {/* Side-Specific Rankings */}
-            <Tab.Panel className="p-6">
-              <motion.div variants={fadeUp} initial="hidden" animate="visible">
-                <CanvasChamferPanel className="p-6">
+            <Tab.Panel className="p-4 lg:p-6">
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+                className="canvas-table-scroll -mx-4 lg:mx-0"
+              >
+                <CanvasChamferPanel className="p-4 lg:p-6">
                   <SideRankings onAthleteClick={handleAthleteClick} />
                 </CanvasChamferPanel>
               </motion.div>
             </Tab.Panel>
 
             {/* Comparison Graph */}
-            <Tab.Panel className="p-6">
+            <Tab.Panel className="p-4 lg:p-6">
               <motion.div variants={fadeUp} initial="hidden" animate="visible">
                 <RuledHeader>Comparison Network</RuledHeader>
-                <CanvasChamferPanel className="p-6">
+                <CanvasChamferPanel className="p-4 lg:p-6">
                   <p className="text-sm text-ink-secondary mb-4">
                     This graph shows which athletes have been compared in seat races. Larger nodes
                     indicate more comparisons. Gaps show pairs that haven't raced yet.
                   </p>
-                  <ComparisonGraph
-                    height="500px"
-                    showGaps={true}
-                    onNodeClick={handleAthleteClick}
-                  />
+                  <div className="h-[400px] lg:h-[500px]">
+                    <ComparisonGraph
+                      height="100%"
+                      showGaps={true}
+                      onNodeClick={handleAthleteClick}
+                    />
+                  </div>
                 </CanvasChamferPanel>
               </motion.div>
             </Tab.Panel>
 
             {/* Probability Matrix */}
-            <Tab.Panel className="p-6">
+            <Tab.Panel className="p-4 lg:p-6">
               <motion.div variants={fadeUp} initial="hidden" animate="visible">
                 <RuledHeader>Win Probability Matrix</RuledHeader>
-                <CanvasChamferPanel className="p-6">
+                <CanvasChamferPanel className="p-4 lg:p-6">
                   <p className="text-sm text-ink-secondary mb-4">
                     Predicted probability that the row athlete beats the column athlete, based on
                     Bradley-Terry model estimates.
                   </p>
-                  <ProbabilityMatrix
-                    maxSize={12}
-                    onCellClick={(athlete1, athlete2, prob) => {
-                      console.log(`P(${athlete1} beats ${athlete2}) = ${prob}`);
-                    }}
-                  />
+                  <div className="overflow-x-auto -mx-4 lg:mx-0">
+                    <ProbabilityMatrix
+                      maxSize={12}
+                      onCellClick={(athlete1, athlete2, prob) => {
+                        console.log(`P(${athlete1} beats ${athlete2}) = ${prob}`);
+                      }}
+                    />
+                  </div>
                 </CanvasChamferPanel>
               </motion.div>
             </Tab.Panel>
@@ -220,7 +243,7 @@ export function CanvasAdvancedRankingsPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-6">
+      <div className="flex-shrink-0 border-t border-ink-border px-4 lg:px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'MODEL', value: 'BRADLEY-TERRY' },

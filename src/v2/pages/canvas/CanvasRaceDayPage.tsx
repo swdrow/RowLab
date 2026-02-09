@@ -205,7 +205,7 @@ export function CanvasRaceDayPage() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        className="flex-shrink-0 px-6 pt-8 pb-6"
+        className="flex-shrink-0 px-4 lg:px-6 pt-8 pb-6"
       >
         <motion.div variants={fadeUp}>
           <div className="flex items-center gap-4 mb-4">
@@ -220,12 +220,12 @@ export function CanvasRaceDayPage() {
             </div>
           </div>
 
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
             <div>
               <p className="text-xs font-medium text-ink-muted uppercase tracking-[0.15em] mb-1">
                 Racing
               </p>
-              <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-ink-bright tracking-tight leading-none">
                 Command Center
               </h1>
               <p className="text-sm font-mono text-ink-secondary mt-2">
@@ -243,11 +243,11 @@ export function CanvasRaceDayPage() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        className="flex-1 overflow-y-auto px-6 pb-6"
+        className="flex-1 overflow-y-auto px-4 lg:px-6 pb-6"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Left column - Timeline */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 lg:space-y-6">
             {/* Next race card */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Next Race</RuledHeader>
@@ -272,7 +272,7 @@ export function CanvasRaceDayPage() {
           </div>
 
           {/* Right column - Warmup & Checklists */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {/* Warmup schedule */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Launch Schedule</RuledHeader>
@@ -331,7 +331,7 @@ export function CanvasRaceDayPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-6">
+      <div className="flex-shrink-0 border-t border-ink-border px-4 lg:px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'REGATTA', value: regatta.name.toUpperCase().slice(0, 20) },
