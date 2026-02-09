@@ -16,33 +16,8 @@ const InviteClaimPage = lazy(() => import('./pages/auth/InviteClaimPage'));
 // Integration callback pages
 const Concept2CallbackPage = lazy(() => import('./pages/Concept2CallbackPage'));
 
-// V2 routes (new) - using @v2 path alias
+// V2 Layout
 const V2Layout = lazy(() => import('@v2/layouts/V2Layout'));
-const BetaHome = lazy(() => import('@v2/pages/BetaHome'));
-const MeDashboard = lazy(() => import('@v2/pages/MeDashboard'));
-const CoachDashboard = lazy(() => import('@v2/pages/coach/CoachDashboard'));
-const CoachWhiteboard = lazy(() => import('@v2/pages/CoachWhiteboard'));
-const CoachFleet = lazy(() => import('@v2/pages/CoachFleet'));
-const CoachAvailability = lazy(() => import('@v2/pages/CoachAvailability'));
-const V2AthletesPage = lazy(() => import('@v2/pages/AthletesPage'));
-const V2AttendancePage = lazy(() => import('@v2/pages/AttendancePage'));
-const V2ErgTestsPage = lazy(() => import('@v2/pages/ErgTestsPage'));
-const V2LineupBuilderPage = lazy(() => import('@v2/pages/LineupBuilderPage'));
-const V2SeatRacingPage = lazy(() => import('@v2/pages/SeatRacingPage'));
-const CoachTrainingPage = lazy(() => import('@v2/pages/CoachTrainingPage'));
-const RegattasPage = lazy(() => import('@v2/pages/RegattasPage'));
-const RaceDayCommandCenter = lazy(() => import('@v2/pages/RaceDayCommandCenter'));
-const RankingsPage = lazy(() => import('@v2/pages/RankingsPage'));
-const V2SettingsPage = lazy(() => import('@v2/features/settings/pages/SettingsPage'));
-const SessionsPage = lazy(() => import('@v2/pages/training/SessionsPage'));
-const SessionDetailPage = lazy(() => import('@v2/pages/training/SessionDetailPage'));
-const LiveSessionPage = lazy(() => import('@v2/pages/training/LiveSessionPage'));
-const AdvancedRankingsPage = lazy(() => import('@v2/pages/AdvancedRankingsPage'));
-const MatrixPlannerPage = lazy(() => import('@v2/pages/MatrixPlannerPage'));
-const RecruitingPage = lazy(() => import('@v2/pages/RecruitingPage'));
-const AchievementsPage = lazy(() => import('@v2/pages/AchievementsPage'));
-const ChallengesPage = lazy(() => import('@v2/pages/ChallengesPage'));
-const V2AthleteDetailPage = lazy(() => import('./v2/features/athletes/pages/AthleteDetailPage'));
 
 // Canvas pages (promoted to /app)
 const CanvasLayout = lazy(() => import('@v2/layouts/CanvasLayout'));
@@ -600,12 +575,6 @@ function App() {
             </Route>
 
             {/* Legacy V1 routes — redirect to /app equivalents */}
-            <Route path="/legacy/*" element={<LegacyRedirect />} />
-
-            {/* Beta routes — redirect to /app for bookmark compatibility */}
-            <Route path="/beta/*" element={<LegacyRedirect />} />
-
-            {/* 404 fallback */}
             <Route path="/legacy/*" element={<LegacyRedirect />} />
 
             {/* Beta routes — redirect to /app for bookmark compatibility */}
