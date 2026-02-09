@@ -71,6 +71,23 @@
   flex: 1;
   height: 1px;
   background: linear-gradient(to right, rgba(255, 255, 255, 0.08), transparent 80%);
+  transform-origin: left center;
+  animation: canvasRuleDraw 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ACCENT EDGE BREATHE — the colored left-edge strip on metric panels
+   slowly pulses, like a heartbeat monitor idling. Each panel gets a
+   different animation-delay (set inline) so they drift out of phase. */
+
+.canvas-accent-breathe {
+  animation: canvasAccentBreathe 6s ease-in-out infinite;
+}
+
+/* INDICATOR BREATHE — activity feed colored bars pulse subtly,
+   giving the feed a "live data" feeling even when static. */
+
+.canvas-indicator-breathe {
+  animation: canvasIndicatorBreathe 4s ease-in-out infinite;
 }
 
 /* LOG TAPE ENTRY — grid-based instrument readout layout
@@ -248,6 +265,37 @@
   }
 }
 
+@keyframes canvasRuleDraw {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes canvasAccentBreathe {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes canvasIndicatorBreathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 /* ============================================
    REDUCED MOTION — respect user preference
    ============================================ */
@@ -255,8 +303,16 @@
 @media (prefers-reduced-motion: reduce) {
   .canvas-atmo-layer-1,
   .canvas-atmo-layer-2,
-  .canvas-atmo-pulse {
+  .canvas-atmo-pulse,
+  .canvas-accent-breathe,
+  .canvas-indicator-breathe {
     animation: none !important;
+  }
+
+  .canvas-ruled::after {
+    animation: none !important;
+    transform: scaleX(1) !important;
+    opacity: 1 !important;
   }
 
   .canvas-chamfer,

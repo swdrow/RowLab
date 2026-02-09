@@ -177,7 +177,15 @@ function ScrambleNumber({ value }: { value: number | string }) {
 // Older data fades, recent data glows. NOT a generic sparkline.
 // ============================================
 
-function StripChart({ data, color }: { data: readonly number[]; color: string }) {
+function StripChart({
+  data,
+  color,
+  delay = 0,
+}: {
+  data: readonly number[];
+  color: string;
+  delay?: number;
+}) {
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
@@ -191,14 +199,17 @@ function StripChart({ data, color }: { data: readonly number[]; color: string })
         const opacity = isLast ? 0.85 : 0.12 + (i / (data.length - 1)) * 0.5;
 
         return (
-          <div
+          <motion.div
             key={i}
             className="flex-1 rounded-[1px]"
-            style={{
-              height: `${heightPct}%`,
-              backgroundColor: color,
-              opacity,
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: `${heightPct}%`, opacity }}
+            transition={{
+              delay: delay + i * 0.05,
+              duration: 0.5,
+              ease: [0.16, 1, 0.3, 1],
             }}
+            style={{ backgroundColor: color }}
           />
         );
       })}
@@ -291,10 +302,28 @@ export function CanvasDashboard() {
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               >
-                {/* Left accent edge — the ONLY color on the chrome */}
+                {/* Inner breathing radiance — subtle glow from the accent edge */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(ellipse 50% 80% at 0% 50%, ${m.dataColor} 0%, transparent 60%)`,
+                  }}
+                  animate={{ opacity: [0, 0.04, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: i * 2,
+                  }}
+                />
+
+                {/* Left accent edge — breathes slowly, staggered per panel */}
                 <div
-                  className="absolute left-0 top-0 bottom-0 w-0.5"
-                  style={{ backgroundColor: m.dataColor }}
+                  className="absolute left-0 top-0 bottom-0 w-0.5 canvas-accent-breathe"
+                  style={{
+                    backgroundColor: m.dataColor,
+                    animationDelay: `${i * 1.5}s`,
+                  }}
                 />
 
                 {/* Label row */}
@@ -332,8 +361,8 @@ export function CanvasDashboard() {
                   </div>
                 </div>
 
-                {/* Strip chart — progressive opacity bar histogram */}
-                <StripChart data={m.sparkData} color={m.dataColor} />
+                {/* Strip chart — bars grow in sequentially */}
+                <StripChart data={m.sparkData} color={m.dataColor} delay={0.6 + i * 0.15} />
               </motion.div>
             );
           })}
@@ -363,11 +392,12 @@ export function CanvasDashboard() {
                 {/* Timestamp column */}
                 <span className="text-[11px] font-mono text-ink-muted text-right">{item.time}</span>
 
-                {/* Indicator bar — 3px colored strip */}
+                {/* Indicator bar — 3px colored strip, breathes subtly */}
                 <div
-                  className="self-stretch rounded-full"
+                  className="self-stretch rounded-full canvas-indicator-breathe"
                   style={{
                     backgroundColor: item.positive ? 'var(--data-good)' : 'var(--data-poor)',
+                    animationDelay: `${i * 0.8}s`,
                   }}
                 />
 
