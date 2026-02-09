@@ -25,9 +25,7 @@ export function useChallenges(status?: 'active' | 'completed' | 'cancelled') {
   return useQuery({
     queryKey: queryKeys.challenges.list(status),
     queryFn: async () => {
-      const url = status
-        ? `/api/v1/challenges?status=${status}`
-        : '/api/v1/challenges';
+      const url = status ? `/api/v1/challenges?status=${status}` : '/api/v1/challenges';
       const response = await api.get<GamificationApiResponse<{ challenges: Challenge[] }>>(url);
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.error?.message || 'Failed to fetch challenges');
@@ -159,7 +157,7 @@ export function useCreateChallenge() {
 }
 
 /**
- * Hook for joining a challenge
+ * Hook for joining a challenge with optimistic UI
  */
 export function useJoinChallenge() {
   const queryClient = useQueryClient();
@@ -174,7 +172,38 @@ export function useJoinChallenge() {
       }
       return response.data.data;
     },
-    onSuccess: (_, challengeId) => {
+    // Optimistic: immediately update participant count
+    onMutate: async (challengeId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.challenges.detail(challengeId) });
+
+      const previousChallenge = queryClient.getQueryData<Challenge>(
+        queryKeys.challenges.detail(challengeId)
+      );
+
+      // Optimistically increment participant count
+      if (previousChallenge) {
+        queryClient.setQueryData<Challenge>(queryKeys.challenges.detail(challengeId), {
+          ...previousChallenge,
+          _count: {
+            ...previousChallenge._count,
+            participants: (previousChallenge._count?.participants || 0) + 1,
+          },
+        });
+      }
+
+      return { previousChallenge };
+    },
+    // Rollback on error
+    onError: (_err, challengeId, context) => {
+      if (context?.previousChallenge) {
+        queryClient.setQueryData(
+          queryKeys.challenges.detail(challengeId),
+          context.previousChallenge
+        );
+      }
+    },
+    // Refetch to ensure consistency
+    onSettled: (_, __, challengeId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(challengeId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.challenges.leaderboard(challengeId) });
     },
@@ -182,7 +211,7 @@ export function useJoinChallenge() {
 }
 
 /**
- * Hook for leaving a challenge
+ * Hook for leaving a challenge with optimistic UI
  */
 export function useLeaveChallenge() {
   const queryClient = useQueryClient();
@@ -197,7 +226,38 @@ export function useLeaveChallenge() {
       }
       return response.data.data;
     },
-    onSuccess: (_, challengeId) => {
+    // Optimistic: immediately decrement participant count
+    onMutate: async (challengeId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.challenges.detail(challengeId) });
+
+      const previousChallenge = queryClient.getQueryData<Challenge>(
+        queryKeys.challenges.detail(challengeId)
+      );
+
+      // Optimistically decrement participant count
+      if (previousChallenge) {
+        queryClient.setQueryData<Challenge>(queryKeys.challenges.detail(challengeId), {
+          ...previousChallenge,
+          _count: {
+            ...previousChallenge._count,
+            participants: Math.max(0, (previousChallenge._count?.participants || 0) - 1),
+          },
+        });
+      }
+
+      return { previousChallenge };
+    },
+    // Rollback on error
+    onError: (_err, challengeId, context) => {
+      if (context?.previousChallenge) {
+        queryClient.setQueryData(
+          queryKeys.challenges.detail(challengeId),
+          context.previousChallenge
+        );
+      }
+    },
+    // Refetch to ensure consistency
+    onSettled: (_, __, challengeId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.challenges.detail(challengeId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.challenges.leaderboard(challengeId) });
     },
