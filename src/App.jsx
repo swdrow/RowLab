@@ -44,10 +44,13 @@ const AchievementsPage = lazy(() => import('@v2/pages/AchievementsPage'));
 const ChallengesPage = lazy(() => import('@v2/pages/ChallengesPage'));
 const V2AthleteDetailPage = lazy(() => import('./v2/features/athletes/pages/AthleteDetailPage'));
 
+<<<<<<< HEAD
 // Canvas prototype routes (design/canvas branch)
 const CanvasLayout = lazy(() => import('@v2/layouts/CanvasLayout'));
 const CanvasDashboard = lazy(() => import('@v2/pages/canvas/CanvasDashboard'));
 
+=======
+>>>>>>> f3ba501 (style(publication): add editorial publication design prototype)
 // Publication prototype routes (design/publication branch)
 const PublicationLayout = lazy(() => import('@v2/layouts/PublicationLayout'));
 const PublicationDashboard = lazy(() => import('@v2/pages/publication/PublicationDashboard'));
@@ -531,7 +534,6 @@ function App() {
                     </Suspense>
                   }
                 />
-                {/* Canvas reuses existing pages for other zones */}
                 <Route
                   path="athletes"
                   element={
