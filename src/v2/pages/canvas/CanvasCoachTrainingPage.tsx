@@ -24,6 +24,7 @@ import { useState, useCallback, useMemo, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { startOfWeek } from 'date-fns';
 import { Plus, FileText } from 'lucide-react';
+import { useIsMobile } from '@v2/hooks/useBreakpoint';
 import {
   CanvasTabs,
   CanvasButton,
@@ -59,6 +60,9 @@ export function CanvasCoachTrainingPage() {
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ start: Date; end: Date } | null>(null);
+
+  // Responsive layout
+  const isMobile = useIsMobile();
 
   // Data hooks
   const { plans, isLoading: loadingPlans } = useTrainingPlans();
@@ -158,12 +162,12 @@ export function CanvasCoachTrainingPage() {
   return (
     <div className="h-full bg-void text-ink-primary">
       {/* Page Header — text against void */}
-      <div className="relative px-6 pt-8 pb-6 mb-4">
+      <div className="relative px-4 sm:px-6 pt-6 sm:pt-8 pb-4 sm:pb-6 mb-4">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-muted mb-2">
             COACH
           </p>
-          <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-ink-bright tracking-tight">
             Training
           </h1>
           <p className="text-sm text-ink-secondary mt-2">
@@ -172,9 +176,9 @@ export function CanvasCoachTrainingPage() {
         </div>
       </div>
 
-      <div className="px-6">
+      <div className="px-4 sm:px-6">
         {/* Periodization Timeline */}
-        <div className="mb-6 p-4 bg-ink-raised border border-white/[0.04]">
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-ink-raised border border-white/[0.04]">
           <PeriodizationTimeline
             blocks={periodizationBlocks}
             startDate={new Date('2026-01-01')}
@@ -191,11 +195,11 @@ export function CanvasCoachTrainingPage() {
           onChange={(id) => setActiveTab(id as TabType)}
         />
 
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           {/* Calendar Tab */}
           {activeTab === 'calendar' && (
             <div>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
                 <div className="flex items-center gap-4">
                   <CanvasSelect
                     value={selectedPlanId || ''}
@@ -210,14 +214,18 @@ export function CanvasCoachTrainingPage() {
                   />
                 </div>
 
-                <CanvasButton variant="primary" onClick={() => setShowWorkoutModal(true)}>
+                <CanvasButton
+                  variant="primary"
+                  onClick={() => setShowWorkoutModal(true)}
+                  className="min-h-[44px] w-full sm:w-auto"
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Workout
                 </CanvasButton>
               </div>
 
               {/* Calendar wrapper — Canvas-styled, preserves DnD */}
-              <div className="bg-ink-raised border border-white/[0.04] p-4 canvas-calendar-wrapper">
+              <div className="bg-ink-raised border border-white/[0.04] p-2 sm:p-4 canvas-calendar-wrapper">
                 <DragDropCalendar
                   planId={selectedPlanId || undefined}
                   onSelectEvent={handleSelectEvent}
@@ -234,15 +242,15 @@ export function CanvasCoachTrainingPage() {
                 <CanvasButton
                   variant="ghost"
                   onClick={() => setShowAuditModal(true)}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 min-h-[44px]"
                 >
                   <FileText className="w-4 h-4" />
-                  Generate Audit Report
+                  {!isMobile && 'Generate Audit Report'}
                 </CanvasButton>
               </div>
 
               {/* Canvas-wrapped compliance dashboard */}
-              <div className="bg-ink-raised border border-white/[0.04] p-4">
+              <div className="bg-ink-raised border border-white/[0.04] p-3 sm:p-4">
                 <ComplianceDashboard onAthleteClick={handleAthleteClick} />
               </div>
             </div>
@@ -250,12 +258,12 @@ export function CanvasCoachTrainingPage() {
 
           {/* Plans Tab */}
           {activeTab === 'plans' && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Plan List */}
               <div className="lg:col-span-2">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                   <RuledHeader>TRAINING PLANS</RuledHeader>
-                  <CanvasButton variant="primary">
+                  <CanvasButton variant="primary" className="min-h-[44px] w-full sm:w-auto">
                     <Plus className="w-4 h-4 mr-2" />
                     New Plan
                   </CanvasButton>
@@ -308,6 +316,7 @@ export function CanvasCoachTrainingPage() {
                                 setSelectedPlanId(plan.id);
                                 setShowAssignmentModal(true);
                               }}
+                              className="min-h-[44px]"
                             >
                               ASSIGN
                             </CanvasButton>

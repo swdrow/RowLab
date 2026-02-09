@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from '@phosphor-icons/react';
+import { useIsMobile } from '@v2/hooks/useBreakpoint';
 import { MatrixPlanner } from '../../components/seat-racing';
 import { CanvasChamferPanel, CanvasConsoleReadout, RuledHeader } from '@v2/components/canvas';
 import type { SwapSchedule } from '../../types/advancedRanking';
@@ -40,6 +41,7 @@ const fadeUp = {
 
 export function CanvasMatrixPlannerPage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [generatedSchedule, setGeneratedSchedule] = useState<SwapSchedule | null>(null);
 
   const handleScheduleGenerated = (schedule: SwapSchedule) => {
@@ -51,15 +53,20 @@ export function CanvasMatrixPlannerPage() {
   };
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6 sm:space-y-8 p-4 sm:p-6"
+    >
       {/* ============================================ */}
       {/* HEADER — text against void with back button */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
-        <div className="flex items-center gap-4">
+      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-4 sm:pb-6">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 text-ink-muted hover:text-ink-bright transition-colors"
+            className="p-2 text-ink-muted hover:text-ink-bright transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <ArrowLeft size={20} />
           </button>
@@ -67,7 +74,7 @@ export function CanvasMatrixPlannerPage() {
             <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
               Analytics
             </p>
-            <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-ink-bright tracking-tight leading-none">
               Matrix Planner
             </h1>
           </div>
@@ -86,21 +93,21 @@ export function CanvasMatrixPlannerPage() {
       {/* ============================================ */}
       <motion.div variants={fadeUp}>
         <RuledHeader>Benefits</RuledHeader>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <CanvasChamferPanel>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mt-4">
+          <CanvasChamferPanel className="p-4 min-h-[80px]">
             <h4 className="font-medium text-ink-bright mb-1">Optimal Coverage</h4>
             <p className="text-sm text-ink-secondary">
               Ensures all athletes are compared as evenly as possible, maximizing ranking accuracy.
             </p>
           </CanvasChamferPanel>
-          <CanvasChamferPanel>
+          <CanvasChamferPanel className="p-4 min-h-[80px]">
             <h4 className="font-medium text-ink-bright mb-1">Fewer Pieces Needed</h4>
             <p className="text-sm text-ink-secondary">
               Latin Square design requires fewer pieces than random swaps to achieve the same
               comparison coverage.
             </p>
           </CanvasChamferPanel>
-          <CanvasChamferPanel>
+          <CanvasChamferPanel className="p-4 min-h-[80px]">
             <h4 className="font-medium text-ink-bright mb-1">Statistical Validity</h4>
             <p className="text-sm text-ink-secondary">
               Balanced designs produce more reliable rankings with narrower confidence intervals.
