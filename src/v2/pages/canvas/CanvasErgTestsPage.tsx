@@ -431,7 +431,12 @@ export function CanvasErgTestsPage() {
                     />
                   </div>
                 ) : (
-                  <CanvasDataTable data={tableData} columns={columns} />
+                  <CanvasDataTable
+                    data={tableData}
+                    columns={columns}
+                    virtualized={true}
+                    rowHeight={48}
+                  />
                 )}
               </motion.div>
             ) : (
