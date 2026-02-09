@@ -238,6 +238,13 @@ export const queryKeys = {
     athlete: (id: string) => [...queryKeys.streaks.all, 'athlete', id] as const,
   },
 
+  // Seasons
+  seasons: {
+    all: ['seasons'] as const,
+    milestones: (startDate?: string, endDate?: string) =>
+      [...queryKeys.seasons.all, 'milestones', { startDate, endDate }] as const,
+  },
+
   // Recruit Visits
   recruitVisits: {
     all: ['recruitVisits'] as const,
