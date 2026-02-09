@@ -2,22 +2,21 @@ import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
-import { useFeature } from './useFeaturePreference';
 import type { GamificationApiResponse } from '../types/gamification';
 
 /**
  * Hook to check if gamification is enabled for current user.
- * Checks both team-level feature toggle and per-athlete opt-out.
+ * Checks per-athlete opt-out preference.
+ *
+ * NOTE: Team-level feature toggles removed in Phase 36.
+ * Gamification is now always available, athletes can opt-out individually.
  *
  * @returns Object with enabled status and loading state
  */
 export function useGamificationEnabled() {
   const { isAuthenticated, isInitialized } = useAuth();
 
-  // Team-level feature toggle
-  const teamEnabled = useFeature('gamification');
-
-  // Athlete-level preference
+  // Athlete-level preference (defaults to enabled)
   const { data: athletePrefs, isLoading } = useQuery({
     queryKey: queryKeys.gamification.preferences(),
     queryFn: async () => {
@@ -26,17 +25,16 @@ export function useGamificationEnabled() {
       );
       return response.data.data?.gamificationEnabled ?? true;
     },
-    enabled: isInitialized && isAuthenticated && teamEnabled,
+    enabled: isInitialized && isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Both must be true for gamification to show
-  const enabled = teamEnabled && (athletePrefs ?? true);
+  const enabled = athletePrefs ?? true;
 
   return {
     enabled,
     isLoading,
-    teamEnabled,
+    teamEnabled: true, // Always true now, feature toggles removed
     athleteOptedIn: athletePrefs ?? true,
   };
 }

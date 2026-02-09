@@ -14,8 +14,6 @@ export { ToastProvider, toast } from './ToastProvider';
 export { RichTextEditor } from './RichTextEditor';
 export { RichTextToolbar } from './RichTextToolbar';
 export { RichTextDisplay } from './RichTextDisplay';
-export { FeatureGuard } from './FeatureGuard';
-export { FeatureDiscoveryHint } from './FeatureDiscoveryHint';
 export {
   MobileCard,
   MobileCardField,

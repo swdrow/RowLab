@@ -1,9 +1,8 @@
-import { Shield, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../../../contexts/ToastContext';
 import api from '../../../utils/api';
 import { useGamificationEnabled } from '../../../hooks/useGamificationPreference';
-import { useFeature } from '../../../hooks/useFeaturePreference';
 
 interface GamificationSettingsProps {
   athleteId: string;
@@ -16,7 +15,6 @@ interface GamificationSettingsProps {
 export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
-  const teamEnabled = useFeature('gamification');
   const { enabled, athleteOptedIn, isLoading } = useGamificationEnabled();
 
   const updatePreference = useMutation({
@@ -35,22 +33,6 @@ export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
       showToast('error', 'Failed to update settings');
     },
   });
-
-  if (!teamEnabled) {
-    return (
-      <div className="p-4 bg-surface rounded-lg border border-bdr-default">
-        <div className="flex items-center gap-3">
-          <Shield className="text-txt-tertiary" size={24} />
-          <div>
-            <p className="font-medium text-txt-primary">Gamification Disabled</p>
-            <p className="text-sm text-txt-secondary">
-              Gamification is disabled for your team. Contact your coach to enable it.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
