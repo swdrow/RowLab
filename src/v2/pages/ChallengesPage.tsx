@@ -149,10 +149,124 @@ export function ChallengesPage() {
         </div>
       </div>
 
-      <div className="px-6">
-        <ChallengeList showCreateButton />
+      <div className="px-6 space-y-8">
+        {/* Team Challenges Section (Prominent) */}
+        <TeamChallengesSection />
+
+        {/* All Challenges */}
+        <div>
+          <h2 className="text-lg font-semibold text-txt-primary mb-4">All Challenges</h2>
+          <ChallengeList showCreateButton />
+        </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Prominent Team Challenges section
+ * Shows active collective challenges with progress and CTA
+ */
+function TeamChallengesSection() {
+  const { data: activeChallenges, isLoading } = useActiveChallenges();
+
+  // Filter for collective (team) challenges
+  const teamChallenges = activeChallenges?.filter((c) => c.type === 'collective') || [];
+
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        <h2 className="text-lg font-semibold text-txt-primary">Team Challenges</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="h-32 bg-surface-elevated rounded-lg animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Quiet empty state - no team challenges available
+  if (teamChallenges.length === 0) {
+    return (
+      <div className="p-6 bg-surface-elevated rounded-xl border border-bdr-default">
+        <div className="flex items-start gap-3">
+          <Users className="w-5 h-5 text-accent-primary flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-txt-primary mb-1">No active team challenges</h3>
+            <p className="text-sm text-txt-secondary">
+              Create a collective challenge to rally your team around shared goals.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-txt-primary">Active Team Challenges</h2>
+        <span className="text-sm text-txt-secondary">{teamChallenges.length} active</span>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {teamChallenges.map((challenge) => (
+          <TeamChallengeCard key={challenge.id} challenge={challenge} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Team challenge card - focused on progress and joining
+ */
+function TeamChallengeCard({ challenge }: { challenge: any }) {
+  const participantCount = challenge.participantCount || 0;
+
+  // Calculate mock progress (TODO: use real progress from API)
+  const mockProgress = Math.min(85, participantCount * 10);
+
+  return (
+    <Link
+      to={`/app/challenges/${challenge.id}`}
+      className="block p-4 bg-surface-elevated rounded-lg border border-bdr-default hover:border-accent-copper/30 transition-colors group"
+    >
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <h3 className="font-semibold text-txt-primary group-hover:text-accent-primary transition-colors line-clamp-2">
+          {challenge.name}
+        </h3>
+        <Trophy className="w-4 h-4 text-accent-primary flex-shrink-0 mt-0.5" />
+      </div>
+
+      {challenge.description && (
+        <p className="text-sm text-txt-secondary line-clamp-2 mb-3">{challenge.description}</p>
+      )}
+
+      {/* Progress bar */}
+      <div className="mb-3">
+        <div className="flex items-center justify-between text-xs text-txt-tertiary mb-1">
+          <span>Team Progress</span>
+          <span className="font-mono">{mockProgress}%</span>
+        </div>
+        <div className="h-1.5 bg-surface-hover rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-accent-copper to-accent-primary transition-all duration-500"
+            style={{ width: `${mockProgress}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Participant count + CTA */}
+      <div className="flex items-center justify-between text-sm">
+        <span className="flex items-center gap-1.5 text-txt-tertiary">
+          <Users size={14} />
+          {participantCount} {participantCount === 1 ? 'participant' : 'participants'}
+        </span>
+        <span className="text-accent-primary group-hover:underline">View &rarr;</span>
+      </div>
+    </Link>
   );
 }
 
