@@ -109,12 +109,24 @@ export function useZone(): ZoneConfig {
     return ZONE_ANALYSIS;
   if (pathname.startsWith('/canvas/regattas') || pathname.startsWith('/canvas/rankings'))
     return ZONE_RACING;
-  if (pathname.startsWith('/canvas/training') || pathname.startsWith('/canvas/coach/training'))
+  if (
+    pathname.startsWith('/canvas/training') ||
+    pathname.startsWith('/canvas/coach/training') ||
+    pathname.startsWith('/canvas/coach/lineup-builder')
+  )
     return ZONE_TRAINING;
-  if (pathname.startsWith('/canvas/athletes') || pathname.startsWith('/canvas/attendance'))
+  if (
+    pathname.startsWith('/canvas/athletes') ||
+    pathname.startsWith('/canvas/attendance') ||
+    pathname.startsWith('/canvas/coach/whiteboard') ||
+    pathname.startsWith('/canvas/coach/fleet') ||
+    pathname.startsWith('/canvas/coach/availability') ||
+    pathname.startsWith('/canvas/recruiting')
+  )
     return ZONE_TEAM;
 
-  // Default: home
+  // Default: home (covers /canvas, /canvas/me, /canvas/coach/dashboard,
+  // /canvas/achievements, /canvas/challenges)
   return ZONE_HOME;
 }
 
