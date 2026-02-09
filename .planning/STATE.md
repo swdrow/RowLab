@@ -4,10 +4,10 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 35 (Canvas Promotion + Mobile Responsiveness) — IN PROGRESS
-**Plan:** 9/11 complete (3 commits)
-**Status:** Completed 35-09: Performance optimized with Vite auto-splitting, splash screen, route prefetching, and dev-only Web Vitals tracking.
-**Next Plan:** 35-10 (Frontend smoke tests)
-**Last activity:** 2026-02-09 — Completed 35-09-PLAN.md: Performance optimization
+**Plan:** 9/11 complete (2 commits)
+**Status:** Completed 35-08: 6 complex Canvas pages made mobile-responsive with touch-friendly layouts (sessions, detail, live, fleet, whiteboard, dashboard). 44px touch targets, single-column mobile layouts.
+**Next Plan:** 35-11 (Canvas promotion to default navigation)
+**Last activity:** 2026-02-09 — Completed 35-08-PLAN.md: Mobile-responsive Canvas complex layouts
 
 ## Project Reference
 

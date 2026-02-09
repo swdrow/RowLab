@@ -18,8 +18,9 @@ import {
   type ColumnDef,
   type SortingState,
 } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 export interface CanvasDataTableProps<T> {
   data: T[];
@@ -30,6 +31,12 @@ export interface CanvasDataTableProps<T> {
   onRowClick?: (row: T) => void;
   sortable?: boolean;
   className?: string;
+  /** Enable virtualization for large datasets */
+  virtualized?: boolean;
+  /** Row height for virtualization (default: 48px) */
+  rowHeight?: number;
+  /** Max container height when virtualized (default: max-h-[60vh] on desktop, max-h-[50vh] on mobile) */
+  maxHeight?: string;
 }
 
 export function CanvasDataTable<T>({
@@ -41,8 +48,12 @@ export function CanvasDataTable<T>({
   onRowClick,
   sortable = true,
   className = '',
+  virtualized = false,
+  rowHeight = 48,
+  maxHeight,
 }: CanvasDataTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const tableContainerRef = useRef<HTMLDivElement>(null);
 
   const table = useReactTable({
     data,
@@ -55,6 +66,20 @@ export function CanvasDataTable<T>({
     getSortedRowModel: getSortedRowModel(),
     enableSorting: sortable,
   });
+
+  const rows = table.getRowModel().rows;
+
+  // Virtualization setup (only if enabled)
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => tableContainerRef.current,
+    estimateSize: () => rowHeight,
+    overscan: 10,
+    enabled: virtualized,
+  });
+
+  const virtualRows = virtualized ? virtualizer.getVirtualItems() : null;
+  const totalSize = virtualized ? virtualizer.getTotalSize() : 0;
 
   // Loading state: 5 skeleton rows
   if (isLoading) {
@@ -130,11 +155,18 @@ export function CanvasDataTable<T>({
     );
   }
 
+  // Determine container height class
+  const containerHeightClass = maxHeight || (virtualized ? 'max-h-[50vh] lg:max-h-[60vh]' : '');
+
   return (
     <div className={`w-full ${className}`}>
-      <div className="canvas-table-scroll">
+      <div
+        ref={tableContainerRef}
+        className={`canvas-table-scroll ${containerHeightClass} ${virtualized ? 'overflow-auto' : ''}`}
+        style={virtualized ? { contain: 'strict' } : undefined}
+      >
         <table className="w-full">
-          <thead>
+          <thead className={virtualized ? 'sticky top-0 z-10 bg-ink-raised' : ''}>
             <tr>
               {table.getHeaderGroups().map((headerGroup) =>
                 headerGroup.headers.map((header, colIndex) => {
@@ -164,46 +196,107 @@ export function CanvasDataTable<T>({
             </tr>
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row, i) => (
-              <motion.tr
-                key={row.id}
-                onClick={onRowClick ? () => onRowClick(row.original) : undefined}
-                className={`border-b border-white/[0.04] relative group ${
-                  onRowClick ? 'cursor-pointer' : ''
-                } hover:bg-white/[0.02] transition-colors`}
-                initial={{ opacity: 0, x: -4 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  delay: i * 0.03,
-                  duration: 0.3,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-              >
-                {/* Left accent edge on hover */}
-                <td className="absolute left-0 top-0 bottom-0 w-px">
-                  <div
-                    className="h-full opacity-0 group-hover:opacity-100 transition-opacity canvas-accent-breathe"
-                    style={{
-                      backgroundColor: accentColor,
-                    }}
-                  />
-                </td>
+            {virtualized && virtualRows ? (
+              <>
+                {/* Virtualized rendering */}
+                {virtualRows[0]?.start > 0 && (
+                  <tr>
+                    <td style={{ height: virtualRows[0].start }} colSpan={columns.length} />
+                  </tr>
+                )}
+                {virtualRows.map((virtualRow) => {
+                  const row = rows[virtualRow.index];
+                  if (!row) return null;
 
-                {row.getVisibleCells().map((cell, colIndex) => {
-                  const isNumeric = typeof cell.getValue() === 'number';
                   return (
-                    <td
-                      key={cell.id}
-                      className={`px-4 py-3 text-ink-primary ${
-                        colIndex === 0 ? 'canvas-table-sticky-col' : ''
-                      } ${isNumeric ? 'font-mono tabular-nums' : ''}`}
+                    <tr
+                      key={row.id}
+                      onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+                      className={`border-b border-white/[0.04] relative group ${
+                        onRowClick ? 'cursor-pointer' : ''
+                      } hover:bg-white/[0.02] transition-colors`}
+                      style={{ height: rowHeight }}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
+                      {/* Left accent edge on hover */}
+                      <td className="absolute left-0 top-0 bottom-0 w-px">
+                        <div
+                          className="h-full opacity-0 group-hover:opacity-100 transition-opacity canvas-accent-breathe"
+                          style={{
+                            backgroundColor: accentColor,
+                          }}
+                        />
+                      </td>
+
+                      {row.getVisibleCells().map((cell, colIndex) => {
+                        const isNumeric = typeof cell.getValue() === 'number';
+                        return (
+                          <td
+                            key={cell.id}
+                            className={`px-4 py-3 text-ink-primary ${
+                              colIndex === 0 ? 'canvas-table-sticky-col' : ''
+                            } ${isNumeric ? 'font-mono tabular-nums' : ''}`}
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        );
+                      })}
+                    </tr>
                   );
                 })}
-              </motion.tr>
-            ))}
+                {virtualRows.length > 0 && virtualRows[virtualRows.length - 1]?.end < totalSize && (
+                  <tr>
+                    <td
+                      style={{
+                        height: totalSize - (virtualRows[virtualRows.length - 1]?.end || 0),
+                      }}
+                      colSpan={columns.length}
+                    />
+                  </tr>
+                )}
+              </>
+            ) : (
+              /* Non-virtualized rendering with motion */
+              rows.map((row, i) => (
+                <motion.tr
+                  key={row.id}
+                  onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+                  className={`border-b border-white/[0.04] relative group ${
+                    onRowClick ? 'cursor-pointer' : ''
+                  } hover:bg-white/[0.02] transition-colors`}
+                  initial={{ opacity: 0, x: -4 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: i * 0.03,
+                    duration: 0.3,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  {/* Left accent edge on hover */}
+                  <td className="absolute left-0 top-0 bottom-0 w-px">
+                    <div
+                      className="h-full opacity-0 group-hover:opacity-100 transition-opacity canvas-accent-breathe"
+                      style={{
+                        backgroundColor: accentColor,
+                      }}
+                    />
+                  </td>
+
+                  {row.getVisibleCells().map((cell, colIndex) => {
+                    const isNumeric = typeof cell.getValue() === 'number';
+                    return (
+                      <td
+                        key={cell.id}
+                        className={`px-4 py-3 text-ink-primary ${
+                          colIndex === 0 ? 'canvas-table-sticky-col' : ''
+                        } ${isNumeric ? 'font-mono tabular-nums' : ''}`}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    );
+                  })}
+                </motion.tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
