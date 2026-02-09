@@ -24,40 +24,56 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Refresh token mutex — ensures only one refresh call at a time.
+// When multiple requests get 401s simultaneously, the first triggers a refresh
+// and all others wait for that same promise.
+let refreshPromise: Promise<string | null> | null = null;
+
+function doRefresh(): Promise<string | null> {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = axios
+    .post(`${API_URL}/api/v1/auth/refresh`, {}, { withCredentials: true })
+    .then((res) => {
+      const newToken = res.data?.data?.accessToken;
+      if (newToken) {
+        (window as any).__rowlab_access_token = newToken;
+        return newToken as string;
+      }
+      console.error('Token refresh succeeded but response missing accessToken');
+      delete (window as any).__rowlab_access_token;
+      return null;
+    })
+    .catch((err) => {
+      delete (window as any).__rowlab_access_token;
+      window.dispatchEvent(new CustomEvent('rowlab:auth:expired'));
+      throw err;
+    })
+    .finally(() => {
+      refreshPromise = null;
+    });
+
+  return refreshPromise;
+}
+
 // Add auth response interceptor for 401 handling
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // If 401 and haven't retried yet, try to refresh token
+    // If 401 and haven't retried yet, try to refresh token (deduped via mutex)
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // Try to refresh token via API
-        const refreshResponse = await axios.post(
-          `${API_URL}/api/v1/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
-
-        if (refreshResponse.data?.data?.accessToken) {
-          const newToken = refreshResponse.data.data.accessToken;
-          // Update global token reference
-          (window as any).__rowlab_access_token = newToken;
-          // Update the request header with new token and retry
+        const newToken = await doRefresh();
+        if (newToken) {
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
-        } else {
-          console.error('Token refresh succeeded but response missing accessToken');
-          delete (window as any).__rowlab_access_token;
         }
-      } catch (refreshError) {
-        // Refresh failed, clear token and notify AuthProvider
-        delete (window as any).__rowlab_access_token;
-        window.dispatchEvent(new CustomEvent('rowlab:auth:expired'));
-        return Promise.reject(refreshError);
+      } catch {
+        return Promise.reject(error);
       }
     }
 
