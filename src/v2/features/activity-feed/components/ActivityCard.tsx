@@ -1,82 +1,56 @@
 // src/v2/features/activity-feed/components/ActivityCard.tsx
-// Activity card component with type-specific styling and content
+// Activity card dispatcher - routes to typed card components based on activity.type
 
+import { motion } from 'framer-motion';
 import { formatDistance } from 'date-fns';
-import {
-  Timer,
-  Users,
-  Trophy,
-  Check,
-  ArrowsLeftRight,
-  Barbell,
-} from '@phosphor-icons/react';
+import { Question } from '@phosphor-icons/react';
 import type { AnyActivity, ActivityType } from '../../../types/activity';
-import {
-  ACTIVITY_TYPE_COLORS,
-  ACTIVITY_TYPE_LABELS,
-} from '../../../types/activity';
+import { ACTIVITY_TYPE_LABELS } from '../../../types/activity';
+
+// Import typed card components
+import { ErgTestActivityCard } from './ErgTestActivityCard';
+import { SessionActivityCard } from './SessionActivityCard';
+import { RaceResultActivityCard } from './RaceResultActivityCard';
+import { AttendanceActivityCard } from './AttendanceActivityCard';
+import { SeatRaceActivityCard } from './SeatRaceActivityCard';
+import { LineupAssignmentActivityCard } from './LineupAssignmentActivityCard';
 
 // ============================================
-// ICONS MAP
+// TYPE-TO-COMPONENT MAP
 // ============================================
 
-const TYPE_ICONS: Record<ActivityType, React.ElementType> = {
-  erg_test: Timer,
-  session_participation: Barbell,
-  race_result: Trophy,
-  attendance: Check,
-  seat_race: ArrowsLeftRight,
-  lineup_assignment: Users,
+const TYPE_CARD_MAP: Record<ActivityType, React.ComponentType<{ activity: any }>> = {
+  erg_test: ErgTestActivityCard,
+  session_participation: SessionActivityCard,
+  race_result: RaceResultActivityCard,
+  attendance: AttendanceActivityCard,
+  seat_race: SeatRaceActivityCard,
+  lineup_assignment: LineupAssignmentActivityCard,
 };
 
 // ============================================
-// HELPER FUNCTIONS
+// GENERIC FALLBACK CARD
 // ============================================
 
 /**
- * Format erg time from seconds to mm:ss.t format
+ * Generic fallback for unknown activity types
  */
-function formatErgTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  const tenths = Math.floor((seconds % 1) * 10);
-  return `${mins}:${secs.toString().padStart(2, '0')}.${tenths}`;
-}
-
-// ============================================
-// COMPONENT
-// ============================================
-
-interface ActivityCardProps {
-  activity: AnyActivity;
-}
-
-export function ActivityCard({ activity }: ActivityCardProps) {
-  const Icon = TYPE_ICONS[activity.type];
-
+function GenericActivityCard({ activity }: { activity: AnyActivity }) {
   return (
-    <div className="bg-surface-elevated rounded-lg border border-bdr-default p-4 hover:border-bdr-focus transition-colors">
+    <motion.div
+      whileHover={{ y: -1 }}
+      className="bg-surface-elevated/80 backdrop-blur-sm rounded-lg border border-bdr-default p-4 hover:border-accent-primary/30 transition-all duration-200 cursor-pointer"
+    >
       <div className="flex items-start gap-3">
         {/* Icon */}
-        <div
-          className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${ACTIVITY_TYPE_COLORS[activity.type]}`}
-        >
-          <Icon className="w-5 h-5" />
+        <div className="w-10 h-10 rounded-full bg-gray-400/10 flex items-center justify-center shrink-0">
+          <Question className="w-5 h-5 text-gray-400" weight="duotone" />
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          {/* Header */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="font-medium text-txt-primary truncate">
-              {activity.title}
-            </span>
-            <span className="text-xs text-txt-muted whitespace-nowrap">
-              {formatDistance(new Date(activity.date), new Date(), {
-                addSuffix: true,
-              })}
-            </span>
-          </div>
+          {/* Title */}
+          <h3 className="font-semibold text-txt-primary truncate">{activity.title}</h3>
 
           {/* Athlete name */}
           {activity.athleteName && (
@@ -88,77 +62,45 @@ export function ActivityCard({ activity }: ActivityCardProps) {
             <p className="text-sm text-txt-muted mt-1">{activity.description}</p>
           )}
 
-          {/* Type-specific details */}
-          {activity.type === 'erg_test' && (
-            <div className="flex items-center gap-4 mt-2 text-sm text-txt-secondary">
-              <span>
-                Time: {formatErgTime(activity.metadata.time as number)}
-              </span>
-              {activity.metadata.watts && (
-                <span>{activity.metadata.watts}W</span>
-              )}
-              {activity.metadata.personalBest && (
-                <span className="text-green-500 font-medium">PB!</span>
-              )}
-            </div>
-          )}
-
-          {activity.type === 'race_result' && (
-            <div className="flex items-center gap-4 mt-2 text-sm text-txt-secondary">
-              <span>Place: #{activity.metadata.place}</span>
-              <span>{activity.metadata.boatClass}</span>
-            </div>
-          )}
-
-          {activity.type === 'session_participation' && (
-            <div className="flex items-center gap-4 mt-2 text-sm text-txt-secondary">
-              <span>{activity.metadata.sessionType}</span>
-              <span>
-                {Math.round(activity.metadata.participationPercent as number)}%
-                participation
-              </span>
-            </div>
-          )}
-
-          {activity.type === 'seat_race' && activity.metadata.ratingChange && (
-            <div className="flex items-center gap-4 mt-2 text-sm text-txt-secondary">
-              <span
-                className={
-                  (activity.metadata.ratingChange as number) > 0
-                    ? 'text-green-500'
-                    : 'text-red-500'
-                }
-              >
-                Rating:{' '}
-                {(activity.metadata.ratingChange as number) > 0 ? '+' : ''}
-                {activity.metadata.ratingChange}
-              </span>
-              {activity.metadata.newRating && (
-                <span>New: {activity.metadata.newRating}</span>
-              )}
-            </div>
-          )}
-
-          {activity.type === 'lineup_assignment' && (
-            <div className="flex items-center gap-4 mt-2 text-sm text-txt-secondary">
-              <span>{activity.metadata.lineupName}</span>
-              <span>{activity.metadata.boatClass}</span>
-              {activity.metadata.seatNumber && (
-                <span>Seat {activity.metadata.seatNumber}</span>
-              )}
-            </div>
-          )}
-
           {/* Type badge */}
           <div className="mt-2">
-            <span
-              className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${ACTIVITY_TYPE_COLORS[activity.type]}`}
-            >
-              {ACTIVITY_TYPE_LABELS[activity.type]}
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-400/10 text-gray-400">
+              {ACTIVITY_TYPE_LABELS[activity.type] || 'Activity'}
             </span>
           </div>
+
+          {/* Timestamp */}
+          <p className="text-xs text-txt-subtle mt-1">
+            {formatDistance(new Date(activity.date), new Date(), {
+              addSuffix: true,
+            })}
+          </p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
+}
+
+// ============================================
+// DISPATCHER COMPONENT
+// ============================================
+
+interface ActivityCardProps {
+  activity: AnyActivity;
+}
+
+/**
+ * Activity card dispatcher - routes to typed card component based on activity.type
+ * Falls back to GenericActivityCard for unknown types (no crashes)
+ */
+export function ActivityCard({ activity }: ActivityCardProps) {
+  const CardComponent = TYPE_CARD_MAP[activity.type];
+
+  // If we have a typed card for this activity type, use it
+  if (CardComponent) {
+    return <CardComponent activity={activity} />;
+  }
+
+  // Otherwise, fall back to generic card
+  return <GenericActivityCard activity={activity} />;
 }
