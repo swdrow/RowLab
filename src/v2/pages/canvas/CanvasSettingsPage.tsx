@@ -11,7 +11,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, Navigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSettings, useUpdateSettings } from '@v2/hooks/useSettings';
@@ -59,7 +59,7 @@ const fadeUp = {
 
 export const CanvasSettingsPage: React.FC = () => {
   // ALL HOOKS MUST BE CALLED FIRST
-  const { user, activeTeamRole, isAuthenticated, isInitialized, logout } = useAuth();
+  const { user, activeTeamRole, isInitialized, logout } = useAuth();
   const isOwner = activeTeamRole === 'OWNER';
 
   // URL-synced tab state
@@ -109,16 +109,13 @@ export const CanvasSettingsPage: React.FC = () => {
   }, [tabFromUrl, activeTab]);
 
   // CONDITIONAL RETURNS - after all hooks
+  // Note: Auth is already handled by CanvasLayout's useRequireAuth()
   if (!isInitialized || isLoading) {
     return (
       <div className="p-6">
         <CanvasConsoleReadout items={[{ label: 'STATUS', value: 'LOADING SETTINGS' }]} />
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
   }
 
   if (error) {
