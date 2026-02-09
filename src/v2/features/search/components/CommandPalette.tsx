@@ -343,13 +343,9 @@ export function CommandPalette() {
   // Fetch athletes for the dedicated Athletes group (uses stale cache, won't refetch on open)
   const { allAthletes } = useAthletes();
 
-  // Handle keyboard shortcut (Cmd/Ctrl+K)
+  // Handle Escape key to close (Cmd/Ctrl+K handled globally by useKeyboardShortcuts)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        toggle();
-      }
       if (e.key === 'Escape' && isOpen) {
         e.preventDefault();
         close();
@@ -358,7 +354,7 @@ export function CommandPalette() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, toggle, close]);
+  }, [isOpen, close]);
 
   // Focus input when opening
   useEffect(() => {
