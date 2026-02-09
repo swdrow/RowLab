@@ -4,10 +4,10 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 35 (Canvas Promotion + Mobile Responsiveness) — IN PROGRESS
-**Plan:** 5/11 complete (4 commits)
-**Status:** Completed 35-05: 8 Canvas dashboard and card/form pages fully responsive from 375px to 1440px. Mobile-first patterns established.
-**Next Plan:** 35-06 (Mobile-responsive data tables)
-**Last activity:** 2026-02-09 — Completed 35-05-PLAN.md: Mobile-responsive dashboards and forms
+**Plan:** 9/11 complete (3 commits)
+**Status:** Completed 35-09: Performance optimized with Vite auto-splitting, splash screen, route prefetching, and dev-only Web Vitals tracking.
+**Next Plan:** 35-10 (Frontend smoke tests)
+**Last activity:** 2026-02-09 — Completed 35-09-PLAN.md: Performance optimization
 
 ## Project Reference
 
@@ -97,7 +97,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 32 | Training & Attendance Migration | Complete ✅ | 6/6 |
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
 | 34 | Gamification & Activity Feed Migration | Complete ✅ | 8/8 |
-| 35 | Canvas Promotion + Mobile | In Progress | 5/11 |
+| 35 | Canvas Promotion + Mobile | In Progress | 10/11 |
 | 36 | Dead Code Cleanup | Not started | TBD |
 
 v3.0 Progress: ██████████████████░░ (11 phases complete, 2 remaining)
@@ -504,9 +504,9 @@ Key architectural decisions carrying forward:
 ## Session Continuity
 
 **Last session:** 2026-02-09
-**Stopped at:** Phase 35-05 COMPLETE. 8 Canvas dashboard and card/form pages fully responsive from 375px to 1440px.
+**Stopped at:** Phase 35-09 COMPLETE. Performance optimized: Vite auto-splitting, splash screen, route prefetching, Web Vitals tracking.
 **Resume file:** None
-**Resume with:** Continue Phase 35 with plan 35-06 (Mobile-responsive data tables)
+**Resume with:** Continue Phase 35 with plan 35-10 (Frontend smoke tests)
 
 ## Roadmap Evolution
 
