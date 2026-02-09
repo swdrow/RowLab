@@ -233,7 +233,7 @@ export function CanvasAthleteDetailPage() {
               </h1>
               {athlete.side && (
                 <p className="text-sm font-mono text-ink-secondary mt-2">
-                  {athlete.side} &middot; {athlete.classYear || 'N/A'}
+                  {athlete.side} &middot; {athlete.classYear ?? 'N/A'}
                 </p>
               )}
             </div>
@@ -346,7 +346,7 @@ export function CanvasAthleteDetailPage() {
             { label: 'ERG TESTS', value: recentErgTests.length.toString() },
             { label: 'STREAK', value: `${attendanceStreak}d` },
             { label: 'SIDE', value: athlete.side || '\u2014' },
-            { label: 'YEAR', value: athlete.classYear || '\u2014' },
+            { label: 'YEAR', value: athlete.classYear?.toString() || '\u2014' },
           ]}
         />
       </div>
