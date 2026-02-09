@@ -15,16 +15,16 @@
 
 /* ============================================
    FONT OVERRIDE
-   Canvas uses Plus Jakarta Sans — a geometric sans-serif with
-   slightly rounded terminals. Warmer than Inter, more personality.
+   Canvas uses Rubik — geometric sans-serif with softly rounded
+   corners. Clean, friendly, distinctive without being trendy.
    Overrides both display and body fonts within the Canvas layout.
    ============================================ */
 
 .canvas-layout {
-  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Rubik', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Rubik', 'Inter', system-ui, -apple-system, sans-serif;
   font-family:
-    'Plus Jakarta Sans',
+    'Rubik',
     'Inter',
     system-ui,
     -apple-system,
