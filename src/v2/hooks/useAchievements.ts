@@ -17,9 +17,8 @@ import type {
  * Fetch all achievements with current user's progress
  */
 async function fetchAchievements(): Promise<AchievementsResponse> {
-  const response = await api.get<GamificationApiResponse<AchievementsResponse>>(
-    '/api/v1/achievements'
-  );
+  const response =
+    await api.get<GamificationApiResponse<AchievementsResponse>>('/api/v1/achievements');
 
   if (!response.data.success || !response.data.data) {
     throw new Error(response.data.error?.message || 'Failed to fetch achievements');
@@ -93,9 +92,9 @@ export function usePinnedAchievements(athleteId: string) {
   return useQuery({
     queryKey: queryKeys.achievements.pinned(athleteId),
     queryFn: async () => {
-      const response = await api.get<GamificationApiResponse<{ pinned: AchievementWithProgress[] }>>(
-        `/api/v1/achievements/pinned/${athleteId}`
-      );
+      const response = await api.get<
+        GamificationApiResponse<{ pinned: AchievementWithProgress[] }>
+      >(`/api/v1/achievements/pinned/${athleteId}`);
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.error?.message || 'Failed to fetch pinned achievements');
       }
@@ -107,7 +106,7 @@ export function usePinnedAchievements(athleteId: string) {
 }
 
 /**
- * Hook for toggling pinned status
+ * Hook for toggling pinned status with optimistic UI
  */
 export function useTogglePin() {
   const queryClient = useQueryClient();
@@ -122,29 +121,75 @@ export function useTogglePin() {
       }
       return response.data.data;
     },
-    onSuccess: () => {
+    // Optimistic update: toggle isPinned immediately
+    onMutate: async (achievementId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.achievements.all });
+
+      // Snapshot previous value
+      const previousAchievements = queryClient.getQueryData<AchievementsResponse>(
+        queryKeys.achievements.list()
+      );
+
+      // Optimistically update
+      if (previousAchievements) {
+        queryClient.setQueryData<AchievementsResponse>(queryKeys.achievements.list(), {
+          ...previousAchievements,
+          achievements: previousAchievements.achievements.map((a) =>
+            a.id === achievementId ? { ...a, isPinned: !a.isPinned } : a
+          ),
+        });
+      }
+
+      return { previousAchievements };
+    },
+    // Rollback on error
+    onError: (_err, _achievementId, context) => {
+      if (context?.previousAchievements) {
+        queryClient.setQueryData(queryKeys.achievements.list(), context.previousAchievements);
+      }
+    },
+    // Refetch to ensure consistency
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.achievements.all });
     },
   });
 }
 
 /**
- * Hook to manually trigger progress check
+ * Hook to manually trigger progress check with optimistic UI
  */
 export function useCheckProgress() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async () => {
-      const response = await api.post<GamificationApiResponse<{ newlyUnlocked: { id: string; name: string; rarity: string }[] }>>(
-        '/api/v1/achievements/check-progress'
-      );
+      const response = await api.post<
+        GamificationApiResponse<{ newlyUnlocked: { id: string; name: string; rarity: string }[] }>
+      >('/api/v1/achievements/check-progress');
       if (!response.data.success) {
         throw new Error(response.data.error?.message || 'Failed to check progress');
       }
       return response.data.data?.newlyUnlocked || [];
     },
-    onSuccess: () => {
+    // Optimistic: immediately mark as loading
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.achievements.all });
+
+      const previousAchievements = queryClient.getQueryData<AchievementsResponse>(
+        queryKeys.achievements.list()
+      );
+
+      return { previousAchievements };
+    },
+    // Rollback on error
+    onError: (_err, _vars, context) => {
+      if (context?.previousAchievements) {
+        queryClient.setQueryData(queryKeys.achievements.list(), context.previousAchievements);
+      }
+    },
+    // Refetch after success or error
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.achievements.all });
     },
   });
