@@ -53,7 +53,21 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   </head>
   <body class="antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Inline splash screen - shows before React loads -->
+      <div id="splash-screen" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0a0f;z-index:9999;">
+        <div style="text-align:center;">
+          <div style="font-size:2rem;font-weight:700;color:#ffffff;font-family:Outfit,system-ui,sans-serif;letter-spacing:0.05em;">RowLab</div>
+          <div style="width:40px;height:2px;background:linear-gradient(90deg,transparent,#3b82f6,transparent);margin:12px auto;animation:pulse 1.5s ease-in-out infinite;"></div>
+        </div>
+      </div>
+      <style>
+        @keyframes pulse {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+      </style>
+    </div>
     <script type="module" src="/src/index.jsx"></script>
   </body>
 </html>

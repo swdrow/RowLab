@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoadingFallback } from './components/LoadingFallback';
 import { LegacyRedirect } from './components/LegacyRedirect';
+import { SplashScreen } from './components/SplashScreen';
 import './App.css';
 
 // Lazy load all pages for code splitting
@@ -205,6 +206,7 @@ class ErrorBoundary extends React.Component {
 function App() {
   return (
     <ErrorBoundary>
+      <SplashScreen />
       <BrowserRouter>
         <Suspense fallback={<LoadingFallback message="Loading RowLab..." />}>
           <Routes>
