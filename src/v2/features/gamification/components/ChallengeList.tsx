@@ -13,16 +13,14 @@ export function ChallengeList({ showCreateButton = true }: ChallengeListProps) {
   const [filter, setFilter] = useState<ChallengeStatus | 'all'>('active');
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  const { data: allChallenges, isLoading } = useChallenges(
-    filter === 'all' ? undefined : filter
-  );
+  const { data: allChallenges, isLoading } = useChallenges(filter === 'all' ? undefined : filter);
   const { data: activeChallenges } = useActiveChallenges();
 
   if (isLoading) {
     return (
       <div className="space-y-3">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-28 bg-surface-hover rounded-lg animate-pulse" />
+          <div key={i} className="h-28 bg-surface-elevated rounded-lg animate-pulse" />
         ))}
       </div>
     );
@@ -41,9 +39,10 @@ export function ChallengeList({ showCreateButton = true }: ChallengeListProps) {
               onClick={() => setFilter(status)}
               className={`
                 px-3 py-1.5 text-sm rounded-lg transition-colors
-                ${filter === status
-                  ? 'bg-primary text-white'
-                  : 'bg-surface-hover text-txt-secondary hover:text-txt-primary'
+                ${
+                  filter === status
+                    ? 'bg-primary text-white'
+                    : 'bg-surface-hover text-txt-secondary hover:text-txt-primary'
                 }
               `}
             >
@@ -72,9 +71,7 @@ export function ChallengeList({ showCreateButton = true }: ChallengeListProps) {
       {showCreateForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
           <div className="w-full max-w-lg bg-surface-elevated rounded-xl p-6 shadow-xl">
-            <h2 className="text-xl font-semibold text-txt-primary mb-4">
-              Create Challenge
-            </h2>
+            <h2 className="text-xl font-semibold text-txt-primary mb-4">Create Challenge</h2>
             <CreateChallengeForm
               onSuccess={() => setShowCreateForm(false)}
               onCancel={() => setShowCreateForm(false)}

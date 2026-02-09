@@ -32,7 +32,7 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
   const [endDate, setEndDate] = useState(nextWeek);
 
   const handleTemplateSelect = (templateId: string) => {
-    const template = templates?.find(t => t.id === templateId);
+    const template = templates?.find((t) => t.id === templateId);
     if (template) {
       setSelectedTemplate(templateId);
       setFormData({
@@ -89,9 +89,10 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
                 onClick={() => handleTemplateSelect(template.id)}
                 className={`
                   p-3 text-left rounded-lg border transition-colors
-                  ${selectedTemplate === template.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-bdr hover:border-primary/50'
+                  ${
+                    selectedTemplate === template.id
+                      ? 'border-primary bg-primary/5'
+                      : 'border-bdr-default hover:border-primary/50'
                   }
                 `}
               >
@@ -105,27 +106,23 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
 
       {/* Name */}
       <div>
-        <label className="block text-sm font-medium text-txt-primary mb-1">
-          Challenge Name *
-        </label>
+        <label className="block text-sm font-medium text-txt-primary mb-1">Challenge Name *</label>
         <input
           type="text"
           value={formData.name || ''}
-          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
           placeholder="Holiday Meters Challenge"
-          className="w-full px-3 py-2 bg-surface border border-bdr rounded-lg text-txt-primary placeholder:text-txt-tertiary focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className="w-full px-3 py-2 bg-surface border border-bdr-default rounded-lg text-txt-primary placeholder:text-txt-tertiary focus:outline-none focus:ring-2 focus:ring-primary/50"
           required
         />
       </div>
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-txt-primary mb-1">
-          Description
-        </label>
+        <label className="block text-sm font-medium text-txt-primary mb-1">Description</label>
         <textarea
           value={formData.description || ''}
-          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
           placeholder="Who can row the most meters during break?"
           rows={2}
           className="w-full px-3 py-2 bg-surface border border-bdr rounded-lg text-txt-primary placeholder:text-txt-tertiary focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
@@ -135,12 +132,12 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
       {/* Type and Metric */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Type
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Type</label>
           <select
             value={formData.type || 'individual'}
-            onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ChallengeType }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, type: e.target.value as ChallengeType }))
+            }
             className="w-full px-3 py-2 bg-surface border border-bdr rounded-lg text-txt-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
             <option value="individual">Individual Competition</option>
@@ -149,12 +146,12 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Metric
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Metric</label>
           <select
             value={formData.metric || 'meters'}
-            onChange={(e) => setFormData(prev => ({ ...prev, metric: e.target.value as ChallengeMetric }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, metric: e.target.value as ChallengeMetric }))
+            }
             className="w-full px-3 py-2 bg-surface border border-bdr rounded-lg text-txt-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
             <option value="meters">Total Meters</option>
@@ -168,9 +165,7 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
       {/* Dates */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            Start Date *
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">Start Date *</label>
           <input
             type="date"
             value={startDate}
@@ -182,9 +177,7 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-1">
-            End Date *
-          </label>
+          <label className="block text-sm font-medium text-txt-primary mb-1">End Date *</label>
           <input
             type="date"
             value={endDate}
@@ -197,7 +190,7 @@ export function CreateChallengeForm({ onSuccess, onCancel }: CreateChallengeForm
       </div>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-bdr">
+      <div className="flex justify-end gap-3 pt-4 border-t border-bdr-default">
         {onCancel && (
           <button
             type="button"

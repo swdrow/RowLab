@@ -38,7 +38,7 @@ export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
 
   if (!teamEnabled) {
     return (
-      <div className="p-4 bg-surface rounded-lg border border-bdr">
+      <div className="p-4 bg-surface rounded-lg border border-bdr-default">
         <div className="flex items-center gap-3">
           <Shield className="text-txt-tertiary" size={24} />
           <div>
@@ -54,7 +54,7 @@ export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between p-4 bg-surface rounded-lg border border-bdr">
+      <div className="flex items-center justify-between p-4 bg-surface rounded-lg border border-bdr-default">
         <div className="flex items-center gap-3">
           {athleteOptedIn ? (
             <Eye className="text-green-500" size={24} />
@@ -76,7 +76,7 @@ export function GamificationSettings({ athleteId }: GamificationSettingsProps) {
           disabled={updatePreference.isPending || isLoading}
           className={`
             relative w-12 h-6 rounded-full transition-colors
-            ${athleteOptedIn ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-700'}
+            ${athleteOptedIn ? 'bg-green-500' : 'bg-surface-elevated'}
           `}
         >
           <span

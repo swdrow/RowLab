@@ -29,7 +29,7 @@ export function AchievementGrid({
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className="h-40 rounded-lg" />
+          <div key={i} className="h-40 bg-surface-elevated rounded-lg animate-pulse" />
         ))}
       </div>
     );
@@ -64,9 +64,10 @@ export function AchievementGrid({
               onClick={() => setFilter(cat)}
               className={`
                 px-3 py-1 text-sm rounded-full transition-colors
-                ${filter === cat
-                  ? 'bg-primary text-white'
-                  : 'bg-surface-hover text-txt-secondary hover:text-txt-primary'
+                ${
+                  filter === cat
+                    ? 'bg-primary text-white'
+                    : 'bg-surface-hover text-txt-secondary hover:text-txt-primary'
                 }
               `}
             >
@@ -88,9 +89,7 @@ export function AchievementGrid({
       </div>
 
       {sortedAchievements.length === 0 && (
-        <div className="text-center py-8 text-txt-secondary">
-          No achievements found
-        </div>
+        <div className="text-center py-8 text-txt-secondary">No achievements found</div>
       )}
     </div>
   );

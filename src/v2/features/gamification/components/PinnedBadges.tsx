@@ -18,7 +18,7 @@ export function PinnedBadges({ athleteId, maxDisplay = 5 }: PinnedBadgesProps) {
     return (
       <div className="flex gap-2">
         {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="w-10 h-10 rounded-full" />
+          <div key={i} className="w-10 h-10 rounded-full bg-surface-elevated animate-pulse" />
         ))}
       </div>
     );
@@ -43,9 +43,7 @@ export function PinnedBadges({ athleteId, maxDisplay = 5 }: PinnedBadgesProps) {
         />
       ))}
       {pinned.length > maxDisplay && (
-        <span className="text-xs text-txt-tertiary">
-          +{pinned.length - maxDisplay} more
-        </span>
+        <span className="text-xs text-txt-tertiary">+{pinned.length - maxDisplay} more</span>
       )}
     </div>
   );

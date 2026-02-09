@@ -15,30 +15,33 @@ interface AchievementBadgeProps {
 /**
  * Rarity color schemes - subtle, professional, not childish
  */
-const rarityStyles: Record<AchievementRarity, { bg: string; border: string; text: string; glow: string }> = {
+const rarityStyles: Record<
+  AchievementRarity,
+  { bg: string; border: string; text: string; glow: string }
+> = {
   Common: {
-    bg: 'bg-zinc-100 dark:bg-zinc-800',
-    border: 'border-zinc-300 dark:border-zinc-600',
-    text: 'text-zinc-600 dark:text-zinc-400',
+    bg: 'bg-surface',
+    border: 'border-bdr-default',
+    text: 'text-txt-secondary',
     glow: '',
   },
   Rare: {
     bg: 'bg-blue-50 dark:bg-blue-950',
     border: 'border-blue-400 dark:border-blue-600',
     text: 'text-blue-600 dark:text-blue-400',
-    glow: 'shadow-blue-200 dark:shadow-blue-900',
+    glow: 'shadow-glow',
   },
   Epic: {
     bg: 'bg-purple-50 dark:bg-purple-950',
     border: 'border-purple-400 dark:border-purple-600',
     text: 'text-purple-600 dark:text-purple-400',
-    glow: 'shadow-purple-200 dark:shadow-purple-900',
+    glow: 'shadow-glow',
   },
   Legendary: {
     bg: 'bg-amber-50 dark:bg-amber-950',
-    border: 'border-amber-400 dark:border-amber-500',
-    text: 'text-amber-600 dark:text-amber-400',
-    glow: 'shadow-amber-200 dark:shadow-amber-900 shadow-lg',
+    border: 'border-accent-primary',
+    text: 'text-accent-primary',
+    glow: 'shadow-glow',
   },
 };
 
@@ -85,6 +88,9 @@ export function AchievementBadge({
   return (
     <motion.div
       className="flex flex-col items-center gap-1"
+      initial={isUnlocked ? { opacity: 0, scale: 0.9 } : undefined}
+      animate={isUnlocked ? { opacity: 1, scale: 1 } : undefined}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       whileHover={isUnlocked ? { scale: 1.05 } : undefined}
       whileTap={isUnlocked && onClick ? { scale: 0.95 } : undefined}
     >
@@ -95,23 +101,21 @@ export function AchievementBadge({
           ${sizeClass}
           rounded-full border-2 flex items-center justify-center
           transition-all duration-200
-          ${isUnlocked ? styles.bg : 'bg-zinc-200 dark:bg-zinc-900'}
-          ${isUnlocked ? styles.border : 'border-zinc-300 dark:border-zinc-700'}
+          ${isUnlocked ? styles.bg : 'bg-surface-elevated'}
+          ${isUnlocked ? styles.border : 'border-bdr-secondary'}
           ${isUnlocked ? styles.glow : ''}
           ${onClick && isUnlocked ? 'cursor-pointer hover:shadow-md' : 'cursor-default'}
-          ${!isUnlocked ? 'opacity-50' : ''}
+          ${!isUnlocked ? 'opacity-40 grayscale' : ''}
         `}
         title={name}
       >
-        <span className={isUnlocked ? styles.text : 'text-zinc-400 dark:text-zinc-600'}>
+        <span className={isUnlocked ? styles.text : 'text-txt-tertiary'}>
           {isUnlocked ? getIcon(icon, iconSize) : <Lock size={iconSize} />}
         </span>
       </button>
 
       {showName && (
-        <span className={`text-xs text-center max-w-[80px] truncate ${styles.text}`}>
-          {name}
-        </span>
+        <span className={`text-xs text-center max-w-[80px] truncate ${styles.text}`}>{name}</span>
       )}
     </motion.div>
   );

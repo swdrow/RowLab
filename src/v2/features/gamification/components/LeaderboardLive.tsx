@@ -50,11 +50,7 @@ function RankChange({ delta }: { delta?: number }) {
 /**
  * Live leaderboard with 5s polling per RESEARCH.md
  */
-export function LeaderboardLive({
-  challengeId,
-  isActive,
-  maxDisplay = 10,
-}: LeaderboardLiveProps) {
+export function LeaderboardLive({ challengeId, isActive, maxDisplay = 10 }: LeaderboardLiveProps) {
   const { data, isLoading, error, dataUpdatedAt } = useLeaderboard(challengeId, isActive);
   const refresh = useRefreshLeaderboard();
 
@@ -87,18 +83,14 @@ export function LeaderboardLive({
     return (
       <div className="space-y-2">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-12 bg-surface-hover rounded animate-pulse" />
+          <div key={i} className="h-12 bg-surface-elevated rounded animate-pulse" />
         ))}
       </div>
     );
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8 text-txt-secondary">
-        Failed to load leaderboard
-      </div>
-    );
+    return <div className="text-center py-8 text-txt-secondary">Failed to load leaderboard</div>;
   }
 
   const leaderboard = data?.leaderboard?.slice(0, maxDisplay) || [];
@@ -108,9 +100,7 @@ export function LeaderboardLive({
     <div className="space-y-2">
       {/* Header with refresh */}
       <div className="flex items-center justify-between text-xs text-txt-tertiary mb-2">
-        <span>
-          {isActive ? 'Live updates every 5s' : 'Final standings'}
-        </span>
+        <span>{isActive ? 'Live updates every 5s' : 'Final standings'}</span>
         <button
           onClick={() => refresh.mutate(challengeId)}
           disabled={refresh.isPending}
@@ -138,17 +128,19 @@ export function LeaderboardLive({
               className={`
                 flex items-center gap-3 p-3 rounded-lg
                 ${rankChange && rankChange > 0 ? 'bg-green-50 dark:bg-green-950/30' : 'bg-surface'}
-                ${isTopThree ? 'border border-bdr' : ''}
+                ${isTopThree ? 'border border-bdr-default' : ''}
               `}
             >
               {/* Rank */}
-              <div className={`
+              <div
+                className={`
                 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-                ${entry.rank === 1 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' : ''}
-                ${entry.rank === 2 ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' : ''}
-                ${entry.rank === 3 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300' : ''}
+                ${entry.rank === 1 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-accent-primary' : ''}
+                ${entry.rank === 2 ? 'bg-slate-100 text-slate-700 dark:bg-slate-800/30 dark:text-slate-300' : ''}
+                ${entry.rank === 3 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' : ''}
                 ${entry.rank > 3 ? 'bg-surface-hover text-txt-secondary' : ''}
-              `}>
+              `}
+              >
                 {entry.rank === 1 ? <Trophy size={16} /> : entry.rank}
               </div>
 
@@ -167,9 +159,7 @@ export function LeaderboardLive({
 
               {/* Name */}
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-txt-primary truncate">
-                  {entry.athleteName}
-                </p>
+                <p className="font-medium text-txt-primary truncate">{entry.athleteName}</p>
               </div>
 
               {/* Rank change indicator */}
@@ -187,9 +177,7 @@ export function LeaderboardLive({
       </AnimatePresence>
 
       {leaderboard.length === 0 && (
-        <div className="text-center py-8 text-txt-secondary">
-          No participants yet
-        </div>
+        <div className="text-center py-8 text-txt-secondary">No participants yet</div>
       )}
 
       {/* Last updated */}

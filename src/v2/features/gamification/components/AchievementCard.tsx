@@ -35,9 +35,10 @@ export function AchievementCard({
       layout
       className={`
         p-4 rounded-lg border
-        ${isUnlocked
-          ? 'bg-surface-elevated border-bdr'
-          : 'bg-surface border-bdr/50 opacity-75'
+        ${
+          isUnlocked
+            ? 'bg-surface-elevated border-bdr-default'
+            : 'bg-surface border-bdr-secondary opacity-75'
         }
       `}
     >
@@ -54,9 +55,7 @@ export function AchievementCard({
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <h3 className="font-medium text-txt-primary truncate">{name}</h3>
-              {isUnlocked && (
-                <Check size={16} className="text-green-500 flex-shrink-0" />
-              )}
+              {isUnlocked && <Check size={16} className="text-green-500 flex-shrink-0" />}
             </div>
 
             {isUnlocked && onTogglePin && (
@@ -65,9 +64,10 @@ export function AchievementCard({
                 disabled={isPinning}
                 className={`
                   p-1.5 rounded transition-colors
-                  ${isPinned
-                    ? 'text-amber-500 bg-amber-500/10 hover:bg-amber-500/20'
-                    : 'text-txt-tertiary hover:text-txt-primary hover:bg-surface-hover'
+                  ${
+                    isPinned
+                      ? 'text-amber-500 bg-amber-500/10 hover:bg-amber-500/20'
+                      : 'text-txt-tertiary hover:text-txt-primary hover:bg-surface-hover'
                   }
                 `}
                 title={isPinned ? 'Unpin' : 'Pin to profile'}
@@ -77,38 +77,35 @@ export function AchievementCard({
             )}
           </div>
 
-          <p className="text-sm text-txt-secondary mt-1 line-clamp-2">
-            {description}
-          </p>
+          <p className="text-sm text-txt-secondary mt-1 line-clamp-2">{description}</p>
 
           <div className="flex items-center gap-2 mt-2">
-            <span className={`
+            <span
+              className={`
               text-xs px-2 py-0.5 rounded-full
-              ${category === 'Erg' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : ''}
-              ${category === 'Attendance' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : ''}
-              ${category === 'Racing' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300' : ''}
-            `}>
+              ${category === 'Erg' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : ''}
+              ${category === 'Attendance' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : ''}
+              ${category === 'Racing' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' : ''}
+            `}
+            >
               {category}
             </span>
-            <span className={`
+            <span
+              className={`
               text-xs px-2 py-0.5 rounded-full
-              ${rarity === 'Common' ? 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400' : ''}
-              ${rarity === 'Rare' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400' : ''}
-              ${rarity === 'Epic' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-400' : ''}
-              ${rarity === 'Legendary' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900 dark:text-amber-400' : ''}
-            `}>
+              ${rarity === 'Common' ? 'bg-surface-elevated text-txt-secondary' : ''}
+              ${rarity === 'Rare' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : ''}
+              ${rarity === 'Epic' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' : ''}
+              ${rarity === 'Legendary' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-accent-primary' : ''}
+            `}
+            >
               {rarity}
             </span>
           </div>
 
           {!isUnlocked && (
             <div className="mt-3">
-              <ProgressBar
-                current={progress}
-                target={target}
-                showValues
-                size="sm"
-              />
+              <ProgressBar current={progress} target={target} showValues size="sm" />
             </div>
           )}
 

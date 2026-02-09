@@ -32,28 +32,19 @@ function getTimeRemaining(endDate: string): string {
 function getStatusColor(status: string): string {
   switch (status) {
     case 'active':
-      return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
     case 'completed':
-      return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
     case 'cancelled':
-      return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
     default:
-      return 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300';
+      return 'bg-surface-elevated text-txt-secondary';
   }
 }
 
 export function ChallengeCard({ challenge, showLeaderboard = false }: ChallengeCardProps) {
-  const {
-    id,
-    name,
-    description,
-    type,
-    status,
-    startDate,
-    endDate,
-    metric,
-    participantCount,
-  } = challenge;
+  const { id, name, description, type, status, startDate, endDate, metric, participantCount } =
+    challenge;
 
   const isActive = status === 'active';
   const timeRemaining = getTimeRemaining(endDate);
@@ -64,7 +55,7 @@ export function ChallengeCard({ challenge, showLeaderboard = false }: ChallengeC
       whileHover={{ scale: 1.01 }}
       className={`
         p-4 rounded-lg border bg-surface-elevated
-        ${isActive ? 'border-green-500/50' : 'border-bdr'}
+        ${isActive ? 'border-green-500/50' : 'border-bdr-default'}
       `}
     >
       <div className="flex items-start justify-between gap-3">
@@ -77,9 +68,7 @@ export function ChallengeCard({ challenge, showLeaderboard = false }: ChallengeC
           </div>
 
           {description && (
-            <p className="text-sm text-txt-secondary line-clamp-2 mb-3">
-              {description}
-            </p>
+            <p className="text-sm text-txt-secondary line-clamp-2 mb-3">{description}</p>
           )}
 
           <div className="flex flex-wrap items-center gap-3 text-xs text-txt-tertiary">

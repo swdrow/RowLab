@@ -36,8 +36,9 @@ function getPrimaryScopeLabel(contexts: PRContext[]): string {
 }
 
 /**
- * Inline PR celebration - subtle gold highlight, not disruptive
- * Per CONTEXT.md: "Inline highlight style: Gold badge/border on result, visible but not disruptive"
+ * PR celebration toast - tasteful slide-in notification, not disruptive
+ * Per plan: "Tasteful toast notification, not confetti modal"
+ * Warm gold accent color, auto-dismissible, understated celebration
  */
 export function PRCelebration({ data, compact = false }: PRCelebrationProps) {
   const { testType, result, contexts, trendData, athleteId } = data;
@@ -54,45 +55,44 @@ export function PRCelebration({ data, compact = false }: PRCelebrationProps) {
 
   return (
     <motion.div
-      initial={{ scale: 1 }}
-      animate={{
-        scale: [1, 1.02, 1],
-      }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      initial={{ opacity: 0, y: -20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20, scale: 0.95 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       className={`
-        rounded-lg border-2 border-accent-gold bg-accent-gold/10
+        rounded-lg border border-accent-primary/30 bg-surface-elevated backdrop-blur-sm shadow-glow
         ${compact ? 'p-2' : 'p-4'}
       `}
     >
       <div className="flex items-center gap-3">
         {/* Trophy icon with subtle animation */}
         <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={SPRING_CONFIG}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className="flex-shrink-0"
         >
-          <div className="w-10 h-10 rounded-full bg-accent-gold/20 flex items-center justify-center">
-            <Trophy className="w-5 h-5 text-accent-gold" />
+          <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center">
+            <Trophy className="w-5 h-5 text-accent-primary" />
           </div>
         </motion.div>
 
         {/* PR info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-lg font-bold text-accent-gold">
+            <span className="font-mono text-lg font-bold text-accent-primary">
               {formatTime(result)}
             </span>
 
             {improvement && improvement > 0 && (
-              <span className="flex items-center gap-0.5 text-sm text-data-excellent">
+              <span className="flex items-center gap-0.5 text-sm text-green-600 dark:text-green-400">
                 <TrendingUp size={14} />-{improvement.toFixed(1)}s
               </span>
             )}
           </div>
 
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs font-medium text-accent-gold flex items-center gap-1">
+            <span className="text-xs font-medium text-accent-primary flex items-center gap-1">
               <Award size={12} />
               {scopeLabel}
             </span>
@@ -110,14 +110,14 @@ export function PRCelebration({ data, compact = false }: PRCelebrationProps) {
 
       {/* Additional PR scopes */}
       {!compact && contexts.filter((c) => c.isPR && c.scope !== 'all-time').length > 0 && (
-        <div className="mt-2 pt-2 border-t border-accent-gold/30">
+        <div className="mt-2 pt-2 border-t border-bdr-secondary">
           <div className="flex flex-wrap gap-2">
             {contexts
               .filter((c) => c.isPR && c.scope !== 'all-time')
               .map((c) => (
                 <span
                   key={c.scope}
-                  className="text-xs px-2 py-0.5 rounded-full bg-accent-gold/20 text-accent-gold"
+                  className="text-xs px-2 py-0.5 rounded-full bg-accent-primary/10 text-accent-primary"
                 >
                   {c.scope === 'season' ? `Season PR` : 'Block PR'}
                   {c.improvement && ` (-${c.improvement.toFixed(1)}s)`}

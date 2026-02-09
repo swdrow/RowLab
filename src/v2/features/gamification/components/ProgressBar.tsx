@@ -35,9 +35,7 @@ export function ProgressBar({
     <div className="w-full">
       {(label || showValues) && (
         <div className="flex justify-between items-center mb-1">
-          {label && (
-            <span className="text-xs text-txt-secondary">{label}</span>
-          )}
+          {label && <span className="text-xs text-txt-secondary">{label}</span>}
           {showValues && (
             <span className="text-xs font-mono text-txt-tertiary">
               {current.toLocaleString()} / {target.toLocaleString()}
@@ -47,7 +45,7 @@ export function ProgressBar({
         </div>
       )}
 
-      <div className={`w-full ${heightClass} bg-surface-hover rounded-full overflow-hidden`}>
+      <div className={`w-full ${heightClass} bg-surface-elevated rounded-full overflow-hidden`}>
         <motion.div
           className={`${heightClass} ${barColor} rounded-full`}
           initial={{ width: 0 }}

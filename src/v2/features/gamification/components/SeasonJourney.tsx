@@ -1,6 +1,9 @@
 import { Trophy, Award, Flag, Target, Medal, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
-import type { SeasonJourney as SeasonJourneyType, JourneyMilestone } from '../../../types/gamification';
+import type {
+  SeasonJourney as SeasonJourneyType,
+  JourneyMilestone,
+} from '../../../types/gamification';
 
 interface SeasonJourneyProps {
   journey: SeasonJourneyType;
@@ -59,16 +62,28 @@ export function SeasonJourney({ journey }: SeasonJourneyProps) {
 
       {/* Stats summary */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-        <StatCard label="Total Meters" value={formatNumber(totalMeters)} icon={<Target size={20} />} />
+        <StatCard
+          label="Total Meters"
+          value={formatNumber(totalMeters)}
+          icon={<Target size={20} />}
+        />
         <StatCard label="Workouts" value={totalWorkouts.toString()} icon={<Calendar size={20} />} />
         <StatCard label="PRs" value={prsAchieved.toString()} icon={<Trophy size={20} />} />
-        <StatCard label="Achievements" value={achievementsEarned.toString()} icon={<Award size={20} />} />
-        <StatCard label="Challenges Won" value={challengesWon.toString()} icon={<Flag size={20} />} />
+        <StatCard
+          label="Achievements"
+          value={achievementsEarned.toString()}
+          icon={<Award size={20} />}
+        />
+        <StatCard
+          label="Challenges Won"
+          value={challengesWon.toString()}
+          icon={<Flag size={20} />}
+        />
       </div>
 
       {/* Narrative (if available) */}
       {narrative && (
-        <div className="p-4 bg-surface-elevated rounded-lg border border-bdr">
+        <div className="p-4 bg-surface-elevated rounded-lg border border-bdr-default">
           <p className="text-txt-primary leading-relaxed">{narrative}</p>
         </div>
       )}
@@ -79,7 +94,7 @@ export function SeasonJourney({ journey }: SeasonJourneyProps) {
           <h3 className="font-semibold text-txt-primary mb-4">Season Highlights</h3>
 
           {/* Timeline line */}
-          <div className="absolute left-6 top-12 bottom-0 w-0.5 bg-bdr" />
+          <div className="absolute left-6 top-12 bottom-0 w-0.5 bg-bdr-default" />
 
           {/* Milestones */}
           <div className="space-y-4">
@@ -98,7 +113,7 @@ export function SeasonJourney({ journey }: SeasonJourneyProps) {
  */
 function StatCard({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="p-4 bg-surface rounded-lg border border-bdr text-center">
+    <div className="p-4 bg-surface rounded-lg border border-bdr-default text-center">
       <div className="text-txt-secondary mb-1">{icon}</div>
       <p className="text-2xl font-bold text-txt-primary">{value}</p>
       <p className="text-xs text-txt-secondary">{label}</p>
@@ -113,11 +128,11 @@ function MilestoneCard({ milestone, index }: { milestone: JourneyMilestone; inde
   const Icon = getMilestoneIcon(milestone.type);
 
   const typeColors = {
-    pr: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
-    achievement: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
-    'challenge-win': 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    streak: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-    race: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300',
+    pr: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-accent-primary',
+    achievement: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+    'challenge-win': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+    streak: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+    race: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
   };
 
   return (
@@ -128,7 +143,9 @@ function MilestoneCard({ milestone, index }: { milestone: JourneyMilestone; inde
       className="flex gap-4 items-start ml-2"
     >
       {/* Icon dot */}
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 ${typeColors[milestone.type]}`}>
+      <div
+        className={`w-8 h-8 rounded-full flex items-center justify-center z-10 ${typeColors[milestone.type]}`}
+      >
         <Icon size={16} />
       </div>
 

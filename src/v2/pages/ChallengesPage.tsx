@@ -12,14 +12,19 @@ function ChallengeDetail({ challengeId }: { challengeId: string }) {
   const { data: challenge, isLoading } = useChallenge(challengeId);
 
   if (isLoading) {
-    return <div className="animate-pulse h-96 bg-ink-raised rounded-lg border border-ink-border" />;
+    return (
+      <div className="animate-pulse h-96 bg-surface-elevated rounded-lg border border-bdr-default" />
+    );
   }
 
   if (!challenge) {
     return (
       <div className="text-center py-12">
-        <p className="text-ink-secondary">Challenge not found</p>
-        <Link to="/app/challenges" className="text-accent-copper hover:underline mt-2 inline-block">
+        <p className="text-txt-secondary">Challenge not found</p>
+        <Link
+          to="/app/challenges"
+          className="text-accent-primary hover:underline mt-2 inline-block"
+        >
           Back to challenges
         </Link>
       </div>
@@ -33,58 +38,58 @@ function ChallengeDetail({ challengeId }: { challengeId: string }) {
       {/* Back button */}
       <Link
         to="/app/challenges"
-        className="flex items-center gap-2 text-ink-secondary hover:text-accent-copper transition-colors"
+        className="flex items-center gap-2 text-txt-secondary hover:text-accent-primary transition-colors"
       >
         <ArrowLeft size={18} />
         Back to challenges
       </Link>
 
       {/* Challenge header */}
-      <div className="p-6 bg-ink-raised rounded-xl border border-ink-border">
+      <div className="p-6 bg-surface-elevated rounded-xl border border-bdr-default">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-display font-bold text-ink-bright">{challenge.name}</h1>
+            <h1 className="text-2xl font-display font-bold text-txt-primary">{challenge.name}</h1>
             {challenge.description && (
-              <p className="text-ink-secondary mt-2">{challenge.description}</p>
+              <p className="text-txt-secondary mt-2">{challenge.description}</p>
             )}
           </div>
 
           <span
             className={`
             px-3 py-1.5 rounded-lg text-sm font-medium border
-            ${isActive ? 'bg-accent-copper/10 text-accent-copper border-accent-copper/20' : ''}
-            ${challenge.status === 'completed' ? 'bg-ink-hover text-ink-secondary border-ink-border' : ''}
+            ${isActive ? 'bg-accent-copper/10 text-accent-primary border-accent-copper/20' : ''}
+            ${challenge.status === 'completed' ? 'bg-surface-hover text-txt-secondary border-bdr-default' : ''}
           `}
           >
             {challenge.status}
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-4 mt-4 text-sm text-ink-secondary">
+        <div className="flex flex-wrap gap-4 mt-4 text-sm text-txt-secondary">
           <span className="flex items-center gap-1.5">
-            <Trophy size={16} className="text-accent-copper" />
+            <Trophy size={16} className="text-accent-primary" />
             {challenge.type === 'individual' ? 'Individual' : 'Team Goal'}
           </span>
           <span className="flex items-center gap-1.5">
-            <Flag size={16} className="text-accent-copper" />
+            <Flag size={16} className="text-accent-primary" />
             {challenge.metric}
           </span>
           <span className="flex items-center gap-1.5">
-            <Users size={16} className="text-accent-copper" />
+            <Users size={16} className="text-accent-primary" />
             {challenge.participantCount || 0} participants
           </span>
           <span className="flex items-center gap-1.5">
-            <Calendar size={16} className="text-accent-copper" />
+            <Calendar size={16} className="text-accent-primary" />
             {new Date(challenge.endDate).toLocaleDateString()}
           </span>
         </div>
       </div>
 
       {/* Leaderboard */}
-      <div className="p-6 bg-ink-raised rounded-xl border border-ink-border">
+      <div className="p-6 bg-surface-elevated rounded-xl border border-bdr-default">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-1.5 h-1.5 rounded-full bg-accent-copper" />
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-copper">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent-primary">
             {isActive ? 'Live Leaderboard' : 'Final Standings'}
           </h2>
         </div>
@@ -104,9 +109,9 @@ export function ChallengesPage() {
   if (!enabled) {
     return (
       <div className="p-8 text-center">
-        <Target className="w-16 h-16 text-accent-copper/30 mx-auto mb-4" />
-        <h1 className="text-2xl font-display font-bold text-ink-bright mb-2">Challenges</h1>
-        <p className="text-ink-secondary">
+        <Target className="w-16 h-16 text-accent-primary/30 mx-auto mb-4" />
+        <h1 className="text-2xl font-display font-bold text-txt-primary mb-2">Challenges</h1>
+        <p className="text-txt-secondary">
           Gamification is disabled. Enable it in settings to participate in challenges.
         </p>
       </div>
@@ -131,13 +136,13 @@ export function ChallengesPage() {
         <div className="absolute bottom-0 inset-x-6 h-px bg-gradient-to-r from-transparent via-accent-copper/30 to-transparent" />
         <div className="relative flex items-end justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-copper mb-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-primary mb-2">
               TEAM CHALLENGES
             </p>
-            <h1 className="text-4xl font-display font-bold text-ink-bright tracking-tight">
+            <h1 className="text-4xl font-display font-bold text-txt-primary tracking-tight">
               Challenges
             </h1>
-            <p className="text-sm text-ink-secondary mt-2">
+            <p className="text-sm text-txt-secondary mt-2">
               Compete with teammates and set team goals
             </p>
           </div>

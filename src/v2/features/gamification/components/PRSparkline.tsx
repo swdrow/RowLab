@@ -12,16 +12,11 @@ interface PRSparklineProps {
  * Sparkline showing last 5 results trend using recharts
  * Per RESEARCH.md: Simple sparkline with color-coded improvement
  */
-export function PRSparkline({
-  athleteId,
-  testType,
-  width = 80,
-  height = 24,
-}: PRSparklineProps) {
+export function PRSparkline({ athleteId, testType, width = 80, height = 24 }: PRSparklineProps) {
   const { data: trend, isLoading } = useResultTrend(athleteId, testType, 5);
 
   if (isLoading || !trend || trend.length < 2) {
-    return <div style={{ width, height }} className="bg-surface-hover rounded" />;
+    return <div style={{ width, height }} className="bg-surface-elevated rounded animate-pulse" />;
   }
 
   // Transform data for recharts
