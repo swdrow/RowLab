@@ -138,32 +138,46 @@ export function CanvasAvailabilityPage() {
   return (
     <div className="h-full flex flex-col bg-void">
       {/* Page header */}
-      <div className="px-6 pt-8 pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-6 lg:pt-8 pb-4 lg:pb-6 border-b border-ink-border/30">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-ink-secondary mb-3">
                 TEAM / AVAILABILITY
               </p>
-              <h1 className="text-3xl font-semibold text-ink-bright tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-semibold text-ink-bright tracking-tight">
                 Availability
               </h1>
             </div>
 
             {/* Week navigation */}
-            <div className="flex items-center gap-2">
-              <CanvasButton variant="secondary" onClick={goToPreviousWeek} className="!px-3 !py-2">
-                <ChevronLeft className="w-4 h-4" />
-              </CanvasButton>
-              <CanvasButton variant="secondary" onClick={goToThisWeek}>
-                THIS WEEK
-              </CanvasButton>
-              <span className="text-sm text-ink-secondary font-mono min-w-[180px] text-center">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <div className="flex items-center gap-2">
+                <CanvasButton
+                  variant="secondary"
+                  onClick={goToPreviousWeek}
+                  className="!px-3 !py-2 flex-1 sm:flex-initial"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </CanvasButton>
+                <CanvasButton
+                  variant="secondary"
+                  onClick={goToThisWeek}
+                  className="flex-1 sm:flex-initial"
+                >
+                  THIS WEEK
+                </CanvasButton>
+                <CanvasButton
+                  variant="secondary"
+                  onClick={goToNextWeek}
+                  className="!px-3 !py-2 flex-1 sm:flex-initial"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </CanvasButton>
+              </div>
+              <span className="text-xs sm:text-sm text-ink-secondary font-mono text-center sm:min-w-[180px]">
                 {dateRangeLabel}
               </span>
-              <CanvasButton variant="secondary" onClick={goToNextWeek} className="!px-3 !py-2">
-                <ChevronRight className="w-4 h-4" />
-              </CanvasButton>
             </div>
           </div>
         </div>
@@ -171,17 +185,17 @@ export function CanvasAvailabilityPage() {
 
       {/* Content */}
       <div className="flex-1 overflow-auto">
-        <div className="max-w-5xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6 py-4 lg:py-6">
           <motion.div variants={stagger} initial="hidden" animate="visible">
             {isLoading ? (
               <motion.div variants={fadeUp}>
-                <CanvasChamferPanel className="p-6 h-64 animate-pulse bg-ink-well/30">
+                <CanvasChamferPanel className="p-4 lg:p-6 h-64 animate-pulse bg-ink-well/30">
                   <div className="h-full" />
                 </CanvasChamferPanel>
               </motion.div>
             ) : (
               <motion.div variants={fadeUp}>
-                <div className="bg-ink-raised border border-white/[0.04] p-4">
+                <div className="bg-ink-raised border border-white/[0.04] p-3 lg:p-4 overflow-x-auto">
                   <AvailabilityGrid
                     data={availability || []}
                     startDate={startDate}
@@ -196,7 +210,7 @@ export function CanvasAvailabilityPage() {
       </div>
 
       {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-6 py-3 bg-ink-well/20">
+      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[

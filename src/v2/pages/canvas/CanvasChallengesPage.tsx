@@ -75,7 +75,12 @@ function CanvasChallengeDetail({ challengeId }: { challengeId: string }) {
   const isActive = challenge.status === 'active';
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6 lg:space-y-8"
+    >
       {/* Back link */}
       <motion.div variants={fadeUp}>
         <Link to="/app/challenges">
@@ -87,11 +92,11 @@ function CanvasChallengeDetail({ challengeId }: { challengeId: string }) {
       </motion.div>
 
       {/* Challenge header */}
-      <motion.div variants={fadeUp} className="pt-2 pb-6">
+      <motion.div variants={fadeUp} className="pt-2 pb-4 lg:pb-6">
         <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
           Challenge Detail
         </p>
-        <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
           {challenge.name}
         </h1>
         {challenge.description && (
@@ -101,8 +106,8 @@ function CanvasChallengeDetail({ challengeId }: { challengeId: string }) {
 
       {/* Challenge info panel */}
       <motion.div variants={fadeUp}>
-        <CanvasChamferPanel>
-          <div className="flex flex-wrap gap-6 text-sm text-ink-secondary">
+        <CanvasChamferPanel className="p-4 lg:p-6">
+          <div className="flex flex-wrap gap-4 lg:gap-6 text-xs lg:text-sm text-ink-secondary">
             <span className="flex items-center gap-1.5 font-mono">
               <Trophy size={16} className="text-ink-muted" />
               {challenge.type === 'individual' ? 'INDIVIDUAL' : 'TEAM GOAL'}
@@ -171,7 +176,7 @@ export function CanvasChallengesPage() {
   // Detail view
   if (id) {
     return (
-      <div className="max-w-4xl">
+      <div className="max-w-4xl px-4 lg:px-8">
         <CanvasChallengeDetail challengeId={id} />
       </div>
     );
@@ -179,16 +184,21 @@ export function CanvasChallengesPage() {
 
   // List view
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6 lg:space-y-8 px-4 lg:px-8"
+    >
       {/* ============================================ */}
       {/* HEADER — text against void */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
+      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-4 lg:pb-6">
         <div>
           <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
             Gamification
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
             Challenges
           </h1>
         </div>

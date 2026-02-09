@@ -115,19 +115,23 @@ export function CanvasRecruitingPage() {
     <FeatureGuard featureId="recruiting">
       <div className="h-full flex flex-col bg-void">
         {/* Page header */}
-        <div className="px-6 pt-8 pb-6 border-b border-ink-border/30">
+        <div className="px-4 lg:px-6 pt-6 lg:pt-8 pb-4 lg:pb-6 border-b border-ink-border/30">
           <div className="max-w-5xl mx-auto">
-            <div className="flex items-end justify-between">
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-end sm:justify-between">
               <div>
                 <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-ink-secondary mb-3">
                   TEAM / RECRUITING
                 </p>
-                <h1 className="text-3xl font-semibold text-ink-bright tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-ink-bright tracking-tight">
                   Recruiting
                 </h1>
               </div>
 
-              <CanvasButton variant="primary" onClick={() => setShowForm(true)}>
+              <CanvasButton
+                variant="primary"
+                onClick={() => setShowForm(true)}
+                className="w-full sm:w-auto"
+              >
                 <Plus className="w-4 h-4" />
                 NEW VISIT
               </CanvasButton>
@@ -137,14 +141,16 @@ export function CanvasRecruitingPage() {
 
         {/* Tabs + Content */}
         <div className="flex-1 overflow-auto">
-          <div className="max-w-5xl mx-auto px-6 py-6">
-            <CanvasTabs
-              tabs={filterTabs}
-              activeTab={activeFilter}
-              onChange={(id) => setActiveFilter(id as FilterTab)}
-            />
+          <div className="max-w-5xl mx-auto px-4 lg:px-6 py-4 lg:py-6">
+            <div className="overflow-x-auto -mx-4 px-4 lg:mx-0 lg:px-0">
+              <CanvasTabs
+                tabs={filterTabs}
+                activeTab={activeFilter}
+                onChange={(id) => setActiveFilter(id as FilterTab)}
+              />
+            </div>
 
-            <div className="mt-6">
+            <div className="mt-4 lg:mt-6">
               <AnimatePresence mode="wait">
                 {isLoading ? (
                   <motion.div
@@ -245,7 +251,7 @@ export function CanvasRecruitingPage() {
         </div>
 
         {/* Console readout footer */}
-        <div className="border-t border-ink-border/30 px-6 py-3 bg-ink-well/20">
+        <div className="border-t border-ink-border/30 px-4 lg:px-6 py-3 bg-ink-well/20">
           <div className="max-w-5xl mx-auto">
             <CanvasConsoleReadout
               items={[
