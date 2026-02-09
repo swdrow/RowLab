@@ -134,10 +134,10 @@ export function CanvasLiveSessionPage() {
   return (
     <div className="h-full flex flex-col bg-void">
       {/* Page header with live indicator */}
-      <div className="px-6 pt-8 pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-4 lg:pt-8 pb-4 lg:pb-6 border-b border-ink-border/30">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-end justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 min-w-0">
               <div className="flex items-center gap-2">
                 <div
                   className="w-2 h-2 bg-data-excellent"
@@ -149,8 +149,8 @@ export function CanvasLiveSessionPage() {
                   LIVE
                 </span>
               </div>
-              <div className="h-5 w-px bg-ink-border/30" />
-              <h1 className="text-3xl font-semibold text-ink-bright tracking-tight">
+              <div className="hidden sm:block h-5 w-px bg-ink-border/30" />
+              <h1 className="text-2xl sm:text-3xl font-semibold text-ink-bright tracking-tight break-words">
                 {session.name}
               </h1>
             </div>
@@ -159,9 +159,9 @@ export function CanvasLiveSessionPage() {
               variant="primary"
               onClick={handleEndSession}
               disabled={isUpdating}
-              className="!bg-data-poor !border-data-poor hover:!bg-data-poor/90"
+              className="!bg-data-poor !border-data-poor hover:!bg-data-poor/90 min-h-[56px] sm:min-h-0 text-sm lg:text-base flex-shrink-0"
             >
-              <Square className="w-4 h-4" />
+              <Square className="w-5 h-5 sm:w-4 sm:h-4" />
               END SESSION
             </CanvasButton>
           </div>
@@ -170,10 +170,10 @@ export function CanvasLiveSessionPage() {
 
       {/* Live Dashboard */}
       <div className="flex-1 overflow-auto">
-        <div className="max-w-5xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6 py-4 lg:py-6">
           <motion.div variants={stagger} initial="hidden" animate="visible">
             <motion.div variants={fadeUp}>
-              <div className="bg-ink-raised border border-white/[0.04] p-6">
+              <div className="bg-ink-raised border border-white/[0.04] p-4 lg:p-6">
                 <LiveErgDashboard
                   sessionId={session.id}
                   sessionName={session.name}
@@ -186,8 +186,8 @@ export function CanvasLiveSessionPage() {
         </div>
       </div>
 
-      {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-6 py-3 bg-ink-well/20">
+      {/* Console readout footer - compact on mobile */}
+      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-2 lg:py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[

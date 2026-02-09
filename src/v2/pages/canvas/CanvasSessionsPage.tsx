@@ -100,25 +100,33 @@ export function CanvasSessionsPage() {
   }
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8 px-4 lg:px-0"
+    >
       {/* ============================================ */}
       {/* HEADER — text against void */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pt-2 pb-6"
+      >
         <div>
           <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
             Practice Sessions
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
             Sessions
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 lg:gap-3">
           {/* View toggle */}
           <div className="flex items-center border border-white/[0.06] overflow-hidden">
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-white/[0.06] text-ink-bright' : 'text-ink-muted hover:text-ink-primary'}`}
+              className={`p-2 lg:p-2.5 transition-colors ${viewMode === 'list' ? 'bg-white/[0.06] text-ink-bright' : 'text-ink-muted hover:text-ink-primary'}`}
               title="List view"
               style={{ clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%)' }}
             >
@@ -126,16 +134,21 @@ export function CanvasSessionsPage() {
             </button>
             <button
               onClick={() => setViewMode('calendar')}
-              className={`p-2 transition-colors ${viewMode === 'calendar' ? 'bg-white/[0.06] text-ink-bright' : 'text-ink-muted hover:text-ink-primary'}`}
+              className={`p-2 lg:p-2.5 transition-colors ${viewMode === 'calendar' ? 'bg-white/[0.06] text-ink-bright' : 'text-ink-muted hover:text-ink-primary'}`}
               title="Calendar view"
             >
               <Calendar className="w-5 h-5" />
             </button>
           </div>
 
-          <CanvasButton variant="primary" onClick={() => setShowForm(true)}>
-            <Plus className="w-5 h-5" />
-            New Session
+          <CanvasButton
+            variant="primary"
+            onClick={() => setShowForm(true)}
+            className="text-sm lg:text-base"
+          >
+            <Plus className="w-4 h-4 lg:w-5 lg:h-5" />
+            <span className="hidden sm:inline">New Session</span>
+            <span className="sm:hidden">New</span>
           </CanvasButton>
         </div>
       </motion.div>
@@ -143,8 +156,8 @@ export function CanvasSessionsPage() {
       {/* ============================================ */}
       {/* FILTERS */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex gap-4">
-        <div className="w-48">
+      <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+        <div className="w-full sm:w-48">
           <CanvasSelect
             label="Status"
             value={statusFilter}
@@ -158,7 +171,7 @@ export function CanvasSessionsPage() {
             ]}
           />
         </div>
-        <div className="w-48">
+        <div className="w-full sm:w-48">
           <CanvasSelect
             label="Type"
             value={typeFilter}
@@ -213,19 +226,19 @@ export function CanvasSessionsPage() {
                             }}
                           />
 
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0">
                               {/* Type badge */}
                               <span
-                                className="text-[10px] font-mono font-medium uppercase tracking-wider"
+                                className="text-[10px] font-mono font-medium uppercase tracking-wider flex-shrink-0"
                                 style={{ color: typeColor }}
                               >
                                 {session.type}
                               </span>
 
                               {/* Session info */}
-                              <div>
-                                <div className="font-medium text-ink-bright group-hover:text-white transition-colors">
+                              <div className="min-w-0">
+                                <div className="font-medium text-sm lg:text-base text-ink-bright group-hover:text-white transition-colors truncate">
                                   {session.name}
                                 </div>
                                 <div className="text-xs font-mono text-ink-secondary mt-0.5">
@@ -235,7 +248,7 @@ export function CanvasSessionsPage() {
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 flex-shrink-0">
                               {/* Status */}
                               <span className="text-[10px] font-mono text-ink-muted uppercase tracking-wider">
                                 {SESSION_STATUS_LABELS[session.status]}
@@ -248,7 +261,7 @@ export function CanvasSessionsPage() {
                                     e.preventDefault();
                                     navigate(`/app/training/sessions/${session.id}/live`);
                                   }}
-                                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-data-excellent text-white hover:bg-data-excellent/90 transition-colors"
+                                  className="flex items-center gap-1 px-3 py-2 text-xs font-medium bg-data-excellent text-white hover:bg-data-excellent/90 transition-colors min-h-[44px] sm:min-h-0 sm:py-1.5"
                                   style={{
                                     clipPath:
                                       'polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 0 100%)',

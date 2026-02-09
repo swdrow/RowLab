@@ -142,12 +142,12 @@ export function CanvasSessionDetailPage() {
     <div className="h-full flex flex-col bg-void">
       {/* Content */}
       <div className="flex-1 overflow-auto">
-        <div className="max-w-5xl mx-auto px-6 pt-6 pb-6">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6 pt-6 pb-6">
           {/* Back link */}
           <button
             onClick={() => navigate('/app/canvas/training/sessions')}
             className="flex items-center gap-2 text-sm text-ink-secondary hover:text-ink-bright
-                       transition-colors mb-6 group font-mono"
+                       transition-colors mb-6 group font-mono min-h-[44px] sm:min-h-0"
           >
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
             ALL SESSIONS
@@ -156,19 +156,24 @@ export function CanvasSessionDetailPage() {
           <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-6">
             {/* Header */}
             <motion.div variants={fadeUp}>
-              <div className="flex items-end justify-between mb-6">
-                <div>
+              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+                <div className="min-w-0">
                   <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-ink-secondary mb-3">
                     TRAINING / SESSION DETAIL
                   </p>
-                  <h1 className="text-3xl font-semibold text-ink-bright tracking-tight">
+                  <h1 className="text-2xl lg:text-3xl font-semibold text-ink-bright tracking-tight break-words">
                     {session.name}
                   </h1>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   {session.status === 'PLANNED' && (
-                    <CanvasButton variant="primary" onClick={handleStartLive} disabled={isUpdating}>
+                    <CanvasButton
+                      variant="primary"
+                      onClick={handleStartLive}
+                      disabled={isUpdating}
+                      className="min-h-[44px] text-sm lg:text-base"
+                    >
                       <Play className="w-4 h-4" />
                       START LIVE
                     </CanvasButton>
@@ -176,23 +181,28 @@ export function CanvasSessionDetailPage() {
 
                   {session.status === 'ACTIVE' && (
                     <Link to={`/app/canvas/training/sessions/${session.id}/live`}>
-                      <CanvasButton variant="primary">
+                      <CanvasButton variant="primary" className="min-h-[44px] text-sm lg:text-base">
                         <Play className="w-4 h-4" />
                         VIEW LIVE
                       </CanvasButton>
                     </Link>
                   )}
 
-                  <CanvasButton variant="secondary" className="!px-3 !py-2">
+                  <CanvasButton
+                    variant="secondary"
+                    className="!px-3 !py-3 lg:!py-2 min-h-[44px] sm:min-h-0"
+                  >
                     <Pencil className="w-4 h-4" />
+                    <span className="lg:hidden ml-2">Edit</span>
                   </CanvasButton>
 
                   <CanvasButton
                     variant="secondary"
                     onClick={handleDelete}
-                    className="!px-3 !py-2 hover:!border-data-poor/50 hover:!text-data-poor"
+                    className="!px-3 !py-3 lg:!py-2 hover:!border-data-poor/50 hover:!text-data-poor min-h-[44px] sm:min-h-0"
                   >
                     <Trash2 className="w-4 h-4" />
+                    <span className="lg:hidden ml-2">Delete</span>
                   </CanvasButton>
                 </div>
               </div>
@@ -200,10 +210,10 @@ export function CanvasSessionDetailPage() {
 
             {/* Session Info Panel */}
             <motion.div variants={fadeUp}>
-              <CanvasChamferPanel className="p-6">
+              <CanvasChamferPanel className="p-4 lg:p-6">
                 <div className="flex items-start justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
+                  <div className="space-y-3 w-full">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="px-2 py-0.5 text-xs font-medium font-mono bg-data-good/[0.12] text-data-good">
                         {session.type}
                       </span>
@@ -218,7 +228,7 @@ export function CanvasSessionDetailPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4 text-ink-secondary text-sm font-mono">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-ink-secondary text-sm font-mono">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {new Date(session.date).toLocaleDateString()}
@@ -241,20 +251,22 @@ export function CanvasSessionDetailPage() {
                       </span>
                     </div>
 
-                    {session.notes && <p className="text-sm text-ink-secondary">{session.notes}</p>}
+                    {session.notes && (
+                      <p className="text-sm text-ink-secondary break-words">{session.notes}</p>
+                    )}
 
                     {session.sessionCode && (
-                      <div className="flex items-center gap-2 pt-1">
+                      <div className="flex items-center gap-2 pt-1 flex-wrap">
                         <span className="text-xs text-ink-muted font-mono">SESSION CODE</span>
                         <span className="font-mono font-bold text-ink-bright">
                           {session.sessionCode}
                         </span>
                         <button
                           onClick={() => navigator.clipboard.writeText(session.sessionCode || '')}
-                          className="p-1 hover:bg-ink-well/50 transition-colors"
+                          className="p-2 hover:bg-ink-well/50 transition-colors min-h-[44px] sm:min-h-0 sm:p-1"
                           title="Copy code"
                         >
-                          <Copy className="w-3.5 h-3.5 text-ink-muted" />
+                          <Copy className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-ink-muted" />
                         </button>
                       </div>
                     )}
@@ -278,19 +290,21 @@ export function CanvasSessionDetailPage() {
                       <div
                         key={piece.id}
                         className="p-4 bg-ink-raised border border-white/[0.04]
-                                   hover:translate-x-1 transition-transform"
+                                   hover:translate-x-1 transition-transform min-h-[44px]"
                       >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-medium text-ink-bright">{piece.name}</div>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                          <div className="min-w-0">
+                            <div className="font-medium text-sm lg:text-base text-ink-bright break-words">
+                              {piece.name}
+                            </div>
                             {piece.description && (
-                              <div className="text-sm text-ink-secondary mt-0.5">
+                              <div className="text-sm text-ink-secondary mt-0.5 break-words">
                                 {piece.description}
                               </div>
                             )}
                           </div>
 
-                          <div className="flex items-center gap-4 text-sm font-mono">
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm font-mono flex-shrink-0">
                             {piece.distance && (
                               <span className="text-ink-bright">
                                 <ScrambleNumber value={piece.distance} />m
@@ -314,7 +328,9 @@ export function CanvasSessionDetailPage() {
                         </div>
 
                         {piece.notes && (
-                          <div className="mt-2 text-sm text-ink-muted">{piece.notes}</div>
+                          <div className="mt-2 text-sm text-ink-muted break-words">
+                            {piece.notes}
+                          </div>
                         )}
                       </div>
                     ))}
