@@ -56,6 +56,18 @@
   clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
 }
 
+/* MOBILE CHAMFER — smaller cut corner for mobile screens
+   6px chamfer reduces visual mass on small viewports */
+
+.canvas-chamfer-sm {
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+  transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.canvas-chamfer-sm:hover {
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
 /* RULED SECTION HEADER — label with extending gradient line
    Replaces card headers. The line fades from visible to transparent,
    creating a directional reading flow. */
@@ -122,6 +134,30 @@
   letter-spacing: 0.03em;
 }
 
+/* CONSOLE GRID — responsive layout for readout items
+   Mobile: single column stack
+   Desktop: 4-column grid */
+
+.canvas-console-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .canvas-console-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .canvas-console-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
 /* BLINKING CURSOR — the readout is "live" */
 
 .canvas-cursor::after {
@@ -151,8 +187,45 @@
     clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.canvas-ticket:hover {
+.canvas-ticket-tilt:hover {
   transform: translateY(-3px) rotate(-0.5deg);
+}
+
+/* Disable tilt on touch devices — avoid accidental activation */
+@media (hover: none) {
+  .canvas-ticket-tilt:hover {
+    transform: none;
+  }
+}
+
+/* DATA TABLE — responsive scrolling container
+   Mobile: horizontal scroll with sticky first column
+   Desktop: full width display */
+
+.canvas-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.canvas-table-sticky-col {
+  position: sticky;
+  left: 0;
+  background: var(--color-ink-raised, #1a1a1a);
+  z-index: 1;
+}
+
+/* Add shadow to sticky column for depth */
+@media (max-width: 1023px) {
+  .canvas-table-sticky-col::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.06), transparent);
+  }
 }
 
 /* ============================================
@@ -283,6 +356,29 @@
   }
   50% {
     opacity: 1;
+  }
+}
+
+/* Reduce breathe animation intensity on mobile for battery saving */
+@media (max-width: 1023px) {
+  .canvas-accent-breathe {
+    animation-duration: 8s; /* Slower = less GPU usage */
+  }
+
+  .canvas-indicator-breathe {
+    animation-duration: 6s;
+  }
+
+  .canvas-atmo-layer-1 {
+    animation-duration: 40s;
+  }
+
+  .canvas-atmo-layer-2 {
+    animation-duration: 32s;
+  }
+
+  .canvas-atmo-pulse {
+    animation-duration: 16s;
   }
 }
 
