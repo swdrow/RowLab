@@ -3,11 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.0 — App Redesign
-**Phase:** 38 (Full Canvas Design System Redesign) — Complete ✅
-**Plan:** 7/7 complete
-**Status:** Phase 38 complete. 13 Canvas primitives, 25 Canvas page components, all /canvas/* routes wired. Zone sub-navigation added to CanvasToolbar. 12 QA issues filed (#7-#18), critical auth race condition (#13) identified as root cause for multiple page failures.
-**Next Phase:** Fix critical QA issues, then Phase 34 (Gamification & Activity Feed Migration)
-**Last activity:** 2026-02-09 — Completed 38-07 (route swap, 25 pages, sub-nav, QA audit)
+**Phase:** 34 (Gamification & Activity Feed Migration) — In Progress
+**Plan:** 2/6 complete
+**Status:** Created 6 typed activity card components (ErgTest, Session, RaceResult, Attendance, SeatRace, LineupAssignment) with internal navigation, type-specific metadata, and V3 glass design. Ready for Plan 07 dispatcher integration.
+**Next Plan:** 34-03 (Leaderboard Tables)
+**Last activity:** 2026-02-09 — Completed 34-02 (typed activity cards)
 
 ## Project Reference
 
@@ -96,7 +96,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 31 | Seat Racing Migration | Complete ✅ | 6/6 |
 | 32 | Training & Attendance Migration | Complete ✅ | 6/6 |
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
-| 34 | Gamification & Activity Feed Migration | Planned | 0/6 |
+| 34 | Gamification & Activity Feed Migration | In Progress | 2/6 |
 | 35 | Mobile Responsiveness & Performance | Not started | TBD |
 | 36 | V1/V2 Cleanup | Not started | TBD |
 | 37 | Warm Copper Design Sweep | Paused | 2/6 |
@@ -227,6 +227,8 @@ Key architectural decisions carrying forward:
 | 09-03 | FormProvider context shares form state across wizard steps | All step components use useFormContext() to access shared form state, enabling navigation without losing data |
 | 09-03 | Responsive step indicator: full layout desktop, dots mobile | Desktop shows full horizontal layout with circles and labels, mobile (<640px) shows dots for space efficiency |
 | 09-03 | Navigation restricted to previously visited steps | canGoToStep() only allows clicking to steps <= maxStepReached, preventing skipping ahead without validation |
+| 34-01 | Use V2 design tokens (Inkwell palette) not Canvas | Plan specified "V3 tokens" but codebase has V2 (Inkwell) and Canvas - used V2 tokens for skeleton components as they work across all /app routes |
+| 34-01 | Inline shimmer style + Tailwind animation | Applied shimmer via inline style with CSS variables + tailwind animate-shimmer class to allow gradient to use CSS custom properties while keeping animation timing in Tailwind |
 | 09-04 | BoatTimeEntry accepts multiple time formats | Coaches can enter "1:32.5" (MM:SS.s), "1:32" (MM:SS), or "92.5" (seconds) - reduces data entry friction |
 | 09-04 | Nested useFieldArray for pieces.boats | react-hook-form useFieldArray supports nested arrays, provides proper form state management for complex structures |
 | 09-04 | Collapsible piece cards for UX scalability | Sessions with many pieces would create excessive scroll, collapse provides better management for 4+ pieces |
@@ -498,10 +500,10 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-02-08
-**Stopped at:** Phase 37, Plan 03 complete. Training session pages (SessionsPage, SessionDetailPage, LiveSessionPage) copper redesign complete.
+**Last session:** 2026-02-09
+**Stopped at:** Phase 34, Plan 01 complete. Skeleton loader system created (4 components with CSS shimmer animation).
 **Resume file:** None
-**Resume with:** Continue with Phase 37 Plan 04, 05, or 06 (remaining pages: athletes, attendance, erg tests, settings, recruiting, achievements, challenges)
+**Resume with:** Continue with Phase 34 Plan 02 (Activity Feed Migration)
 
 ## Roadmap Evolution
 
