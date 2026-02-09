@@ -171,18 +171,24 @@ export function CanvasFleetPage() {
   return (
     <div className="h-full flex flex-col bg-void">
       {/* Page header */}
-      <div className="px-6 pt-8 pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-4 lg:pt-8 pb-4 lg:pb-6 border-b border-ink-border/30">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
               <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-ink-secondary mb-3">
                 TEAM / FLEET
               </p>
-              <h1 className="text-3xl font-semibold text-ink-bright tracking-tight">Fleet</h1>
+              <h1 className="text-2xl lg:text-3xl font-semibold text-ink-bright tracking-tight">
+                Fleet
+              </h1>
             </div>
 
             {canEdit && (
-              <CanvasButton variant="primary" onClick={handleAdd}>
+              <CanvasButton
+                variant="primary"
+                onClick={handleAdd}
+                className="min-h-[44px] text-sm lg:text-base w-full sm:w-auto"
+              >
                 <Plus className="w-4 h-4" />
                 ADD {activeTab === 'shells' ? 'SHELL' : 'OAR SET'}
               </CanvasButton>
@@ -193,7 +199,7 @@ export function CanvasFleetPage() {
 
       {/* Tabs + Content */}
       <div className="flex-1 overflow-auto">
-        <div className="max-w-5xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6 py-4 lg:py-6">
           <CanvasTabs
             tabs={tabs}
             activeTab={activeTab}
@@ -237,7 +243,7 @@ export function CanvasFleetPage() {
       </div>
 
       {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-6 py-3 bg-ink-well/20">
+      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-2 lg:py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[
