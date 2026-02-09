@@ -54,6 +54,7 @@ import personalRecordsRoutes from './routes/personalRecords.js';
 import challengeRoutes from './routes/challenges.js';
 import achievementRoutes from './routes/achievements.js';
 import streakRoutes from './routes/streaks.js';
+import seasonRoutes from './routes/seasons.js';
 import equipmentRoutes from './routes/equipment.js';
 import riggingRoutes from './routes/rigging.js';
 import lineupTemplateRoutes from './routes/lineupTemplates.js';
@@ -154,6 +155,7 @@ app.use('/api/v1/personal-records', apiLimiter, personalRecordsRoutes);
 app.use('/api/v1/challenges', apiLimiter, challengeRoutes);
 app.use('/api/v1/achievements', apiLimiter, achievementRoutes);
 app.use('/api/v1/streaks', apiLimiter, streakRoutes);
+app.use('/api/v1/seasons', apiLimiter, seasonRoutes);
 app.use('/api/v1/equipment', apiLimiter, equipmentRoutes);
 app.use('/api/v1/rigging', apiLimiter, riggingRoutes);
 
