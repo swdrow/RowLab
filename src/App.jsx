@@ -44,6 +44,15 @@ const AchievementsPage = lazy(() => import('@v2/pages/AchievementsPage'));
 const ChallengesPage = lazy(() => import('@v2/pages/ChallengesPage'));
 const V2AthleteDetailPage = lazy(() => import('./v2/features/athletes/pages/AthleteDetailPage'));
 
+// Canvas prototype routes (design/canvas branch)
+const CanvasLayout = lazy(() => import('@v2/layouts/CanvasLayout'));
+const CanvasDashboard = lazy(() => import('@v2/pages/canvas/CanvasDashboard'));
+
+// Publication prototype routes (design/publication branch)
+const PublicationLayout = lazy(() => import('@v2/layouts/PublicationLayout'));
+const PublicationDashboard = lazy(() => import('@v2/pages/publication/PublicationDashboard'));
+const PublicationAthletes = lazy(() => import('@v2/pages/publication/PublicationAthletes'));
+
 // Error Boundary for catching rendering errors
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -491,6 +500,226 @@ function App() {
               </Route>
 
               {/* Routes without shell (future: onboarding, etc.) can go here */}
+            </Route>
+
+            {/* ============================================ */}
+            {/* Canvas prototype routes at /canvas */}
+            {/* Design exploration: floating dock, zone gradients, no sidebar */}
+            {/* ============================================ */}
+            <Route path="/canvas" element={<V2Layout />}>
+              <Route
+                element={
+                  <Suspense
+                    fallback={<LoadingFallback variant="component" message="Loading canvas..." />}
+                  >
+                    <CanvasLayout />
+                  </Suspense>
+                }
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback
+                          variant="component"
+                          message="Loading canvas dashboard..."
+                        />
+                      }
+                    >
+                      <CanvasDashboard />
+                    </Suspense>
+                  }
+                />
+                {/* Canvas reuses existing pages for other zones */}
+                <Route
+                  path="athletes"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading athletes..." />
+                      }
+                    >
+                      <V2AthletesPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="attendance"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading attendance..." />
+                      }
+                    >
+                      <V2AttendancePage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/training"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading training..." />
+                      }
+                    >
+                      <CoachTrainingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="training/sessions"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading sessions..." />
+                      }
+                    >
+                      <SessionsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="regattas"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading regattas..." />
+                      }
+                    >
+                      <RegattasPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="rankings"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading rankings..." />
+                      }
+                    >
+                      <RankingsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="erg-tests"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading erg tests..." />
+                      }
+                    >
+                      <V2ErgTestsPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="coach/seat-racing"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading seat racing..." />
+                      }
+                    >
+                      <V2SeatRacingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="settings"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading settings..." />
+                      }
+                    >
+                      <V2SettingsPage />
+                    </Suspense>
+                  }
+                />
+              </Route>
+            </Route>
+
+            {/* ============================================ */}
+            {/* Publication prototype routes at /app/publication */}
+            {/* Design exploration: editorial magazine layout, no sidebar */}
+            {/* ============================================ */}
+            <Route path="/app/publication" element={<V2Layout />}>
+              <Route
+                element={
+                  <Suspense
+                    fallback={
+                      <LoadingFallback variant="component" message="Loading publication..." />
+                    }
+                  >
+                    <PublicationLayout />
+                  </Suspense>
+                }
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback
+                          variant="component"
+                          message="Loading publication dashboard..."
+                        />
+                      }
+                    >
+                      <PublicationDashboard />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="athletes"
+                  element={
+                    <Suspense
+                      fallback={<LoadingFallback variant="component" message="Loading roster..." />}
+                    >
+                      <PublicationAthletes />
+                    </Suspense>
+                  }
+                />
+                {/* Placeholder routes for nav links — show existing pages */}
+                <Route
+                  path="training"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading training..." />
+                      }
+                    >
+                      <CoachTrainingPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="racing"
+                  element={
+                    <Suspense
+                      fallback={<LoadingFallback variant="component" message="Loading racing..." />}
+                    >
+                      <RegattasPage />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="analysis"
+                  element={
+                    <Suspense
+                      fallback={
+                        <LoadingFallback variant="component" message="Loading analysis..." />
+                      }
+                    >
+                      <RankingsPage />
+                    </Suspense>
+                  }
+                />
+              </Route>
             </Route>
 
             {/* Legacy V1 routes — redirect to /app equivalents */}
