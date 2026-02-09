@@ -3,11 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.0 — App Redesign
-**Phase:** 37 (Warm Copper Design Sweep) — In Progress
-**Plan:** 2/6 complete
-**Status:** Athlete/shared pages copper redesign complete (Athletes, Attendance, Erg Tests, MeDashboard). Linear-inspired table design established. Next: Training pages (37-03).
-**Next Plan:** 37-03 (Training pages copper editorial)
-**Last activity:** 2026-02-08 — Completed 37-02-PLAN.md (Athlete Pages Copper Sweep)
+**Phase:** 38 (Full Canvas Design System Redesign) — In Progress
+**Plan:** 1/7 complete
+**Status:** Canvas primitive component library complete (13 components). All Canvas page redesigns (plans 02-06) can now build on shared primitives. Next: Athletes page Canvas redesign (38-02).
+**Next Plan:** 38-02 (Athletes page Canvas redesign)
+**Last activity:** 2026-02-09 — Completed 38-01-PLAN.md (Build Canvas Primitive Component Library)
 
 ## Project Reference
 
@@ -99,9 +99,10 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 34 | Gamification & Activity Feed Migration | Not started | TBD |
 | 35 | Mobile Responsiveness & Performance | Not started | TBD |
 | 36 | V1/V2 Cleanup | Not started | TBD |
-| 37 | Warm Copper Design Sweep | In Progress | 2/6 |
+| 37 | Warm Copper Design Sweep | Paused | 2/6 |
+| 38 | Full Canvas Design System Redesign | In Progress | 1/7 |
 
-v3.0 Progress: ████████████████████░ (9 phases complete, 1 in progress, 4 remaining)
+v3.0 Progress: ████████████████████░ (9 phases complete, 1 in progress, 5 remaining)
 
 ## Quick Context
 
@@ -507,6 +508,7 @@ Key architectural decisions carrying forward:
 - 2026-01-28: Phase 19 added to v2.1 (Penpot Design System & Visual Identity)
 - 2026-01-28: Phase 17 reduced from 9 to 8 plans (landing page moved to Phase 19)
 - 2026-01-28: v2.2 phases renumbered (19→20, 20→21, 21→22, 22→23)
+- 2026-02-08: Phase 38 added to v3.0 (Full Canvas Design System Redesign)
 
 ## Quick Tasks Completed
 
@@ -920,5 +922,15 @@ Phase 13 delivered the cross-feature integration layer:
 | 37-04 | Data pages get full copper editorial treatment | SeatRacing, Regattas, Rankings are analytics pages that benefit from full hero headers with context |
 | 37-04 | Section headers use copper dots + gradient dividers | Establishes consistent visual pattern for dividing content sections across all pages |
 
+### v3.0 Decisions (Phase 38)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 38-01 | Extract Canvas primitives into reusable component library | All 9 Canvas page redesigns need same primitives. Building library first prevents copy-paste duplication and ensures consistency. |
+| 38-01 | Zero rounded corners in Canvas design language | Canvas uses chamfer (diagonal cut) corners via clip-path, NOT rounded rectangles. Signature visual distinction from generic SaaS cards. |
+| 38-01 | Wrap TanStack Table instead of custom table implementation | TanStack Table provides robust sorting/filtering/pagination APIs. Wrapping with Canvas styling faster and more maintainable than building from scratch. |
+| 38-01 | Use Headless UI Dialog for modal primitive | Headless UI handles focus management, escape key, click-outside behavior. Just style with Canvas chamfer panel for accessibility out-of-the-box. |
+| 38-01 | Style native select instead of custom Listbox | For Canvas pages, simplicity beats customization. Native select has better mobile support and requires less code. |
+
 ---
-*Last updated: 2026-02-08 — Phase 37 Plan 01 Complete (Navigation chrome + coach pages copper sweep)*
+*Last updated: 2026-02-09 — Phase 38 Plan 01 Complete (Canvas Primitive Component Library)*
