@@ -164,16 +164,24 @@ export const CanvasSettingsPage: React.FC = () => {
   };
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6 lg:space-y-8 px-4 lg:px-8"
+    >
       {/* ============================================ */}
       {/* HEADER — text against void */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col sm:flex-row gap-4 sm:items-end sm:justify-between pt-2 pb-4 lg:pb-6"
+      >
         <div>
           <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
             Configuration
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
             Settings
           </h1>
         </div>
@@ -185,6 +193,7 @@ export const CanvasSettingsPage: React.FC = () => {
               variant="primary"
               onClick={handleSave}
               disabled={!hasChanges || isUpdating}
+              className="w-full sm:w-auto"
             >
               {isUpdating ? 'Saving...' : saved ? 'Saved' : 'Save Changes'}
             </CanvasButton>
@@ -217,7 +226,7 @@ export const CanvasSettingsPage: React.FC = () => {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="mt-8 space-y-8"
+          className="mt-6 lg:mt-8 space-y-6 lg:space-y-8"
         >
           {/* ============================================ */}
           {/* PROFILE TAB */}
@@ -226,7 +235,7 @@ export const CanvasSettingsPage: React.FC = () => {
             <>
               <div>
                 <RuledHeader>Personal Information</RuledHeader>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mt-4">
                   <CanvasFormField
                     label="First Name"
                     value={profile.firstName}

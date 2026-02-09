@@ -212,7 +212,7 @@ export function CanvasAthleteDetailPage() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        className="flex-shrink-0 px-6 pt-8 pb-6"
+        className="flex-shrink-0 px-4 lg:px-6 pt-6 lg:pt-8 pb-4 lg:pb-6"
       >
         <motion.div variants={fadeUp}>
           {/* Back navigation */}
@@ -224,12 +224,12 @@ export function CanvasAthleteDetailPage() {
             <span>Athletes</span>
           </button>
 
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-medium text-ink-muted uppercase tracking-[0.15em] mb-1">
                 Athlete Profile
               </p>
-              <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
                 {fullName}
               </h1>
               {athlete.side && (
@@ -255,23 +255,23 @@ export function CanvasAthleteDetailPage() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        className="flex-1 overflow-y-auto px-6 pb-6"
+        className="flex-1 overflow-y-auto px-4 lg:px-6 pb-4 lg:pb-6"
       >
         {/* Profile Hero — wrapped in Canvas container */}
-        <motion.div variants={fadeUp} className="mb-6">
-          <CanvasChamferPanel className="p-6">
+        <motion.div variants={fadeUp} className="mb-4 lg:mb-6">
+          <CanvasChamferPanel className="p-4 lg:p-6">
             <ProfileHero athlete={athlete} />
           </CanvasChamferPanel>
         </motion.div>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Left Column (2/3 width) */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 lg:space-y-6">
             {/* Erg History */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Erg History</RuledHeader>
-              <CanvasChamferPanel className="p-6 space-y-4">
+              <CanvasChamferPanel className="p-4 lg:p-6 space-y-4">
                 <div className="[&_.h-\\[80px\\]]:h-[160px]">
                   <ErgSparkline ergTests={recentErgTests} />
                 </div>
@@ -289,8 +289,8 @@ export function CanvasAthleteDetailPage() {
             {/* Attendance Heatmap */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Attendance</RuledHeader>
-              <CanvasChamferPanel className="p-6">
-                <div className="flex items-center gap-4 mb-4">
+              <CanvasChamferPanel className="p-4 lg:p-6">
+                <div className="flex flex-wrap items-center gap-3 lg:gap-4 mb-4">
                   <span className="text-xs font-mono text-ink-muted uppercase tracking-wider">
                     Current Streak
                   </span>
@@ -306,18 +306,18 @@ export function CanvasAthleteDetailPage() {
             {/* Activity Timeline */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Activity</RuledHeader>
-              <CanvasChamferPanel className="p-6">
+              <CanvasChamferPanel className="p-4 lg:p-6">
                 <ActivityTimeline athleteId={athlete.id} />
               </CanvasChamferPanel>
             </motion.div>
           </div>
 
           {/* Right Column (1/3 width) */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {/* Quick Edit */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Quick Edit</RuledHeader>
-              <CanvasChamferPanel className="p-6">
+              <CanvasChamferPanel className="p-4 lg:p-6">
                 <AthleteEditForm athlete={athlete} />
               </CanvasChamferPanel>
             </motion.div>
@@ -325,7 +325,7 @@ export function CanvasAthleteDetailPage() {
             {/* Quick Actions */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Quick Actions</RuledHeader>
-              <CanvasChamferPanel className="p-6">
+              <CanvasChamferPanel className="p-4 lg:p-6">
                 <QuickActions athleteId={athlete.id} athleteName={fullName} />
               </CanvasChamferPanel>
             </motion.div>
@@ -333,7 +333,7 @@ export function CanvasAthleteDetailPage() {
             {/* Achievements */}
             <motion.div variants={fadeUp}>
               <RuledHeader>Achievements</RuledHeader>
-              <CanvasChamferPanel className="p-6">
+              <CanvasChamferPanel className="p-4 lg:p-6">
                 <AchievementsSection
                   athleteId={athlete.id}
                   gamificationEnabled={gamificationEnabled}
@@ -347,7 +347,7 @@ export function CanvasAthleteDetailPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-6">
+      <div className="flex-shrink-0 border-t border-ink-border px-4 lg:px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'ERG TESTS', value: recentErgTests.length.toString() },

@@ -4,10 +4,10 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 35 (Canvas Promotion + Mobile Responsiveness) — IN PROGRESS
-**Plan:** 1/11 complete (1 commit)
-**Status:** Completed 35-01: Canvas design system promoted to /app/* default. All 25 Canvas pages swapped from warm V2 components, all prototype routes removed (/canvas, /timeline, /mesh, /publication). CanvasLayout now serves as primary layout wrapper.
-**Next Plan:** 35-02 (MobileNav Integration)
-**Last activity:** 2026-02-09 — Completed 35-01-PLAN.md: Canvas promotion to production default
+**Plan:** 4/11 complete (2 commits)
+**Status:** Completed 35-03: Canvas primitives are mobile-responsive. 6px chamfers on mobile, vertical stack console readouts, sticky first column tables, disabled hover effects on touch devices.
+**Next Plan:** 35-05 (Component Accessibility Tests)
+**Last activity:** 2026-02-09 — Completed 35-03-PLAN.md: Mobile-first responsive Canvas primitives
 
 ## Project Reference
 
@@ -97,7 +97,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 32 | Training & Attendance Migration | Complete ✅ | 6/6 |
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
 | 34 | Gamification & Activity Feed Migration | Complete ✅ | 8/8 |
-| 35 | Canvas Promotion + Mobile | In Progress | 1/11 |
+| 35 | Canvas Promotion + Mobile | In Progress | 4/11 |
 | 36 | Dead Code Cleanup | Not started | TBD |
 
 v3.0 Progress: ██████████████████░░ (11 phases complete, 2 remaining)

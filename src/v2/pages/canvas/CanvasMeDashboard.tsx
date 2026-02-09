@@ -59,16 +59,21 @@ export function CanvasMeDashboard() {
         <OnboardingWizard onComplete={handleWizardComplete} />
       )}
 
-      <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+        className="space-y-6 lg:space-y-8 px-4 lg:px-8"
+      >
         {/* ============================================ */}
         {/* HEADER — text against void (no card wrapper) */}
         {/* ============================================ */}
-        <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
+        <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-4 lg:pb-6">
           <div>
             <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
               Your Overview
             </p>
-            <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
               Dashboard
             </h1>
           </div>

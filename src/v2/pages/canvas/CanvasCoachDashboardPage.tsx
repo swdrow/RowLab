@@ -75,14 +75,14 @@ export function CanvasCoachDashboardPage() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        className="flex-shrink-0 px-6 pt-8 pb-6"
+        className="flex-shrink-0 px-4 lg:px-6 pt-6 lg:pt-8 pb-4 lg:pb-6"
       >
         <motion.div variants={fadeUp} className="flex items-end justify-between">
           <div>
             <p className="text-xs font-medium text-ink-muted uppercase tracking-[0.15em] mb-1">
               Dashboard
             </p>
-            <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
               Coach Overview
             </h1>
           </div>
@@ -99,7 +99,7 @@ export function CanvasCoachDashboardPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-6">
+      <div className="flex-shrink-0 border-t border-ink-border px-4 lg:px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'WIDGETS', value: widgetCount.toString() },
