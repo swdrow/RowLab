@@ -98,6 +98,7 @@
     "react-focus-lock": "^2.13.7",
     "react-grid-layout": "^2.2.2",
     "react-hook-form": "^7.71.1",
+    "react-hotkeys-hook": "^5.2.4",
     "react-intersection-observer": "^10.0.2",
     "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "^6.30.2",
