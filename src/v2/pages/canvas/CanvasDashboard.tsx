@@ -150,16 +150,24 @@ export function CanvasDashboard() {
   });
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8 px-4 lg:px-0"
+    >
       {/* ============================================ */}
       {/* HEADER — no wrapper, just text against the void */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 pt-2 pb-6"
+      >
         <div>
           <p className="text-xs font-medium text-ink-muted uppercase tracking-[0.15em] mb-1">
             {greeting}
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
             Dashboard
           </h1>
         </div>
@@ -172,7 +180,7 @@ export function CanvasDashboard() {
       {/* ============================================ */}
       <motion.div variants={fadeUp}>
         <RuledHeader>Metrics</RuledHeader>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {METRICS.map((m, i) => {
             const Icon = m.icon;
             const isFeatured = i === 0;
@@ -180,7 +188,7 @@ export function CanvasDashboard() {
             return (
               <motion.div
                 key={m.id}
-                className={`canvas-chamfer bg-ink-raised relative p-5 group ${isFeatured ? 'col-span-2' : ''}`}
+                className={`canvas-chamfer bg-ink-raised relative p-4 lg:p-5 group ${isFeatured ? 'sm:col-span-2' : ''}`}
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               >
@@ -217,17 +225,21 @@ export function CanvasDashboard() {
                 </div>
 
                 {/* Value + trend inline */}
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-2 flex-wrap">
                   <span
                     className={`font-extrabold tracking-tight leading-none ${
-                      isFeatured ? 'text-4xl lg:text-5xl' : 'text-3xl lg:text-4xl'
+                      isFeatured
+                        ? 'text-3xl sm:text-4xl lg:text-5xl'
+                        : 'text-2xl sm:text-3xl lg:text-4xl'
                     }`}
                     style={{ color: m.dataColor, fontVariantNumeric: 'tabular-nums' }}
                   >
                     <ScrambleNumber value={m.value} />
                   </span>
                   {m.suffix && (
-                    <span className="text-lg font-semibold text-ink-secondary">{m.suffix}</span>
+                    <span className="text-base lg:text-lg font-semibold text-ink-secondary">
+                      {m.suffix}
+                    </span>
                   )}
 
                   {/* Trend — pushed to the right */}
@@ -254,7 +266,7 @@ export function CanvasDashboard() {
       {/* ============================================ */}
       {/* TWO-COLUMN: Activity log + Upcoming tickets */}
       {/* ============================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10">
         {/* ACTIVITY — log tape entries, NO card wrapper */}
         <motion.div variants={fadeUp} className="lg:col-span-3">
           <RuledHeader>Recent Activity</RuledHeader>
@@ -272,7 +284,9 @@ export function CanvasDashboard() {
                 }}
               >
                 {/* Timestamp column */}
-                <span className="text-[11px] font-mono text-ink-muted text-right">{item.time}</span>
+                <span className="text-[10px] sm:text-[11px] font-mono text-ink-muted text-right">
+                  {item.time}
+                </span>
 
                 {/* Indicator bar — 3px colored strip, breathes subtly */}
                 <div
@@ -284,14 +298,18 @@ export function CanvasDashboard() {
                 />
 
                 {/* Name + action */}
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-sm font-medium text-ink-primary">{item.athlete}</span>
-                  <span className="text-xs text-ink-muted truncate">{item.action}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 min-w-0">
+                  <span className="text-xs sm:text-sm font-medium text-ink-primary">
+                    {item.athlete}
+                  </span>
+                  <span className="text-[10px] sm:text-xs text-ink-muted truncate">
+                    {item.action}
+                  </span>
                 </div>
 
                 {/* Value — data colored */}
                 <span
-                  className="text-sm font-mono font-semibold tabular-nums"
+                  className="text-xs sm:text-sm font-mono font-semibold tabular-nums flex-shrink-0"
                   style={{
                     color: item.positive ? 'var(--data-excellent)' : 'var(--data-poor)',
                   }}
@@ -310,7 +328,7 @@ export function CanvasDashboard() {
             {UPCOMING.map((session, i) => (
               <motion.div
                 key={session.id}
-                className="canvas-chamfer canvas-ticket bg-ink-raised relative p-4 group"
+                className="canvas-chamfer canvas-ticket bg-ink-raised relative p-3 sm:p-4 group"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -328,24 +346,28 @@ export function CanvasDashboard() {
                   }}
                 />
 
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="text-sm font-semibold text-ink-bright group-hover:text-white transition-colors duration-150">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                  <div className="min-w-0">
+                    <h4 className="text-xs sm:text-sm font-semibold text-ink-bright group-hover:text-white transition-colors duration-150 break-words">
                       {session.title}
                     </h4>
                     <div className="flex items-center gap-1.5 mt-1.5">
-                      <Clock size={11} className="text-ink-muted" />
-                      <span className="text-xs text-ink-secondary">{session.time}</span>
+                      <Clock size={11} className="text-ink-muted flex-shrink-0" />
+                      <span className="text-[10px] sm:text-xs text-ink-secondary">
+                        {session.time}
+                      </span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-ink-secondary">
+                  <span className="text-[9px] sm:text-[10px] font-mono font-medium uppercase tracking-wider text-ink-secondary flex-shrink-0">
                     {session.type}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-1.5 mt-3">
-                  <Users size={11} className="text-ink-muted" />
-                  <span className="text-xs text-ink-tertiary">{session.athletes} athletes</span>
+                  <Users size={11} className="text-ink-muted flex-shrink-0" />
+                  <span className="text-[10px] sm:text-xs text-ink-tertiary">
+                    {session.athletes} athletes
+                  </span>
                 </div>
               </motion.div>
             ))}

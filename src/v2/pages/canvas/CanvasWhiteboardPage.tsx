@@ -62,28 +62,44 @@ export function CanvasWhiteboardPage() {
   }
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8 px-4 lg:px-0"
+    >
       {/* ============================================ */}
       {/* HEADER — text against void */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="flex items-end justify-between pt-2 pb-6">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 pt-2 pb-6"
+      >
         <div>
           <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-[0.2em] mb-1">
             Team Communication
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-ink-bright tracking-tight leading-none">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink-bright tracking-tight leading-none">
             Whiteboard
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 lg:gap-3">
           {canEdit && !isEditing && (
-            <CanvasButton variant="primary" onClick={() => setIsEditing(true)}>
+            <CanvasButton
+              variant="primary"
+              onClick={() => setIsEditing(true)}
+              className="min-h-[44px] text-sm lg:text-base w-full sm:w-auto"
+            >
               Edit
             </CanvasButton>
           )}
           {isEditing && (
             <>
-              <CanvasButton variant="ghost" onClick={() => setIsEditing(false)}>
+              <CanvasButton
+                variant="ghost"
+                onClick={() => setIsEditing(false)}
+                className="min-h-[44px] text-sm lg:text-base w-full sm:w-auto"
+              >
                 Cancel
               </CanvasButton>
             </>
@@ -94,7 +110,7 @@ export function CanvasWhiteboardPage() {
       {/* ============================================ */}
       {/* WHITEBOARD CONTENT */}
       {/* ============================================ */}
-      <motion.div variants={fadeUp} className="max-w-4xl">
+      <motion.div variants={fadeUp} className="max-w-4xl w-full">
         {isEditing ? (
           <WhiteboardEditor
             initialContent={whiteboard?.content || ''}
