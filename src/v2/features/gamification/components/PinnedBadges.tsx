@@ -1,6 +1,6 @@
 import { usePinnedAchievements } from '../../../hooks/useAchievements';
 import { AchievementBadge } from './AchievementBadge';
-import { Skeleton } from '../../../components/ui/Skeleton';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 interface PinnedBadgesProps {
   athleteId: string;
