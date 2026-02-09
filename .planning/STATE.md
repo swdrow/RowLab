@@ -4,10 +4,10 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 38 (Full Canvas Design System Redesign) — In Progress
-**Plan:** 1/7 complete
-**Status:** Canvas primitive component library complete (13 components). All Canvas page redesigns (plans 02-06) can now build on shared primitives. Next: Athletes page Canvas redesign (38-02).
-**Next Plan:** 38-02 (Athletes page Canvas redesign)
-**Last activity:** 2026-02-09 — Completed 38-01-PLAN.md (Build Canvas Primitive Component Library)
+**Plan:** 2/7 complete
+**Status:** Canvas Athletes page complete with virtual table, 3 view modes, bulk actions console, and slide-out editor. Largest Canvas page (1121 lines). Next: Training page Canvas redesign (38-03).
+**Next Plan:** 38-03 (Training page Canvas redesign)
+**Last activity:** 2026-02-09 — Completed 38-06-PLAN.md (CanvasAthletesPage with virtual table and bulk actions)
 
 ## Project Reference
 
@@ -931,6 +931,9 @@ Phase 13 delivered the cross-feature integration layer:
 | 38-01 | Wrap TanStack Table instead of custom table implementation | TanStack Table provides robust sorting/filtering/pagination APIs. Wrapping with Canvas styling faster and more maintainable than building from scratch. |
 | 38-01 | Use Headless UI Dialog for modal primitive | Headless UI handles focus management, escape key, click-outside behavior. Just style with Canvas chamfer panel for accessibility out-of-the-box. |
 | 38-01 | Style native select instead of custom Listbox | For Canvas pages, simplicity beats customization. Native select has better mobile support and requires less code. |
+| 38-06 | Use TanStack Virtual for table view only | Athletes page is the only page with 500+ rows. Grid and compact views handle virtualization internally. Table view needs explicit virtualization. |
+| 38-06 | Reuse ALL V2 data hooks and interaction logic | Data fetching, keyboard shortcuts, CSV import, and selection logic are well-tested. Only redesigned the display layer for Canvas styling. |
+| 38-06 | Console readout bulk actions at bottom | Canvas design uses console readouts, not floating action bars. Sticky bottom bar with monospace labels matches instrument panel pattern. |
 
 ---
-*Last updated: 2026-02-09 — Phase 38 Plan 01 Complete (Canvas Primitive Component Library)*
+*Last updated: 2026-02-09 — Phase 38 Plan 06 Complete (CanvasAthletesPage with virtual table and bulk actions)*
