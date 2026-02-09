@@ -80,6 +80,75 @@ const CanvasSettingsPage = lazy(() =>
 const CanvasSessionsPage = lazy(() =>
   import('./v2/pages/canvas/CanvasSessionsPage').then((m) => ({ default: m.CanvasSessionsPage }))
 );
+const CanvasMeDashboard = lazy(() =>
+  import('./v2/pages/canvas/CanvasMeDashboard').then((m) => ({ default: m.CanvasMeDashboard }))
+);
+const CanvasCoachDashboardPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasCoachDashboardPage').then((m) => ({
+    default: m.CanvasCoachDashboardPage,
+  }))
+);
+const CanvasWhiteboardPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasWhiteboardPage').then((m) => ({
+    default: m.CanvasWhiteboardPage,
+  }))
+);
+const CanvasFleetPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasFleetPage').then((m) => ({ default: m.CanvasFleetPage }))
+);
+const CanvasAvailabilityPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasAvailabilityPage').then((m) => ({
+    default: m.CanvasAvailabilityPage,
+  }))
+);
+const CanvasAthleteDetailPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasAthleteDetailPage').then((m) => ({
+    default: m.CanvasAthleteDetailPage,
+  }))
+);
+const CanvasLineupBuilderPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasLineupBuilderPage').then((m) => ({
+    default: m.CanvasLineupBuilderPage,
+  }))
+);
+const CanvasAdvancedRankingsPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasAdvancedRankingsPage').then((m) => ({
+    default: m.CanvasAdvancedRankingsPage,
+  }))
+);
+const CanvasMatrixPlannerPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasMatrixPlannerPage').then((m) => ({
+    default: m.CanvasMatrixPlannerPage,
+  }))
+);
+const CanvasRaceDayPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasRaceDayPage').then((m) => ({ default: m.CanvasRaceDayPage }))
+);
+const CanvasSessionDetailPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasSessionDetailPage').then((m) => ({
+    default: m.CanvasSessionDetailPage,
+  }))
+);
+const CanvasLiveSessionPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasLiveSessionPage').then((m) => ({
+    default: m.CanvasLiveSessionPage,
+  }))
+);
+const CanvasRecruitingPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasRecruitingPage').then((m) => ({
+    default: m.CanvasRecruitingPage,
+  }))
+);
+const CanvasAchievementsPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasAchievementsPage').then((m) => ({
+    default: m.CanvasAchievementsPage,
+  }))
+);
+const CanvasChallengesPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasChallengesPage').then((m) => ({
+    default: m.CanvasChallengesPage,
+  }))
+);
 
 // Timeline prototype routes (Direction E: chronological stream)
 const TimelineLayout = lazy(() => import('@v2/layouts/TimelineLayout'));
@@ -680,7 +749,7 @@ function App() {
                   }
                 />
 
-                {/* ---- V2 fallback routes (no Canvas version yet) ---- */}
+                {/* ---- Canvas versions of remaining routes ---- */}
                 <Route
                   path="me"
                   element={
@@ -689,7 +758,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading dashboard..." />
                       }
                     >
-                      <MeDashboard />
+                      <CanvasMeDashboard />
                     </Suspense>
                   }
                 />
@@ -701,7 +770,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading coach dashboard..." />
                       }
                     >
-                      <CoachDashboard />
+                      <CanvasCoachDashboardPage />
                     </Suspense>
                   }
                 />
@@ -713,7 +782,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading whiteboard..." />
                       }
                     >
-                      <CoachWhiteboard />
+                      <CanvasWhiteboardPage />
                     </Suspense>
                   }
                 />
@@ -723,7 +792,7 @@ function App() {
                     <Suspense
                       fallback={<LoadingFallback variant="component" message="Loading fleet..." />}
                     >
-                      <CoachFleet />
+                      <CanvasFleetPage />
                     </Suspense>
                   }
                 />
@@ -735,7 +804,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading availability..." />
                       }
                     >
-                      <CoachAvailability />
+                      <CanvasAvailabilityPage />
                     </Suspense>
                   }
                 />
@@ -747,7 +816,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading athlete..." />
                       }
                     >
-                      <V2AthleteDetailPage />
+                      <CanvasAthleteDetailPage />
                     </Suspense>
                   }
                 />
@@ -759,7 +828,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading lineup builder..." />
                       }
                     >
-                      <V2LineupBuilderPage />
+                      <CanvasLineupBuilderPage />
                     </Suspense>
                   }
                 />
@@ -774,7 +843,7 @@ function App() {
                         />
                       }
                     >
-                      <AdvancedRankingsPage />
+                      <CanvasAdvancedRankingsPage />
                     </Suspense>
                   }
                 />
@@ -786,7 +855,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading matrix planner..." />
                       }
                     >
-                      <MatrixPlannerPage />
+                      <CanvasMatrixPlannerPage />
                     </Suspense>
                   }
                 />
@@ -810,7 +879,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading race day..." />
                       }
                     >
-                      <RaceDayCommandCenter />
+                      <CanvasRaceDayPage />
                     </Suspense>
                   }
                 />
@@ -822,7 +891,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading session..." />
                       }
                     >
-                      <SessionDetailPage />
+                      <CanvasSessionDetailPage />
                     </Suspense>
                   }
                 />
@@ -834,7 +903,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading live session..." />
                       }
                     >
-                      <LiveSessionPage />
+                      <CanvasLiveSessionPage />
                     </Suspense>
                   }
                 />
@@ -846,7 +915,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading recruiting..." />
                       }
                     >
-                      <RecruitingPage />
+                      <CanvasRecruitingPage />
                     </Suspense>
                   }
                 />
@@ -858,7 +927,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading achievements..." />
                       }
                     >
-                      <AchievementsPage />
+                      <CanvasAchievementsPage />
                     </Suspense>
                   }
                 />
@@ -870,7 +939,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading challenges..." />
                       }
                     >
-                      <ChallengesPage />
+                      <CanvasChallengesPage />
                     </Suspense>
                   }
                 />
@@ -882,7 +951,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading challenge..." />
                       }
                     >
-                      <ChallengesPage />
+                      <CanvasChallengesPage />
                     </Suspense>
                   }
                 />

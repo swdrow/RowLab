@@ -19,7 +19,9 @@ export interface CanvasFormFieldProps extends React.InputHTMLAttributes<HTMLInpu
 }
 
 export const CanvasFormField = React.forwardRef<HTMLInputElement, CanvasFormFieldProps>(
-  ({ label, error, className = '', ...inputProps }, ref) => {
+  ({ label, error, className = '', value, ...inputProps }, ref) => {
+    // Prevent React warning about null value prop
+    const safeValue = value ?? '';
     return (
       <div className={`space-y-2 ${className}`}>
         {/* Label: ruled style */}
@@ -34,6 +36,7 @@ export const CanvasFormField = React.forwardRef<HTMLInputElement, CanvasFormFiel
           style={{
             clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%)',
           }}
+          value={safeValue}
           {...inputProps}
         />
 
