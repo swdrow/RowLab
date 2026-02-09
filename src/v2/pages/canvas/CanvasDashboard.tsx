@@ -180,12 +180,10 @@ export function CanvasDashboard() {
         <p className="text-sm font-medium text-ink-tertiary uppercase tracking-[0.2em] mb-2">
           {greeting}
         </p>
-        <h1 className="text-5xl sm:text-6xl font-display font-bold text-ink-bright tracking-tight leading-[1.05]">
+        <h1 className="text-5xl sm:text-6xl font-semibold text-ink-bright tracking-tight leading-[1.05]">
           Your Team
           <br />
-          <span className="bg-gradient-to-r from-amber-200 via-amber-100 to-orange-200 bg-clip-text text-transparent">
-            at a Glance
-          </span>
+          <span className="text-ink-secondary font-normal">at a Glance</span>
         </h1>
       </motion.div>
 
@@ -334,11 +332,11 @@ export function CanvasDashboard() {
                       </div>
                     </div>
                     <span
-                      className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full
+                      className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded
                         ${
                           session.type === 'On Water'
-                            ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                            : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                            ? 'bg-ink-raised text-ink-secondary border border-ink-border'
+                            : 'bg-ink-raised text-ink-secondary border border-ink-border'
                         }`}
                     >
                       {session.type}
