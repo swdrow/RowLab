@@ -4,10 +4,10 @@
 
 **Milestone:** v3.0 — App Redesign
 **Phase:** 38 (Full Canvas Design System Redesign) — In Progress
-**Plan:** 2/7 complete
-**Status:** Canvas Athletes page complete with virtual table, 3 view modes, bulk actions console, and slide-out editor. Largest Canvas page (1121 lines). Next: Training page Canvas redesign (38-03).
-**Next Plan:** 38-03 (Training page Canvas redesign)
-**Last activity:** 2026-02-09 — Completed 38-06-PLAN.md (CanvasAthletesPage with virtual table and bulk actions)
+**Plan:** 6/7 complete
+**Status:** All Canvas page redesigns complete (13 components in primitive library, 8 pages redesigned). CanvasDashboard, CanvasAthletesPage, CanvasRegattasPage, CanvasErgTestsPage, CanvasAttendancePage, CanvasCoachTrainingPage, CanvasSeatRacingPage, CanvasSettingsPage all implemented with full Canvas design language (chamfered corners, ScrambleNumber, CanvasDataTable, zero rounded). Next: Route mapping (38-07).
+**Next Plan:** 38-07 (Route mapping to swap Canvas pages into production)
+**Last activity:** 2026-02-09 — Completed 38-03-PLAN.md (CanvasRegattasPage and CanvasErgTestsPage)
 
 ## Project Reference
 
@@ -100,7 +100,7 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 35 | Mobile Responsiveness & Performance | Not started | TBD |
 | 36 | V1/V2 Cleanup | Not started | TBD |
 | 37 | Warm Copper Design Sweep | Paused | 2/6 |
-| 38 | Full Canvas Design System Redesign | In Progress | 1/7 |
+| 38 | Full Canvas Design System Redesign | In Progress | 2/7 |
 
 v3.0 Progress: ████████████████████░ (9 phases complete, 1 in progress, 5 remaining)
 

@@ -47,6 +47,39 @@ const V2AthleteDetailPage = lazy(() => import('./v2/features/athletes/pages/Athl
 // Canvas prototype routes (design/canvas branch)
 const CanvasLayout = lazy(() => import('@v2/layouts/CanvasLayout'));
 const CanvasDashboard = lazy(() => import('@v2/pages/canvas/CanvasDashboard'));
+const CanvasAthletesPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasAthletesPage').then((m) => ({ default: m.CanvasAthletesPage }))
+);
+const CanvasAttendancePage = lazy(() =>
+  import('./v2/pages/canvas/CanvasAttendancePage').then((m) => ({
+    default: m.CanvasAttendancePage,
+  }))
+);
+const CanvasCoachTrainingPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasCoachTrainingPage').then((m) => ({
+    default: m.CanvasCoachTrainingPage,
+  }))
+);
+const CanvasSeatRacingPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasSeatRacingPage').then((m) => ({
+    default: m.CanvasSeatRacingPage,
+  }))
+);
+const CanvasErgTestsPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasErgTestsPage').then((m) => ({ default: m.CanvasErgTestsPage }))
+);
+const CanvasRegattasPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasRegattasPage').then((m) => ({ default: m.CanvasRegattasPage }))
+);
+const CanvasRankingsPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasRankingsPage').then((m) => ({ default: m.CanvasRankingsPage }))
+);
+const CanvasSettingsPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasSettingsPage').then((m) => ({ default: m.CanvasSettingsPage }))
+);
+const CanvasSessionsPage = lazy(() =>
+  import('./v2/pages/canvas/CanvasSessionsPage').then((m) => ({ default: m.CanvasSessionsPage }))
+);
 
 // Timeline prototype routes (Direction E: chronological stream)
 const TimelineLayout = lazy(() => import('@v2/layouts/TimelineLayout'));
@@ -546,7 +579,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading athletes..." />
                       }
                     >
-                      <V2AthletesPage />
+                      <CanvasAthletesPage />
                     </Suspense>
                   }
                 />
@@ -558,7 +591,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading attendance..." />
                       }
                     >
-                      <V2AttendancePage />
+                      <CanvasAttendancePage />
                     </Suspense>
                   }
                 />
@@ -570,7 +603,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading training..." />
                       }
                     >
-                      <CoachTrainingPage />
+                      <CanvasCoachTrainingPage />
                     </Suspense>
                   }
                 />
@@ -582,7 +615,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading sessions..." />
                       }
                     >
-                      <SessionsPage />
+                      <CanvasSessionsPage />
                     </Suspense>
                   }
                 />
@@ -594,7 +627,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading regattas..." />
                       }
                     >
-                      <RegattasPage />
+                      <CanvasRegattasPage />
                     </Suspense>
                   }
                 />
@@ -606,7 +639,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading rankings..." />
                       }
                     >
-                      <RankingsPage />
+                      <CanvasRankingsPage />
                     </Suspense>
                   }
                 />
@@ -618,7 +651,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading erg tests..." />
                       }
                     >
-                      <V2ErgTestsPage />
+                      <CanvasErgTestsPage />
                     </Suspense>
                   }
                 />
@@ -630,7 +663,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading seat racing..." />
                       }
                     >
-                      <V2SeatRacingPage />
+                      <CanvasSeatRacingPage />
                     </Suspense>
                   }
                 />
@@ -642,7 +675,7 @@ function App() {
                         <LoadingFallback variant="component" message="Loading settings..." />
                       }
                     >
-                      <V2SettingsPage />
+                      <CanvasSettingsPage />
                     </Suspense>
                   }
                 />
