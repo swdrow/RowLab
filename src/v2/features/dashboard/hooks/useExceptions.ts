@@ -64,7 +64,7 @@ export function useExceptions(teamId: string): UseExceptionsReturn {
 
   // Organize exceptions by widget ID
   const widgetExceptions = useMemo(() => {
-    if (!data) return {};
+    if (!data?.items) return {};
 
     const byWidget: Record<string, ExceptionItem[]> = {};
 
@@ -81,11 +81,12 @@ export function useExceptions(teamId: string): UseExceptionsReturn {
   }, [data]);
 
   // Default summary while loading or no data
-  const summary: ExceptionSummary = data || {
-    critical: 0,
-    warning: 0,
-    ok: 0,
-    items: [],
+  // Ensure items is always an array — API may omit it
+  const summary: ExceptionSummary = {
+    critical: data?.critical ?? 0,
+    warning: data?.warning ?? 0,
+    ok: data?.ok ?? 0,
+    items: data?.items ?? [],
   };
 
   return {
