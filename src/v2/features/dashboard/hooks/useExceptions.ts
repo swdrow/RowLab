@@ -1,10 +1,12 @@
 /**
  * Exception Aggregation Hook
  * Phase 27-01: Aggregates red/yellow/green alerts from multiple domains
+ * Phase 36.1-04: Fetches from real backend exception aggregation endpoint
  */
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import api from '../../../utils/api';
 import { queryKeys } from '../../../lib/queryKeys';
 import { useAuth } from '../../../contexts/AuthContext';
 import type { ExceptionSeverity, ExceptionItem, ExceptionSummary } from '../types';
@@ -42,36 +44,9 @@ export function getExceptionColor(severity: ExceptionSeverity): {
 }
 
 /**
- * Compute exceptions from team data
- * For MVP, this aggregates client-side. Future: move to server-side endpoint
- */
-function computeExceptions(teamId: string): ExceptionSummary {
-  // TODO(phase-27-02): Implement actual exception computation using:
-  // - useAttendance for attendance rates
-  // - useSessions for overdue sessions
-  // - useErgTests for stale erg data
-  // - useNCAACompliance for NCAA violations
-
-  // For now, return empty summary (no exceptions)
-  // This prevents errors while dashboard is being built
-  return {
-    critical: 0,
-    warning: 0,
-    ok: 1, // All-clear indicator
-    items: [
-      {
-        id: 'all-clear',
-        severity: 'ok',
-        title: 'All systems operational',
-        description: 'No exceptions detected',
-      },
-    ],
-  };
-}
-
-/**
  * Exception aggregation hook
  * Collects critical/warning/ok alerts from attendance, sessions, erg data, NCAA compliance
+ * Fetches from /api/v1/dashboard/exceptions/:teamId
  */
 export function useExceptions(teamId: string): UseExceptionsReturn {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -79,7 +54,10 @@ export function useExceptions(teamId: string): UseExceptionsReturn {
   // Query for exceptions with 2-minute stale time (active data)
   const { data, isLoading } = useQuery({
     queryKey: queryKeys.dashboard.exceptions(teamId),
-    queryFn: () => computeExceptions(teamId),
+    queryFn: async () => {
+      const response = await api.get(`/dashboard/exceptions/${teamId}`);
+      return response.data as ExceptionSummary;
+    },
     enabled: isAuthenticated && isInitialized && !!teamId,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });

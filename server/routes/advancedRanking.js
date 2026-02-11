@@ -3,7 +3,11 @@ import { authenticateToken, requireTeam, requireRole } from '../middleware/auth.
 import prisma from '../db/connection.js';
 import { fitBradleyTerryModel, computeProbabilityMatrix } from '../services/bradleyTerryService.js';
 import { generateSwapSchedule, validateSchedule } from '../services/matrixPlannerService.js';
-import { calculateCompositeRankings, getWeightProfile, DEFAULT_WEIGHT_PROFILES } from '../services/compositeRankingService.js';
+import {
+  calculateCompositeRankings,
+  getWeightProfile,
+  DEFAULT_WEIGHT_PROFILES,
+} from '../services/compositeRankingService.js';
 import { getTeamRankingsBySide, getAthleteSideRatings } from '../services/eloRatingService.js';
 import {
   recordPassiveObservation,
@@ -11,7 +15,7 @@ import {
   applyPendingObservations,
   processSessionForPassiveTracking,
   getAthletePassiveHistory,
-  getTeamPassiveStats
+  getTeamPassiveStats,
 } from '../services/passiveEloService.js';
 import logger from '../utils/logger.js';
 
@@ -36,7 +40,7 @@ router.get('/bradley-terry', async (req, res) => {
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { code: 'NO_TEAM', message: 'Team ID required' }
+        error: { code: 'NO_TEAM', message: 'Team ID required' },
       });
     }
 
@@ -50,8 +54,8 @@ router.get('/bradley-terry', async (req, res) => {
           teamId,
           athletes: [],
           modelStats: { totalComparisons: 0, athleteCount: 0, graphConnectivity: 0 },
-          message: 'No seat race data available'
-        }
+          message: 'No seat race data available',
+        },
       });
     }
 
@@ -59,17 +63,17 @@ router.get('/bradley-terry', async (req, res) => {
     const model = fitBradleyTerryModel(comparisons);
 
     // Enrich with athlete names
-    const athleteIds = model.athletes.map(a => a.athleteId);
+    const athleteIds = model.athletes.map((a) => a.athleteId);
     const athleteInfo = await prisma.athlete.findMany({
       where: { id: { in: athleteIds } },
-      select: { id: true, firstName: true, lastName: true, side: true }
+      select: { id: true, firstName: true, lastName: true, side: true },
     });
 
-    const athleteMap = new Map(athleteInfo.map(a => [a.id, a]));
+    const athleteMap = new Map(athleteInfo.map((a) => [a.id, a]));
 
-    const enrichedAthletes = model.athletes.map(a => ({
+    const enrichedAthletes = model.athletes.map((a) => ({
       ...a,
-      athlete: athleteMap.get(a.athleteId)
+      athlete: athleteMap.get(a.athleteId),
     }));
 
     // Sort by strength descending
@@ -82,14 +86,14 @@ router.get('/bradley-terry', async (req, res) => {
         fittedAt: new Date().toISOString(),
         athletes: enrichedAthletes,
         convergence: model.convergence,
-        modelStats: model.modelStats
-      }
+        modelStats: model.modelStats,
+      },
     });
   } catch (error) {
     logger.error('Bradley-Terry ranking error', { error: error.message });
     res.status(500).json({
       success: false,
-      error: { code: 'SERVER_ERROR', message: error.message }
+      error: { code: 'SERVER_ERROR', message: error.message },
     });
   }
 });
@@ -105,7 +109,7 @@ router.get('/probability-matrix', async (req, res) => {
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { code: 'NO_TEAM', message: 'Team ID required' }
+        error: { code: 'NO_TEAM', message: 'Team ID required' },
       });
     }
 
@@ -114,14 +118,14 @@ router.get('/probability-matrix', async (req, res) => {
     if (comparisons.length === 0) {
       return res.json({
         success: true,
-        data: { teamId, matrix: [], athletes: [] }
+        data: { teamId, matrix: [], athletes: [] },
       });
     }
 
     const model = fitBradleyTerryModel(comparisons);
-    const athleteStrengths = model.athletes.map(a => ({
+    const athleteStrengths = model.athletes.map((a) => ({
       athleteId: a.athleteId,
-      strength: a.strength
+      strength: a.strength,
     }));
 
     const { matrix, athletes } = computeProbabilityMatrix(athleteStrengths);
@@ -129,7 +133,7 @@ router.get('/probability-matrix', async (req, res) => {
     // Get athlete names
     const athleteInfo = await prisma.athlete.findMany({
       where: { id: { in: athletes } },
-      select: { id: true, firstName: true, lastName: true }
+      select: { id: true, firstName: true, lastName: true },
     });
 
     res.json({
@@ -137,14 +141,14 @@ router.get('/probability-matrix', async (req, res) => {
       data: {
         teamId,
         matrix,
-        athletes: athletes.map(id => athleteInfo.find(a => a.id === id) || { id })
-      }
+        athletes: athletes.map((id) => athleteInfo.find((a) => a.id === id) || { id }),
+      },
     });
   } catch (error) {
     logger.error('Probability matrix error', { error: error.message });
     res.status(500).json({
       success: false,
-      error: { code: 'SERVER_ERROR', message: error.message }
+      error: { code: 'SERVER_ERROR', message: error.message },
     });
   }
 });
@@ -165,14 +169,14 @@ router.post('/matrix-planner/generate', async (req, res) => {
     if (!athleteIds || !Array.isArray(athleteIds) || athleteIds.length < 2) {
       return res.status(400).json({
         success: false,
-        error: { code: 'INVALID_INPUT', message: 'At least 2 athlete IDs required' }
+        error: { code: 'INVALID_INPUT', message: 'At least 2 athlete IDs required' },
       });
     }
 
     if (!boatClass) {
       return res.status(400).json({
         success: false,
-        error: { code: 'INVALID_INPUT', message: 'Boat class required' }
+        error: { code: 'INVALID_INPUT', message: 'Boat class required' },
       });
     }
 
@@ -180,26 +184,26 @@ router.post('/matrix-planner/generate', async (req, res) => {
       athleteIds,
       boatClass,
       pieceCount,
-      prioritizeAthletes
+      prioritizeAthletes,
     });
 
     // Enrich with athlete names
     const athleteInfo = await prisma.athlete.findMany({
       where: { id: { in: athleteIds } },
-      select: { id: true, firstName: true, lastName: true, side: true }
+      select: { id: true, firstName: true, lastName: true, side: true },
     });
 
     schedule.athletes = athleteInfo;
 
     res.json({
       success: true,
-      data: schedule
+      data: schedule,
     });
   } catch (error) {
     logger.error('Matrix planner error', { error: error.message });
     res.status(400).json({
       success: false,
-      error: { code: 'PLANNER_ERROR', message: error.message }
+      error: { code: 'PLANNER_ERROR', message: error.message },
     });
   }
 });
@@ -215,7 +219,7 @@ router.post('/matrix-planner/validate', async (req, res) => {
     if (!schedule) {
       return res.status(400).json({
         success: false,
-        error: { code: 'INVALID_INPUT', message: 'Schedule required' }
+        error: { code: 'INVALID_INPUT', message: 'Schedule required' },
       });
     }
 
@@ -223,13 +227,13 @@ router.post('/matrix-planner/validate', async (req, res) => {
 
     res.json({
       success: true,
-      data: validation
+      data: validation,
     });
   } catch (error) {
     logger.error('Schedule validation error', { error: error.message });
     res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', message: error.message }
+      error: { code: 'VALIDATION_ERROR', message: error.message },
     });
   }
 });
@@ -249,38 +253,66 @@ router.get('/composite', async (req, res) => {
     const profileId = req.query.profileId || 'balanced';
     let customWeights = null;
 
+    // Input validation: teamId required
+    if (!teamId) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'NO_TEAM', message: 'Team ID required' },
+      });
+    }
+
+    // Input validation: customWeights JSON parsing
     if (req.query.customWeights) {
       try {
         customWeights = JSON.parse(req.query.customWeights);
       } catch (e) {
         return res.status(400).json({
           success: false,
-          error: { code: 'INVALID_INPUT', message: 'Invalid customWeights JSON' }
+          error: { code: 'INVALID_INPUT', message: 'Invalid customWeights JSON' },
         });
       }
     }
 
-    if (!teamId) {
+    // Input validation: valid profile
+    const VALID_PROFILES = DEFAULT_WEIGHT_PROFILES.map((p) => p.id).concat(['custom']);
+    if (profileId && !VALID_PROFILES.includes(profileId)) {
       return res.status(400).json({
         success: false,
-        error: { code: 'NO_TEAM', message: 'Team ID required' }
+        error: {
+          code: 'INVALID_PROFILE',
+          message: `Invalid profile: ${profileId}. Valid profiles: ${VALID_PROFILES.join(', ')}`,
+        },
+      });
+    }
+
+    // Check team exists
+    const team = await prisma.team.findUnique({ where: { id: teamId } });
+    if (!team) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'TEAM_NOT_FOUND', message: 'Team not found' },
       });
     }
 
     const result = await calculateCompositeRankings(teamId, {
       profileId,
-      customWeights
+      customWeights,
     });
 
+    // Return 200 even if rankings is empty (not an error)
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
-    logger.error('Composite ranking error', { error: error.message });
+    logger.error('Composite ranking error', { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
-      error: { code: 'SERVER_ERROR', message: error.message }
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'Internal error computing rankings',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      },
     });
   }
 });
@@ -292,7 +324,7 @@ router.get('/composite', async (req, res) => {
 router.get('/weight-profiles', async (req, res) => {
   res.json({
     success: true,
-    data: { profiles: DEFAULT_WEIGHT_PROFILES }
+    data: { profiles: DEFAULT_WEIGHT_PROFILES },
   });
 });
 
@@ -313,7 +345,7 @@ router.get('/by-side', async (req, res) => {
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { code: 'NO_TEAM', message: 'Team ID required' }
+        error: { code: 'NO_TEAM', message: 'Team ID required' },
       });
     }
 
@@ -321,13 +353,13 @@ router.get('/by-side', async (req, res) => {
 
     res.json({
       success: true,
-      data: { rankings, side, teamId }
+      data: { rankings, side, teamId },
     });
   } catch (error) {
     logger.error('Side ranking error', { error: error.message });
     res.status(500).json({
       success: false,
-      error: { code: 'SERVER_ERROR', message: error.message }
+      error: { code: 'SERVER_ERROR', message: error.message },
     });
   }
 });
@@ -344,7 +376,7 @@ router.get('/athlete/:athleteId/sides', async (req, res) => {
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { code: 'NO_TEAM', message: 'Team ID required' }
+        error: { code: 'NO_TEAM', message: 'Team ID required' },
       });
     }
 
@@ -353,21 +385,21 @@ router.get('/athlete/:athleteId/sides', async (req, res) => {
     // Get athlete info
     const athlete = await prisma.athlete.findUnique({
       where: { id: athleteId },
-      select: { id: true, firstName: true, lastName: true, side: true }
+      select: { id: true, firstName: true, lastName: true, side: true },
     });
 
     res.json({
       success: true,
       data: {
         athlete,
-        ...sideRatings
-      }
+        ...sideRatings,
+      },
     });
   } catch (error) {
     logger.error('Athlete side ratings error', { error: error.message });
     res.status(500).json({
       success: false,
-      error: { code: 'SERVER_ERROR', message: error.message }
+      error: { code: 'SERVER_ERROR', message: error.message },
     });
   }
 });
@@ -387,7 +419,7 @@ router.get('/comparison-graph', async (req, res) => {
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { code: 'NO_TEAM', message: 'Team ID required' }
+        error: { code: 'NO_TEAM', message: 'Team ID required' },
       });
     }
 
@@ -396,7 +428,7 @@ router.get('/comparison-graph', async (req, res) => {
     // Build graph nodes and edges
     const athletes = await prisma.athlete.findMany({
       where: { teamId, status: 'active' },
-      select: { id: true, firstName: true, lastName: true, side: true }
+      select: { id: true, firstName: true, lastName: true, side: true },
     });
 
     // Count comparisons per pair
@@ -413,7 +445,7 @@ router.get('/comparison-graph', async (req, res) => {
           comparisons: 0,
           winner1Count: 0,
           winner2Count: 0,
-          totalMargin: 0
+          totalMargin: 0,
         });
       }
 
@@ -427,24 +459,32 @@ router.get('/comparison-graph', async (req, res) => {
       edge.totalMargin += Math.abs(comp.margin || 0);
 
       // Track comparison count per athlete
-      athleteComparisonCount.set(comp.athlete1Id, (athleteComparisonCount.get(comp.athlete1Id) || 0) + 1);
-      athleteComparisonCount.set(comp.athlete2Id, (athleteComparisonCount.get(comp.athlete2Id) || 0) + 1);
+      athleteComparisonCount.set(
+        comp.athlete1Id,
+        (athleteComparisonCount.get(comp.athlete1Id) || 0) + 1
+      );
+      athleteComparisonCount.set(
+        comp.athlete2Id,
+        (athleteComparisonCount.get(comp.athlete2Id) || 0) + 1
+      );
     }
 
     // Format edges
-    const edges = Array.from(edgeMap.values()).map(e => ({
+    const edges = Array.from(edgeMap.values()).map((e) => ({
       ...e,
-      avgMarginSeconds: e.comparisons > 0 ? e.totalMargin / e.comparisons : 0
+      avgMarginSeconds: e.comparisons > 0 ? e.totalMargin / e.comparisons : 0,
     }));
 
     // Format nodes
-    const comparedAthleteIds = new Set([...comparisons.flatMap(c => [c.athlete1Id, c.athlete2Id])]);
-    const nodes = athletes.map(a => ({
+    const comparedAthleteIds = new Set([
+      ...comparisons.flatMap((c) => [c.athlete1Id, c.athlete2Id]),
+    ]);
+    const nodes = athletes.map((a) => ({
       id: a.id,
       athleteId: a.id,
       label: `${a.firstName} ${a.lastName}`,
       comparisonCount: athleteComparisonCount.get(a.id) || 0,
-      side: a.side
+      side: a.side,
     }));
 
     // Find gaps (pairs that haven't raced)
@@ -456,7 +496,7 @@ router.get('/comparison-graph', async (req, res) => {
           gaps.push({
             athlete1: athletes[i],
             athlete2: athletes[j],
-            priority: 'medium'
+            priority: 'medium',
           });
         }
       }
@@ -475,15 +515,15 @@ router.get('/comparison-graph', async (req, res) => {
           totalEdges: edges.length,
           totalGaps: gaps.length,
           connectivity: totalPossible > 0 ? edges.length / totalPossible : 0,
-          isConnected: gaps.length === 0
-        }
-      }
+          isConnected: gaps.length === 0,
+        },
+      },
     });
   } catch (error) {
     logger.error('Comparison graph error', { error: error.message });
     res.status(500).json({
       success: false,
-      error: { code: 'SERVER_ERROR', message: error.message }
+      error: { code: 'SERVER_ERROR', message: error.message },
     });
   }
 });
@@ -507,20 +547,20 @@ router.post('/passive/observation', async (req, res) => {
       sessionId,
       pieceId,
       weight,
-      source
+      source,
     } = req.body;
 
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { message: 'Team ID required' }
+        error: { message: 'Team ID required' },
       });
     }
 
     if (!boat1Athletes || !boat2Athletes || splitDifferenceSeconds === undefined) {
       return res.status(400).json({
         success: false,
-        error: { message: 'boat1Athletes, boat2Athletes, and splitDifferenceSeconds are required' }
+        error: { message: 'boat1Athletes, boat2Athletes, and splitDifferenceSeconds are required' },
       });
     }
 
@@ -532,26 +572,26 @@ router.post('/passive/observation', async (req, res) => {
       sessionId,
       pieceId,
       weight,
-      source
+      source,
     });
 
     if (!observation) {
       return res.json({
         success: true,
         data: null,
-        message: 'Observation ignored (split difference below threshold)'
+        message: 'Observation ignored (split difference below threshold)',
       });
     }
 
     res.status(201).json({
       success: true,
-      data: observation
+      data: observation,
     });
   } catch (error) {
     console.error('Record passive observation error:', error);
     res.status(400).json({
       success: false,
-      error: { message: error.message }
+      error: { message: error.message },
     });
   }
 });
@@ -564,25 +604,28 @@ router.post('/passive/observation', async (req, res) => {
 router.post('/passive/split-observation', async (req, res) => {
   try {
     const teamId = req.body.teamId || req.user.activeTeamId;
-    const {
-      boat1Athletes,
-      boat2Athletes,
-      boat1SplitSeconds,
-      boat2SplitSeconds,
-      sessionId
-    } = req.body;
+    const { boat1Athletes, boat2Athletes, boat1SplitSeconds, boat2SplitSeconds, sessionId } =
+      req.body;
 
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { message: 'Team ID required' }
+        error: { message: 'Team ID required' },
       });
     }
 
-    if (!boat1Athletes || !boat2Athletes || boat1SplitSeconds === undefined || boat2SplitSeconds === undefined) {
+    if (
+      !boat1Athletes ||
+      !boat2Athletes ||
+      boat1SplitSeconds === undefined ||
+      boat2SplitSeconds === undefined
+    ) {
       return res.status(400).json({
         success: false,
-        error: { message: 'boat1Athletes, boat2Athletes, boat1SplitSeconds, and boat2SplitSeconds are required' }
+        error: {
+          message:
+            'boat1Athletes, boat2Athletes, boat1SplitSeconds, and boat2SplitSeconds are required',
+        },
       });
     }
 
@@ -592,18 +635,18 @@ router.post('/passive/split-observation', async (req, res) => {
       boat2Athletes,
       boat1SplitSeconds,
       boat2SplitSeconds,
-      sessionId
+      sessionId,
     });
 
     res.status(201).json({
       success: true,
-      data: observation
+      data: observation,
     });
   } catch (error) {
     console.error('Record split observation error:', error);
     res.status(400).json({
       success: false,
-      error: { message: error.message }
+      error: { message: error.message },
     });
   }
 });
@@ -621,7 +664,7 @@ router.post('/passive/apply', async (req, res) => {
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { message: 'Team ID required' }
+        error: { message: 'Team ID required' },
       });
     }
 
@@ -629,13 +672,13 @@ router.post('/passive/apply', async (req, res) => {
 
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     console.error('Apply passive observations error:', error);
     res.status(500).json({
       success: false,
-      error: { message: error.message }
+      error: { message: error.message },
     });
   }
 });
@@ -654,13 +697,13 @@ router.post('/passive/process-session/:sessionId', async (req, res) => {
 
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     console.error('Process session for passive tracking error:', error);
     res.status(500).json({
       success: false,
-      error: { message: error.message }
+      error: { message: error.message },
     });
   }
 });
@@ -676,7 +719,7 @@ router.get('/passive/stats', async (req, res) => {
     if (!teamId) {
       return res.status(400).json({
         success: false,
-        error: { message: 'Team ID required' }
+        error: { message: 'Team ID required' },
       });
     }
 
@@ -684,13 +727,13 @@ router.get('/passive/stats', async (req, res) => {
 
     res.json({
       success: true,
-      data: stats
+      data: stats,
     });
   } catch (error) {
     console.error('Get passive stats error:', error);
     res.status(500).json({
       success: false,
-      error: { message: error.message }
+      error: { message: error.message },
     });
   }
 });
@@ -705,18 +748,18 @@ router.get('/passive/athlete/:athleteId/history', async (req, res) => {
     const { limit } = req.query;
 
     const history = await getAthletePassiveHistory(athleteId, {
-      limit: limit ? parseInt(limit, 10) : 50
+      limit: limit ? parseInt(limit, 10) : 50,
     });
 
     res.json({
       success: true,
-      data: { history }
+      data: { history },
     });
   } catch (error) {
     console.error('Get athlete passive history error:', error);
     res.status(500).json({
       success: false,
-      error: { message: error.message }
+      error: { message: error.message },
     });
   }
 });
@@ -736,12 +779,12 @@ async function extractComparisons(teamId) {
         include: {
           boats: {
             include: {
-              assignments: true
-            }
-          }
-        }
-      }
-    }
+              assignments: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   const comparisons = [];
@@ -758,12 +801,12 @@ async function extractComparisons(teamId) {
 
           if (!boatA.finishTimeSeconds || !boatB.finishTimeSeconds) continue;
 
-          const athletesA = boatA.assignments.map(a => a.athleteId);
-          const athletesB = boatB.assignments.map(a => a.athleteId);
+          const athletesA = boatA.assignments.map((a) => a.athleteId);
+          const athletesB = boatB.assignments.map((a) => a.athleteId);
 
           // Find swapped athletes
-          const onlyInA = athletesA.filter(id => !athletesB.includes(id));
-          const onlyInB = athletesB.filter(id => !athletesA.includes(id));
+          const onlyInA = athletesA.filter((id) => !athletesB.includes(id));
+          const onlyInB = athletesB.filter((id) => !athletesA.includes(id));
 
           // Only record if exactly one swap
           if (onlyInA.length === 1 && onlyInB.length === 1) {
@@ -777,7 +820,7 @@ async function extractComparisons(teamId) {
               winner: margin > 0 ? onlyInA[0] : onlyInB[0],
               margin: Math.abs(margin),
               sessionId: session.id,
-              pieceId: piece.id
+              pieceId: piece.id,
             });
           }
         }

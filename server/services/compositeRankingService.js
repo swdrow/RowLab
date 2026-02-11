@@ -94,6 +94,24 @@ export async function calculateCompositeRankings(teamId, options = {}) {
     }),
   ]);
 
+  // Check for zero athletes with any data
+  const allAthleteIds = new Set([
+    ...Array.from(onWaterRatings.keys()),
+    ...Array.from(ergData.keys()),
+    ...Array.from(attendanceData.keys()),
+  ]);
+
+  if (allAthleteIds.size === 0) {
+    return {
+      teamId,
+      profile,
+      rankings: [],
+      calculatedAt: new Date().toISOString(),
+      message:
+        'No ranking data available. Athletes need erg tests, seat race results, or attendance records.',
+    };
+  }
+
   // Normalize each component to [0, 1]
   const normalizedOnWater = normalizeScores(onWaterRatings, 'asc'); // Higher rating = better
   const normalizedErg = normalizeErgScores(ergData);
@@ -161,6 +179,22 @@ export async function calculateCompositeRankings(teamId, options = {}) {
     };
   });
 
+  // Single athlete special case: no normalization possible
+  if (allAthleteIds.size === 1) {
+    const singleRanking = rankings[0];
+    if (singleRanking) {
+      singleRanking.rank = 1;
+      singleRanking.note = 'Single athlete — scores are not normalized';
+    }
+    return {
+      teamId,
+      profile,
+      rankings,
+      calculatedAt: new Date().toISOString(),
+      message: 'Single athlete with data — normalization not applicable',
+    };
+  }
+
   // Sort by composite score (descending), tie-break by on-water
   rankings.sort((a, b) => {
     if (Math.abs(a.compositeScore - b.compositeScore) < 0.001) {
@@ -199,6 +233,7 @@ export function normalizeScores(dataMap, direction = 'asc') {
 
   const avg = mean(values);
   const std = values.length > 1 ? standardDeviation(values) : 0;
+  const insufficientData = values.length === 1;
 
   dataMap.forEach((data, athleteId) => {
     let z = std > 0 ? (data.value - avg) / std : 0;
@@ -212,12 +247,19 @@ export function normalizeScores(dataMap, direction = 'asc') {
     // Confidence based on data points
     const confidence = Math.min(1, data.dataPoints / 5);
 
-    normalized.set(athleteId, {
+    const result = {
       score,
       raw: data.value,
       dataPoints: data.dataPoints,
       confidence,
-    });
+    };
+
+    // Add metadata for single-value normalization
+    if (insufficientData) {
+      result.note = 'insufficient data for normalization';
+    }
+
+    normalized.set(athleteId, result);
   });
 
   return normalized;
