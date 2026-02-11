@@ -3,11 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.1 — Integrations, Analytics & Social Sharing
-**Phase:** 37 (Concept2 Workout Sync) — COMPLETE
-**Plan:** 6/6 complete
-**Status:** Phase 37 verified (20/20 must-haves). Full C2 sync pipeline: schema, sync service, coach sync, historical import, erg table, workout detail, activity feed.
+**Phase:** 37.1 (Post-37 Regression Cleanup) — IN PROGRESS
+**Plan:** 1/TBD (37-04 complete)
+**Status:** Canvas token consistency complete. Canvas pages now unified.
 **Next Phase:** 38 (Share Card Platform)
-**Last activity:** 2026-02-11 — Completed Phase 37 (Concept2 Workout Sync)
+**Last activity:** 2026-02-11 — Completed 37-04-PLAN.md (Canvas border token unification)
 
 ## Project Reference
 
@@ -74,6 +74,7 @@ v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
 | 37 | Concept2 Workout Sync | Complete ✅ | 6/6 |
+| 37.1 | Post-37 Regression Cleanup | In Progress | TBD |
 | 38 | Share Card Platform | Planned | TBD |
 | 39 | Strava Integration & Cross-Platform Sync | Planned | TBD |
 | 40 | Performance Analytics Engine | Planned | TBD |
@@ -319,6 +320,13 @@ Key architectural decisions carrying forward:
 | 37-03 | Unmatched workouts stored with athleteId null for manual resolution | Coach can assign later via PUT /api/v1/concept2/assign-workout, avoids incorrect auto-assignment |
 | 37-03 | Batch processing with 50 records per page for historical import | Prevents memory bloat on large logbooks (5,000+ workouts), streams data instead of loading all at once |
 
+### Phase 37.1 Decisions
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 37-04 | Replace border-ink-border with border-white/[0.06] across Canvas pages | Canvas design system standardizes on semi-transparent white borders for consistency with The Canvas UX philosophy |
+| 37-04 | No changes needed for 3 Canvas pages | CanvasAttendancePage already using correct tokens, CanvasSettingsPage and CanvasRankingsPage have no borders |
+
 ### Phase 14 Decisions
 
 | Plan | Decision | Rationale |
@@ -535,10 +543,10 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-02-11 16:15:06Z
-**Stopped at:** Phase 37-05 COMPLETE. Workout detail view with summary card and per-split breakdown table. WorkoutDetailView slide-over component. useWorkoutDetail hook. Design system compliant with glass cards and spring animations.
+**Last session:** 2026-02-11T22:35:06Z
+**Stopped at:** Completed 37-04-PLAN.md (Canvas border token unification)
 **Resume file:** None
-**Resume with:** Continue Phase 37-06 (Activity feed integration for C2 workouts)
+**Resume with:** Continue Phase 37.1 cleanup tasks (additional plans TBD)
 
 ## Roadmap Evolution
 
@@ -546,6 +554,7 @@ Key architectural decisions carrying forward:
 - 2026-01-28: Phase 17 reduced from 9 to 8 plans (landing page moved to Phase 19)
 - 2026-01-28: v2.2 phases renumbered (19→20, 20→21, 21→22, 22→23)
 - 2026-02-08: Phase 38 added to v3.0 (Full Canvas Design System Redesign)
+- 2026-02-11: Phase 37.1 inserted after Phase 37: Post-37 Regression Cleanup (URGENT) — ~20 files with old design tokens, broken API params, zone nav inconsistencies
 
 ## Quick Tasks Completed
 
