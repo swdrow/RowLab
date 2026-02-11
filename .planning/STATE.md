@@ -73,7 +73,7 @@ v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 37 | Concept2 Workout Sync | In Progress | 2/8 |
+| 37 | Concept2 Workout Sync | In Progress | 1/8 |
 | 38 | Share Card Platform | Planned | TBD |
 | 39 | Strava Integration & Cross-Platform Sync | Planned | TBD |
 | 40 | Performance Analytics Engine | Planned | TBD |
@@ -525,10 +525,10 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-02-11 15:51:58Z
-**Stopped at:** Phase 37-02 COMPLETE. Built C2 API test infrastructure: nock mock server, 8 anonymized fixtures, 27 TDD tests (21 RED awaiting implementation).
+**Last session:** 2026-02-11 15:52:42Z
+**Stopped at:** Phase 37-01 COMPLETE. Enhanced C2 sync schema with WorkoutSplit model and machineType field. Built split-aware c2SyncService extracting richer data from C2 API. All sync paths use enhanced service.
 **Resume file:** None
-**Resume with:** Continue Phase 37-03 (Manual sync endpoint and UI trigger) or await Plan 37-01 completion (schema migration + c2SyncService.js)
+**Resume with:** Continue Phase 37-02 (Testing infrastructure with C2 API mock and TDD test suite)
 
 ## Roadmap Evolution
 
@@ -976,6 +976,15 @@ Phase 13 delivered the cross-feature integration layer:
 | 37-04 | Workspace pages get compact copper toolbars | LineupBuilder & MatrixPlanner need maximum vertical space, compact toolbar preserves workspace area while providing copper branding |
 | 37-04 | Data pages get full copper editorial treatment | SeatRacing, Regattas, Rankings are analytics pages that benefit from full hero headers with context |
 | 37-04 | Section headers use copper dots + gradient dividers | Establishes consistent visual pattern for dividing content sections across all pages |
+
+### v3.1 Decisions (Phase 37 - Concept2 Workout Sync)
+
+| Plan | Decision | Rationale |
+|------|----------|-----------|
+| 37-01 | Created dedicated c2SyncService.js for sync logic | Separates sync pipeline from OAuth/token management in concept2Service.js, all sync paths (manual, webhook, background) use same enhanced service with split extraction |
+| 37-01 | WorkoutSplit model stores per-split data (pace, watts, HR, stroke rate) | Enables split-by-split workout analysis (Plan 37-04) and future performance analytics (Phase 40), atomic creation with Workout via Prisma transaction |
+| 37-01 | machineType field on Workout tracks RowErg/BikeErg/SkiErg | Required for Phase 40 cross-erg correlation models, C2 API type field mapped to standardized enum |
+| 37-01 | Used prisma db push instead of migrate dev for schema sync | Database had drift from previous development, db push synced schema without forcing migration reset and preserving all existing data |
 
 ### v3.0 Decisions (Phase 38)
 
