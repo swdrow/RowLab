@@ -17,7 +17,7 @@ function formatAthleteName(athlete: { firstName: string; lastName: string }): st
 }
 
 function RankBadge({ rank }: { rank: number }) {
-  const color = RANK_MEDAL_COLORS[rank] ?? 'text-txt-muted';
+  const color = RANK_MEDAL_COLORS[rank] ?? 'text-ink-muted';
   return <span className={`w-6 text-right font-semibold text-sm ${color}`}>#{rank}</span>;
 }
 
@@ -36,19 +36,19 @@ function RatingRow({
     <div
       className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
         isCurrentUser
-          ? 'bg-accent-primary/10 border border-accent-primary/20'
-          : 'bg-surface-default border border-transparent'
+          ? 'bg-accent-copper/10 border border-accent-primary/20'
+          : 'bg-ink-base border border-transparent'
       }`}
     >
       <div className="flex items-center gap-3">
         <RankBadge rank={rank} />
         <span
-          className={`text-sm ${isCurrentUser ? 'font-semibold text-accent-primary' : 'text-txt-primary'}`}
+          className={`text-sm ${isCurrentUser ? 'font-semibold text-accent-copper' : 'text-ink-bright'}`}
         >
           {athleteName}
         </span>
       </div>
-      <span className="text-sm font-mono text-txt-muted">{Math.round(rating)}</span>
+      <span className="text-sm font-mono text-ink-muted">{Math.round(rating)}</span>
     </div>
   );
 }
@@ -69,11 +69,11 @@ export function TeamLeaderboardWidget(_props: WidgetProps) {
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-txt-primary flex items-center gap-2">
-          <Ranking className="w-5 h-5 text-accent-primary" />
+        <h3 className="font-medium text-ink-bright flex items-center gap-2">
+          <Ranking className="w-5 h-5 text-accent-copper" />
           Team Leaderboard
         </h3>
-        <Link to="/app/rankings" className="text-sm text-accent-primary hover:underline">
+        <Link to="/app/rankings" className="text-sm text-accent-copper hover:underline">
           View all
         </Link>
       </div>
@@ -83,11 +83,11 @@ export function TeamLeaderboardWidget(_props: WidgetProps) {
         {isLoading ? (
           <div className="space-y-2">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-10 bg-surface-default rounded-lg animate-pulse" />
+              <div key={i} className="h-10 bg-ink-base rounded-lg animate-pulse" />
             ))}
           </div>
         ) : topRatings.length === 0 ? (
-          <div className="text-center py-8 text-txt-muted">
+          <div className="text-center py-8 text-ink-muted">
             <Ranking className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>No rankings available yet</p>
           </div>
@@ -106,7 +106,7 @@ export function TeamLeaderboardWidget(_props: WidgetProps) {
             {/* Show current user below top 10 if they are ranked but not visible */}
             {!currentUserInTop && currentUserRating && (
               <>
-                <div className="flex items-center justify-center py-1 text-txt-muted text-xs">
+                <div className="flex items-center justify-center py-1 text-ink-muted text-xs">
                   &middot;&middot;&middot;
                 </div>
                 <RatingRow

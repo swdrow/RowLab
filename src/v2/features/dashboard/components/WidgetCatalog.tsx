@@ -90,15 +90,15 @@ export function WidgetCatalog({
             leaveFrom="opacity-100 scale-100 translate-y-0"
             leaveTo="opacity-0 scale-95 translate-y-2"
           >
-            <Dialog.Panel className="w-full max-w-4xl max-h-[80vh] flex flex-col bg-surface-elevated border border-bdr-default rounded-xl shadow-2xl overflow-hidden">
+            <Dialog.Panel className="w-full max-w-4xl max-h-[80vh] flex flex-col bg-ink-raised border border-white/[0.06] rounded-xl shadow-2xl overflow-hidden">
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-bdr-default bg-surface-default">
-                <Dialog.Title className="text-xl font-semibold text-txt-primary">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-ink-base">
+                <Dialog.Title className="text-xl font-semibold text-ink-bright">
                   Widget Catalog
                 </Dialog.Title>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-lg text-txt-secondary hover:text-txt-primary hover:bg-surface-elevated transition-colors"
+                  className="p-2 rounded-lg text-ink-secondary hover:text-ink-bright hover:bg-ink-raised transition-colors"
                   aria-label="Close"
                 >
                   <X className="w-5 h-5" />
@@ -110,7 +110,7 @@ export function WidgetCatalog({
                 selectedIndex={CATEGORIES.findIndex((c) => c.id === selectedCategory)}
                 onChange={(index) => setSelectedCategory(CATEGORIES[index].id)}
               >
-                <div className="border-b border-bdr-default bg-surface-default">
+                <div className="border-b border-white/[0.06] bg-ink-base">
                   <Tab.List className="flex gap-2 px-6 py-2">
                     {CATEGORIES.map((category) => (
                       <Tab key={category.id} as={Fragment}>
@@ -118,8 +118,8 @@ export function WidgetCatalog({
                           <button
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                               selected
-                                ? 'bg-accent-primary/10 text-accent-primary border border-accent-primary/20'
-                                : 'text-txt-secondary hover:text-txt-primary hover:bg-surface-elevated'
+                                ? 'bg-accent-copper/10 text-accent-copper border border-accent-primary/20'
+                                : 'text-ink-secondary hover:text-ink-bright hover:bg-ink-raised'
                             }`}
                           >
                             {category.label}
@@ -157,7 +157,7 @@ export function WidgetCatalog({
                 {/* Empty state */}
                 {filteredWidgets.length === 0 && (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <p className="text-txt-secondary">No widgets found in this category</p>
+                    <p className="text-ink-secondary">No widgets found in this category</p>
                   </div>
                 )}
               </div>
@@ -195,40 +195,38 @@ function WidgetCard({ widget, isActive, onAdd, onRemove }: WidgetCardProps) {
       exit={{ opacity: 0, scale: 0.95 }}
       className={`relative p-4 rounded-lg border transition-all ${
         isActive
-          ? 'bg-accent-primary/5 border-accent-primary/30'
-          : 'bg-surface-default border-bdr-default hover:border-bdr-focus'
+          ? 'bg-accent-copper/5 border-accent-primary/30'
+          : 'bg-ink-base border-white/[0.06] hover:border-white/[0.12]'
       }`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-3">
-          <div
-            className={`p-2 rounded-lg ${isActive ? 'bg-accent-primary/10' : 'bg-surface-elevated'}`}
-          >
+          <div className={`p-2 rounded-lg ${isActive ? 'bg-accent-copper/10' : 'bg-ink-raised'}`}>
             <IconComponent
-              className={`w-5 h-5 ${isActive ? 'text-accent-primary' : 'text-txt-secondary'}`}
+              className={`w-5 h-5 ${isActive ? 'text-accent-copper' : 'text-ink-secondary'}`}
               weight="duotone"
             />
           </div>
           <div>
-            <h3 className="font-medium text-txt-primary text-sm">{widget.title}</h3>
+            <h3 className="font-medium text-ink-bright text-sm">{widget.title}</h3>
           </div>
         </div>
 
         {/* Active indicator */}
         {isActive && (
           <div className="flex-shrink-0">
-            <Check className="w-5 h-5 text-accent-primary" weight="bold" />
+            <Check className="w-5 h-5 text-accent-copper" weight="bold" />
           </div>
         )}
       </div>
 
       {/* Description */}
-      <p className="text-xs text-txt-secondary mb-3 line-clamp-2">{widget.description}</p>
+      <p className="text-xs text-ink-secondary mb-3 line-clamp-2">{widget.description}</p>
 
       {/* Size indicators */}
       <div className="flex items-center gap-1 mb-3">
-        <span className="text-xs text-txt-tertiary">Sizes:</span>
+        <span className="text-xs text-ink-tertiary">Sizes:</span>
         {sizeKeys.map((size) => {
           const sizeConfig = widget.sizes[size];
           if (!sizeConfig) return null;
@@ -236,7 +234,7 @@ function WidgetCard({ widget, isActive, onAdd, onRemove }: WidgetCardProps) {
           return (
             <div
               key={size}
-              className="px-1.5 py-0.5 rounded bg-surface-elevated text-xs text-txt-secondary"
+              className="px-1.5 py-0.5 rounded bg-ink-raised text-xs text-ink-secondary"
               title={`${sizeConfig.w}x${sizeConfig.h} cells`}
             >
               {size[0].toUpperCase()}
@@ -251,8 +249,8 @@ function WidgetCard({ widget, isActive, onAdd, onRemove }: WidgetCardProps) {
         aria-label={isActive ? 'Remove widget' : 'Add widget'}
         className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
           isActive
-            ? 'bg-surface-default border border-bdr-default text-txt-secondary hover:bg-surface-elevated hover:text-txt-primary'
-            : 'bg-accent-primary text-white hover:bg-accent-hover'
+            ? 'bg-ink-base border border-white/[0.06] text-ink-secondary hover:bg-ink-raised hover:text-ink-bright'
+            : 'bg-accent-copper text-white hover:bg-accent-copper/90'
         }`}
       >
         {isActive ? (

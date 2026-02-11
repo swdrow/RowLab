@@ -50,11 +50,11 @@ export function PRsAchievementsWidget(_props: WidgetProps) {
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-txt-primary flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-accent-primary" weight="fill" />
+        <h3 className="font-medium text-ink-bright flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-accent-copper" weight="fill" />
           PRs & Achievements
         </h3>
-        <Link to="/app/achievements" className="text-sm text-accent-primary hover:underline">
+        <Link to="/app/achievements" className="text-sm text-accent-copper hover:underline">
           View all
         </Link>
       </div>
@@ -64,11 +64,11 @@ export function PRsAchievementsWidget(_props: WidgetProps) {
         {isLoading ? (
           <div className="space-y-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-12 bg-surface-default rounded-lg animate-pulse" />
+              <div key={i} className="h-12 bg-ink-base rounded-lg animate-pulse" />
             ))}
           </div>
         ) : recentPRs.length === 0 && recentlyUnlocked.length === 0 ? (
-          <div className="text-center py-8 text-txt-muted">
+          <div className="text-center py-8 text-ink-muted">
             <Trophy className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>No PRs or achievements yet</p>
           </div>
@@ -77,27 +77,27 @@ export function PRsAchievementsWidget(_props: WidgetProps) {
             {/* PRs Section */}
             {recentPRs.length > 0 && (
               <div>
-                <h4 className="text-xs font-medium text-txt-muted uppercase tracking-wide mb-2">
+                <h4 className="text-xs font-medium text-ink-muted uppercase tracking-wide mb-2">
                   Recent PRs
                 </h4>
                 <div className="space-y-2">
                   {recentPRs.map((pr) => (
                     <div
                       key={pr.id}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-surface-default
-                        border border-bdr-default"
+                      className="flex items-center justify-between p-2.5 rounded-lg bg-ink-base
+                        border border-white/[0.06]"
                     >
                       <div className="flex items-center gap-3">
                         <Medal className="w-4 h-4 text-amber-400" weight="fill" />
                         <div>
-                          <div className="text-sm font-medium text-txt-primary">{pr.testType}</div>
-                          <div className="text-xs text-txt-muted">
+                          <div className="text-sm font-medium text-ink-bright">{pr.testType}</div>
+                          <div className="text-xs text-ink-muted">
                             {formatRelativeDate(pr.achievedAt)}
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-mono font-semibold text-txt-primary">
+                        <div className="text-sm font-mono font-semibold text-ink-bright">
                           {formatSecondsToTime(pr.result)}
                         </div>
                         {pr.improvement && pr.improvement > 0 && (
@@ -115,18 +115,18 @@ export function PRsAchievementsWidget(_props: WidgetProps) {
             {/* Achievements Section */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-xs font-medium text-txt-muted uppercase tracking-wide">
+                <h4 className="text-xs font-medium text-ink-muted uppercase tracking-wide">
                   Achievements
                 </h4>
-                <span className="text-xs text-txt-muted">
+                <span className="text-xs text-ink-muted">
                   {unlockedCount} / {totalCount}
                 </span>
               </div>
 
               {/* Progress bar */}
-              <div className="h-1.5 bg-surface-default rounded-full mb-3 overflow-hidden">
+              <div className="h-1.5 bg-ink-base rounded-full mb-3 overflow-hidden">
                 <div
-                  className="h-full bg-accent-primary rounded-full transition-all duration-500"
+                  className="h-full bg-accent-copper rounded-full transition-all duration-500"
                   style={{
                     width: totalCount > 0 ? `${(unlockedCount / totalCount) * 100}%` : '0%',
                   }}
@@ -138,12 +138,12 @@ export function PRsAchievementsWidget(_props: WidgetProps) {
                   {recentlyUnlocked.map((achievement) => (
                     <div
                       key={achievement.id}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-surface-default
-                        border border-bdr-default group"
+                      className="flex items-center justify-between p-2.5 rounded-lg bg-ink-base
+                        border border-white/[0.06] group"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <Trophy className="w-4 h-4 text-amber-400 shrink-0" weight="fill" />
-                        <span className="text-sm font-medium text-txt-primary truncate">
+                        <span className="text-sm font-medium text-ink-bright truncate">
                           {achievement.name}
                         </span>
                       </div>
@@ -156,7 +156,7 @@ export function PRsAchievementsWidget(_props: WidgetProps) {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-txt-muted text-center py-2">
+                <p className="text-xs text-ink-muted text-center py-2">
                   No achievements unlocked yet
                 </p>
               )}
@@ -165,7 +165,7 @@ export function PRsAchievementsWidget(_props: WidgetProps) {
             {/* Link to achievements page */}
             <Link
               to="/app/achievements"
-              className="flex items-center justify-center gap-1 text-sm text-accent-primary hover:underline pt-1"
+              className="flex items-center justify-center gap-1 text-sm text-accent-copper hover:underline pt-1"
             >
               See all achievements
               <CaretRight className="w-3 h-3" />

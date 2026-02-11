@@ -21,11 +21,11 @@ export function ErgLeaderboardWidget(_props: WidgetProps) {
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-txt-primary flex items-center gap-2">
-          <ChartBar className="w-5 h-5 text-accent-primary" />
+        <h3 className="font-medium text-ink-bright flex items-center gap-2">
+          <ChartBar className="w-5 h-5 text-accent-copper" />
           Erg Leaderboard
         </h3>
-        <Link to="/app/erg-tests" className="text-sm text-accent-primary hover:underline">
+        <Link to="/app/erg-tests" className="text-sm text-accent-copper hover:underline">
           View all
         </Link>
       </div>
@@ -35,11 +35,11 @@ export function ErgLeaderboardWidget(_props: WidgetProps) {
         {isLoading ? (
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-10 bg-surface-default rounded-lg animate-pulse" />
+              <div key={i} className="h-10 bg-ink-base rounded-lg animate-pulse" />
             ))}
           </div>
         ) : leaderboard.length === 0 ? (
-          <div className="text-center py-8 text-txt-muted">
+          <div className="text-center py-8 text-ink-muted">
             <ChartBar className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>No erg test data yet</p>
           </div>
@@ -58,29 +58,29 @@ export function ErgLeaderboardWidget(_props: WidgetProps) {
                   className={`flex items-center gap-3 p-2.5 rounded-lg transition-colors
                     ${
                       isFirst
-                        ? 'bg-accent-primary/5 border border-accent-primary/20'
-                        : 'bg-surface-default border border-bdr-default'
+                        ? 'bg-accent-copper/5 border border-accent-primary/20'
+                        : 'bg-ink-base border border-white/[0.06]'
                     }`}
                 >
                   <span
                     className={`w-7 h-7 flex items-center justify-center rounded-full text-sm shrink-0
                       ${
                         isFirst
-                          ? 'bg-accent-primary/15 text-accent-primary font-bold'
-                          : 'bg-surface-default text-txt-muted font-medium'
+                          ? 'bg-accent-copper/15 text-accent-copper font-bold'
+                          : 'bg-ink-base text-ink-muted font-medium'
                       }`}
                   >
                     {isFirst ? <Trophy className="w-4 h-4" weight="fill" /> : rank}
                   </span>
                   <div className="flex-1 min-w-0">
                     <span
-                      className={`text-sm truncate block ${isFirst ? 'font-semibold text-txt-primary' : 'text-txt-secondary'}`}
+                      className={`text-sm truncate block ${isFirst ? 'font-semibold text-ink-bright' : 'text-ink-secondary'}`}
                     >
                       {athleteName}
                     </span>
                   </div>
                   <span
-                    className={`text-sm tabular-nums shrink-0 ${isFirst ? 'font-semibold text-accent-primary' : 'text-txt-muted'}`}
+                    className={`text-sm tabular-nums shrink-0 ${isFirst ? 'font-semibold text-accent-copper' : 'text-ink-muted'}`}
                   >
                     {formatErgTime(entry.timeSeconds)}
                   </span>

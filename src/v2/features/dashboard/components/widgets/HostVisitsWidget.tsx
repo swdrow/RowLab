@@ -45,11 +45,11 @@ export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps
   if (isLoading) {
     return (
       <div
-        className={`bg-surface-elevated rounded-xl border border-bdr-default p-4 ${className || ''}`}
+        className={`bg-ink-raised rounded-xl border border-white/[0.06] p-4 ${className || ''}`}
       >
         <div className="animate-pulse space-y-3">
-          <div className="h-6 w-48 bg-surface-default rounded" />
-          <div className="h-16 bg-surface-default rounded" />
+          <div className="h-6 w-48 bg-ink-base rounded" />
+          <div className="h-16 bg-ink-base rounded" />
         </div>
       </div>
     );
@@ -59,11 +59,11 @@ export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`bg-surface-elevated rounded-xl border border-bdr-default p-4 ${className || ''}`}
+      className={`bg-ink-raised rounded-xl border border-white/[0.06] p-4 ${className || ''}`}
     >
       <div className="flex items-center gap-2 mb-4">
         <Users className="w-5 h-5 text-violet-500" />
-        <h3 className="font-semibold text-txt-primary">Your Upcoming Hosting Duties</h3>
+        <h3 className="font-semibold text-ink-bright">Your Upcoming Hosting Duties</h3>
       </div>
 
       <div className="space-y-3">
@@ -71,12 +71,12 @@ export function HostVisitsWidget({ athleteId, className }: HostVisitsWidgetProps
           <Link
             key={visit.id}
             to={`/app/recruiting?visit=${visit.id}`}
-            className="block p-3 bg-surface-default rounded-lg border border-bdr-default hover:border-violet-500/50 transition"
+            className="block p-3 bg-ink-base rounded-lg border border-white/[0.06] hover:border-violet-500/50 transition"
           >
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-txt-primary truncate">{visit.recruitName}</p>
-                <div className="flex items-center gap-2 text-sm text-txt-secondary mt-1">
+                <p className="font-medium text-ink-bright truncate">{visit.recruitName}</p>
+                <div className="flex items-center gap-2 text-sm text-ink-secondary mt-1">
                   <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>{new Date(visit.date).toLocaleDateString()}</span>
                   <Clock className="w-3.5 h-3.5 ml-2 flex-shrink-0" />

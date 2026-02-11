@@ -37,12 +37,12 @@ export function AthleteDashboard() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="h-screen bg-surface-base p-6">
+      <div className="h-screen bg-void p-6">
         <div className="max-w-7xl mx-auto">
-          <div className="h-12 w-48 bg-surface-default rounded animate-pulse mb-6" />
+          <div className="h-12 w-48 bg-ink-base rounded animate-pulse mb-6" />
           <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-6 h-64 bg-surface-default rounded-lg animate-pulse" />
-            <div className="col-span-6 h-64 bg-surface-default rounded-lg animate-pulse" />
+            <div className="col-span-6 h-64 bg-ink-base rounded-lg animate-pulse" />
+            <div className="col-span-6 h-64 bg-ink-base rounded-lg animate-pulse" />
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@ export function AthleteDashboard() {
   // Empty state for brand new athletes
   if (!hasAnyData) {
     return (
-      <div className="h-screen bg-surface-base flex items-center justify-center p-6">
+      <div className="h-screen bg-void flex items-center justify-center p-6">
         <EmptyDashboardState />
       </div>
     );
@@ -85,7 +85,7 @@ export function AthleteDashboard() {
             className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
               isEditing
                 ? 'bg-accent-copper/10 border-accent-copper/20 text-accent-copper'
-                : 'border-white/[0.08] text-ink-secondary hover:text-ink-primary hover:border-white/[0.12]'
+                : 'border-white/[0.08] text-ink-secondary hover:text-ink-bright hover:border-white/[0.12]'
             }`}
           >
             {isEditing ? (
@@ -106,7 +106,7 @@ export function AthleteDashboard() {
         {teamCount === 0 ? (
           // No teams: Personal stats only
           <div className="space-y-6">
-            <div className="bg-surface-elevated border border-ink-border rounded-xl p-6">
+            <div className="bg-ink-raised border border-white/[0.06] p-6">
               <PersonalStatsWidget
                 widgetId="personal-stats"
                 size="expanded"
@@ -115,8 +115,8 @@ export function AthleteDashboard() {
             </div>
 
             {/* Join team message */}
-            <div className="bg-surface-default border border-ink-border rounded-lg p-6 text-center">
-              <p className="text-txt-muted">
+            <div className="bg-ink-base border border-white/[0.06] rounded-lg p-6 text-center">
+              <p className="text-ink-muted">
                 Join a team to see team-specific data and compete with your teammates
               </p>
             </div>
@@ -130,8 +130,8 @@ export function AthleteDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={SPRING_CONFIG}
-                className={`bg-surface-elevated border border-ink-border rounded-xl p-6 ${
-                  isEditing ? 'ring-2 ring-accent-primary/20 animate-pulse-slow' : ''
+                className={`bg-ink-raised border border-white/[0.06] p-6 ${
+                  isEditing ? 'ring-2 ring-accent-copper/20 animate-pulse-slow' : ''
                 }`}
               >
                 <PersonalStatsWidget
@@ -148,7 +148,7 @@ export function AthleteDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ ...SPRING_CONFIG, delay: 0.1 }}
-                className={`${isEditing ? 'ring-2 ring-accent-primary/20 animate-pulse-slow' : ''}`}
+                className={`${isEditing ? 'ring-2 ring-accent-copper/20 animate-pulse-slow' : ''}`}
               >
                 <TeamContextCard
                   teamName={teams[0].teamName}
@@ -170,8 +170,8 @@ export function AthleteDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={SPRING_CONFIG}
-              className={`bg-surface-elevated border border-ink-border rounded-xl p-6 ${
-                isEditing ? 'ring-2 ring-accent-primary/20 animate-pulse-slow' : ''
+              className={`bg-ink-raised border border-white/[0.06] p-6 ${
+                isEditing ? 'ring-2 ring-accent-copper/20 animate-pulse-slow' : ''
               }`}
             >
               <PersonalStatsWidget widgetId="personal-stats" size="normal" isEditing={isEditing} />
@@ -186,7 +186,7 @@ export function AthleteDashboard() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ ...SPRING_CONFIG, delay: 0.1 + index * 0.05 }}
                   className={`${
-                    isEditing ? 'ring-2 ring-accent-primary/20 animate-pulse-slow' : ''
+                    isEditing ? 'ring-2 ring-accent-copper/20 animate-pulse-slow' : ''
                   }`}
                 >
                   <TeamContextCard
@@ -210,9 +210,9 @@ export function AthleteDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg
-              bg-surface-elevated border border-ink-border shadow-xl"
+              bg-ink-raised border border-white/[0.06] shadow-xl"
           >
-            <p className="text-sm text-txt-secondary">
+            <p className="text-sm text-ink-secondary">
               Customize your dashboard. Click "Done Editing" to save.
             </p>
           </motion.div>

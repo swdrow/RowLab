@@ -79,7 +79,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
 
   // Sparkline color based on trend direction
   const sparklineColor = useMemo(() => {
-    if (!trend) return 'var(--color-text-tertiary)';
+    if (!trend) return 'var(--color-ink-tertiary)';
     switch (trend.direction) {
       case 'up':
         return 'var(--color-status-success)';
@@ -87,7 +87,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         return 'var(--color-status-error)';
       case 'flat':
       default:
-        return 'var(--color-text-tertiary)';
+        return 'var(--color-ink-tertiary)';
     }
   }, [trend]);
 
@@ -95,7 +95,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     <div
       onClick={onClick}
       className={`h-full flex flex-col justify-between p-4 glass-card transition-all ${
-        onClick ? 'cursor-pointer hover:border-[var(--color-interactive-primary)]' : ''
+        onClick ? 'cursor-pointer hover:border-[var(--color-accent-copper)]' : ''
       }`}
     >
       {/* Header */}
@@ -105,7 +105,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
           {severity && severity !== 'ok' && severityColor && (
             <div className={`w-2 h-2 rounded-full ${severityColor.bg} flex-shrink-0`} />
           )}
-          <h3 className="text-sm font-medium text-[var(--color-text-secondary)]">{title}</h3>
+          <h3 className="text-sm font-medium text-[var(--color-ink-secondary)]">{title}</h3>
         </div>
       </div>
 
@@ -113,16 +113,16 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       <div className="mb-2">
         <div className="flex items-baseline gap-1">
           <span
-            className="text-3xl font-semibold text-[var(--color-text-primary)]"
+            className="text-3xl font-semibold text-[var(--color-ink-bright)]"
             style={{ fontVariantNumeric: 'tabular-nums' }}
           >
             {value}
           </span>
           {unit && (
-            <span className="text-lg font-medium text-[var(--color-text-secondary)]">{unit}</span>
+            <span className="text-lg font-medium text-[var(--color-ink-secondary)]">{unit}</span>
           )}
         </div>
-        {subtitle && <p className="text-xs text-[var(--color-text-tertiary)] mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-[var(--color-ink-tertiary)] mt-1">{subtitle}</p>}
       </div>
 
       {/* Sparkline (hidden on compact size) */}
@@ -138,7 +138,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
               strokeLinejoin="round"
             />
           </svg>
-          <span className="text-xs text-[var(--color-text-tertiary)]">Last 7 days</span>
+          <span className="text-xs text-[var(--color-ink-tertiary)]">Last 7 days</span>
         </div>
       )}
     </div>

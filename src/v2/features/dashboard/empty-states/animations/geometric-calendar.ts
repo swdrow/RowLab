@@ -12,13 +12,13 @@ export const geometricCalendar: GeometricAnimationConfig = {
   shapes: [
     {
       type: 'circle',
-      color: 'var(--color-interactive-primary)',
+      color: 'var(--color-accent-copper)',
       size: 8,
       delay: 0,
     },
     {
       type: 'circle',
-      color: 'var(--color-interactive-primary)',
+      color: 'var(--color-accent-copper)',
       size: 8,
       delay: 0.1,
     },
@@ -30,19 +30,19 @@ export const geometricCalendar: GeometricAnimationConfig = {
     },
     {
       type: 'circle',
-      color: 'var(--color-text-tertiary)',
+      color: 'var(--color-ink-tertiary)',
       size: 8,
       delay: 0.3,
     },
     {
       type: 'circle',
-      color: 'var(--color-text-tertiary)',
+      color: 'var(--color-ink-tertiary)',
       size: 8,
       delay: 0.4,
     },
     {
       type: 'circle',
-      color: 'var(--color-text-tertiary)',
+      color: 'var(--color-ink-tertiary)',
       size: 8,
       delay: 0.5,
     },

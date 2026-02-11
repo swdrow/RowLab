@@ -12,7 +12,7 @@ export const geometricRocket: GeometricAnimationConfig = {
   shapes: [
     {
       type: 'rect',
-      color: 'var(--color-interactive-primary)',
+      color: 'var(--color-accent-copper)',
       size: 48,
       delay: 0,
     },
@@ -30,7 +30,7 @@ export const geometricRocket: GeometricAnimationConfig = {
     },
     {
       type: 'circle',
-      color: 'var(--color-text-tertiary)',
+      color: 'var(--color-ink-tertiary)',
       size: 8,
       delay: 0.3,
     },

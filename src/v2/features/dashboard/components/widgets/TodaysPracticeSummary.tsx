@@ -80,8 +80,8 @@ export const TodaysPracticeSummary: React.FC<TodaysPracticeSummaryProps> = ({
     return (
       <div className="h-full flex items-center justify-center">
         <div className="flex flex-col items-center gap-3" role="status" aria-label="Loading">
-          <div className="w-8 h-8 border-2 border-[var(--color-interactive-primary)] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-[var(--color-text-secondary)]">Loading today's practice...</p>
+          <div className="w-8 h-8 border-2 border-[var(--color-accent-copper)] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-[var(--color-ink-secondary)]">Loading today's practice...</p>
         </div>
       </div>
     );
@@ -140,15 +140,15 @@ const UpcomingPracticeView: React.FC<PracticeViewProps> = ({ session, size, navi
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-2">
-          <CalendarCheck className="w-5 h-5 text-[var(--color-interactive-primary)]" />
-          <h3 className="text-sm font-medium text-[var(--color-text-secondary)] uppercase tracking-wide">
+          <CalendarCheck className="w-5 h-5 text-[var(--color-accent-copper)]" />
+          <h3 className="text-sm font-medium text-[var(--color-ink-secondary)] uppercase tracking-wide">
             Upcoming Practice
           </h3>
         </div>
-        <h2 className="text-xl font-semibold text-[var(--color-text-primary)] mb-1">
+        <h2 className="text-xl font-semibold text-[var(--color-ink-bright)] mb-1">
           {session.name}
         </h2>
-        <div className="flex items-center gap-4 text-sm text-[var(--color-text-secondary)]">
+        <div className="flex items-center gap-4 text-sm text-[var(--color-ink-secondary)]">
           {session.startTime && (
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
@@ -161,7 +161,7 @@ const UpcomingPracticeView: React.FC<PracticeViewProps> = ({ session, size, navi
           </div>
         </div>
         {!isCompact && session.notes && (
-          <p className="text-sm text-[var(--color-text-secondary)] mt-2 line-clamp-2">
+          <p className="text-sm text-[var(--color-ink-secondary)] mt-2 line-clamp-2">
             {session.notes}
           </p>
         )}
@@ -171,7 +171,7 @@ const UpcomingPracticeView: React.FC<PracticeViewProps> = ({ session, size, navi
       <div className={`flex ${isCompact ? 'flex-col' : 'flex-row'} gap-2 mt-4`}>
         <button
           onClick={() => navigate(`/app/training/sessions/${session.id}/live`)}
-          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--color-interactive-primary)] text-white rounded-lg hover:bg-[var(--color-interactive-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 font-medium"
+          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--color-accent-copper)] text-white rounded-lg hover:bg-[var(--color-accent-copper)/90] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)] focus-visible:ring-offset-2 font-medium"
         >
           <Play className="w-4 h-4" weight="fill" />
           Start Practice
@@ -179,7 +179,7 @@ const UpcomingPracticeView: React.FC<PracticeViewProps> = ({ session, size, navi
         {!isCompact && (
           <button
             onClick={() => navigate(`/app/training/sessions/${session.id}`)}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-[var(--color-border-default)] text-[var(--color-text-primary)] rounded-lg hover:bg-[var(--color-bg-surface-elevated)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-[var(--color-border-subtle)] text-[var(--color-ink-bright)] rounded-lg hover:bg-[var(--color-ink-raised)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)] focus-visible:ring-offset-2"
           >
             <Eye className="w-4 h-4" />
             View Details
@@ -208,10 +208,10 @@ const ActivePracticeView: React.FC<PracticeViewProps> = ({ session, size, naviga
             </span>
           </div>
         </div>
-        <h2 className="text-xl font-semibold text-[var(--color-text-primary)] mb-1">
+        <h2 className="text-xl font-semibold text-[var(--color-ink-bright)] mb-1">
           {session.name}
         </h2>
-        <div className="flex items-center gap-4 text-sm text-[var(--color-text-secondary)]">
+        <div className="flex items-center gap-4 text-sm text-[var(--color-ink-secondary)]">
           {session.startTime && (
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
@@ -250,15 +250,15 @@ const CompletedPracticeView: React.FC<PracticeViewProps> = ({ session, size, nav
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-2">
-          <CalendarCheck className="w-5 h-5 text-[var(--color-text-secondary)]" />
-          <h3 className="text-sm font-medium text-[var(--color-text-secondary)] uppercase tracking-wide">
+          <CalendarCheck className="w-5 h-5 text-[var(--color-ink-secondary)]" />
+          <h3 className="text-sm font-medium text-[var(--color-ink-secondary)] uppercase tracking-wide">
             Completed
           </h3>
         </div>
-        <h2 className="text-xl font-semibold text-[var(--color-text-primary)] mb-1">
+        <h2 className="text-xl font-semibold text-[var(--color-ink-bright)] mb-1">
           {session.name}
         </h2>
-        <div className="flex items-center gap-4 text-sm text-[var(--color-text-secondary)]">
+        <div className="flex items-center gap-4 text-sm text-[var(--color-ink-secondary)]">
           {session.pieces && session.pieces.length > 0 && (
             <span>{session.pieces.length} pieces completed</span>
           )}
@@ -269,7 +269,7 @@ const CompletedPracticeView: React.FC<PracticeViewProps> = ({ session, size, nav
       <div className="mt-4">
         <button
           onClick={() => navigate(`/app/training/sessions/${session.id}`)}
-          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--color-interactive-primary)] text-white rounded-lg hover:bg-[var(--color-interactive-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 font-medium"
+          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--color-accent-copper)] text-white rounded-lg hover:bg-[var(--color-accent-copper)/90] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)] focus-visible:ring-offset-2 font-medium"
         >
           <Eye className="w-4 h-4" />
           View Results

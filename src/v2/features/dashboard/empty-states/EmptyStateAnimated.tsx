@@ -64,10 +64,10 @@ export const EmptyStateAnimated: React.FC<EmptyStateAnimatedProps> = ({
       )}
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">{title}</h3>
+      <h3 className="text-lg font-semibold text-[var(--color-ink-bright)] mb-2">{title}</h3>
 
       {/* Description */}
-      <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-sm">{description}</p>
+      <p className="text-sm text-[var(--color-ink-secondary)] mb-6 max-w-sm">{description}</p>
 
       {/* Actions */}
       {(action || secondaryAction) && (
@@ -76,7 +76,7 @@ export const EmptyStateAnimated: React.FC<EmptyStateAnimatedProps> = ({
             <button
               type="button"
               onClick={() => handleActionClick(action)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-interactive-primary)] text-white rounded-lg hover:bg-[var(--color-interactive-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-accent-copper)] text-white rounded-lg hover:bg-[var(--color-accent-copper)/90] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-void)]"
             >
               {action.icon && <action.icon className="w-4 h-4" />}
               {action.label}
@@ -86,7 +86,7 @@ export const EmptyStateAnimated: React.FC<EmptyStateAnimatedProps> = ({
             <button
               type="button"
               onClick={() => handleActionClick(secondaryAction)}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--color-border-default)] text-[var(--color-text-primary)] rounded-lg hover:bg-[var(--color-bg-surface-elevated)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
+              className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--color-border-subtle)] text-[var(--color-ink-bright)] rounded-lg hover:bg-[var(--color-ink-raised)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-void)]"
             >
               {secondaryAction.icon && <secondaryAction.icon className="w-4 h-4" />}
               {secondaryAction.label}

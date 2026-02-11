@@ -45,8 +45,8 @@ export function NextWorkoutWidget(_props: WidgetProps) {
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-txt-primary flex items-center gap-2">
-          <Clock className="w-5 h-5 text-accent-primary" />
+        <h3 className="font-medium text-ink-bright flex items-center gap-2">
+          <Clock className="w-5 h-5 text-accent-copper" />
           Next Workout
         </h3>
       </div>
@@ -55,13 +55,13 @@ export function NextWorkoutWidget(_props: WidgetProps) {
       <div className="flex-1 overflow-auto">
         {isLoading ? (
           <div className="space-y-3">
-            <div className="h-8 w-3/4 bg-surface-default rounded-lg animate-pulse" />
-            <div className="h-6 w-1/3 bg-surface-default rounded-lg animate-pulse" />
-            <div className="h-5 w-1/2 bg-surface-default rounded-lg animate-pulse" />
-            <div className="h-10 w-full bg-surface-default rounded-lg animate-pulse mt-4" />
+            <div className="h-8 w-3/4 bg-ink-base rounded-lg animate-pulse" />
+            <div className="h-6 w-1/3 bg-ink-base rounded-lg animate-pulse" />
+            <div className="h-5 w-1/2 bg-ink-base rounded-lg animate-pulse" />
+            <div className="h-10 w-full bg-ink-base rounded-lg animate-pulse mt-4" />
           </div>
         ) : !nextSession ? (
-          <div className="text-center py-8 text-txt-muted">
+          <div className="text-center py-8 text-ink-muted">
             <Barbell className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>No upcoming sessions scheduled</p>
           </div>
@@ -74,11 +74,11 @@ export function NextWorkoutWidget(_props: WidgetProps) {
               >
                 {nextSession.type.replace('_', ' ')}
               </span>
-              <h4 className="text-lg font-semibold text-txt-primary">{nextSession.name}</h4>
+              <h4 className="text-lg font-semibold text-ink-bright">{nextSession.name}</h4>
             </div>
 
             {/* Date and time */}
-            <div className="flex items-center gap-4 text-sm text-txt-muted">
+            <div className="flex items-center gap-4 text-sm text-ink-muted">
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-4 h-4" />
                 {formatSessionDate(nextSession.date)}
@@ -93,15 +93,15 @@ export function NextWorkoutWidget(_props: WidgetProps) {
 
             {/* Description preview */}
             {nextSession.notes && (
-              <p className="text-sm text-txt-muted line-clamp-2">{nextSession.notes}</p>
+              <p className="text-sm text-ink-muted line-clamp-2">{nextSession.notes}</p>
             )}
 
             {/* View details link */}
             <Link
               to={`/app/training/sessions/${nextSession.id}`}
               className="flex items-center justify-center gap-1.5 mt-auto px-4 py-2.5 rounded-lg
-                bg-surface-default border border-bdr-default hover:border-bdr-focus
-                text-sm font-medium text-accent-primary transition-colors group"
+                bg-ink-base border border-white/[0.06] hover:border-white/[0.12]
+                text-sm font-medium text-accent-copper transition-colors group"
             >
               View details
               <CaretRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

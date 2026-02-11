@@ -50,7 +50,7 @@ export function TeamContextCard({
   const hasData = nextWorkout || ranking || attendanceRate;
 
   return (
-    <div className="h-full bg-surface-default border border-bdr-default rounded-lg p-4 flex flex-col">
+    <div className="h-full bg-ink-base border border-white/[0.06] rounded-lg p-4 flex flex-col">
       {/* Team badge header */}
       <div className="mb-4">
         <Link
@@ -65,18 +65,18 @@ export function TeamContextCard({
       {/* Content */}
       {!hasData ? (
         <div className="flex-1 flex items-center justify-center text-center">
-          <p className="text-sm text-txt-muted">No data yet for {teamName}</p>
+          <p className="text-sm text-ink-muted">No data yet for {teamName}</p>
         </div>
       ) : (
         <div className="space-y-3 flex-1">
           {/* Next workout */}
           {nextWorkout && (
             <div className="flex items-start gap-3">
-              <Calendar className="w-5 h-5 text-accent-primary flex-shrink-0 mt-0.5" />
+              <Calendar className="w-5 h-5 text-accent-copper flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs text-txt-muted uppercase tracking-wide mb-1">Next workout</p>
-                <p className="font-medium text-txt-primary">{nextWorkout.name}</p>
-                <p className="text-sm text-txt-muted">
+                <p className="text-xs text-ink-muted uppercase tracking-wide mb-1">Next workout</p>
+                <p className="font-medium text-ink-bright">{nextWorkout.name}</p>
+                <p className="text-sm text-ink-muted">
                   {new Date(nextWorkout.date).toLocaleDateString()} · {nextWorkout.type}
                 </p>
               </div>
@@ -88,8 +88,8 @@ export function TeamContextCard({
             <div className="flex items-start gap-3">
               <TrendUp className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs text-txt-muted uppercase tracking-wide mb-1">Ranking</p>
-                <p className="font-mono font-bold text-txt-primary">#{ranking} on team</p>
+                <p className="text-xs text-ink-muted uppercase tracking-wide mb-1">Ranking</p>
+                <p className="font-mono font-bold text-ink-bright">#{ranking} on team</p>
               </div>
             </div>
           )}
@@ -99,11 +99,11 @@ export function TeamContextCard({
             <div className="flex items-start gap-3">
               <UserCheck className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs text-txt-muted uppercase tracking-wide mb-1">Attendance</p>
-                <p className="font-mono font-bold text-txt-primary">
+                <p className="text-xs text-ink-muted uppercase tracking-wide mb-1">Attendance</p>
+                <p className="font-mono font-bold text-ink-bright">
                   {Math.round(attendanceRate * 100)}%
                 </p>
-                <p className="text-xs text-txt-muted">Last 30 days</p>
+                <p className="text-xs text-ink-muted">Last 30 days</p>
               </div>
             </div>
           )}

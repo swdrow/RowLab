@@ -45,11 +45,11 @@ export function AttendanceSummaryWidget(_props: import('../../types').WidgetProp
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-txt-primary flex items-center gap-2">
-          <Users className="w-5 h-5 text-accent-primary" />
+        <h3 className="font-medium text-ink-bright flex items-center gap-2">
+          <Users className="w-5 h-5 text-accent-copper" />
           Today's Attendance
         </h3>
-        <Link to="/app/athletes" className="text-sm text-accent-primary hover:underline">
+        <Link to="/app/athletes" className="text-sm text-accent-copper hover:underline">
           View roster
         </Link>
       </div>
@@ -65,21 +65,21 @@ export function AttendanceSummaryWidget(_props: import('../../types').WidgetProp
           <div className="bg-green-500/10 rounded-lg p-4 flex flex-col items-center justify-center">
             <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
             <div className="text-2xl font-bold text-green-500">{aggregated.presentToday}</div>
-            <div className="text-xs text-txt-muted">Present</div>
+            <div className="text-xs text-ink-muted">Present</div>
           </div>
 
           {/* Absent */}
           <div className="bg-red-500/10 rounded-lg p-4 flex flex-col items-center justify-center">
             <XCircle className="w-8 h-8 text-red-500 mb-2" />
             <div className="text-2xl font-bold text-red-500">{aggregated.absentToday}</div>
-            <div className="text-xs text-txt-muted">Absent</div>
+            <div className="text-xs text-ink-muted">Absent</div>
           </div>
 
           {/* Rate */}
-          <div className="col-span-2 bg-surface-default rounded-lg p-4 flex items-center justify-between">
+          <div className="col-span-2 bg-ink-base rounded-lg p-4 flex items-center justify-between">
             <div>
-              <div className="text-sm text-txt-muted">Attendance Rate</div>
-              <div className="text-xl font-bold text-txt-primary">
+              <div className="text-sm text-ink-muted">Attendance Rate</div>
+              <div className="text-xl font-bold text-ink-bright">
                 {aggregated.attendanceRate > 0
                   ? `${Math.round(aggregated.attendanceRate)}%`
                   : 'N/A'}
@@ -104,7 +104,7 @@ export function AttendanceSummaryWidget(_props: import('../../types').WidgetProp
                   stroke="currentColor"
                   strokeWidth="3"
                   strokeDasharray={`${aggregated.attendanceRate * 1.005} 100`}
-                  className="text-accent-primary"
+                  className="text-accent-copper"
                 />
               </svg>
             </div>

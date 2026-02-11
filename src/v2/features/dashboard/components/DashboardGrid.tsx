@@ -170,11 +170,11 @@ export function DashboardGrid({ role, children }: DashboardGridProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={SPRING_CONFIG}
-            className="flex items-center gap-3 p-4 bg-surface-elevated border border-bdr-default rounded-lg"
+            className="flex items-center gap-3 p-4 bg-ink-raised border border-white/[0.06]"
           >
             <button
               onClick={() => setCatalogOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-hover transition-colors font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-accent-copper text-white rounded-lg hover:bg-accent-copper/90 transition-colors font-medium"
             >
               <Plus className="w-4 h-4" />
               Add Widget
@@ -182,7 +182,7 @@ export function DashboardGrid({ role, children }: DashboardGridProps) {
 
             <button
               onClick={resetLayout}
-              className="flex items-center gap-2 px-4 py-2 border border-bdr-default text-txt-secondary hover:text-txt-primary hover:border-bdr-focus rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-white/[0.06] text-ink-secondary hover:text-ink-bright hover:border-white/[0.12] rounded-lg transition-colors"
             >
               <ArrowCounterClockwise className="w-4 h-4" />
               Reset Layout
@@ -192,7 +192,7 @@ export function DashboardGrid({ role, children }: DashboardGridProps) {
 
             <button
               onClick={() => setIsEditing(false)}
-              className="px-4 py-2 bg-accent-primary text-white rounded-lg hover:bg-accent-hover transition-colors font-medium"
+              className="px-4 py-2 bg-accent-copper text-white rounded-lg hover:bg-accent-copper/90 transition-colors font-medium"
             >
               Done
             </button>
@@ -205,7 +205,7 @@ export function DashboardGrid({ role, children }: DashboardGridProps) {
         <div className="flex justify-end">
           <button
             onClick={() => setIsEditing(true)}
-            className="px-4 py-2 border border-bdr-default text-txt-secondary hover:text-txt-primary hover:border-bdr-focus rounded-lg transition-colors text-sm"
+            className="px-4 py-2 border border-white/[0.06] text-ink-secondary hover:text-ink-bright hover:border-white/[0.12] transition-colors text-sm"
           >
             Edit Layout
           </button>
@@ -246,11 +246,11 @@ export function DashboardGrid({ role, children }: DashboardGridProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-surface-elevated border border-bdr-default rounded-lg shadow-xl"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-ink-raised border border-white/[0.06] shadow-xl"
           >
-            <p className="text-sm text-txt-secondary">
-              <strong className="text-txt-primary">Drag</strong> widgets to rearrange.{' '}
-              <strong className="text-txt-primary">Click size</strong> to resize.
+            <p className="text-sm text-ink-secondary">
+              <strong className="text-ink-bright">Drag</strong> widgets to rearrange.{' '}
+              <strong className="text-ink-bright">Click size</strong> to resize.
             </p>
           </motion.div>
         )}
@@ -286,8 +286,8 @@ function WidgetCard({ widget, role, isEditing, onSizeChange, onRemove }: WidgetC
 
   if (!config) {
     return (
-      <div className="h-full bg-surface-elevated border border-bdr-default rounded-xl p-4 flex items-center justify-center">
-        <p className="text-sm text-txt-secondary">Widget not found: {widget.widgetType}</p>
+      <div className="h-full bg-ink-raised border border-white/[0.06] rounded-xl p-4 flex items-center justify-center">
+        <p className="text-sm text-ink-secondary">Widget not found: {widget.widgetType}</p>
       </div>
     );
   }
@@ -295,16 +295,16 @@ function WidgetCard({ widget, role, isEditing, onSizeChange, onRemove }: WidgetC
   const WidgetComponent = config.component;
 
   return (
-    <div className="h-full bg-surface-elevated border border-bdr-default rounded-xl overflow-hidden transition-all hover:border-bdr-focus">
+    <div className="h-full bg-ink-raised border border-white/[0.06] overflow-hidden transition-all hover:border-white/[0.12]">
       {/* Edit mode header */}
       {isEditing && (
-        <div className="flex items-center justify-between px-3 py-2 bg-surface-default border-b border-bdr-default">
+        <div className="flex items-center justify-between px-3 py-2 bg-ink-base border-b border-white/[0.06]">
           {/* Drag handle */}
           <div className="flex items-center gap-2">
             <div className="widget-drag-handle cursor-grab active:cursor-grabbing">
-              <DotsSixVertical className="w-5 h-5 text-txt-tertiary" />
+              <DotsSixVertical className="w-5 h-5 text-ink-tertiary" />
             </div>
-            <span className="text-sm font-medium text-txt-primary">{config.title}</span>
+            <span className="text-sm font-medium text-ink-bright">{config.title}</span>
           </div>
 
           {/* Size selector + Remove button */}

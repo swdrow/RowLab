@@ -89,7 +89,7 @@ export const ExceptionBanner: React.FC<ExceptionBannerProps> = ({ summary }) => 
           {/* Expand toggle */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)]"
+            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[var(--color-ink-secondary)] hover:text-[var(--color-ink-bright)] hover:bg-[var(--color-ink-raised)] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)]"
           >
             {isExpanded ? 'Hide details' : 'View details'}
             {isExpanded ? <CaretUp className="w-4 h-4" /> : <CaretDown className="w-4 h-4" />}
@@ -106,7 +106,7 @@ export const ExceptionBanner: React.FC<ExceptionBannerProps> = ({ summary }) => 
               transition={SPRING_GENTLE}
               className="overflow-hidden"
             >
-              <div className="px-4 pb-4 border-t border-[var(--color-border-default)]">
+              <div className="px-4 pb-4 border-t border-[rgba(255, 255, 255, 0.06)]">
                 {/* Critical items */}
                 {criticalItems.length > 0 && (
                   <div className="mt-3">
@@ -155,21 +155,21 @@ const ExceptionItemRow: React.FC<ExceptionItemRowProps> = ({ item, onClick }) =>
   const colors = getExceptionColor(item.severity);
 
   return (
-    <div className="flex items-start gap-3 p-2 rounded-lg hover:bg-[var(--color-bg-surface-elevated)] transition-colors">
+    <div className="flex items-start gap-3 p-2 rounded-lg hover:bg-[var(--color-ink-raised)] transition-colors">
       {/* Severity dot */}
       <div className={`w-2 h-2 rounded-full ${colors.bg} mt-1.5 flex-shrink-0`} />
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-[var(--color-text-primary)]">{item.title}</p>
-        <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">{item.description}</p>
+        <p className="text-sm font-medium text-[var(--color-ink-bright)]">{item.title}</p>
+        <p className="text-xs text-[var(--color-ink-secondary)] mt-0.5">{item.description}</p>
       </div>
 
       {/* Action button */}
       {item.actionLabel && item.actionPath && (
         <button
           onClick={() => onClick(item)}
-          className="flex items-center gap-1 text-xs font-medium text-[var(--color-interactive-primary)] hover:text-[var(--color-interactive-hover)] flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] rounded px-2 py-1"
+          className="flex items-center gap-1 text-xs font-medium text-[var(--color-accent-copper)] hover:text-[var(--color-interactive-hover)] flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)] rounded px-2 py-1"
         >
           {item.actionLabel}
           <ArrowRight className="w-3 h-3" />

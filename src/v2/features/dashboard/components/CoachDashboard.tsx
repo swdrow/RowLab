@@ -134,8 +134,8 @@ export const CoachDashboard: React.FC = () => {
     return (
       <div className="h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-[var(--color-interactive-primary)] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-[var(--color-text-secondary)]">Loading dashboard...</p>
+          <div className="w-8 h-8 border-2 border-[var(--color-accent-copper)] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-[var(--color-ink-secondary)]">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -167,7 +167,7 @@ export const CoachDashboard: React.FC = () => {
           className={`px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 ${
             isEditing
               ? 'bg-accent-copper text-ink-deep hover:bg-accent-copper/90'
-              : 'border border-white/[0.08] text-ink-primary hover:bg-white/[0.04]'
+              : 'border border-white/[0.08] text-ink-bright hover:bg-white/[0.04]'
           }`}
         >
           {isEditing ? 'Done' : 'Edit Layout'}
@@ -214,7 +214,7 @@ export const CoachDashboard: React.FC = () => {
           {[6, 3, 3, 4, 4, 4].map((span, i) => (
             <div
               key={i}
-              className={`col-span-${span} h-48 rounded-xl bg-[var(--color-bg-surface-elevated)] border border-ink-border animate-pulse`}
+              className={`col-span-${span} h-48 rounded-xl bg-[var(--color-ink-raised)] border border-white/[0.06] animate-pulse`}
             />
           ))}
         </div>
@@ -222,10 +222,10 @@ export const CoachDashboard: React.FC = () => {
 
       {/* Edit Mode Instructions */}
       {isEditing && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-[var(--color-bg-surface-elevated)] border border-ink-border rounded-lg shadow-lg">
-          <p className="text-sm text-[var(--color-text-secondary)]">
-            <strong className="text-[var(--color-text-primary)]">Drag</strong> widgets to rearrange.{' '}
-            <strong className="text-[var(--color-text-primary)]">Click size</strong> to resize.
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-[var(--color-ink-raised)] border border-white/[0.06] rounded-lg shadow-lg">
+          <p className="text-sm text-[var(--color-ink-secondary)]">
+            <strong className="text-[var(--color-ink-bright)]">Drag</strong> widgets to rearrange.{' '}
+            <strong className="text-[var(--color-ink-bright)]">Click size</strong> to resize.
           </p>
         </div>
       )}
@@ -266,7 +266,7 @@ const WidgetCard: React.FC<WidgetCardProps> = ({
   if (!config) {
     return (
       <div className="h-full glass-card p-4 flex items-center justify-center">
-        <p className="text-sm text-[var(--color-text-secondary)]">Widget not found</p>
+        <p className="text-sm text-[var(--color-ink-secondary)]">Widget not found</p>
       </div>
     );
   }
@@ -292,17 +292,17 @@ const WidgetCard: React.FC<WidgetCardProps> = ({
   return (
     <div
       data-tour={getTourAttribute()}
-      className="h-full relative glass-card bg-[var(--color-bg-surface-elevated)] border border-ink-border rounded-xl overflow-hidden transition-all hover:border-accent-copper/30"
+      className="h-full relative glass-card bg-[var(--color-ink-raised)] border border-white/[0.06] overflow-hidden transition-all hover:border-accent-copper/30"
     >
       {/* Edit Mode Header */}
       {isEditing && (
-        <div className="flex items-center justify-between px-3 py-2 bg-[var(--color-bg-base)] border-b border-ink-border">
+        <div className="flex items-center justify-between px-3 py-2 bg-[var(--color-void)] border-b border-white/[0.06]">
           {/* Drag Handle */}
           <div className="flex items-center gap-2">
             <div className="widget-drag-handle cursor-grab active:cursor-grabbing">
-              <DotsSixVertical className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+              <DotsSixVertical className="w-5 h-5 text-[var(--color-ink-tertiary)]" />
             </div>
-            <span className="text-sm font-medium text-[var(--color-text-primary)]">
+            <span className="text-sm font-medium text-[var(--color-ink-bright)]">
               {config.title}
             </span>
           </div>
@@ -315,8 +315,8 @@ const WidgetCard: React.FC<WidgetCardProps> = ({
                 onClick={() => onSizeChange(size)}
                 className={`px-2 py-1 text-xs rounded transition-colors ${
                   widget.size === size
-                    ? 'bg-[var(--color-interactive-primary)] text-white'
-                    : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-surface-elevated)]'
+                    ? 'bg-[var(--color-accent-copper)] text-white'
+                    : 'text-[var(--color-ink-secondary)] hover:bg-[var(--color-ink-raised)]'
                 }`}
               >
                 {size[0].toUpperCase()}

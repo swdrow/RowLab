@@ -26,11 +26,11 @@ export function UpcomingSessionsWidget(_props: import('../../types').WidgetProps
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-txt-primary flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-accent-primary" />
+        <h3 className="font-medium text-ink-bright flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-accent-copper" />
           Upcoming Sessions
         </h3>
-        <Link to="/app/training/sessions" className="text-sm text-accent-primary hover:underline">
+        <Link to="/app/training/sessions" className="text-sm text-accent-copper hover:underline">
           View all
         </Link>
       </div>
@@ -40,11 +40,11 @@ export function UpcomingSessionsWidget(_props: import('../../types').WidgetProps
         {isLoading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-16 bg-surface-default rounded-lg animate-pulse" />
+              <div key={i} className="h-16 bg-ink-base rounded-lg animate-pulse" />
             ))}
           </div>
         ) : upcomingSessions.length === 0 ? (
-          <div className="text-center py-8 text-txt-muted">
+          <div className="text-center py-8 text-ink-muted">
             <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>No upcoming sessions</p>
           </div>
@@ -54,8 +54,8 @@ export function UpcomingSessionsWidget(_props: import('../../types').WidgetProps
               <Link
                 key={session.id}
                 to={`/app/training/sessions/${session.id}`}
-                className="flex items-center justify-between p-3 rounded-lg bg-surface-default
-                  border border-bdr-default hover:border-bdr-focus transition-colors group"
+                className="flex items-center justify-between p-3 rounded-lg bg-ink-base
+                  border border-white/[0.06] hover:border-white/[0.12] transition-colors group"
               >
                 <div className="flex items-center gap-3">
                   <span
@@ -64,10 +64,10 @@ export function UpcomingSessionsWidget(_props: import('../../types').WidgetProps
                     {session.type}
                   </span>
                   <div>
-                    <div className="font-medium text-txt-primary text-sm group-hover:text-accent-primary">
+                    <div className="font-medium text-ink-bright text-sm group-hover:text-accent-copper">
                       {session.name}
                     </div>
-                    <div className="text-xs text-txt-muted flex items-center gap-2">
+                    <div className="text-xs text-ink-muted flex items-center gap-2">
                       <span>{new Date(session.date).toLocaleDateString()}</span>
                       {session.startTime && (
                         <>
@@ -81,7 +81,7 @@ export function UpcomingSessionsWidget(_props: import('../../types').WidgetProps
                     </div>
                   </div>
                 </div>
-                <CaretRight className="w-4 h-4 text-txt-muted group-hover:text-txt-secondary" />
+                <CaretRight className="w-4 h-4 text-ink-muted group-hover:text-ink-secondary" />
               </Link>
             ))}
           </div>

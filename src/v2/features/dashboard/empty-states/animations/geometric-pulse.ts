@@ -24,7 +24,7 @@ export const geometricPulse: GeometricAnimationConfig = {
     },
     {
       type: 'circle',
-      color: 'var(--color-text-tertiary)',
+      color: 'var(--color-ink-tertiary)',
       size: 80,
       delay: 0.2,
     },

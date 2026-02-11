@@ -36,14 +36,14 @@ export const TourLauncher: React.FC<TourLauncherProps> = ({
     return (
       <button
         onClick={startTour}
-        className={`w-full text-left px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)] transition-colors flex items-center justify-between gap-2 ${className}`}
+        className={`w-full text-left px-4 py-2 text-sm text-[var(--color-ink-bright)] hover:bg-[var(--color-ink-raised)] transition-colors flex items-center justify-between gap-2 ${className}`}
       >
         <div className="flex items-center gap-2">
-          <Question className="w-4 h-4 text-[var(--color-text-secondary)]" />
+          <Question className="w-4 h-4 text-[var(--color-ink-secondary)]" />
           <span>Show Dashboard Tour</span>
         </div>
         {!hasSeenTour && (
-          <span className="px-2 py-0.5 text-xs font-medium bg-[var(--color-interactive-primary)] text-white rounded">
+          <span className="px-2 py-0.5 text-xs font-medium bg-[var(--color-accent-copper)] text-white rounded">
             New!
           </span>
         )}
@@ -55,15 +55,15 @@ export const TourLauncher: React.FC<TourLauncherProps> = ({
   return (
     <button
       onClick={startTour}
-      className={`relative inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[var(--color-border-default)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)] hover:border-[var(--color-border-hover)] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] ${className}`}
+      className={`relative inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[rgba(255, 255, 255, 0.06)] text-[var(--color-ink-secondary)] hover:text-[var(--color-ink-bright)] hover:bg-[var(--color-ink-raised)] hover:border-[rgba(255, 255, 255, 0.12)] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-copper)] ${className}`}
       title="Show guided tour"
     >
       <Question className="w-5 h-5" />
       <span className="text-sm font-medium">Help</span>
       {!hasSeenTour && (
         <span className="absolute -top-1 -right-1 flex h-3 w-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-interactive-primary)] opacity-75" />
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--color-interactive-primary)]" />
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent-copper)] opacity-75" />
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--color-accent-copper)]" />
         </span>
       )}
     </button>

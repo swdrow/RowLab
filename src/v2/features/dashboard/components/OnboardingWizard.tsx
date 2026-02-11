@@ -50,22 +50,22 @@ const WelcomeStep: React.FC<{ onNext: () => void }> = ({ onNext }) => {
       />
 
       <div>
-        <h2 className="text-2xl font-semibold text-txt-primary mb-2">Welcome to RowLab</h2>
-        <p className="text-base text-txt-secondary max-w-md mx-auto">
+        <h2 className="text-2xl font-semibold text-ink-bright mb-2">Welcome to RowLab</h2>
+        <p className="text-base text-ink-secondary max-w-md mx-auto">
           Let's set up your team in a few quick steps. You can skip any step and come back later.
         </p>
       </div>
 
-      <div className="bg-surface-base/50 rounded-lg p-4 border border-bdr-muted max-w-sm mx-auto">
-        <p className="text-sm text-txt-secondary">
-          <span className="font-medium text-txt-primary">Current Season:</span>{' '}
+      <div className="bg-void/50 rounded-lg p-4 border border-white/[0.04] max-w-sm mx-auto">
+        <p className="text-sm text-ink-secondary">
+          <span className="font-medium text-ink-bright">Current Season:</span>{' '}
           {defaults.season.name} ({defaults.season.formatted})
         </p>
       </div>
 
       <button
         onClick={onNext}
-        className="px-6 py-2 bg-interactive-primary text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
+        className="px-6 py-2 bg-accent-copper text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
       >
         Let's Go <ArrowRight className="w-4 h-4" />
       </button>
@@ -96,14 +96,14 @@ const ImportAthletesStep: React.FC<{
       <div className="text-center space-y-6">
         <CheckCircle className="w-16 h-16 mx-auto text-status-success" />
         <div>
-          <h2 className="text-2xl font-semibold text-txt-primary mb-2">Athletes Added!</h2>
-          <p className="text-base text-txt-secondary">
+          <h2 className="text-2xl font-semibold text-ink-bright mb-2">Athletes Added!</h2>
+          <p className="text-base text-ink-secondary">
             You already have {athletesCount} athlete{athletesCount !== 1 ? 's' : ''} on your team.
           </p>
         </div>
         <button
           onClick={onNext}
-          className="px-6 py-2 bg-interactive-primary text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
+          className="px-6 py-2 bg-accent-copper text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
         >
           Continue <ArrowRight className="w-4 h-4" />
         </button>
@@ -114,8 +114,8 @@ const ImportAthletesStep: React.FC<{
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-semibold text-txt-primary mb-2">Add Your Athletes</h2>
-        <p className="text-base text-txt-secondary">
+        <h2 className="text-2xl font-semibold text-ink-bright mb-2">Add Your Athletes</h2>
+        <p className="text-base text-ink-secondary">
           Import your roster from CSV or add athletes manually to get started.
         </p>
       </div>
@@ -128,7 +128,7 @@ const ImportAthletesStep: React.FC<{
           className="glass-card p-6 text-left hover:border-interactive-primary transition-all group"
         >
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-interactive-primary/10 rounded-lg group-hover:bg-interactive-primary/20 transition-colors">
+            <div className="p-3 bg-accent-copper/10 rounded-lg group-hover:bg-accent-copper/20 transition-colors">
               <svg
                 className="w-6 h-6 text-interactive-primary"
                 fill="none"
@@ -144,8 +144,8 @@ const ImportAthletesStep: React.FC<{
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-txt-primary mb-1">Import CSV</h3>
-              <p className="text-sm text-txt-secondary">
+              <h3 className="font-semibold text-ink-bright mb-1">Import CSV</h3>
+              <p className="text-sm text-ink-secondary">
                 Upload a CSV file with your athlete roster
               </p>
             </div>
@@ -171,8 +171,8 @@ const ImportAthletesStep: React.FC<{
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-txt-primary mb-1">Add Manually</h3>
-              <p className="text-sm text-txt-secondary">Add your first athlete</p>
+              <h3 className="font-semibold text-ink-bright mb-1">Add Manually</h3>
+              <p className="text-sm text-ink-secondary">Add your first athlete</p>
             </div>
           </div>
 
@@ -184,12 +184,12 @@ const ImportAthletesStep: React.FC<{
               aria-label="Athlete name"
               value={manualName}
               onChange={(e) => setManualName(e.target.value)}
-              className="w-full px-3 py-2 bg-surface-base border border-bdr-default rounded-lg text-txt-primary placeholder:text-txt-tertiary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
+              className="w-full px-3 py-2 bg-void border border-white/[0.06] rounded-lg text-ink-bright placeholder:text-ink-tertiary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
             />
             <select
               value={manualSide}
               onChange={(e) => setManualSide(e.target.value as any)}
-              className="w-full px-3 py-2 bg-surface-base border border-bdr-default rounded-lg text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
+              className="w-full px-3 py-2 bg-void border border-white/[0.06] rounded-lg text-ink-bright focus:outline-none focus:ring-2 focus:ring-interactive-primary"
             >
               <option value="Port">Port</option>
               <option value="Starboard">Starboard</option>
@@ -208,7 +208,7 @@ const ImportAthletesStep: React.FC<{
 
       {/* TODO: Integrate actual CSV import modal */}
       {showCSVImport && (
-        <div className="text-center text-sm text-txt-secondary">
+        <div className="text-center text-sm text-ink-secondary">
           CSV import modal would appear here (reuse existing CSVImportModal component)
         </div>
       )}
@@ -240,14 +240,14 @@ const SetupPracticeStep: React.FC<{
       <div className="text-center space-y-6">
         <CheckCircle className="w-16 h-16 mx-auto text-status-success" />
         <div>
-          <h2 className="text-2xl font-semibold text-txt-primary mb-2">Session Created!</h2>
-          <p className="text-base text-txt-secondary">
+          <h2 className="text-2xl font-semibold text-ink-bright mb-2">Session Created!</h2>
+          <p className="text-base text-ink-secondary">
             You already have {sessionsCount} session{sessionsCount !== 1 ? 's' : ''} scheduled.
           </p>
         </div>
         <button
           onClick={onNext}
-          className="px-6 py-2 bg-interactive-primary text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
+          className="px-6 py-2 bg-accent-copper text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
         >
           Continue <ArrowRight className="w-4 h-4" />
         </button>
@@ -258,10 +258,10 @@ const SetupPracticeStep: React.FC<{
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-semibold text-txt-primary mb-2">
+        <h2 className="text-2xl font-semibold text-ink-bright mb-2">
           Schedule Your First Practice
         </h2>
-        <p className="text-base text-txt-secondary">
+        <p className="text-base text-ink-secondary">
           Create a practice session to start tracking attendance and erg data.
         </p>
       </div>
@@ -269,31 +269,31 @@ const SetupPracticeStep: React.FC<{
       {/* Inline session form */}
       <div className="glass-card p-6 max-w-md mx-auto space-y-4">
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-2">Date</label>
+          <label className="block text-sm font-medium text-ink-bright mb-2">Date</label>
           <input
             type="date"
             value={sessionDate}
             onChange={(e) => setSessionDate(e.target.value)}
-            className="w-full px-3 py-2 bg-surface-base border border-bdr-default rounded-lg text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
+            className="w-full px-3 py-2 bg-void border border-white/[0.06] rounded-lg text-ink-bright focus:outline-none focus:ring-2 focus:ring-interactive-primary"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-2">Time</label>
+          <label className="block text-sm font-medium text-ink-bright mb-2">Time</label>
           <input
             type="time"
             value={sessionTime}
             onChange={(e) => setSessionTime(e.target.value)}
-            className="w-full px-3 py-2 bg-surface-base border border-bdr-default rounded-lg text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
+            className="w-full px-3 py-2 bg-void border border-white/[0.06] rounded-lg text-ink-bright focus:outline-none focus:ring-2 focus:ring-interactive-primary"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-txt-primary mb-2">Type</label>
+          <label className="block text-sm font-medium text-ink-bright mb-2">Type</label>
           <select
             value={sessionType}
             onChange={(e) => setSessionType(e.target.value as any)}
-            className="w-full px-3 py-2 bg-surface-base border border-bdr-default rounded-lg text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary"
+            className="w-full px-3 py-2 bg-void border border-white/[0.06] rounded-lg text-ink-bright focus:outline-none focus:ring-2 focus:ring-interactive-primary"
           >
             <option value="ERG">Erg Session</option>
             <option value="WATER">Water Practice</option>
@@ -304,13 +304,13 @@ const SetupPracticeStep: React.FC<{
 
         <button
           onClick={handleCreateSession}
-          className="w-full px-4 py-2 bg-interactive-primary text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium"
+          className="w-full px-4 py-2 bg-accent-copper text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium"
         >
           Create Practice
         </button>
       </div>
 
-      <p className="text-sm text-txt-tertiary text-center max-w-md mx-auto">
+      <p className="text-sm text-ink-tertiary text-center max-w-md mx-auto">
         Pre-filled with smart defaults: {defaults.season.name} season, {defaults.practice.time}{' '}
         {sessionType.toLowerCase()} session
       </p>
@@ -331,8 +331,8 @@ const ExploreStep: React.FC<{
         <div className="inline-flex items-center justify-center w-16 h-16 bg-status-success/10 rounded-full mb-4">
           <Sparkles className="w-8 h-8 text-status-success" />
         </div>
-        <h2 className="text-2xl font-semibold text-txt-primary mb-2">You're All Set!</h2>
-        <p className="text-base text-txt-secondary">
+        <h2 className="text-2xl font-semibold text-ink-bright mb-2">You're All Set!</h2>
+        <p className="text-base text-ink-secondary">
           Your dashboard is ready. Take a quick tour or start exploring.
         </p>
       </div>
@@ -343,28 +343,28 @@ const ExploreStep: React.FC<{
           <div className="w-10 h-10 bg-data-excellent/10 rounded-lg flex items-center justify-center mx-auto mb-2">
             <span className="text-2xl">👥</span>
           </div>
-          <p className="text-sm font-medium text-txt-primary">Athletes</p>
+          <p className="text-sm font-medium text-ink-bright">Athletes</p>
         </div>
 
         <div className="glass-card p-4 text-center">
           <div className="w-10 h-10 bg-data-good/10 rounded-lg flex items-center justify-center mx-auto mb-2">
             <span className="text-2xl">🚣</span>
           </div>
-          <p className="text-sm font-medium text-txt-primary">Lineups</p>
+          <p className="text-sm font-medium text-ink-bright">Lineups</p>
         </div>
 
         <div className="glass-card p-4 text-center">
           <div className="w-10 h-10 bg-accent-copper/10 rounded-lg flex items-center justify-center mx-auto mb-2">
             <span className="text-2xl">📊</span>
           </div>
-          <p className="text-sm font-medium text-txt-primary">Erg Data</p>
+          <p className="text-sm font-medium text-ink-bright">Erg Data</p>
         </div>
 
         <div className="glass-card p-4 text-center">
           <div className="w-10 h-10 bg-chart-2/10 rounded-lg flex items-center justify-center mx-auto mb-2">
             <span className="text-2xl">🏆</span>
           </div>
-          <p className="text-sm font-medium text-txt-primary">Seat Racing</p>
+          <p className="text-sm font-medium text-ink-bright">Seat Racing</p>
         </div>
       </div>
 
@@ -388,7 +388,7 @@ const ExploreStep: React.FC<{
         )}
         <button
           onClick={onComplete}
-          className="px-6 py-2 bg-interactive-primary text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium"
+          className="px-6 py-2 bg-accent-copper text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium"
         >
           Start Exploring
         </button>
@@ -496,7 +496,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
           {/* Close button */}
           <button
             onClick={handleDismiss}
-            className="absolute top-4 right-4 p-2 rounded-lg hover:bg-surface-hover transition-colors text-txt-secondary hover:text-txt-primary"
+            className="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/[0.04] transition-colors text-ink-secondary hover:text-ink-bright"
             aria-label="Close wizard"
           >
             <X className="w-5 h-5" />
@@ -505,12 +505,12 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
           {/* Progress indicator */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-txt-secondary">
+              <span className="text-sm font-medium text-ink-secondary">
                 Step {localStep + 1} of {totalSteps}
               </span>
               <button
                 onClick={handleDismiss}
-                className="text-sm text-txt-tertiary hover:text-txt-secondary transition-colors"
+                className="text-sm text-ink-tertiary hover:text-ink-secondary transition-colors"
               >
                 Skip all
               </button>
@@ -522,7 +522,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
                 <div key={step.id} className="flex-1">
                   <div
                     className={`h-2 rounded-full transition-colors ${
-                      idx <= localStep ? 'bg-interactive-primary' : 'bg-surface-hover'
+                      idx <= localStep ? 'bg-accent-copper' : 'bg-white/[0.04]'
                     }`}
                   />
                 </div>
@@ -538,7 +538,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
             <button
               onClick={handleBack}
               disabled={localStep === 0}
-              className="px-4 py-2 text-txt-secondary hover:text-txt-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+              className="px-4 py-2 text-ink-secondary hover:text-ink-bright transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -548,14 +548,14 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
               {!isLastStep && (
                 <button
                   onClick={handleSkip}
-                  className="px-4 py-2 text-txt-secondary hover:text-txt-primary transition-colors"
+                  className="px-4 py-2 text-ink-secondary hover:text-ink-bright transition-colors"
                 >
                   Skip
                 </button>
               )}
               <button
                 onClick={handleNext}
-                className="px-6 py-2 bg-interactive-primary text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
+                className="px-6 py-2 bg-accent-copper text-white rounded-lg hover:bg-interactive-hover transition-colors font-medium inline-flex items-center gap-2"
               >
                 {isLastStep ? 'Finish' : 'Continue'}
                 <ArrowRight className="w-4 h-4" />

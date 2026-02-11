@@ -5,10 +5,10 @@
 
 /* Override driver.js popover styling */
 .rowlab-tour-popover.driver-popover {
-  background: var(--color-bg-surface-elevated);
-  border: 1px solid var(--color-border-default);
+  background: var(--color-ink-raised);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
-  box-shadow: 
+  box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
     0 2px 4px -2px rgb(0 0 0 / 0.1);
   backdrop-filter: blur(8px);
@@ -16,21 +16,21 @@
 }
 
 .rowlab-tour-popover .driver-popover-title {
-  color: var(--color-text-primary);
+  color: var(--color-ink-bright);
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .rowlab-tour-popover .driver-popover-description {
-  color: var(--color-text-secondary);
+  color: var(--color-ink-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
   margin-bottom: 1rem;
 }
 
 .rowlab-tour-popover .driver-popover-progress-text {
-  color: var(--color-text-tertiary);
+  color: var(--color-ink-tertiary);
   font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -51,50 +51,50 @@
 .rowlab-tour-popover .driver-popover-prev-btn,
 .rowlab-tour-popover .driver-popover-close-btn {
   background: transparent;
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border-default);
+  color: var(--color-ink-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .rowlab-tour-popover .driver-popover-prev-btn:hover,
 .rowlab-tour-popover .driver-popover-close-btn:hover {
-  background: var(--color-bg-surface-elevated);
-  color: var(--color-text-primary);
-  border-color: var(--color-border-hover);
+  background: var(--color-ink-raised);
+  color: var(--color-ink-bright);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .rowlab-tour-popover .driver-popover-next-btn {
-  background: var(--color-interactive-primary);
+  background: var(--color-accent-copper);
   color: white;
 }
 
 .rowlab-tour-popover .driver-popover-next-btn:hover {
-  background: var(--color-interactive-hover);
+  background: rgba(var(--color-accent-copper-rgb), 0.9);
 }
 
 /* Arrow styling */
 .rowlab-tour-popover .driver-popover-arrow {
-  border-color: var(--color-border-default);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 .rowlab-tour-popover .driver-popover-arrow-side-top.driver-popover-arrow {
-  border-top-color: var(--color-bg-surface-elevated);
+  border-top-color: var(--color-ink-raised);
 }
 
 .rowlab-tour-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
-  border-bottom-color: var(--color-bg-surface-elevated);
+  border-bottom-color: var(--color-ink-raised);
 }
 
 .rowlab-tour-popover .driver-popover-arrow-side-left.driver-popover-arrow {
-  border-left-color: var(--color-bg-surface-elevated);
+  border-left-color: var(--color-ink-raised);
 }
 
 .rowlab-tour-popover .driver-popover-arrow-side-right.driver-popover-arrow {
-  border-right-color: var(--color-bg-surface-elevated);
+  border-right-color: var(--color-ink-raised);
 }
 
 /* Highlighted element styling */
 .driver-active-element {
-  outline: 2px solid var(--color-interactive-primary) !important;
+  outline: 2px solid var(--color-accent-copper) !important;
   outline-offset: 4px;
   border-radius: 8px;
 }

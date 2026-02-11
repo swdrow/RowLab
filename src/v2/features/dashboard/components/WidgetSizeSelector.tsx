@@ -63,7 +63,7 @@ export function WidgetSizeSelector({
             className={`px-2 py-1 text-xs font-medium rounded transition-all ${
               isActive
                 ? 'bg-accent-primary text-white'
-                : 'text-txt-secondary hover:bg-surface-elevated hover:text-txt-primary'
+                : 'text-ink-secondary hover:bg-ink-raised hover:text-ink-bright'
             }`}
             title={`${size} (${sizeConfig.w}×${sizeConfig.h} cells)`}
             aria-pressed={isActive}

@@ -24,13 +24,13 @@ export const geometricTeam: GeometricAnimationConfig = {
     },
     {
       type: 'circle',
-      color: 'var(--color-text-tertiary)',
+      color: 'var(--color-ink-tertiary)',
       size: 24,
       delay: 0.16,
     },
     {
       type: 'circle',
-      color: 'var(--color-border-default)',
+      color: 'var(--color-border-subtle)',
       size: 24,
       delay: 0.24,
     },
