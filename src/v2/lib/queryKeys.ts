@@ -288,6 +288,28 @@ export const queryKeys = {
     all: ['concept2'] as const,
     status: (athleteId: string) => [...queryKeys.concept2.all, 'status', athleteId] as const,
     teamStatuses: () => [...queryKeys.concept2.all, 'teamStatuses'] as const,
+    logbookBrowse: (page?: number, perPage?: number, fromDate?: string, toDate?: string) =>
+      [
+        ...queryKeys.concept2.all,
+        'logbook',
+        'browse',
+        { page, perPage, fromDate, toDate },
+      ] as const,
+  },
+
+  // Workouts (for activity feed integration)
+  workouts: {
+    all: ['workouts'] as const,
+    lists: () => [...queryKeys.workouts.all, 'list'] as const,
+    list: (filters?: Record<string, unknown>) =>
+      [...queryKeys.workouts.lists(), { filters }] as const,
+  },
+
+  // Activity Feed
+  activityFeed: {
+    all: ['activityFeed'] as const,
+    list: (filters?: Record<string, unknown>) =>
+      [...queryKeys.activityFeed.all, 'list', { filters }] as const,
   },
 
   // Rigging
