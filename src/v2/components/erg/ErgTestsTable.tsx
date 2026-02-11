@@ -1,10 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { VirtualTable } from '@v2/components/common/VirtualTable';
 import { Pencil, Trash2, Trophy } from 'lucide-react';
 import { ErgTableSkeleton, ErgMobileListSkeleton } from '@v2/features/erg/components/ErgSkeleton';
 import type { ErgTest } from '@v2/types/ergTests';
 import { MACHINE_TYPE_LABELS } from '@v2/types/ergTests';
+import { WorkoutDetailView } from './WorkoutDetailView';
 
 export interface ErgTestsTableProps {
   tests: ErgTest[];
