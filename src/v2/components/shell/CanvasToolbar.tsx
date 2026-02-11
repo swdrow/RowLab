@@ -85,7 +85,7 @@ function getZoneSubNav(zoneId: string): SubNavItem[] {
   switch (zoneId) {
     case 'home':
       return [
-        { label: 'Dashboard', route: '/canvas', icon: LayoutGrid },
+        { label: 'Dashboard', route: '/app', icon: LayoutGrid },
         { label: 'Achievements', route: '/app/achievements', icon: Award },
         { label: 'Challenges', route: '/app/challenges', icon: Target },
       ];
@@ -269,7 +269,7 @@ export function CanvasToolbar({ zone }: CanvasToolbarProps) {
                 const NavIcon = item.icon;
                 const isActive =
                   pathname === item.route ||
-                  (item.route !== '/canvas' && pathname.startsWith(item.route));
+                  (item.route !== '/app' && pathname.startsWith(item.route));
                 return (
                   <motion.button
                     key={item.route}
