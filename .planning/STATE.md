@@ -4,10 +4,10 @@
 
 **Milestone:** v3.1 — Integrations, Analytics & Social Sharing
 **Phase:** 37 (Concept2 Workout Sync) — IN PROGRESS
-**Plan:** 4/8 complete
-**Status:** Plan 37-04 complete: Erg table enhanced with C2 badges, machine type indicators, source filtering, and user-level sync button in page header. Synced workouts visually distinguishable. Toast feedback on sync.
-**Next Plan:** 37-05 (Workout detail view with split table and summary)
-**Last activity:** 2026-02-11 — Completed 37-04-PLAN.md (Erg Table Enhancements for C2 Sync)
+**Plan:** 6/8 complete
+**Status:** Plan 37-06 complete: Historical import modal with date range and browse/select modes. Import History button in erg page header (C2 connected only). Activity feed and dashboard widgets include C2-synced workouts automatically.
+**Next Plan:** Ready for checkpoint verification (Plan 37-06 checkpoint task)
+**Last activity:** 2026-02-11 — Completed 37-06-PLAN.md (C2 Historical Import UI and Activity Feed Integration)
 
 ## Project Reference
 
@@ -73,7 +73,7 @@ v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 37 | Concept2 Workout Sync | In Progress | 4/8 |
+| 37 | Concept2 Workout Sync | In Progress | 6/8 |
 | 38 | Share Card Platform | Planned | TBD |
 | 39 | Strava Integration & Cross-Platform Sync | Planned | TBD |
 | 40 | Performance Analytics Engine | Planned | TBD |

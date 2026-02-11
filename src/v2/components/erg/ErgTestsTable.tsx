@@ -197,6 +197,20 @@ export function ErgTestsTable({
   selectedIndex = -1,
   prTestIds,
 }: ErgTestsTableProps) {
+  // Workout detail view state
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
+
+  const handleRowClick = (test: ErgTest) => {
+    // Call original onRowClick if provided
+    onRowClick?.(test);
+
+    // Open workout detail view if this test has associated workout data
+    // NOTE: Currently workoutId is not on ErgTest response - this will need backend update
+    // For C2-synced tests, we'd need to look up the workout by c2LogbookId
+    // For now, this is a placeholder for the UI structure
+    // TODO(phase-37-06): Add workoutId to ErgTest response or add lookup by c2LogbookId
+  };
+
   const columns = useMemo<ColumnDef<ErgTest, any>[]>(
     () => [
       {
@@ -344,17 +358,25 @@ export function ErgTestsTable({
   // Mobile card view
   if (isMobile) {
     return (
-      <div className="p-4 space-y-3">
-        {tests.map((test) => (
-          <ErgTestCard
-            key={test.id}
-            test={test}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onClick={onRowClick}
-          />
-        ))}
-      </div>
+      <>
+        <div className="p-4 space-y-3">
+          {tests.map((test) => (
+            <ErgTestCard
+              key={test.id}
+              test={test}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onClick={handleRowClick}
+            />
+          ))}
+        </div>
+
+        {/* Workout Detail View slide-over */}
+        <WorkoutDetailView
+          workoutId={selectedWorkoutId}
+          onClose={() => setSelectedWorkoutId(null)}
+        />
+      </>
     );
   }
 
@@ -364,15 +386,20 @@ export function ErgTestsTable({
 
   // Desktop table view
   return (
-    <VirtualTable
-      data={tests}
-      columns={columns}
-      rowHeight={56}
-      overscan={20}
-      onRowClick={onRowClick}
-      selectedId={selectedId}
-      emptyMessage="No erg tests found"
-      className="h-full"
-    />
+    <>
+      <VirtualTable
+        data={tests}
+        columns={columns}
+        rowHeight={56}
+        overscan={20}
+        onRowClick={handleRowClick}
+        selectedId={selectedId}
+        emptyMessage="No erg tests found"
+        className="h-full"
+      />
+
+      {/* Workout Detail View slide-over */}
+      <WorkoutDetailView workoutId={selectedWorkoutId} onClose={() => setSelectedWorkoutId(null)} />
+    </>
   );
 }
