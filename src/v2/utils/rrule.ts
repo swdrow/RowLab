@@ -71,12 +71,12 @@ export function generateRRule(options: RRuleOptions): string {
 
   const byweekday = options.byweekday
     ?.map((day) => DAY_MAP[day.toUpperCase()])
-    .filter(Boolean);
+    .filter((d): d is Weekday => d !== undefined);
 
   const rule = new RRule({
     freq,
     interval: options.interval || 1,
-    byweekday: byweekday?.length ? byweekday : undefined,
+    byweekday: byweekday && byweekday.length > 0 ? byweekday : undefined,
     until: options.until,
     count: options.count,
     dtstart: options.dtstart,
@@ -96,11 +96,7 @@ export function generateRRule(options: RRuleOptions): string {
  * @param endDate - End of the date range
  * @returns Array of dates within the range
  */
-export function expandRecurrence(
-  rruleString: string,
-  startDate: Date,
-  endDate: Date
-): Date[] {
+export function expandRecurrence(rruleString: string, startDate: Date, endDate: Date): Date[] {
   const rule = parseRRule(rruleString);
   if (!rule) return [];
 
@@ -126,10 +122,7 @@ export function getNextOccurrences(rruleString: string, count: number): Date[] {
  * @param after - Date to start searching from (defaults to now)
  * @returns Next occurrence date or null
  */
-export function getNextOccurrence(
-  rruleString: string,
-  after: Date = new Date()
-): Date | null {
+export function getNextOccurrence(rruleString: string, after: Date = new Date()): Date | null {
   const rule = parseRRule(rruleString);
   if (!rule) return null;
 
@@ -172,26 +165,23 @@ export function formatRRuleShort(rruleString: string): string {
       })
       .join(', ');
 
-    const interval = options.interval && options.interval > 1
-      ? `Every ${options.interval} weeks on `
-      : 'Every ';
+    const interval =
+      options.interval && options.interval > 1 ? `Every ${options.interval} weeks on ` : 'Every ';
 
     return `${interval}${days}`;
   }
 
   // Handle daily
   if (options.freq === RRule.DAILY) {
-    const interval = options.interval && options.interval > 1
-      ? `Every ${options.interval} days`
-      : 'Daily';
+    const interval =
+      options.interval && options.interval > 1 ? `Every ${options.interval} days` : 'Daily';
     return interval;
   }
 
   // Handle monthly
   if (options.freq === RRule.MONTHLY) {
-    const interval = options.interval && options.interval > 1
-      ? `Every ${options.interval} months`
-      : 'Monthly';
+    const interval =
+      options.interval && options.interval > 1 ? `Every ${options.interval} months` : 'Monthly';
     return interval;
   }
 
