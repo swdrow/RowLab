@@ -73,6 +73,7 @@ export async function getWorkoutById(teamId, workoutId) {
         select: { id: true, firstName: true, lastName: true },
       },
       telemetry: true,
+      splits: { orderBy: { splitNumber: 'asc' } },
     },
   });
 
@@ -97,8 +98,13 @@ export async function updateWorkout(teamId, workoutId, data) {
 
   const updateData = {};
   const allowedFields = [
-    'date', 'distanceM', 'durationSeconds', 'strokeRate',
-    'calories', 'dragFactor', 'deviceInfo'
+    'date',
+    'distanceM',
+    'durationSeconds',
+    'strokeRate',
+    'calories',
+    'dragFactor',
+    'deviceInfo',
   ];
 
   for (const field of allowedFields) {
@@ -163,7 +169,7 @@ export async function getAthleteWorkoutSummary(teamId, athleteId, days = 30) {
     bySource: {},
   };
 
-  const strokeRates = workouts.filter(w => w.strokeRate).map(w => w.strokeRate);
+  const strokeRates = workouts.filter((w) => w.strokeRate).map((w) => w.strokeRate);
   if (strokeRates.length > 0) {
     summary.averageStrokeRate = Math.round(
       strokeRates.reduce((a, b) => a + b, 0) / strokeRates.length
@@ -221,11 +227,17 @@ function formatWorkout(workout) {
   return {
     id: workout.id,
     athleteId: workout.athleteId,
-    athlete: workout.athlete ? {
-      id: workout.athlete.id,
-      name: `${workout.athlete.firstName} ${workout.athlete.lastName}`,
-    } : null,
+    athlete: workout.athlete
+      ? {
+          id: workout.athlete.id,
+          name: `${workout.athlete.firstName} ${workout.athlete.lastName}`,
+          firstName: workout.athlete.firstName,
+          lastName: workout.athlete.lastName,
+        }
+      : null,
     source: workout.source,
+    type: workout.type || null,
+    machineType: workout.machineType || null,
     c2LogbookId: workout.c2LogbookId,
     date: workout.date,
     distanceM: workout.distanceM,
@@ -233,8 +245,13 @@ function formatWorkout(workout) {
     strokeRate: workout.strokeRate,
     calories: workout.calories,
     dragFactor: workout.dragFactor,
+    avgPace: workout.avgPace || null,
+    avgWatts: workout.avgWatts || null,
+    avgHeartRate: workout.avgHeartRate || null,
+    notes: workout.notes || null,
     deviceInfo: workout.deviceInfo,
     telemetry: workout.telemetry || null,
+    splits: workout.splits || [],
     createdAt: workout.createdAt,
   };
 }
