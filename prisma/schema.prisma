@@ -394,6 +394,11 @@ model Workout {
   strokeRate       Int?
   calories         Int?
   dragFactor       Int?
+  machineType      String? // rower, bikerg, skierg (from C2 API workout_type field)
+  avgPace          Decimal? @db.Decimal(8, 1) // avg pace in tenths of seconds per 500m
+  avgWatts         Int? // average watts
+  avgHeartRate     Int? // average heart rate
+  notes            String?  @db.Text // user-editable notes field
   deviceInfo       Json?
   rawData          Json?
   createdAt        DateTime @default(now())
@@ -402,6 +407,7 @@ model Workout {
   team        Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
   telemetry   WorkoutTelemetry?
   completions WorkoutCompletion[]
+  splits      WorkoutSplit[]
 
   @@index([teamId])
   @@index([athleteId])
@@ -420,6 +426,26 @@ model WorkoutTelemetry {
   workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
 
   @@map("workout_telemetry")
+}
+
+model WorkoutSplit {
+  id           String   @id @default(uuid())
+  workoutId    String
+  splitNumber  Int // 1-indexed split number
+  distanceM    Int?
+  timeSeconds  Decimal? @db.Decimal(10, 1)
+  pace         Decimal? @db.Decimal(8, 1) // pace in tenths of seconds per 500m
+  watts        Int?
+  strokeRate   Int?
+  heartRate    Int?
+  dragFactor   Int?
+  calories     Int?
+
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  @@unique([workoutId, splitNumber])
+  @@index([workoutId])
+  @@map("workout_splits")
 }
 
 // ============================================

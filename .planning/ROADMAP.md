@@ -1504,7 +1504,15 @@ Connect RowLab to external platforms (Concept2 Logbook, Strava, Garmin), build a
 5. Sync handles pagination for accounts with many workouts
 6. C2 API mock server enables offline testing of sync pipeline
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 37-01-PLAN.md — Schema migration (WorkoutSplit model, machineType) + sync service enhancement
+- [ ] 37-02-PLAN.md — C2 API test infrastructure (nock mock server, fixtures, sync tests)
+- [ ] 37-03-PLAN.md — Historical import endpoints + coach sync with auto-match
+- [ ] 37-04-PLAN.md — Frontend erg table enhancements (source filter, C2 badge, machine type, sync button)
+- [ ] 37-05-PLAN.md — Workout detail view (summary card + splits table)
+- [ ] 37-06-PLAN.md — Historical import UI + activity feed integration + verification
 
 ---
 
@@ -1687,7 +1695,7 @@ Connect RowLab to external platforms (Concept2 Logbook, Strava, Garmin), build a
 
 | Phase | Name | Requirements | Plans | Status |
 |-------|------|--------------|-------|--------|
-| 37 | Concept2 Workout Sync | 6 | TBD | Planned |
+| 37 | Concept2 Workout Sync | 6 | 6 plans | In Progress |
 | 38 | Share Card Platform | 10 | TBD | Planned |
 | 39 | Strava Integration & Cross-Platform Sync | 7 | TBD | Planned |
 | 40 | Performance Analytics Engine | 8 | TBD | Planned |
