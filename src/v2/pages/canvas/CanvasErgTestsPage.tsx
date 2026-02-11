@@ -344,7 +344,7 @@ export function CanvasErgTestsPage() {
       </AnimatePresence>
 
       {/* Page header — text against void */}
-      <div className="px-4 lg:px-6 pt-8 pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-8 pb-6 border-b border-white/[0.06]/30">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
             <div>
@@ -397,7 +397,7 @@ export function CanvasErgTestsPage() {
       </div>
 
       {/* Tab navigation */}
-      <div className="border-b border-ink-border/30 px-4 lg:px-6">
+      <div className="border-b border-white/[0.06]/30 px-4 lg:px-6">
         <div className="max-w-7xl mx-auto">
           <CanvasTabs
             tabs={[
@@ -412,7 +412,7 @@ export function CanvasErgTestsPage() {
 
       {/* Filters (only show for tests tab) */}
       {activeView === 'tests' && (
-        <div className="px-4 lg:px-6 py-3 border-b border-ink-border/30">
+        <div className="px-4 lg:px-6 py-3 border-b border-white/[0.06]/30">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-3">
             <CanvasSelect
               value={filters.testType || 'all'}
@@ -491,7 +491,7 @@ export function CanvasErgTestsPage() {
       </div>
 
       {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-3 bg-ink-well/20">
+      <div className="border-t border-white/[0.06]/30 px-4 lg:px-6 py-3 bg-ink-well/20">
         <div className="max-w-7xl mx-auto">
           <CanvasConsoleReadout
             items={[

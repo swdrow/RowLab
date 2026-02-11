@@ -113,7 +113,7 @@ export function CanvasRecruitingPage() {
   return (
     <div className="h-full flex flex-col bg-void">
       {/* Page header */}
-      <div className="px-4 lg:px-6 pt-6 lg:pt-8 pb-4 lg:pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-6 lg:pt-8 pb-4 lg:pb-6 border-b border-white/[0.06]/30">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row gap-3 sm:items-end sm:justify-between">
             <div>
@@ -247,7 +247,7 @@ export function CanvasRecruitingPage() {
       </div>
 
       {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-3 bg-ink-well/20">
+      <div className="border-t border-white/[0.06]/30 px-4 lg:px-6 py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[

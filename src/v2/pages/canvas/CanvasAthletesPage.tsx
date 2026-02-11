@@ -244,7 +244,7 @@ export function CanvasAthletesPage() {
             type="checkbox"
             checked={table.getIsAllRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
-            className="h-3 w-3 border border-ink-border bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer"
+            className="h-3 w-3 border border-white/[0.06] bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer"
             aria-label="Select all athletes"
           />
         ),
@@ -254,7 +254,7 @@ export function CanvasAthletesPage() {
             checked={row.getIsSelected()}
             onChange={row.getToggleSelectedHandler()}
             onClick={(e) => e.stopPropagation()}
-            className="h-3 w-3 border border-ink-border bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer"
+            className="h-3 w-3 border border-white/[0.06] bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer"
             aria-label={`Select ${row.original.firstName} ${row.original.lastName}`}
           />
         ),
@@ -637,7 +637,7 @@ export function CanvasAthletesPage() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={SPRING_GENTLE}
-          className="px-6 py-4 border-t border-ink-border bg-ink-raised"
+          className="px-6 py-4 border-t border-white/[0.06] bg-ink-raised"
         >
           <div className="flex items-center gap-4 flex-wrap">
             <span className="text-xs font-mono text-ink-primary uppercase tracking-wider">
@@ -693,7 +693,7 @@ export function CanvasAthletesPage() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-ink-raised canvas-chamfer border-l border-ink-border z-50 overflow-y-auto"
+              className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-ink-raised canvas-chamfer border-l border-white/[0.06] z-50 overflow-y-auto"
             >
               <div className="p-6">
                 {/* Header */}
@@ -807,7 +807,7 @@ function CanvasTableView({
       style={{ contain: 'strict' }}
     >
       <table className="w-full border-collapse">
-        <thead className="sticky top-0 z-10 bg-ink-raised border-b border-ink-border">
+        <thead className="sticky top-0 z-10 bg-ink-raised border-b border-white/[0.06]">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header, idx) => {
@@ -861,7 +861,7 @@ function CanvasTableView({
                 key={row.id}
                 style={{ height: 60 }}
                 className={`
-                  border-b border-ink-border/30 transition-all duration-150 cursor-pointer group
+                  border-b border-white/[0.06]/30 transition-all duration-150 cursor-pointer group
                   ${isSelected ? 'bg-ink-primary/5' : 'hover:bg-white/[0.02]'}
                 `}
                 onClick={() => onRowClick(row.original)}
@@ -932,7 +932,7 @@ function CanvasGridView({
                       checked={isSelected}
                       onChange={() => onToggleSelect(athlete.id)}
                       onClick={(e) => e.stopPropagation()}
-                      className="h-3 w-3 border border-ink-border bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer"
+                      className="h-3 w-3 border border-white/[0.06] bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer"
                       aria-label={`Select ${athlete.firstName} ${athlete.lastName}`}
                     />
                   </div>
@@ -991,7 +991,7 @@ function CanvasGridView({
                   </div>
 
                   {/* Status indicator at bottom */}
-                  <div className="mt-4 pt-3 border-t border-ink-border/30">
+                  <div className="mt-4 pt-3 border-t border-white/[0.06]/30">
                     <span className="text-[10px] font-mono text-ink-secondary uppercase tracking-wider">
                       {athlete.status || 'active'}
                     </span>
@@ -1052,7 +1052,7 @@ function CanvasCompactView({
                 transform: `translateY(${virtualRow.start}px)`,
               }}
               className={`
-                flex items-center gap-4 px-4 border-b border-ink-border/30
+                flex items-center gap-4 px-4 border-b border-white/[0.06]/30
                 transition-all duration-150 cursor-pointer group
                 ${isSelected ? 'bg-ink-primary/5' : 'hover:bg-white/[0.02]'}
                 ${isFocused ? 'ring-1 ring-ink-primary ring-inset' : ''}
@@ -1073,7 +1073,7 @@ function CanvasCompactView({
                 checked={isSelected}
                 onChange={row.getToggleSelectedHandler()}
                 onClick={(e) => e.stopPropagation()}
-                className="h-3 w-3 border border-ink-border bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer flex-shrink-0"
+                className="h-3 w-3 border border-white/[0.06] bg-transparent text-ink-primary focus:ring-1 focus:ring-ink-primary cursor-pointer flex-shrink-0"
                 aria-label={`Select ${athlete.firstName} ${athlete.lastName}`}
               />
 

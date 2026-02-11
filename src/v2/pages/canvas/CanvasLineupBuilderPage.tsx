@@ -51,7 +51,7 @@ const fadeUp = {
 function CanvasLineupLoading() {
   return (
     <div className="flex flex-col h-full bg-ink-default">
-      <div className="flex-shrink-0 px-4 py-3 bg-ink-raised border-b border-ink-border">
+      <div className="flex-shrink-0 px-4 py-3 bg-ink-raised border-b border-white/[0.06]">
         <div className="h-4 w-32 bg-ink-hover" />
       </div>
       <div className="flex-1">
@@ -94,7 +94,7 @@ export function CanvasLineupBuilderPage() {
       <motion.div variants={stagger} initial="hidden" animate="visible" className="flex-shrink-0">
         <motion.div
           variants={fadeUp}
-          className="relative px-4 py-3 bg-ink-raised border-b border-ink-border"
+          className="relative px-4 py-3 bg-ink-raised border-b border-white/[0.06]"
         >
           <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-data-excellent/20 to-transparent" />
           <div className="flex items-center justify-between">
@@ -125,7 +125,7 @@ export function CanvasLineupBuilderPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-4 sm:px-6">
+      <div className="flex-shrink-0 border-t border-white/[0.06] px-4 sm:px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'ATHLETES', value: athleteCount.toString() },

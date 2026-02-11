@@ -130,7 +130,7 @@ function KeyboardShortcutsHelp({ isOpen, onClose }: { isOpen: boolean; onClose: 
                 ].map((shortcut) => (
                   <div key={shortcut.key} className="flex items-center justify-between">
                     <span className="text-sm text-ink-secondary">{shortcut.label}</span>
-                    <kbd className="px-2 py-1 text-xs font-mono bg-ink-raised border border-ink-border">
+                    <kbd className="px-2 py-1 text-xs font-mono bg-ink-raised border border-white/[0.06]">
                       {shortcut.key}
                     </kbd>
                   </div>
@@ -408,7 +408,7 @@ export function CanvasSeatRacingPage() {
       {/* ============================================ */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
-          <div className="flex-shrink-0 border-b border-ink-border px-6">
+          <div className="flex-shrink-0 border-b border-white/[0.06] px-6">
             <Tab.List className="flex gap-6">
               {tabs.map((tab) => (
                 <Tab key={tab.id} as={Fragment}>
@@ -441,7 +441,7 @@ export function CanvasSeatRacingPage() {
             {/* RANKINGS TAB */}
             <Tab.Panel className="h-full flex flex-col overflow-hidden">
               {/* Side filter */}
-              <div className="flex-shrink-0 px-4 sm:px-6 py-4 border-b border-ink-border">
+              <div className="flex-shrink-0 px-4 sm:px-6 py-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-mono text-ink-muted uppercase tracking-wider mr-2">
                     Filter:
@@ -453,7 +453,7 @@ export function CanvasSeatRacingPage() {
                       ${
                         sideFilter === 'all'
                           ? 'bg-ink-bright text-ink-default'
-                          : 'bg-ink-raised text-ink-secondary hover:bg-ink-hover border border-ink-border'
+                          : 'bg-ink-raised text-ink-secondary hover:bg-ink-hover border border-white/[0.06]'
                       }
                     `}
                   >
@@ -466,7 +466,7 @@ export function CanvasSeatRacingPage() {
                       ${
                         sideFilter === 'Port'
                           ? 'bg-data-poor text-white'
-                          : 'bg-ink-raised text-ink-secondary hover:bg-data-poor/10 border border-ink-border'
+                          : 'bg-ink-raised text-ink-secondary hover:bg-data-poor/10 border border-white/[0.06]'
                       }
                     `}
                   >
@@ -479,7 +479,7 @@ export function CanvasSeatRacingPage() {
                       ${
                         sideFilter === 'Starboard'
                           ? 'bg-data-excellent text-white'
-                          : 'bg-ink-raised text-ink-secondary hover:bg-data-excellent/10 border border-ink-border'
+                          : 'bg-ink-raised text-ink-secondary hover:bg-data-excellent/10 border border-white/[0.06]'
                       }
                     `}
                   >
@@ -504,7 +504,7 @@ export function CanvasSeatRacingPage() {
                     {/* Chart section (keep V2 RankingsChart, update wrapper) */}
                     <div>
                       <RuledHeader>ELO Distribution</RuledHeader>
-                      <div className="bg-ink-raised border border-ink-border p-4 sm:p-6">
+                      <div className="bg-ink-raised border border-white/[0.06] p-4 sm:p-6">
                         <div style={{ height: isMobile ? '200px' : '300px' }}>
                           <RankingsChart ratings={ratings} />
                         </div>
@@ -578,7 +578,7 @@ export function CanvasSeatRacingPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT — bottom status bar */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-6">
+      <div className="flex-shrink-0 border-t border-white/[0.06] px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'ATHLETES RANKED', value: ratings.length.toString() },
@@ -689,7 +689,7 @@ export function CanvasSeatRacingPage() {
                   leaveTo="translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                    <div className="flex h-full flex-col bg-ink-surface border-l border-ink-border">
+                    <div className="flex h-full flex-col bg-ink-surface border-l border-white/[0.06]">
                       {selectedSessionId && (
                         <SessionDetail
                           sessionId={selectedSessionId}
