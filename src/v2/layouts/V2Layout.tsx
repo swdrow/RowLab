@@ -32,21 +32,7 @@ export default function V2Layout() {
         <SettingsStoreContext.Provider value={useSettingsStore}>
           <ToastProvider>
             <div className="v2" data-theme={theme}>
-              <div className="min-h-screen bg-ink-deep">
-                <header className="bg-ink-base/80 backdrop-blur-md border-b border-ink-border px-4 py-3">
-                  <div className="flex items-center justify-between max-w-7xl mx-auto">
-                    <div className="flex items-center gap-3">
-                      <h1 className="text-xl font-display text-ink-bright">RowLab</h1>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <ThemeToggle />
-                    </div>
-                  </div>
-                </header>
-                <main className="min-h-[calc(100vh-57px)]">
-                  <Outlet />
-                </main>
-              </div>
+              <Outlet />
             </div>
           </ToastProvider>
           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
