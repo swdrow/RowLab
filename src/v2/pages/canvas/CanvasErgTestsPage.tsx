@@ -21,7 +21,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, Upload, X } from 'lucide-react';
+import { Plus, Upload, X, History } from 'lucide-react';
 import {
   ScrambleNumber,
   CanvasTabs,
@@ -37,7 +37,13 @@ import { useErgTests } from '@v2/hooks/useErgTests';
 import { useAthletes } from '@v2/hooks/useAthletes';
 import { usePRCelebration } from '@v2/hooks/usePersonalRecords';
 import { useMyC2Status } from '@v2/hooks/useConcept2';
-import { ErgTestForm, ErgCSVImportModal, ErgLeaderboard, C2SyncButton } from '@v2/components/erg';
+import {
+  ErgTestForm,
+  ErgCSVImportModal,
+  ErgLeaderboard,
+  C2SyncButton,
+  C2HistoricalImport,
+} from '@v2/components/erg';
 import { PRCelebration } from '@v2/features/gamification/components/PRCelebration';
 import { FADE_IN_VARIANTS, SPRING_GENTLE } from '@v2/utils/animations';
 import type {
@@ -87,6 +93,7 @@ export function CanvasErgTestsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTest, setEditingTest] = useState<ErgTest | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isHistoricalImportOpen, setIsHistoricalImportOpen] = useState(false);
 
   // PR celebration state
   const [lastCreatedTestId, setLastCreatedTestId] = useState<string | null>(null);
@@ -146,6 +153,14 @@ export function CanvasErgTestsPage() {
 
   const handleCloseImportModal = () => {
     setIsImportModalOpen(false);
+  };
+
+  const handleOpenHistoricalImportModal = () => {
+    setIsHistoricalImportOpen(true);
+  };
+
+  const handleCloseHistoricalImportModal = () => {
+    setIsHistoricalImportOpen(false);
   };
 
   const handleImportSuccess = (count: number) => {
@@ -342,7 +357,20 @@ export function CanvasErgTestsPage() {
             </div>
 
             <div className="flex items-center gap-3 w-full lg:w-auto">
-              {isC2Connected && <C2SyncButton mode="user" variant="button" size="md" />}
+              {isC2Connected && (
+                <>
+                  <C2SyncButton mode="user" variant="button" size="md" />
+                  <CanvasButton
+                    variant="secondary"
+                    onClick={handleOpenHistoricalImportModal}
+                    className="flex-1 lg:flex-none"
+                  >
+                    <History className="w-4 h-4" />
+                    <span className="hidden sm:inline">IMPORT HISTORY</span>
+                    <span className="sm:hidden">HISTORY</span>
+                  </CanvasButton>
+                </>
+              )}
 
               <CanvasButton
                 variant="secondary"
@@ -495,6 +523,12 @@ export function CanvasErgTestsPage() {
         isOpen={isImportModalOpen}
         onClose={handleCloseImportModal}
         onSuccess={handleImportSuccess}
+      />
+
+      {/* C2 Historical Import Modal */}
+      <C2HistoricalImport
+        isOpen={isHistoricalImportOpen}
+        onClose={handleCloseHistoricalImportModal}
       />
     </div>
   );
