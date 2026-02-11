@@ -4,10 +4,10 @@
 
 **Milestone:** v3.1 — Integrations, Analytics & Social Sharing
 **Phase:** 37 (Concept2 Workout Sync) — IN PROGRESS
-**Plan:** 6/8 complete
-**Status:** Plan 37-06 complete: Historical import modal with date range and browse/select modes. Import History button in erg page header (C2 connected only). Activity feed and dashboard widgets include C2-synced workouts automatically.
-**Next Plan:** Ready for checkpoint verification (Plan 37-06 checkpoint task)
-**Last activity:** 2026-02-11 — Completed 37-06-PLAN.md (C2 Historical Import UI and Activity Feed Integration)
+**Plan:** 5/8 complete
+**Status:** Plan 37-05 complete: Workout detail view with summary card (distance, time, pace, watts, HR, drag factor) and per-split breakdown table. WorkoutDetailView slide-over component wired to erg table. Design system compliant with glass cards and spring animations.
+**Next Plan:** 37-06 (Activity feed integration for C2 workouts)
+**Last activity:** 2026-02-11 — Completed 37-05-PLAN.md (Workout Detail View with Summary and Splits)
 
 ## Project Reference
 
@@ -73,7 +73,7 @@ v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 37 | Concept2 Workout Sync | In Progress | 6/8 |
+| 37 | Concept2 Workout Sync | In Progress | 5/8 |
 | 38 | Share Card Platform | Planned | TBD |
 | 39 | Strava Integration & Cross-Platform Sync | Planned | TBD |
 | 40 | Performance Analytics Engine | Planned | TBD |
@@ -535,10 +535,10 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-02-11 16:03:12Z
-**Stopped at:** Phase 37-04 COMPLETE. Enhanced erg table with C2 badges, machine type badges, source filtering, and user-level sync button. Synced workouts visually distinguishable. Toast feedback on sync success/failure.
+**Last session:** 2026-02-11 16:15:06Z
+**Stopped at:** Phase 37-05 COMPLETE. Workout detail view with summary card and per-split breakdown table. WorkoutDetailView slide-over component. useWorkoutDetail hook. Design system compliant with glass cards and spring animations.
 **Resume file:** None
-**Resume with:** Continue Phase 37-05 (Workout detail view with split table and summary card)
+**Resume with:** Continue Phase 37-06 (Activity feed integration for C2 workouts)
 
 ## Roadmap Evolution
 
