@@ -36,7 +36,8 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useErgTests } from '@v2/hooks/useErgTests';
 import { useAthletes } from '@v2/hooks/useAthletes';
 import { usePRCelebration } from '@v2/hooks/usePersonalRecords';
-import { ErgTestForm, ErgCSVImportModal, ErgLeaderboard } from '@v2/components/erg';
+import { useMyC2Status } from '@v2/hooks/useConcept2';
+import { ErgTestForm, ErgCSVImportModal, ErgLeaderboard, C2SyncButton } from '@v2/components/erg';
 import { PRCelebration } from '@v2/features/gamification/components/PRCelebration';
 import { FADE_IN_VARIANTS, SPRING_GENTLE } from '@v2/utils/animations';
 import type {
@@ -98,6 +99,9 @@ export function CanvasErgTestsPage() {
 
   // Fetch athletes for form dropdown
   const { athletes } = useAthletes();
+
+  // Check if user has C2 connected (for showing sync button)
+  const { isConnected: isC2Connected } = useMyC2Status();
 
   // PR celebration detection for last created test
   const { data: prData } = usePRCelebration(lastCreatedTestId || '');
@@ -338,6 +342,8 @@ export function CanvasErgTestsPage() {
             </div>
 
             <div className="flex items-center gap-3 w-full lg:w-auto">
+              {isC2Connected && <C2SyncButton mode="user" variant="button" size="md" />}
+
               <CanvasButton
                 variant="secondary"
                 onClick={handleOpenImportModal}

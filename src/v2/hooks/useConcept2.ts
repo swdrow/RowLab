@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../lib/queryKeys';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'sonner';
 import type { C2Status, C2SyncResult, ApiResponse } from '../types/ergTests';
 
 /**
@@ -25,9 +26,7 @@ async function fetchC2Status(athleteId?: string): Promise<C2Status> {
  * Trigger Concept2 sync
  */
 async function triggerC2Sync(athleteId?: string): Promise<C2SyncResult> {
-  const endpoint = athleteId
-    ? `/api/v1/concept2/sync/${athleteId}`
-    : '/api/v1/concept2/sync/me';
+  const endpoint = athleteId ? `/api/v1/concept2/sync/${athleteId}` : '/api/v1/concept2/sync/me';
 
   const response = await api.post<ApiResponse<C2SyncResult>>(endpoint);
 
@@ -84,6 +83,65 @@ export function useTriggerC2Sync(athleteId?: string) {
     isSyncing: syncMutation.isPending,
     syncError: syncMutation.error,
     syncResult: syncMutation.data,
+  };
+}
+
+/**
+ * Hook for user-level Concept2 status (not athlete-level)
+ */
+export function useMyC2Status() {
+  const { isAuthenticated, isInitialized } = useAuth();
+
+  const query = useQuery({
+    queryKey: queryKeys.concept2.status('me'),
+    queryFn: () => fetchC2Status(),
+    enabled: isInitialized && isAuthenticated,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  return {
+    isConnected: query.data?.connected ?? false,
+    username: query.data?.username,
+    lastSyncedAt: query.data?.lastSyncedAt,
+    syncEnabled: query.data?.syncEnabled,
+    isLoading: query.isLoading,
+    error: query.error,
+  };
+}
+
+/**
+ * Hook for user-level Concept2 sync (not athlete-level)
+ */
+export function useMyC2Sync() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const res = await api.post<ApiResponse<C2SyncResult>>('/api/v1/concept2/sync/me');
+      if (!res.data.success || !res.data.data) {
+        throw new Error(res.data.error?.message || 'Failed to sync C2 workouts');
+      }
+      return res.data.data;
+    },
+    onSuccess: (data) => {
+      const count = data.totalFetched || 0;
+      toast.success(`Synced ${count} workout${count !== 1 ? 's' : ''}`);
+      queryClient.invalidateQueries({ queryKey: queryKeys.ergTests.all });
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.concept2.all, 'status'] });
+    },
+    onError: (error: any) => {
+      toast.error(
+        'Sync failed: ' +
+          (error?.response?.data?.error?.message || error.message || 'Unknown error')
+      );
+    },
+  });
+
+  return {
+    triggerSync: mutation.mutate,
+    isSyncing: mutation.isPending,
+    syncError: mutation.error,
+    syncResult: mutation.data,
   };
 }
 

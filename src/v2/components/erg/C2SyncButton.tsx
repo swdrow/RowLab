@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useTriggerC2Sync, useConcept2Status } from '@v2/hooks/useConcept2';
+import {
+  useTriggerC2Sync,
+  useConcept2Status,
+  useMyC2Sync,
+  useMyC2Status,
+} from '@v2/hooks/useConcept2';
 import { RefreshCw, Check, AlertTriangle } from 'lucide-react';
 
 export interface C2SyncButtonProps {
-  /** Athlete ID to sync C2 workouts for */
-  athleteId: string;
+  /** Sync mode: athlete-specific or user-level */
+  mode?: 'athlete' | 'user';
+  /** Athlete ID to sync C2 workouts for (required for mode="athlete") */
+  athleteId?: string;
   /** Button variant: full button with text or icon-only */
   variant?: 'button' | 'icon';
   /** Button size */
@@ -16,22 +23,40 @@ export interface C2SyncButtonProps {
 /**
  * Button to trigger manual Concept2 sync
  *
+ * Modes:
+ * - athlete: Sync for specific athlete (requires athleteId)
+ * - user: Sync for current user's own workouts
+ *
  * States:
  * - Ready - shows "Sync" or refresh icon
  * - Syncing - shows spinner
  * - Success - shows checkmark briefly
  * - Error - shows error icon briefly
  *
- * Disabled if athlete not connected to Concept2
+ * Disabled if not connected to Concept2
  */
 export function C2SyncButton({
+  mode = 'athlete',
   athleteId,
   variant = 'button',
   size = 'md',
   onSyncComplete,
 }: C2SyncButtonProps) {
-  const { isConnected, isLoading: isStatusLoading } = useConcept2Status(athleteId);
-  const { triggerSync, isSyncing, syncError, syncResult } = useTriggerC2Sync(athleteId);
+  // Use different hooks based on mode
+  const athleteStatus = useConcept2Status(mode === 'athlete' ? athleteId : undefined);
+  const athleteSync = useTriggerC2Sync(mode === 'athlete' ? athleteId : undefined);
+  const userStatus = useMyC2Status();
+  const userSync = useMyC2Sync();
+
+  // Select the appropriate values based on mode
+  const isConnected = mode === 'user' ? userStatus.isConnected : athleteStatus.isConnected;
+  const isStatusLoading = mode === 'user' ? userStatus.isLoading : athleteStatus.isLoading;
+  const triggerSync = mode === 'user' ? userSync.triggerSync : athleteSync.triggerSync;
+  const isSyncing = mode === 'user' ? userSync.isSyncing : athleteSync.isSyncing;
+  const syncError = mode === 'user' ? userSync.syncError : athleteSync.syncError;
+  const syncResult = mode === 'user' ? userSync.syncResult : athleteSync.syncResult;
+  const lastSyncedAt = mode === 'user' ? userStatus.lastSyncedAt : undefined;
+  const username = mode === 'user' ? userStatus.username : undefined;
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -72,6 +97,31 @@ export function C2SyncButton({
   };
 
   const isDisabled = !isConnected || isSyncing || isStatusLoading;
+
+  // Build tooltip text
+  const getTooltipText = () => {
+    if (!isConnected) {
+      return 'Concept2 not connected';
+    }
+    if (showError && syncError) {
+      return `Sync failed: ${(syncError as any)?.message || 'Unknown error'}`;
+    }
+    if (showSuccess) {
+      return 'Sync complete';
+    }
+    if (mode === 'user' && (username || lastSyncedAt)) {
+      const parts: string[] = ['Sync Concept2 workouts'];
+      if (username) parts.push(`Connected as: ${username}`);
+      if (lastSyncedAt) {
+        const lastSyncDate = new Date(lastSyncedAt);
+        parts.push(
+          `Last synced: ${lastSyncDate.toLocaleDateString()} ${lastSyncDate.toLocaleTimeString()}`
+        );
+      }
+      return parts.join('\n');
+    }
+    return 'Sync Concept2 workouts';
+  };
 
   // Determine button content based on state
   const getButtonContent = () => {
@@ -114,6 +164,8 @@ export function C2SyncButton({
     'inline-flex items-center justify-center rounded-md transition-colors font-medium';
   const sizeClasses = size === 'sm' ? 'text-xs' : 'text-sm';
 
+  const tooltipText = getTooltipText();
+
   // Icon-only variant
   if (variant === 'icon') {
     const iconSizeClasses = size === 'sm' ? 'w-7 h-7' : 'w-9 h-9';
@@ -122,15 +174,7 @@ export function C2SyncButton({
         onClick={handleClick}
         disabled={isDisabled}
         className={`${baseClasses} ${sizeClasses} ${iconSizeClasses} ${className}`}
-        title={
-          !isConnected
-            ? 'Concept2 not connected'
-            : showError
-              ? `Sync failed: ${syncError?.message || 'Unknown error'}`
-              : showSuccess
-                ? 'Sync complete'
-                : 'Sync Concept2 workouts'
-        }
+        title={tooltipText}
       >
         {icon}
       </button>
@@ -144,13 +188,7 @@ export function C2SyncButton({
       onClick={handleClick}
       disabled={isDisabled}
       className={`${baseClasses} ${sizeClasses} ${buttonSizeClasses} ${className}`}
-      title={
-        !isConnected
-          ? 'Concept2 not connected'
-          : showError
-            ? `Sync failed: ${syncError?.message || 'Unknown error'}`
-            : undefined
-      }
+      title={tooltipText}
     >
       {icon}
       <span>{text}</span>
