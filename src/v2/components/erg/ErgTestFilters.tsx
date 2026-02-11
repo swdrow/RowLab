@@ -29,6 +29,26 @@ const TEST_TYPE_OPTIONS: Array<{ value: TestType | 'all'; label: string }> = [
 ];
 
 /**
+ * Source filter options
+ */
+const SOURCE_OPTIONS: Array<{ value: 'all' | 'manual' | 'concept2'; label: string }> = [
+  { value: 'all', label: 'All Sources' },
+  { value: 'manual', label: 'Manual' },
+  { value: 'concept2', label: 'Concept2' },
+];
+
+/**
+ * Machine type filter options
+ */
+const MACHINE_TYPE_OPTIONS: Array<{ value: 'all' | 'rower' | 'bikerg' | 'skierg'; label: string }> =
+  [
+    { value: 'all', label: 'All Ergs' },
+    { value: 'rower', label: 'RowErg' },
+    { value: 'bikerg', label: 'BikeErg' },
+    { value: 'skierg', label: 'SkiErg' },
+  ];
+
+/**
  * Calculate ISO date string for N days ago
  */
 function getDaysAgo(days: number): string {
@@ -48,6 +68,22 @@ export function ErgTestFilters({ filters, onFilterChange }: ErgTestFiltersProps)
     onFilterChange({
       ...filters,
       testType: value,
+    });
+  };
+
+  const handleSourceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as 'all' | 'manual' | 'concept2';
+    onFilterChange({
+      ...filters,
+      source: value,
+    });
+  };
+
+  const handleMachineTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as 'all' | 'rower' | 'bikerg' | 'skierg';
+    onFilterChange({
+      ...filters,
+      machineType: value,
     });
   };
 
@@ -98,6 +134,44 @@ export function ErgTestFilters({ filters, onFilterChange }: ErgTestFiltersProps)
             className="px-3 py-1.5 bg-bg-surface border border-bdr-default rounded-md text-sm text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
           >
             {TEST_TYPE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Source filter */}
+        <div className="flex items-center gap-2">
+          <label htmlFor="source" className="text-sm font-medium text-txt-secondary">
+            Source:
+          </label>
+          <select
+            id="source"
+            value={filters.source || 'all'}
+            onChange={handleSourceChange}
+            className="px-3 py-1.5 bg-bg-surface border border-bdr-default rounded-md text-sm text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
+          >
+            {SOURCE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Machine type filter */}
+        <div className="flex items-center gap-2">
+          <label htmlFor="machineType" className="text-sm font-medium text-txt-secondary">
+            Erg:
+          </label>
+          <select
+            id="machineType"
+            value={filters.machineType || 'all'}
+            onChange={handleMachineTypeChange}
+            className="px-3 py-1.5 bg-bg-surface border border-bdr-default rounded-md text-sm text-txt-primary focus:outline-none focus:ring-2 focus:ring-interactive-primary focus:border-transparent"
+          >
+            {MACHINE_TYPE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

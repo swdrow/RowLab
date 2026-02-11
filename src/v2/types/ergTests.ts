@@ -32,6 +32,9 @@ export interface ErgTest {
   weightKg: number | null;
   notes: string | null;
   createdAt: string;
+  source?: 'manual' | 'concept2';
+  machineType?: 'rower' | 'bikerg' | 'skierg' | null;
+  c2LogbookId?: string | null;
 }
 
 /**
@@ -42,6 +45,8 @@ export interface ErgTestFilters {
   testType?: TestType | 'all';
   fromDate?: string; // ISO date
   toDate?: string; // ISO date
+  source?: 'all' | 'manual' | 'concept2';
+  machineType?: 'all' | 'rower' | 'bikerg' | 'skierg';
 }
 
 /**
@@ -113,6 +118,15 @@ export interface BulkImportResult {
     error: string;
   }>;
 }
+
+/**
+ * Machine type display names
+ */
+export const MACHINE_TYPE_LABELS: Record<string, string> = {
+  rower: 'RowErg',
+  bikerg: 'BikeErg',
+  skierg: 'SkiErg',
+};
 
 /**
  * Concept2 connection status

@@ -4,6 +4,7 @@ import { VirtualTable } from '@v2/components/common/VirtualTable';
 import { Pencil, Trash2, Trophy } from 'lucide-react';
 import { ErgTableSkeleton, ErgMobileListSkeleton } from '@v2/features/erg/components/ErgSkeleton';
 import type { ErgTest } from '@v2/types/ergTests';
+import { MACHINE_TYPE_LABELS } from '@v2/types/ergTests';
 
 export interface ErgTestsTableProps {
   tests: ErgTest[];
@@ -58,6 +59,46 @@ function TestTypeBadge({ type }: { type: string }) {
 }
 
 /**
+ * Concept2 badge for synced workouts
+ */
+function C2Badge() {
+  return (
+    <span
+      className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#1a1a2e]/80 text-[#00b4d8] border border-[#00b4d8]/30"
+      title="Synced from Concept2 Logbook"
+    >
+      C2
+    </span>
+  );
+}
+
+/**
+ * Machine type badge (BikeErg/SkiErg only, RowErg is default and not shown)
+ */
+function MachineTypeBadge({ machineType }: { machineType: 'bikerg' | 'skierg' }) {
+  const config = {
+    bikerg: {
+      label: MACHINE_TYPE_LABELS.bikerg,
+      className: 'bg-data-warning/10 text-data-warning border border-data-warning/30',
+    },
+    skierg: {
+      label: MACHINE_TYPE_LABELS.skierg,
+      className: 'bg-data-good/10 text-data-good border border-data-good/30',
+    },
+  };
+
+  const { label, className } = config[machineType];
+
+  return (
+    <span
+      className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${className}`}
+    >
+      {label}
+    </span>
+  );
+}
+
+/**
  * Mobile card view for erg tests
  */
 function ErgTestCard({
@@ -83,7 +124,13 @@ function ErgTestCard({
           </h3>
           <p className="text-sm text-txt-tertiary">{formatDate(test.testDate)}</p>
         </div>
-        <TestTypeBadge type={test.testType} />
+        <div className="flex items-center gap-1.5 flex-wrap justify-end">
+          <TestTypeBadge type={test.testType} />
+          {test.source === 'concept2' && <C2Badge />}
+          {test.machineType && test.machineType !== 'rower' && (
+            <MachineTypeBadge machineType={test.machineType as 'bikerg' | 'skierg'} />
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2 text-sm mb-3">
@@ -174,8 +221,16 @@ export function ErgTestsTable({
         id: 'testType',
         header: 'Type',
         accessorKey: 'testType',
-        cell: ({ row }) => <TestTypeBadge type={row.original.testType} />,
-        size: 100,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <TestTypeBadge type={row.original.testType} />
+            {row.original.source === 'concept2' && <C2Badge />}
+            {row.original.machineType && row.original.machineType !== 'rower' && (
+              <MachineTypeBadge machineType={row.original.machineType as 'bikerg' | 'skierg'} />
+            )}
+          </div>
+        ),
+        size: 160,
       },
       {
         id: 'testDate',
