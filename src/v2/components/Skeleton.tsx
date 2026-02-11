@@ -61,16 +61,16 @@ export function Skeleton({
 
   return (
     <div
-      className={`bg-surface-elevated animate-shimmer ${preset.rounded} ${className}`}
+      className={`bg-ink-well/50 animate-shimmer ${preset.rounded} ${className}`}
       style={{
         width: preset.width,
         height: preset.height,
         background: `
           linear-gradient(
             90deg,
-            var(--color-bg-surface-elevated) 0%,
-            var(--color-bg-hover) 50%,
-            var(--color-bg-surface-elevated) 100%
+            var(--color-ink-well-50) 0%,
+            var(--color-ink-well-30) 50%,
+            var(--color-ink-well-50) 100%
           )
         `,
         backgroundSize: '200% 100%',

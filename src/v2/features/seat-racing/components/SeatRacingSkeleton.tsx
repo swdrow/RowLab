@@ -17,10 +17,7 @@ interface SeatRacingSkeletonProps {
 
 export function SeatRacingSkeleton({ className = '' }: SeatRacingSkeletonProps) {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`space-y-6 ${className}`}>
         {/* Rankings Section */}
         <RankingsTableSkeleton />
@@ -48,10 +45,7 @@ interface SessionListSkeletonProps {
 
 export function SessionListSkeleton({ cards = 5, className = '' }: SessionListSkeletonProps) {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`space-y-3 ${className}`}>
         {Array.from({ length: cards }).map((_, index) => (
           <SessionCardSkeleton key={index} />
@@ -108,10 +102,7 @@ interface RankingsTableSkeletonProps {
 
 export function RankingsTableSkeleton({ rows = 8, className = '' }: RankingsTableSkeletonProps) {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`bg-bg-surface rounded-lg border border-bdr-default ${className}`}>
         {/* Header with actions */}
         <div className="flex items-center justify-between p-4 border-b border-bdr-default">
@@ -195,12 +186,12 @@ interface RankingsChartSkeletonProps {
   className?: string;
 }
 
-export function RankingsChartSkeleton({ height = 200, className = '' }: RankingsChartSkeletonProps) {
+export function RankingsChartSkeleton({
+  height = 200,
+  className = '',
+}: RankingsChartSkeletonProps) {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`p-4 bg-bg-surface rounded-lg border border-bdr-default ${className}`}>
         <div className="flex items-center justify-between mb-4">
           <Skeleton height={18} width={160} />
@@ -217,11 +208,7 @@ export function RankingsChartSkeleton({ height = 200, className = '' }: Rankings
             const barHeight = Math.random() * 60 + 20;
             return (
               <div key={i} className="flex-1 flex flex-col items-center">
-                <Skeleton
-                  height={`${barHeight}%`}
-                  width="100%"
-                  borderRadius={4}
-                />
+                <Skeleton height={`${barHeight}%`} width="100%" borderRadius={4} />
               </div>
             );
           })}
@@ -236,10 +223,7 @@ export function RankingsChartSkeleton({ height = 200, className = '' }: Rankings
  */
 export function SessionDetailSkeleton() {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -264,10 +248,7 @@ export function SessionDetailSkeleton() {
         <div className="space-y-4">
           <Skeleton height={20} width={80} />
           {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="p-4 bg-bg-surface border border-bdr-default rounded-lg"
-            >
+            <div key={i} className="p-4 bg-bg-surface border border-bdr-default rounded-lg">
               <div className="flex items-center justify-between mb-3">
                 <Skeleton height={18} width={100} />
                 <Skeleton height={14} width={60} />

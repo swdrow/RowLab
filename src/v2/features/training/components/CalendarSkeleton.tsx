@@ -19,10 +19,7 @@ interface CalendarSkeletonProps {
 
 export function CalendarSkeleton({ view = 'month', className = '' }: CalendarSkeletonProps) {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`training-calendar ${className}`}>
         {/* Toolbar */}
         <CalendarToolbarSkeleton />
@@ -107,13 +104,7 @@ function MonthViewSkeleton() {
 /**
  * DayCellSkeleton - Individual day cell skeleton
  */
-function DayCellSkeleton({
-  hasEvents,
-  eventCount,
-}: {
-  hasEvents: boolean;
-  eventCount: number;
-}) {
+function DayCellSkeleton({ hasEvents, eventCount }: { hasEvents: boolean; eventCount: number }) {
   return (
     <div className="min-h-[100px] p-1 border-r border-bdr-default last:border-r-0">
       {/* Date number */}
@@ -170,10 +161,7 @@ function WeekViewSkeleton() {
           {/* Time gutter */}
           <div className="w-16 border-r border-bdr-default">
             {hours.map((hour) => (
-              <div
-                key={hour}
-                className="h-12 border-b border-bdr-default px-2 py-1"
-              >
+              <div key={hour} className="h-12 border-b border-bdr-default px-2 py-1">
                 <Skeleton height={12} width={35} />
               </div>
             ))}
@@ -183,10 +171,7 @@ function WeekViewSkeleton() {
           {daysOfWeek.map((day) => (
             <div key={day} className="border-r border-bdr-default last:border-r-0">
               {hours.map((hour) => (
-                <div
-                  key={hour}
-                  className="h-12 border-b border-bdr-default relative"
-                >
+                <div key={hour} className="h-12 border-b border-bdr-default relative">
                   {/* Random event placeholder */}
                   {Math.random() > 0.85 && (
                     <Skeleton
@@ -215,10 +200,7 @@ function WeekViewSkeleton() {
  */
 export function WorkoutCardSkeleton() {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className="p-3 bg-bg-surface rounded-lg border border-bdr-default">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -241,10 +223,7 @@ export function WorkoutCardSkeleton() {
  */
 export function WorkoutFormSkeleton() {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className="space-y-6 p-6 bg-bg-surface rounded-lg border border-bdr-default">
         {/* Title field */}
         <div>
@@ -314,10 +293,7 @@ export function WorkoutFormSkeleton() {
  */
 export function ComplianceDashboardSkeleton() {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className="space-y-6">
         {/* Header with week navigation */}
         <div className="flex items-center justify-between">
@@ -350,7 +326,9 @@ export function ComplianceDashboardSkeleton() {
         <div className="bg-bg-surface rounded-lg border border-bdr-default overflow-hidden">
           {/* Header */}
           <div className="grid grid-cols-8 gap-px bg-bg-active">
-            <div className="p-3"><Skeleton height={14} width={60} /></div>
+            <div className="p-3">
+              <Skeleton height={14} width={60} />
+            </div>
             {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
               <div key={day} className="p-3 text-center">
                 <Skeleton height={14} width={30} />
@@ -361,7 +339,9 @@ export function ComplianceDashboardSkeleton() {
           {/* Rows */}
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="grid grid-cols-8 gap-px border-t border-bdr-default">
-              <div className="p-3"><Skeleton height={14} width={100} /></div>
+              <div className="p-3">
+                <Skeleton height={14} width={100} />
+              </div>
               {Array.from({ length: 7 }).map((_, j) => (
                 <div key={j} className="p-3 text-center">
                   <Skeleton height={16} width={30} />

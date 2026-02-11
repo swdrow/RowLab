@@ -20,7 +20,7 @@ interface AttendanceSkeletonProps {
 
 export function AttendanceSkeleton({ rowCount = 8, className = '' }: AttendanceSkeletonProps) {
   return (
-    <SkeletonTheme baseColor="var(--color-bg-surface)" highlightColor="var(--color-bg-hover)">
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`space-y-4 ${className}`}>
         {/* Date picker row */}
         <div className="flex items-center justify-between">
