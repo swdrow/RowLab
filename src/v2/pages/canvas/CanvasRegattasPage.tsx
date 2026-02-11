@@ -91,18 +91,18 @@ export function CanvasRegattasPage() {
 
   // Handlers
   const handleSelectRegatta = (regatta: Regatta) => {
-    navigate(`/app/canvas/regattas/${regatta.id}`);
+    navigate(`/app/regattas/${regatta.id}`);
   };
 
   const handleBack = () => {
-    navigate('/app/canvas/regattas');
+    navigate('/app/regattas');
   };
 
   const handleCreate = (data: RegattaFormData) => {
     createRegatta.mutate(data, {
       onSuccess: (newRegatta) => {
         setIsFormOpen(false);
-        navigate(`/app/canvas/regattas/${newRegatta.id}`);
+        navigate(`/app/regattas/${newRegatta.id}`);
       },
     });
   };
@@ -125,7 +125,7 @@ export function CanvasRegattasPage() {
       onSuccess: () => {
         setDeleteConfirm(null);
         if (regattaId === deleteConfirm.id) {
-          navigate('/app/canvas/regattas');
+          navigate('/app/regattas');
         }
       },
     });
