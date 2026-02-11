@@ -1,45 +1,45 @@
 import { Link } from 'react-router-dom';
 import { Users, CheckCircle, XCircle } from '@phosphor-icons/react';
-import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '../../../../contexts/AuthContext';
-
-interface AttendanceSummary {
-  totalAthletes: number;
-  presentToday: number;
-  absentToday: number;
-  attendanceRate: number;
-}
+import { useMemo } from 'react';
+import { useAttendanceSummary } from '../../../../hooks/useAttendance';
 
 export function AttendanceSummaryWidget(_props: import('../../types').WidgetProps) {
-  const accessToken = useAuth().accessToken;
-  const activeTeamId = useAuth().activeTeamId;
+  const today = new Date().toISOString().split('T')[0] || '';
+  const { data, isLoading } = useAttendanceSummary(today, today);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['attendance-summary', activeTeamId],
-    queryFn: async (): Promise<AttendanceSummary> => {
-      const today = new Date().toISOString().split('T')[0];
-      const response = await fetch(`/api/v1/attendance/summary?date=${today}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'X-Team-ID': activeTeamId || '',
-        },
-      });
+  // Aggregate per-athlete summary data into totals
+  const aggregated = useMemo(() => {
+    if (!data || data.length === 0) {
+      return {
+        totalAthletes: 0,
+        presentToday: 0,
+        absentToday: 0,
+        attendanceRate: 0,
+      };
+    }
 
-      if (!response.ok) {
-        // Return default if no data
-        return {
-          totalAthletes: 0,
-          presentToday: 0,
-          absentToday: 0,
-          attendanceRate: 0,
-        };
+    const totalAthletes = data.length;
+    let presentToday = 0;
+    let absentToday = 0;
+
+    for (const athlete of data) {
+      // Count present + late as "present today"
+      if (athlete.present > 0 || athlete.late > 0) {
+        presentToday++;
+      } else {
+        absentToday++;
       }
+    }
 
-      return response.json();
-    },
-    enabled: !!accessToken && !!activeTeamId,
-    staleTime: 5 * 60 * 1000,
-  });
+    const attendanceRate = totalAthletes > 0 ? (presentToday / totalAthletes) * 100 : 0;
+
+    return {
+      totalAthletes,
+      presentToday,
+      absentToday,
+      attendanceRate,
+    };
+  }, [data]);
 
   return (
     <div className="h-full flex flex-col">
@@ -64,14 +64,14 @@ export function AttendanceSummaryWidget(_props: import('../../types').WidgetProp
           {/* Present */}
           <div className="bg-green-500/10 rounded-lg p-4 flex flex-col items-center justify-center">
             <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
-            <div className="text-2xl font-bold text-green-500">{data?.presentToday || 0}</div>
+            <div className="text-2xl font-bold text-green-500">{aggregated.presentToday}</div>
             <div className="text-xs text-txt-muted">Present</div>
           </div>
 
           {/* Absent */}
           <div className="bg-red-500/10 rounded-lg p-4 flex flex-col items-center justify-center">
             <XCircle className="w-8 h-8 text-red-500 mb-2" />
-            <div className="text-2xl font-bold text-red-500">{data?.absentToday || 0}</div>
+            <div className="text-2xl font-bold text-red-500">{aggregated.absentToday}</div>
             <div className="text-xs text-txt-muted">Absent</div>
           </div>
 
@@ -80,7 +80,9 @@ export function AttendanceSummaryWidget(_props: import('../../types').WidgetProp
             <div>
               <div className="text-sm text-txt-muted">Attendance Rate</div>
               <div className="text-xl font-bold text-txt-primary">
-                {data?.attendanceRate ? `${Math.round(data.attendanceRate)}%` : 'N/A'}
+                {aggregated.attendanceRate > 0
+                  ? `${Math.round(aggregated.attendanceRate)}%`
+                  : 'N/A'}
               </div>
             </div>
             <div className="w-20 h-20 relative">
@@ -101,7 +103,7 @@ export function AttendanceSummaryWidget(_props: import('../../types').WidgetProp
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="3"
-                  strokeDasharray={`${(data?.attendanceRate || 0) * 1.005} 100`}
+                  strokeDasharray={`${aggregated.attendanceRate * 1.005} 100`}
                   className="text-accent-primary"
                 />
               </svg>
