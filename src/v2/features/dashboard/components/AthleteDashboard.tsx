@@ -74,39 +74,32 @@ export function AthleteDashboard() {
   const teamCount = teams.length;
 
   return (
-    <div className="min-h-screen bg-surface-base p-6">
+    <div>
       <div className="max-w-7xl mx-auto">
-        {/* Page header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-txt-primary">My Dashboard</h1>
-
-          {/* Header actions */}
-          <div className="flex items-center gap-3">
-            <TourLauncher tourId="athlete-dashboard" variant="button" />
-
-            {/* Edit mode toggle */}
-            <button
-              data-tour="edit-layout"
-              onClick={() => setIsEditing(!isEditing)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
-                isEditing
-                  ? 'bg-accent-primary/10 border-accent-primary/20 text-accent-primary'
-                  : 'border-ink-border text-txt-secondary hover:text-txt-primary hover:border-bdr-focus'
-              }`}
-            >
-              {isEditing ? (
-                <>
-                  <Gear className="w-5 h-5" />
-                  Done Editing
-                </>
-              ) : (
-                <>
-                  <ArrowsOut className="w-5 h-5" />
-                  Edit Layout
-                </>
-              )}
-            </button>
-          </div>
+        {/* Actions Bar (header text provided by CanvasMeDashboard) */}
+        <div className="flex items-center justify-end mb-4 gap-3">
+          <TourLauncher tourId="athlete-dashboard" variant="button" />
+          <button
+            data-tour="edit-layout"
+            onClick={() => setIsEditing(!isEditing)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
+              isEditing
+                ? 'bg-accent-copper/10 border-accent-copper/20 text-accent-copper'
+                : 'border-white/[0.08] text-ink-secondary hover:text-ink-primary hover:border-white/[0.12]'
+            }`}
+          >
+            {isEditing ? (
+              <>
+                <Gear className="w-5 h-5" />
+                Done Editing
+              </>
+            ) : (
+              <>
+                <ArrowsOut className="w-5 h-5" />
+                Edit Layout
+              </>
+            )}
+          </button>
         </div>
 
         {/* Dashboard content */}

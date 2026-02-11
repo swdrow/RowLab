@@ -157,33 +157,21 @@ export const CoachDashboard: React.FC = () => {
   }
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[var(--color-bg-base)] p-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">Dashboard</h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-            Your team overview and quick actions
-          </p>
-        </div>
-
-        {/* Header Actions */}
-        <div className="flex items-center gap-3">
-          <TourLauncher tourId="coach-dashboard" variant="button" />
-
-          {/* Edit Layout Toggle */}
-          <button
-            data-tour="edit-layout"
-            onClick={() => setIsEditing(!isEditing)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] ${
-              isEditing
-                ? 'bg-[var(--color-interactive-primary)] text-white hover:bg-[var(--color-interactive-hover)]'
-                : 'border border-ink-border text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-elevated)]'
-            }`}
-          >
-            {isEditing ? 'Done' : 'Edit Layout'}
-          </button>
-        </div>
+    <div ref={containerRef}>
+      {/* Actions Bar (header text provided by CanvasMeDashboard) */}
+      <div className="flex items-center justify-end mb-4 gap-3">
+        <TourLauncher tourId="coach-dashboard" variant="button" />
+        <button
+          data-tour="edit-layout"
+          onClick={() => setIsEditing(!isEditing)}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 ${
+            isEditing
+              ? 'bg-accent-copper text-ink-deep hover:bg-accent-copper/90'
+              : 'border border-white/[0.08] text-ink-primary hover:bg-white/[0.04]'
+          }`}
+        >
+          {isEditing ? 'Done' : 'Edit Layout'}
+        </button>
       </div>
 
       {/* Exception Banner */}
