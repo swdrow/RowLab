@@ -66,10 +66,7 @@ export function calculateMarginMeters(
  * @param boatClass - Boat class (e.g., '8+', '4+', '2x', '1x')
  * @returns Number of boat lengths
  */
-export function calculateBoatLengths(
-  distanceMeters: number,
-  boatClass: string
-): number {
+export function calculateBoatLengths(distanceMeters: number, boatClass: string): number {
   const shellLength = SHELL_LENGTHS[boatClass] || 10.0; // default 10m if unknown
   return distanceMeters / shellLength;
 }
@@ -202,7 +199,7 @@ export function secondsToBoatLengths(
   const distanceMeters = winnerSpeed * marginSeconds;
 
   // Get boat length in meters
-  const boatLengthFeet = BOAT_LENGTHS_FEET[boatClass] || BOAT_LENGTHS_FEET['8+']; // Default to 8+
+  const boatLengthFeet = BOAT_LENGTHS_FEET[boatClass] || BOAT_LENGTHS_FEET['8+'] || 60; // Default to 8+ (60 feet)
   const boatLengthMeters = boatLengthFeet * FEET_TO_METERS;
 
   return distanceMeters / boatLengthMeters;
@@ -221,7 +218,7 @@ export function boatLengthsToSeconds(
 ): number {
   if (winnerSpeed <= 0 || lengths <= 0) return 0;
 
-  const boatLengthFeet = BOAT_LENGTHS_FEET[boatClass] || BOAT_LENGTHS_FEET['8+'];
+  const boatLengthFeet = BOAT_LENGTHS_FEET[boatClass] || BOAT_LENGTHS_FEET['8+'] || 60; // Default to 8+ (60 feet)
   const boatLengthMeters = boatLengthFeet * FEET_TO_METERS;
   const distanceMeters = lengths * boatLengthMeters;
 
@@ -310,12 +307,15 @@ export function calculateRaceMargins(
 
   // Sort by place, filter out entries without times
   const sorted = [...results]
-    .filter(r => r.finishTimeSeconds !== null && r.place !== null)
+    .filter((r) => r.finishTimeSeconds !== null && r.place !== null)
     .sort((a, b) => (a.place || 0) - (b.place || 0));
 
   if (sorted.length === 0) return margins;
 
-  const winnerTime = sorted[0].finishTimeSeconds!;
+  const firstResult = sorted[0];
+  if (!firstResult || firstResult.finishTimeSeconds === null) return margins;
+
+  const winnerTime = firstResult.finishTimeSeconds;
 
   sorted.forEach((result, index) => {
     if (index === 0) {
@@ -352,7 +352,7 @@ export function getBoatClasses(): Array<{ value: string; label: string }> {
  * Get boat length in meters for a given boat class (feet-based calculation)
  */
 export function getBoatLengthMeters(boatClass: BoatClass | string): number {
-  const lengthFeet = BOAT_LENGTHS_FEET[boatClass] || BOAT_LENGTHS_FEET['8+'];
+  const lengthFeet = BOAT_LENGTHS_FEET[boatClass] || BOAT_LENGTHS_FEET['8+'] || 60; // Default to 8+ (60 feet)
   return lengthFeet * FEET_TO_METERS;
 }
 
@@ -372,16 +372,23 @@ export function parseTimeToSeconds(timeString: string): number | null {
   const parts = timeString.split(':');
   if (parts.length === 2) {
     // MM:SS.s
-    const minutes = parseInt(parts[0], 10);
-    const seconds = parseFloat(parts[1]);
+    const minutesPart = parts[0];
+    const secondsPart = parts[1];
+    if (!minutesPart || !secondsPart) return null;
+    const minutes = parseInt(minutesPart, 10);
+    const seconds = parseFloat(secondsPart);
     if (!isNaN(minutes) && !isNaN(seconds)) {
       return minutes * 60 + seconds;
     }
   } else if (parts.length === 3) {
     // HH:MM:SS.s
-    const hours = parseInt(parts[0], 10);
-    const minutes = parseInt(parts[1], 10);
-    const seconds = parseFloat(parts[2]);
+    const hoursPart = parts[0];
+    const minutesPart = parts[1];
+    const secondsPart = parts[2];
+    if (!hoursPart || !minutesPart || !secondsPart) return null;
+    const hours = parseInt(hoursPart, 10);
+    const minutes = parseInt(minutesPart, 10);
+    const seconds = parseFloat(secondsPart);
     if (!isNaN(hours) && !isNaN(minutes) && !isNaN(seconds)) {
       return hours * 3600 + minutes * 60 + seconds;
     }
