@@ -603,6 +603,236 @@ export async function historicalImport(userId, teamId, options = {}) {
   return { imported, skipped, total };
 }
 
+/**
+ * Coach sync - sync coach's C2 logbook with auto-match to roster athletes
+ * Auto-matches workouts to athletes by concept2UserId
+ * Athlete-owned connections take priority (dedup: athlete wins)
+ *
+ * @param {string} userId - Coach's user ID
+ * @param {string} teamId - Team ID
+ * @returns {Promise<{totalFetched: number, matched: number, unmatched: number, skippedAthleteOwned: number}>}
+ */
+export async function syncCoachWorkouts(userId, teamId) {
+  // Get coach's C2 auth
+  const auth = await prisma.concept2Auth.findUnique({
+    where: { userId },
+  });
+
+  if (!auth) {
+    throw new Error('No Concept2 connection');
+  }
+
+  // Get valid access token
+  const accessToken = await getValidToken(userId);
+  const { fetchUserProfile } = await import('./concept2Service.js');
+  const profile = await fetchUserProfile(accessToken);
+
+  // Fetch workouts since last sync (or last 30 days)
+  const fromDate = auth.lastSyncedAt || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const { results } = await fetchResults(accessToken, profile.id, { page: 1, perPage: 100 });
+
+  // Filter results newer than fromDate
+  const newResults = results.filter((r) => new Date(r.date) > fromDate);
+
+  // Get all athletes in the team with their C2 user IDs
+  const teamAthletes = await prisma.athlete.findMany({
+    where: { teamId },
+    select: {
+      id: true,
+      concept2UserId: true,
+      userId: true,
+      firstName: true,
+      lastName: true,
+    },
+  });
+
+  // Get all athlete-owned C2 connections (to check for priority)
+  const athleteOwnedConnections = await prisma.concept2Auth.findMany({
+    where: {
+      userId: { in: teamAthletes.filter((a) => a.userId).map((a) => a.userId) },
+    },
+    select: { c2UserId: true, userId: true },
+  });
+
+  const athleteOwnedC2Ids = new Set(athleteOwnedConnections.map((a) => a.c2UserId));
+
+  let matched = 0;
+  let unmatched = 0;
+  let skippedAthleteOwned = 0;
+
+  for (const result of newResults) {
+    // Check if already imported
+    const existing = await prisma.workout.findUnique({
+      where: { c2LogbookId: String(result.id) },
+    });
+
+    if (existing) {
+      continue; // Skip duplicates
+    }
+
+    // Try to match to athlete by C2 user ID from result
+    // Note: C2 API result includes user_id field indicating which C2 account uploaded it
+    const resultC2UserId = String(result.user_id || profile.id);
+
+    // Check if this C2 user ID has an athlete-owned connection (athlete wins)
+    if (athleteOwnedC2Ids.has(resultC2UserId)) {
+      skippedAthleteOwned++;
+      logger.info('Skipping coach-synced workout (athlete-owned wins)', {
+        c2LogbookId: result.id,
+        c2UserId: resultC2UserId,
+      });
+      continue;
+    }
+
+    // Find athlete by C2 user ID
+    const matchedAthlete = teamAthletes.find((a) => a.concept2UserId === resultC2UserId);
+
+    let athleteId = matchedAthlete?.id || null;
+
+    // Extract machine type and metrics
+    const machineType = mapC2MachineType(result.type || result.workout_type);
+    const avgPace = result.stroke_data?.avg_pace || null;
+    const avgWatts = result.stroke_data?.avg_watts || null;
+    const avgHeartRate = result.heart_rate?.average || null;
+
+    // Extract splits
+    const splits = extractSplits(result);
+
+    // Create Workout + WorkoutSplits atomically
+    await prisma.$transaction(async (tx) => {
+      const workout = await tx.workout.create({
+        data: {
+          athleteId, // null if unmatched
+          teamId,
+          source: 'concept2_sync',
+          c2LogbookId: String(result.id),
+          date: new Date(result.date),
+          distanceM: result.distance,
+          durationSeconds: result.time ? result.time / 10 : null,
+          strokeRate: result.stroke_rate,
+          calories: result.calories_total,
+          dragFactor: result.drag_factor,
+          machineType,
+          avgPace,
+          avgWatts,
+          avgHeartRate,
+          rawData: result,
+        },
+      });
+
+      if (splits.length > 0) {
+        await tx.workoutSplit.createMany({
+          data: splits.map((split) => ({ workoutId: workout.id, ...split })),
+        });
+      }
+    });
+
+    if (athleteId) {
+      matched++;
+    } else {
+      unmatched++;
+      logger.info('Unmatched workout stored for manual assignment', {
+        c2LogbookId: result.id,
+        resultC2UserId,
+      });
+    }
+  }
+
+  // Update last synced timestamp
+  await prisma.concept2Auth.update({
+    where: { userId },
+    data: { lastSyncedAt: new Date() },
+  });
+
+  return {
+    totalFetched: newResults.length,
+    matched,
+    unmatched,
+    skippedAthleteOwned,
+  };
+}
+
+/**
+ * Get unmatched workouts (athleteId null) for coach to manually resolve
+ *
+ * @param {string} teamId - Team ID
+ * @returns {Promise<Array<object>>}
+ */
+export async function getUnmatchedWorkouts(teamId) {
+  const unmatched = await prisma.workout.findMany({
+    where: {
+      teamId,
+      source: 'concept2_sync',
+      athleteId: null,
+    },
+    select: {
+      id: true,
+      c2LogbookId: true,
+      date: true,
+      distanceM: true,
+      durationSeconds: true,
+      machineType: true,
+      avgPace: true,
+      avgWatts: true,
+      rawData: true,
+    },
+    orderBy: { date: 'desc' },
+  });
+
+  return unmatched;
+}
+
+/**
+ * Assign unmatched workout to athlete
+ *
+ * @param {string} workoutId - Workout ID
+ * @param {string} athleteId - Athlete ID
+ * @param {string} teamId - Team ID for verification
+ * @returns {Promise<object>}
+ */
+export async function assignWorkoutToAthlete(workoutId, athleteId, teamId) {
+  // Verify workout belongs to team
+  const workout = await prisma.workout.findUnique({
+    where: { id: workoutId },
+  });
+
+  if (!workout || workout.teamId !== teamId) {
+    throw new Error('Workout not found in team');
+  }
+
+  // Verify athlete belongs to team
+  const athlete = await prisma.athlete.findUnique({
+    where: { id: athleteId },
+  });
+
+  if (!athlete || athlete.teamId !== teamId) {
+    throw new Error('Athlete not found in team');
+  }
+
+  // Update workout with athlete assignment
+  const updated = await prisma.workout.update({
+    where: { id: workoutId },
+    data: { athleteId },
+    include: {
+      athlete: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+  });
+
+  logger.info('Workout assigned to athlete', {
+    workoutId,
+    athleteId,
+    athleteName: `${athlete.firstName} ${athlete.lastName}`,
+  });
+
+  return updated;
+}
+
 export default {
   syncUserWorkouts,
   syncSingleResult,
@@ -611,4 +841,7 @@ export default {
   extractSplits,
   browseC2Logbook,
   historicalImport,
+  syncCoachWorkouts,
+  getUnmatchedWorkouts,
+  assignWorkoutToAthlete,
 };

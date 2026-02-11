@@ -18,7 +18,14 @@ import {
   handleWebhook,
   connectAthlete,
 } from '../services/concept2Service.js';
-import { syncUserWorkouts, browseC2Logbook, historicalImport } from '../services/c2SyncService.js';
+import {
+  syncUserWorkouts,
+  browseC2Logbook,
+  historicalImport,
+  syncCoachWorkouts,
+  getUnmatchedWorkouts,
+  assignWorkoutToAthlete,
+} from '../services/c2SyncService.js';
 import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -531,5 +538,113 @@ router.post('/historical-import', authenticateToken, teamIsolation, async (req, 
     });
   }
 });
+
+/**
+ * POST /api/v1/concept2/sync/coach
+ * Coach sync - sync coach's C2 logbook with auto-match to roster athletes
+ */
+router.post(
+  '/sync/coach',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  async (req, res) => {
+    try {
+      const result = await syncCoachWorkouts(req.user.id, req.user.activeTeamId);
+      res.json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      if (error.message === 'No Concept2 connection') {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_CONNECTED', message: error.message },
+        });
+      }
+      logger.error('Coach sync error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to sync coach workouts' },
+      });
+    }
+  }
+);
+
+/**
+ * GET /api/v1/concept2/unmatched/:teamId
+ * Get unmatched workouts for manual assignment
+ */
+router.get(
+  '/unmatched/:teamId',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  [param('teamId').isUUID()],
+  validateRequest,
+  async (req, res) => {
+    try {
+      const workouts = await getUnmatchedWorkouts(req.params.teamId);
+      res.json({
+        success: true,
+        data: { workouts },
+      });
+    } catch (error) {
+      logger.error('Get unmatched workouts error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to get unmatched workouts' },
+      });
+    }
+  }
+);
+
+/**
+ * PUT /api/v1/concept2/assign-workout
+ * Assign unmatched workout to athlete
+ */
+router.put(
+  '/assign-workout',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  async (req, res) => {
+    try {
+      const { workoutId, athleteId } = req.body;
+
+      if (!workoutId || !athleteId) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'workoutId and athleteId are required',
+          },
+        });
+      }
+
+      const workout = await assignWorkoutToAthlete(workoutId, athleteId, req.user.activeTeamId);
+
+      res.json({
+        success: true,
+        data: { workout },
+      });
+    } catch (error) {
+      if (
+        error.message === 'Workout not found in team' ||
+        error.message === 'Athlete not found in team'
+      ) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: error.message },
+        });
+      }
+      logger.error('Assign workout error:', { error: error.message, stack: error.stack });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to assign workout' },
+      });
+    }
+  }
+);
 
 export default router;
