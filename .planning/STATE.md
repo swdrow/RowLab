@@ -2,12 +2,12 @@
 
 ## Current Status
 
-**Milestone:** v3.0 — App Redesign (COMPLETE)
-**Phase:** 36.1 (v3.0 Tech Debt Closure) — COMPLETE
-**Plan:** 5/5 complete
-**Status:** Phase 36.1 complete: Fixed TypeScript errors in 4 target utils, deleted obsolete V1 auth tests (4 failures to 0), resolved GitHub #4 with edge case handling + tests, wired useExceptions to real backend aggregation, updated all documentation for v3.0 completion.
-**Next Phase:** 37 (Concept2 Workout Sync) — v3.1 Milestone
-**Last activity:** 2026-02-11 — Completed Phase 36.1 v3.0 Tech Debt Closure
+**Milestone:** v3.1 — Integrations, Analytics & Social Sharing
+**Phase:** 37 (Concept2 Workout Sync) — IN PROGRESS
+**Plan:** 1/8 complete
+**Status:** Plan 37-01 complete: Enhanced C2 sync schema with WorkoutSplit model and machineType field. Built split-aware c2SyncService extracting richer data from C2 API (summary metrics + per-split breakdown). All sync paths (manual, webhook, background) use enhanced service.
+**Next Plan:** 37-02 (Testing infrastructure with C2 API mock and TDD test suite)
+**Last activity:** 2026-02-11 — Completed 37-01-PLAN.md (Enhanced C2 Sync Schema & Service)
 
 ## Project Reference
 
@@ -69,18 +69,18 @@ v2.1 Progress: ██████████████ (5 phases complete) �
 
 v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 
-### v3.1 Milestone (Planned)
+### v3.1 Milestone (Active)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 37 | Concept2 Workout Sync | Planned | TBD |
+| 37 | Concept2 Workout Sync | In Progress | 2/8 |
 | 38 | Share Card Platform | Planned | TBD |
 | 39 | Strava Integration & Cross-Platform Sync | Planned | TBD |
 | 40 | Performance Analytics Engine | Planned | TBD |
 | 41 | Fitness Intelligence & Training Load | Planned | TBD |
 | 42 | Garmin Connect & On-Water Data | Planned | TBD |
 
-v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
+v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete, 1 active)
 
 ### v3.0 Milestone (COMPLETE)
 
@@ -525,10 +525,10 @@ Key architectural decisions carrying forward:
 
 ## Session Continuity
 
-**Last session:** 2026-02-11
-**Stopped at:** Phase 36.1-04 COMPLETE. Wired useExceptions hook to real backend aggregation endpoint (attendance <70%, overdue sessions, stale erg data 60+ days).
+**Last session:** 2026-02-11 15:51:58Z
+**Stopped at:** Phase 37-02 COMPLETE. Built C2 API test infrastructure: nock mock server, 8 anonymized fixtures, 27 TDD tests (21 RED awaiting implementation).
 **Resume file:** None
-**Resume with:** Continue Phase 36.1 (determine next plan) or proceed to Phase 37 (Concept2 Workout Sync)
+**Resume with:** Continue Phase 37-03 (Manual sync endpoint and UI trigger) or await Plan 37-01 completion (schema migration + c2SyncService.js)
 
 ## Roadmap Evolution
 
