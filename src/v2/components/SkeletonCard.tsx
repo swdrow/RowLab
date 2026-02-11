@@ -12,7 +12,6 @@
  * <SkeletonCard count={3} />
  */
 
-import React from 'react';
 import { Skeleton } from './Skeleton';
 
 interface SkeletonCardProps {

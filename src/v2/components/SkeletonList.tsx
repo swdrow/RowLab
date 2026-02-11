@@ -12,7 +12,6 @@
  * <SkeletonList items={10} />
  */
 
-import React from 'react';
 import { Skeleton } from './Skeleton';
 
 interface SkeletonListProps {

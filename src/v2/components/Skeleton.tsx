@@ -18,8 +18,6 @@
  * <Skeleton width="200px" height="100px" />
  */
 
-import React from 'react';
-
 interface SkeletonProps {
   className?: string;
   width?: string;

@@ -12,7 +12,6 @@
  * <SkeletonTable rows={10} columns={6} />
  */
 
-import React from 'react';
 import { Skeleton } from './Skeleton';
 
 interface SkeletonTableProps {

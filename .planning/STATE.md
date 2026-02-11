@@ -3,11 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.0 — App Redesign
-**Phase:** 36 (Dead Code Cleanup) — IN PROGRESS
-**Plan:** 4/5 complete (9 commits)
-**Status:** Completed 36-04: Deleted 14 dead Zustand stores + entire feature toggle system (21 files, 4789 LOC), retained authStore/lineupStore/settingsStore for Canvas, kept CSS scoping for safety.
-**Next Plan:** 36-05 (Remove V1 hooks)
-**Last activity:** 2026-02-09 — Completed 36-04-PLAN.md: Dead stores and feature toggle cleanup
+**Phase:** 36 (Dead Code Cleanup) — COMPLETE ✅
+**Plan:** 5/5 complete (11 commits)
+**Status:** Phase 36 complete: Removed 208 dead files (30 V2 pages, 25 V1 pages, 131 V1 components, 15 stores, 7 CSS/hooks/utils), achieved 5.7% bundle reduction (35M→33M), 30-33% CSS optimization.
+**Next Phase:** 37 (Concept2 Workout Sync) or continue v3.0 cleanup
+**Last activity:** 2026-02-09 — Completed 36-05-PLAN.md: CSS token cleanup and final bundle optimization
 
 ## Project Reference
 
@@ -98,9 +98,9 @@ v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 | 33 | Regattas & Rankings Migration | Complete ✅ | 6/6 |
 | 34 | Gamification & Activity Feed Migration | Complete ✅ | 8/8 |
 | 35 | Canvas Promotion + Mobile | Complete ✅ | 11/11 |
-| 36 | Dead Code Cleanup | In Progress | 3/5 |
+| 36 | Dead Code Cleanup | Complete ✅ | 5/5 |
 
-v3.0 Progress: ██████████████████░░ (11 phases complete, 1 in progress, 1 remaining)
+v3.0 Progress: ████████████████████ (12 phases complete, 1 remaining)
 
 **Removed phases:** Phase 37 (Warm Copper Sweep — superseded by Canvas), Phase 38 (Canvas Redesign — work complete, route swap absorbed into Phase 35)
 

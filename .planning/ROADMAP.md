@@ -1321,11 +1321,35 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
-- [ ] 36-01-PLAN.md — Remove 30 dead V2 pages + clean App.jsx imports + record baseline bundle size
-- [ ] 36-02-PLAN.md — Remove 19 dead V1 pages + 4 dead layouts
-- [ ] 36-03-PLAN.md — Remove ~100 dead V1 components (preserve auth/landing dependencies)
-- [ ] 36-04-PLAN.md — Remove dead Zustand stores + CSS scoping + audit feature toggles
-- [ ] 36-05-PLAN.md — Remove dead CSS tokens + hooks/utils cleanup + final bundle comparison
+- [x] 36-01-PLAN.md — Remove 30 dead V2 pages + clean App.jsx imports + record baseline bundle size
+- [x] 36-02-PLAN.md — Remove 19 dead V1 pages + 4 dead layouts
+- [x] 36-03-PLAN.md — Remove ~100 dead V1 components (preserve auth/landing dependencies)
+- [x] 36-04-PLAN.md — Remove dead Zustand stores + CSS scoping + audit feature toggles
+- [x] 36-05-PLAN.md — Remove dead CSS tokens + hooks/utils cleanup + final bundle comparison
+
+---
+
+### Phase 36.1: v3.0 Tech Debt Closure
+
+**Goal:** Close remaining tech debt from v3.0 milestone audit: fix TypeScript errors, repair test failures, wire real exception data, resolve brand color tokens, and update all planning documentation to reflect completion.
+
+**Dependencies:** Phase 36 (dead code cleanup complete)
+
+**Gap Closure:** Closes gaps from v3.0-MILESTONE-AUDIT.md
+
+**Requirements:** DS-01 (partial → complete)
+
+**Success Criteria:**
+1. DS-01 fully satisfied — brand color tokens defined or ESLint exception for IntegrationsSection.tsx
+2. Zero TypeScript errors (66 → 0) in marginCalculations.ts, ergCsvParser.ts, warmupCalculator.ts, rrule.ts
+3. All tests pass (263/263) — fix or remove 4 obsolete authStore test failures
+4. useExceptions returns real data (not stub) for dashboard ExceptionAlertsWidget
+5. GitHub issue #4 composite ranking edge case resolved
+6. REQUIREMENTS.md checkboxes updated for phases 25-36
+7. ROADMAP.md plan checkboxes accurate
+8. README.md roadmap section reflects v3.0 completion
+
+**Plans:** TBD
 
 ---
 
@@ -1413,12 +1437,13 @@ The following requirements apply across all v3.0 phases:
 | 32 | Training & Attendance Migration | 9 | 6 | Complete ✅ |
 | 33 | Regattas & Rankings Migration | 10 | 6 | Complete ✅ |
 | 34 | Gamification & Activity Feed | 9 | 8 | Complete ✅ |
-| 35 | Canvas Promotion + Mobile | 12 | 11 | Complete |
-| 36 | Dead Code Cleanup | 4 | 5 | Not started |
+| 35 | Canvas Promotion + Mobile | 12 | 11 | Complete ✅ |
+| 36 | Dead Code Cleanup | 4 | 5 | Complete ✅ |
+| 36.1 | v3.0 Tech Debt Closure | 1 | TBD | Planned |
 | ~~37~~ | ~~Warm Copper Sweep~~ | — | — | Removed (superseded by Canvas) |
 | ~~38~~ | ~~Canvas Redesign~~ | — | 7 | Absorbed (work complete, route swap in Phase 35) |
 
-**v3.0 Total:** 13 phases (11 complete, 2 remaining)
+**v3.0 Total:** 14 phases (13 complete, 1 planned)
 
 ---
 
