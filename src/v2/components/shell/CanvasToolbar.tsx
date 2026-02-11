@@ -55,15 +55,15 @@ function getZoneActions(zoneId: string): ZoneAction[] {
       return [{ label: 'Notifications', icon: Bell }];
     case 'team':
       return [
-        { label: 'Add Athlete', icon: UserPlus, route: '/canvas/athletes' },
+        { label: 'Add Athlete', icon: UserPlus, route: '/app/athletes' },
         { label: 'Filter', icon: Filter },
       ];
     case 'training':
-      return [{ label: 'New Session', icon: ClipboardPlus, route: '/canvas/training/sessions' }];
+      return [{ label: 'New Session', icon: ClipboardPlus, route: '/app/training/sessions' }];
     case 'racing':
-      return [{ label: 'New Regatta', icon: Plus, route: '/canvas/regattas' }];
+      return [{ label: 'New Regatta', icon: Plus, route: '/app/regattas' }];
     case 'analysis':
-      return [{ label: 'Log Test', icon: Timer, route: '/canvas/erg-tests' }];
+      return [{ label: 'Log Test', icon: Timer, route: '/app/erg-tests' }];
     case 'settings':
       return [];
     default:
@@ -86,46 +86,46 @@ function getZoneSubNav(zoneId: string): SubNavItem[] {
     case 'home':
       return [
         { label: 'Dashboard', route: '/canvas', icon: LayoutGrid },
-        { label: 'Achievements', route: '/canvas/achievements', icon: Award },
-        { label: 'Challenges', route: '/canvas/challenges', icon: Target },
+        { label: 'Achievements', route: '/app/achievements', icon: Award },
+        { label: 'Challenges', route: '/app/challenges', icon: Target },
       ];
     case 'team':
       return [
-        { label: 'Athletes', route: '/canvas/athletes', icon: Users },
-        { label: 'Attendance', route: '/canvas/attendance', icon: UserCheck },
-        { label: 'Whiteboard', route: '/canvas/coach/whiteboard', icon: ClipboardList },
-        { label: 'Fleet', route: '/canvas/coach/fleet', icon: Ship },
-        { label: 'Availability', route: '/canvas/coach/availability', icon: CalendarRange },
-        { label: 'Recruiting', route: '/canvas/recruiting', icon: Briefcase },
+        { label: 'Athletes', route: '/app/athletes', icon: Users },
+        { label: 'Attendance', route: '/app/attendance', icon: UserCheck },
+        { label: 'Whiteboard', route: '/app/coach/whiteboard', icon: ClipboardList },
+        { label: 'Fleet', route: '/app/coach/fleet', icon: Ship },
+        { label: 'Availability', route: '/app/coach/availability', icon: CalendarRange },
+        { label: 'Recruiting', route: '/app/recruiting', icon: Briefcase },
       ];
     case 'training':
       return [
-        { label: 'Calendar', route: '/canvas/coach/training', icon: Calendar },
-        { label: 'Sessions', route: '/canvas/training/sessions', icon: Dumbbell },
-        { label: 'Lineup Builder', route: '/canvas/coach/lineup-builder', icon: LayoutGrid },
+        { label: 'Calendar', route: '/app/coach/training', icon: Calendar },
+        { label: 'Sessions', route: '/app/training/sessions', icon: Dumbbell },
+        { label: 'Lineup Builder', route: '/app/coach/lineup-builder', icon: LayoutGrid },
       ];
     case 'racing':
       return [
-        { label: 'Regattas', route: '/canvas/regattas', icon: Flag },
-        { label: 'Rankings', route: '/canvas/rankings', icon: BarChart2 },
-        { label: 'Seat Racing', route: '/canvas/coach/seat-racing', icon: Trophy },
+        { label: 'Regattas', route: '/app/regattas', icon: Flag },
+        { label: 'Rankings', route: '/app/rankings', icon: BarChart2 },
+        { label: 'Seat Racing', route: '/app/coach/seat-racing', icon: Trophy },
       ];
     case 'analysis':
       return [
-        { label: 'Erg Tests', route: '/canvas/erg-tests', icon: Timer },
+        { label: 'Erg Tests', route: '/app/erg-tests', icon: Timer },
         {
           label: 'Advanced Rankings',
-          route: '/canvas/coach/seat-racing/advanced-rankings',
+          route: '/app/coach/seat-racing/advanced-rankings',
           icon: Swords,
         },
         {
           label: 'Matrix Planner',
-          route: '/canvas/coach/seat-racing/matrix-planner',
+          route: '/app/coach/seat-racing/matrix-planner',
           icon: Grid3X3,
         },
       ];
     case 'settings':
-      return [{ label: 'Settings', route: '/canvas/settings', icon: Settings }];
+      return [{ label: 'Settings', route: '/app/settings', icon: Settings }];
     default:
       return [];
   }

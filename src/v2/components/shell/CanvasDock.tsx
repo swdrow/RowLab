@@ -31,7 +31,7 @@ export const ZONES: ZoneConfig[] = [
     id: 'home',
     name: 'Home',
     icon: LayoutDashboard,
-    route: '/canvas',
+    route: '/app',
     accent: '#FBBF24',
     accentRgb: '251, 191, 36',
     bgGradient:
@@ -41,7 +41,7 @@ export const ZONES: ZoneConfig[] = [
     id: 'team',
     name: 'Team',
     icon: Users,
-    route: '/canvas/athletes',
+    route: '/app/athletes',
     accent: '#14B8A6',
     accentRgb: '20, 184, 166',
     bgGradient:
@@ -51,7 +51,7 @@ export const ZONES: ZoneConfig[] = [
     id: 'training',
     name: 'Training',
     icon: Calendar,
-    route: '/canvas/coach/training',
+    route: '/app/coach/training',
     accent: '#F59E0B',
     accentRgb: '245, 158, 11',
     bgGradient:
@@ -61,7 +61,7 @@ export const ZONES: ZoneConfig[] = [
     id: 'racing',
     name: 'Racing',
     icon: Trophy,
-    route: '/canvas/regattas',
+    route: '/app/regattas',
     accent: '#F87171',
     accentRgb: '248, 113, 113',
     bgGradient:
@@ -71,7 +71,7 @@ export const ZONES: ZoneConfig[] = [
     id: 'analysis',
     name: 'Analysis',
     icon: BarChart3,
-    route: '/canvas/erg-tests',
+    route: '/app/erg-tests',
     accent: '#818CF8',
     accentRgb: '129, 140, 248',
     bgGradient:
@@ -81,7 +81,7 @@ export const ZONES: ZoneConfig[] = [
     id: 'settings',
     name: 'Settings',
     icon: Settings,
-    route: '/canvas/settings',
+    route: '/app/settings',
     accent: '#737373',
     accentRgb: '115, 115, 115',
     bgGradient:
@@ -104,24 +104,24 @@ export function useZone(): ZoneConfig {
   const { pathname } = useLocation();
 
   // Match route patterns to zones (order matters — most specific first)
-  if (pathname.startsWith('/canvas/settings')) return ZONE_SETTINGS;
-  if (pathname.startsWith('/canvas/erg-tests') || pathname.startsWith('/canvas/coach/seat-racing'))
+  if (pathname.startsWith('/app/settings')) return ZONE_SETTINGS;
+  if (pathname.startsWith('/app/erg-tests') || pathname.startsWith('/app/coach/seat-racing'))
     return ZONE_ANALYSIS;
-  if (pathname.startsWith('/canvas/regattas') || pathname.startsWith('/canvas/rankings'))
+  if (pathname.startsWith('/app/regattas') || pathname.startsWith('/app/rankings'))
     return ZONE_RACING;
   if (
-    pathname.startsWith('/canvas/training') ||
-    pathname.startsWith('/canvas/coach/training') ||
-    pathname.startsWith('/canvas/coach/lineup-builder')
+    pathname.startsWith('/app/training') ||
+    pathname.startsWith('/app/coach/training') ||
+    pathname.startsWith('/app/coach/lineup-builder')
   )
     return ZONE_TRAINING;
   if (
-    pathname.startsWith('/canvas/athletes') ||
-    pathname.startsWith('/canvas/attendance') ||
-    pathname.startsWith('/canvas/coach/whiteboard') ||
-    pathname.startsWith('/canvas/coach/fleet') ||
-    pathname.startsWith('/canvas/coach/availability') ||
-    pathname.startsWith('/canvas/recruiting')
+    pathname.startsWith('/app/athletes') ||
+    pathname.startsWith('/app/attendance') ||
+    pathname.startsWith('/app/coach/whiteboard') ||
+    pathname.startsWith('/app/coach/fleet') ||
+    pathname.startsWith('/app/coach/availability') ||
+    pathname.startsWith('/app/recruiting')
   )
     return ZONE_TEAM;
 
