@@ -1,0 +1,673 @@
+{
+  "user": {
+    "id": 99999,
+    "username": "test_rower",
+    "first_name": "Test",
+    "last_name": "Rower",
+    "gender": "M",
+    "country": "USA",
+    "email": "test.rower@example.com",
+    "profile_image": null
+  },
+  "results": [
+    {
+      "id": 100001,
+      "type": 0,
+      "date": "2024-01-15 10:30:00",
+      "distance": 2000,
+      "time": 4200,
+      "stroke_rate": 28,
+      "calories_total": 185,
+      "drag_factor": 120,
+      "heart_rate": {
+        "average": 165,
+        "max": 182,
+        "min": 148
+      },
+      "stroke_data": {
+        "avg_watts": 285,
+        "avg_pace": 1050
+      },
+      "intervals": [
+        {
+          "type": "distance",
+          "time": 1050,
+          "distance": 500,
+          "pace": 1050,
+          "watts": 285,
+          "stroke_rate": 28,
+          "heart_rate": 158,
+          "drag_factor": 120,
+          "calories": 46
+        },
+        {
+          "type": "distance",
+          "time": 1050,
+          "distance": 500,
+          "pace": 1050,
+          "watts": 285,
+          "stroke_rate": 28,
+          "heart_rate": 165,
+          "drag_factor": 120,
+          "calories": 46
+        },
+        {
+          "type": "distance",
+          "time": 1050,
+          "distance": 500,
+          "pace": 1050,
+          "watts": 285,
+          "stroke_rate": 28,
+          "heart_rate": 170,
+          "drag_factor": 120,
+          "calories": 47
+        },
+        {
+          "type": "distance",
+          "time": 1050,
+          "distance": 500,
+          "pace": 1050,
+          "watts": 285,
+          "stroke_rate": 28,
+          "heart_rate": 178,
+          "drag_factor": 120,
+          "calories": 46
+        }
+      ]
+    },
+    {
+      "id": 100002,
+      "type": 0,
+      "date": "2024-01-14 09:15:00",
+      "distance": 6000,
+      "time": 13800,
+      "stroke_rate": 24,
+      "calories_total": 520,
+      "drag_factor": 118,
+      "heart_rate": {
+        "average": 152,
+        "max": 168,
+        "min": 140
+      },
+      "stroke_data": {
+        "avg_watts": 245,
+        "avg_pace": 1150
+      },
+      "intervals": [
+        {
+          "type": "distance",
+          "time": 2300,
+          "distance": 1000,
+          "pace": 1150,
+          "watts": 245,
+          "stroke_rate": 24,
+          "heart_rate": 145,
+          "drag_factor": 118,
+          "calories": 87
+        },
+        {
+          "type": "distance",
+          "time": 2300,
+          "distance": 1000,
+          "pace": 1150,
+          "watts": 245,
+          "stroke_rate": 24,
+          "heart_rate": 150,
+          "drag_factor": 118,
+          "calories": 87
+        },
+        {
+          "type": "distance",
+          "time": 2300,
+          "distance": 1000,
+          "pace": 1150,
+          "watts": 245,
+          "stroke_rate": 24,
+          "heart_rate": 152,
+          "drag_factor": 118,
+          "calories": 87
+        },
+        {
+          "type": "distance",
+          "time": 2300,
+          "distance": 1000,
+          "pace": 1150,
+          "watts": 245,
+          "stroke_rate": 24,
+          "heart_rate": 155,
+          "drag_factor": 118,
+          "calories": 87
+        },
+        {
+          "type": "distance",
+          "time": 2300,
+          "distance": 1000,
+          "pace": 1150,
+          "watts": 245,
+          "stroke_rate": 24,
+          "heart_rate": 158,
+          "drag_factor": 118,
+          "calories": 86
+        },
+        {
+          "type": "distance",
+          "time": 2300,
+          "distance": 1000,
+          "pace": 1150,
+          "watts": 245,
+          "stroke_rate": 24,
+          "heart_rate": 162,
+          "drag_factor": 118,
+          "calories": 86
+        }
+      ]
+    },
+    {
+      "id": 100003,
+      "type": 2,
+      "date": "2024-01-13 14:00:00",
+      "distance": 12000,
+      "time": 18000,
+      "stroke_rate": 68,
+      "calories_total": 430,
+      "drag_factor": 100,
+      "heart_rate": {
+        "average": 138,
+        "max": 155,
+        "min": 125
+      },
+      "stroke_data": {
+        "avg_watts": 180,
+        "avg_pace": 900
+      },
+      "intervals": [
+        {
+          "type": "time",
+          "time": 3000,
+          "distance": 2000,
+          "pace": 900,
+          "watts": 180,
+          "stroke_rate": 68,
+          "heart_rate": 130,
+          "drag_factor": 100,
+          "calories": 72
+        },
+        {
+          "type": "time",
+          "time": 3000,
+          "distance": 2000,
+          "pace": 900,
+          "watts": 180,
+          "stroke_rate": 68,
+          "heart_rate": 135,
+          "drag_factor": 100,
+          "calories": 72
+        },
+        {
+          "type": "time",
+          "time": 3000,
+          "distance": 2000,
+          "pace": 900,
+          "watts": 180,
+          "stroke_rate": 68,
+          "heart_rate": 140,
+          "drag_factor": 100,
+          "calories": 71
+        },
+        {
+          "type": "time",
+          "time": 3000,
+          "distance": 2000,
+          "pace": 900,
+          "watts": 180,
+          "stroke_rate": 68,
+          "heart_rate": 142,
+          "drag_factor": 100,
+          "calories": 72
+        },
+        {
+          "type": "time",
+          "time": 3000,
+          "distance": 2000,
+          "pace": 900,
+          "watts": 180,
+          "stroke_rate": 68,
+          "heart_rate": 145,
+          "drag_factor": 100,
+          "calories": 72
+        },
+        {
+          "type": "time",
+          "time": 3000,
+          "distance": 2000,
+          "pace": 900,
+          "watts": 180,
+          "stroke_rate": 68,
+          "heart_rate": 148,
+          "drag_factor": 100,
+          "calories": 71
+        }
+      ]
+    },
+    {
+      "id": 100004,
+      "type": 1,
+      "date": "2024-01-12 16:45:00",
+      "distance": 5000,
+      "time": 12000,
+      "stroke_rate": 48,
+      "calories_total": 380,
+      "drag_factor": 110,
+      "heart_rate": {
+        "average": 148,
+        "max": 165,
+        "min": 135
+      },
+      "stroke_data": {
+        "avg_watts": 220,
+        "avg_pace": 1200
+      },
+      "intervals": [
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 220,
+          "stroke_rate": 48,
+          "heart_rate": 140,
+          "drag_factor": 110,
+          "calories": 76
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 220,
+          "stroke_rate": 48,
+          "heart_rate": 145,
+          "drag_factor": 110,
+          "calories": 76
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 220,
+          "stroke_rate": 48,
+          "heart_rate": 150,
+          "drag_factor": 110,
+          "calories": 76
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 220,
+          "stroke_rate": 48,
+          "heart_rate": 152,
+          "drag_factor": 110,
+          "calories": 76
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 220,
+          "stroke_rate": 48,
+          "heart_rate": 158,
+          "drag_factor": 110,
+          "calories": 76
+        }
+      ]
+    },
+    {
+      "id": 100005,
+      "type": 0,
+      "date": "2024-01-11 08:30:00",
+      "distance": 500,
+      "time": 850,
+      "stroke_rate": 36,
+      "calories_total": 42,
+      "drag_factor": 125,
+      "heart_rate": {
+        "average": 175,
+        "max": 188,
+        "min": 162
+      },
+      "stroke_data": {
+        "avg_watts": 410,
+        "avg_pace": 850
+      },
+      "intervals": [
+        {
+          "type": "distance",
+          "time": 850,
+          "distance": 500,
+          "pace": 850,
+          "watts": 410,
+          "stroke_rate": 36,
+          "heart_rate": 175,
+          "drag_factor": 125,
+          "calories": 42
+        }
+      ]
+    },
+    {
+      "id": 100006,
+      "type": 0,
+      "date": "2024-01-10 12:00:00",
+      "distance": 10000,
+      "time": 24000,
+      "stroke_rate": 22,
+      "calories_total": 645,
+      "drag_factor": 115,
+      "heart_rate": null,
+      "stroke_data": {
+        "avg_watts": 215,
+        "avg_pace": 1200
+      },
+      "intervals": [
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 64
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 65
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 64
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 65
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 64
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 65
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 64
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 65
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 64
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 215,
+          "stroke_rate": 22,
+          "heart_rate": null,
+          "drag_factor": 115,
+          "calories": 65
+        }
+      ]
+    },
+    {
+      "id": 100007,
+      "type": 0,
+      "date": "2024-01-09 07:15:00",
+      "distance": 5000,
+      "time": 11000,
+      "stroke_rate": 26,
+      "calories_total": 295,
+      "drag_factor": 118,
+      "heart_rate": {
+        "average": 155,
+        "max": 172,
+        "min": 142
+      },
+      "stroke_data": {
+        "avg_watts": 255,
+        "avg_pace": 1100
+      },
+      "intervals": [
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 148,
+          "drag_factor": 118,
+          "calories": 30
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 152,
+          "drag_factor": 118,
+          "calories": 29
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 155,
+          "drag_factor": 118,
+          "calories": 30
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 158,
+          "drag_factor": 118,
+          "calories": 29
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 160,
+          "drag_factor": 118,
+          "calories": 30
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 162,
+          "drag_factor": 118,
+          "calories": 29
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 165,
+          "drag_factor": 118,
+          "calories": 30
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 168,
+          "drag_factor": 118,
+          "calories": 29
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 170,
+          "drag_factor": 118,
+          "calories": 30
+        },
+        {
+          "type": "distance",
+          "time": 1100,
+          "distance": 500,
+          "pace": 1100,
+          "watts": 255,
+          "stroke_rate": 26,
+          "heart_rate": 172,
+          "drag_factor": 118,
+          "calories": 29
+        }
+      ]
+    },
+    {
+      "id": 100008,
+      "type": 1,
+      "date": "2024-01-08 11:30:00",
+      "distance": 3000,
+      "time": 7200,
+      "stroke_rate": 52,
+      "calories_total": 245,
+      "drag_factor": 105,
+      "heart_rate": {
+        "average": 142,
+        "max": 158,
+        "min": 128
+      },
+      "stroke_data": {
+        "avg_watts": 200,
+        "avg_pace": 1200
+      },
+      "intervals": [
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 200,
+          "stroke_rate": 52,
+          "heart_rate": 135,
+          "drag_factor": 105,
+          "calories": 82
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 200,
+          "stroke_rate": 52,
+          "heart_rate": 145,
+          "drag_factor": 105,
+          "calories": 81
+        },
+        {
+          "type": "distance",
+          "time": 2400,
+          "distance": 1000,
+          "pace": 1200,
+          "watts": 200,
+          "stroke_rate": 52,
+          "heart_rate": 150,
+          "drag_factor": 105,
+          "calories": 82
+        }
+      ]
+    }
+  ]
+}
