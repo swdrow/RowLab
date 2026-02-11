@@ -2,7 +2,12 @@ import React, { Fragment } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Description } from '@headlessui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { SPRING_CONFIG, MODAL_VARIANTS, usePrefersReducedMotion, TRANSITION_DURATION } from '../../utils/animations';
+import {
+  SPRING_CONFIG,
+  MODAL_VARIANTS,
+  usePrefersReducedMotion,
+  TRANSITION_DURATION,
+} from '../../utils/animations';
 import { IconButton } from './Button';
 
 /**
@@ -77,9 +82,7 @@ export const Modal: React.FC<ModalProps> = ({
       }
     : MODAL_VARIANTS;
 
-  const transitionConfig = prefersReducedMotion
-    ? { duration: 0 }
-    : SPRING_CONFIG;
+  const transitionConfig = prefersReducedMotion ? { duration: 0 } : SPRING_CONFIG;
 
   const backdropTransition = prefersReducedMotion
     ? { duration: 0 }
@@ -88,13 +91,7 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <AnimatePresence>
       {open && (
-        <Dialog
-          as="div"
-          static
-          open={open}
-          onClose={onClose}
-          className="relative z-50"
-        >
+        <Dialog as="div" static open={open} onClose={onClose} className="relative z-50">
           {/* Backdrop */}
           <motion.div
             initial="hidden"
@@ -119,9 +116,9 @@ export const Modal: React.FC<ModalProps> = ({
               <DialogPanel
                 className={cn(
                   'w-full mx-auto',
-                  'bg-[var(--color-bg-surface-elevated)]',
+                  'bg-[var(--color-ink-raised)]',
                   'rounded-xl shadow-2xl',
-                  'border border-[var(--color-border-subtle)]',
+                  'border border-[var(--color-border)]',
                   'flex flex-col',
                   'max-h-[90vh]',
                   sizeStyles[size],
@@ -133,12 +130,12 @@ export const Modal: React.FC<ModalProps> = ({
                   <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-4">
                     <div className="flex-1 min-w-0">
                       {title && (
-                        <DialogTitle className="text-lg font-semibold text-[var(--color-text-primary)]">
+                        <DialogTitle className="text-lg font-semibold text-[var(--color-ink-bright)]">
                           {title}
                         </DialogTitle>
                       )}
                       {description && (
-                        <Description className="mt-1 text-sm text-[var(--color-text-secondary)]">
+                        <Description className="mt-1 text-sm text-[var(--color-ink-secondary)]">
                           {description}
                         </Description>
                       )}
@@ -186,17 +183,14 @@ export interface ModalFooterProps {
   className?: string;
 }
 
-export const ModalFooter: React.FC<ModalFooterProps> = ({
-  children,
-  className,
-}) => {
+export const ModalFooter: React.FC<ModalFooterProps> = ({ children, className }) => {
   return (
     <div
       className={cn(
         'flex items-center justify-end gap-3',
         'px-6 py-4',
-        'border-t border-[var(--color-border-subtle)]',
-        'bg-[var(--color-bg-surface)]',
+        'border-t border-[var(--color-border)]',
+        'bg-[var(--color-ink-base)]',
         'rounded-b-xl',
         className
       )}
@@ -218,15 +212,8 @@ export interface ModalContentProps {
   className?: string;
 }
 
-export const ModalContent: React.FC<ModalContentProps> = ({
-  children,
-  className,
-}) => {
-  return (
-    <div className={cn('space-y-4', className)}>
-      {children}
-    </div>
-  );
+export const ModalContent: React.FC<ModalContentProps> = ({ children, className }) => {
+  return <div className={cn('space-y-4', className)}>{children}</div>;
 };
 
 ModalContent.displayName = 'ModalContent';
@@ -243,23 +230,17 @@ export interface ModalHeaderProps {
   className?: string;
 }
 
-export const ModalHeader: React.FC<ModalHeaderProps> = ({
-  title,
-  onClose,
-  className,
-}) => {
+export const ModalHeader: React.FC<ModalHeaderProps> = ({ title, onClose, className }) => {
   return (
     <div
       className={cn(
         'flex items-center justify-between',
         'px-6 py-4',
-        'border-b border-[var(--color-border-subtle)]',
+        'border-b border-[var(--color-border)]',
         className
       )}
     >
-      <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
-        {title}
-      </h2>
+      <h2 className="text-lg font-semibold text-[var(--color-ink-bright)]">{title}</h2>
       {onClose && (
         <IconButton
           icon={<X className="w-4 h-4" />}
@@ -284,16 +265,9 @@ export interface ModalBodyProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-export const ModalBody: React.FC<ModalBodyProps> = ({
-  children,
-  className,
-  ...props
-}) => {
+export const ModalBody: React.FC<ModalBodyProps> = ({ children, className, ...props }) => {
   return (
-    <div
-      className={cn('px-6 py-4 flex-1 overflow-y-auto', className)}
-      {...props}
-    >
+    <div className={cn('px-6 py-4 flex-1 overflow-y-auto', className)} {...props}>
       {children}
     </div>
   );

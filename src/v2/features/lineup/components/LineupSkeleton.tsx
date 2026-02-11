@@ -18,10 +18,7 @@ interface LineupSkeletonProps {
 
 export function LineupSkeleton({ className = '' }: LineupSkeletonProps) {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`flex h-full ${className}`}>
         {/* Athlete Bank - Left Sidebar */}
         <AthleteBankSkeleton />
@@ -73,10 +70,7 @@ function AthleteBankSkeleton() {
       {/* Athletes List */}
       <div className="flex-1 overflow-hidden p-2 space-y-1">
         {Array.from({ length: 10 }).map((_, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg"
-          >
+          <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-lg">
             <Skeleton circle width={32} height={32} />
             <div className="flex-1">
               <Skeleton height={14} width="70%" />
@@ -142,10 +136,7 @@ interface BoatViewSkeletonProps {
 
 export function BoatViewSkeleton({ seats = 8, showCoxswain = true }: BoatViewSkeletonProps) {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className="flex flex-col gap-4">
         {/* Boat Header */}
         <div className="flex items-center justify-between px-4 py-3 rounded-lg bg-bg-surface border border-bdr-default">
@@ -220,10 +211,7 @@ function SeatSlotSkeleton({ isCoxswain = false }: { isCoxswain?: boolean }) {
  */
 export function MobileLineupSkeleton() {
   return (
-    <SkeletonTheme
-      baseColor="var(--color-bg-surface)"
-      highlightColor="var(--color-bg-hover)"
-    >
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className="h-full flex flex-col p-4">
         {/* Mobile toolbar */}
         <div className="flex items-center justify-between mb-4">

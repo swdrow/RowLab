@@ -50,22 +50,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       className={`flex flex-col items-center justify-center py-12 px-4 text-center ${className || ''}`}
     >
       {illustration || (
-        <div className="w-16 h-16 mb-4 rounded-full bg-[var(--color-bg-surface-elevated)] flex items-center justify-center">
-          <Icon className="w-8 h-8 text-[var(--color-text-tertiary)]" />
+        <div className="w-16 h-16 mb-4 rounded-full bg-[var(--color-ink-raised)] flex items-center justify-center">
+          <Icon className="w-8 h-8 text-[var(--color-ink-tertiary)]" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
-        {title}
-      </h3>
-      <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-sm">
-        {description}
-      </p>
+      <h3 className="text-lg font-semibold text-[var(--color-ink-bright)] mb-2">{title}</h3>
+      <p className="text-sm text-[var(--color-ink-secondary)] mb-6 max-w-sm">{description}</p>
       {(action || secondaryAction) && (
         <div className="flex items-center gap-3">
           {action && (
             <button
               onClick={action.onClick}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-interactive-primary)] text-white rounded-lg hover:bg-[var(--color-interactive-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-interactive-primary)] text-white rounded-lg hover:bg-[var(--color-interactive-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-void)]"
             >
               <ActionIcon className="w-4 h-4" />
               {action.label}
@@ -74,7 +70,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           {secondaryAction && (
             <button
               onClick={secondaryAction.onClick}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--color-border-default)] text-[var(--color-text-primary)] rounded-lg hover:bg-[var(--color-bg-surface-elevated)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
+              className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--color-border)] text-[var(--color-ink-bright)] rounded-lg hover:bg-[var(--color-ink-raised)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-void)]"
             >
               {SecondaryIcon && <SecondaryIcon className="w-4 h-4" />}
               {secondaryAction.label}

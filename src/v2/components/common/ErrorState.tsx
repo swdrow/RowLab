@@ -34,16 +34,12 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       <div className="w-16 h-16 mb-4 rounded-full bg-[var(--color-status-error)]/10 flex items-center justify-center">
         <AlertTriangle className="w-8 h-8 text-[var(--color-status-error)]" />
       </div>
-      <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
-        {title}
-      </h3>
-      <p className="text-sm text-[var(--color-text-secondary)] mb-6 max-w-sm">
-        {message}
-      </p>
+      <h3 className="text-lg font-semibold text-[var(--color-ink-bright)] mb-2">{title}</h3>
+      <p className="text-sm text-[var(--color-ink-secondary)] mb-6 max-w-sm">{message}</p>
       {onRetry && (
         <button
           onClick={onRetry}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-base)]"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-ink-raised)] border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-ink-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-void)]"
         >
           <RefreshCw className="w-4 h-4" />
           Try Again

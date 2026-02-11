@@ -19,10 +19,10 @@ interface ErgTableSkeletonProps {
 
 export function ErgTableSkeleton({ rows = 8, className = '' }: ErgTableSkeletonProps) {
   return (
-    <SkeletonTheme baseColor="var(--color-bg-surface)" highlightColor="var(--color-bg-hover)">
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`w-full ${className}`}>
         {/* Header Row */}
-        <div className="flex items-center gap-4 px-4 py-3 border-b border-[var(--color-border-subtle)] bg-bg-active">
+        <div className="flex items-center gap-4 px-4 py-3 border-b border-[var(--color-border)] bg-bg-active">
           <div className="w-[180px]">
             <Skeleton height={14} width="60%" />
           </div>
@@ -53,7 +53,7 @@ export function ErgTableSkeleton({ rows = 8, className = '' }: ErgTableSkeletonP
         {Array.from({ length: rows }).map((_, index) => (
           <div
             key={index}
-            className="flex items-center gap-4 px-4 py-3 border-b border-[var(--color-border-subtle)]"
+            className="flex items-center gap-4 px-4 py-3 border-b border-[var(--color-border)]"
             style={{ height: 56 }}
           >
             {/* Athlete name */}
@@ -110,7 +110,7 @@ export function ErgTableSkeleton({ rows = 8, className = '' }: ErgTableSkeletonP
  */
 export function ErgCardSkeleton() {
   return (
-    <SkeletonTheme baseColor="var(--color-bg-surface)" highlightColor="var(--color-bg-hover)">
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className="p-4 bg-bg-surface border border-bdr-default rounded-lg">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
@@ -181,7 +181,7 @@ interface ErgChartSkeletonProps {
 
 export function ErgChartSkeleton({ height = 300, className = '' }: ErgChartSkeletonProps) {
   return (
-    <SkeletonTheme baseColor="var(--color-bg-surface)" highlightColor="var(--color-bg-hover)">
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`p-4 bg-bg-surface rounded-lg border border-bdr-default ${className}`}>
         {/* Chart title */}
         <div className="flex items-center justify-between mb-4">
@@ -230,7 +230,7 @@ export function ErgChartSkeleton({ height = 300, className = '' }: ErgChartSkele
  */
 export function ErgPageSkeleton({ className = '' }: { className?: string }) {
   return (
-    <SkeletonTheme baseColor="var(--color-bg-surface)" highlightColor="var(--color-bg-hover)">
+    <SkeletonTheme baseColor="var(--color-ink-well-50)" highlightColor="var(--color-ink-well-30)">
       <div className={`flex flex-col h-full bg-bg-default ${className}`}>
         {/* Header */}
         <div className="flex-shrink-0 px-6 py-4 border-b border-bdr-default bg-bg-surface">

@@ -86,7 +86,7 @@ export function VirtualTable<TData>({
 
   if (data.length === 0) {
     return (
-      <div className={`flex items-center justify-center h-64 text-txt-secondary ${className}`}>
+      <div className={`flex items-center justify-center h-64 text-ink-secondary ${className}`}>
         {emptyMessage}
       </div>
     );
@@ -100,7 +100,7 @@ export function VirtualTable<TData>({
     >
       <table className="w-full border-collapse">
         {/* Fixed Header */}
-        <thead className="sticky top-0 z-10 bg-bg-surface-elevated border-b border-ink-border">
+        <thead className="sticky top-0 z-10 bg-ink-raised border-b border-white/[0.06]">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -151,17 +151,14 @@ export function VirtualTable<TData>({
                 key={row.id}
                 style={{ height: rowHeight }}
                 className={`
-                  border-b border-bdr-subtle transition-colors
+                  border-b border-white/[0.06] transition-colors
                   ${onRowClick ? 'cursor-pointer' : ''}
-                  ${isSelected ? 'bg-accent-copper/[0.08]' : 'hover:bg-accent-copper/[0.04]'}
+                  ${isSelected ? 'bg-accent-copper/[0.08]' : 'hover:bg-white/[0.04]'}
                 `}
                 onClick={() => handleRowClick(row)}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="px-4 py-3 text-sm text-txt-primary whitespace-nowrap"
-                  >
+                  <td key={cell.id} className="px-4 py-3 text-sm text-ink-bright whitespace-nowrap">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
