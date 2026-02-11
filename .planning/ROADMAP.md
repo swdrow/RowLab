@@ -1507,12 +1507,12 @@ Connect RowLab to external platforms (Concept2 Logbook, Strava, Garmin), build a
 **Plans:** 6 plans
 
 Plans:
-- [ ] 37-01-PLAN.md — Schema migration (WorkoutSplit model, machineType) + sync service enhancement
-- [ ] 37-02-PLAN.md — C2 API test infrastructure (nock mock server, fixtures, sync tests)
-- [ ] 37-03-PLAN.md — Historical import endpoints + coach sync with auto-match
-- [ ] 37-04-PLAN.md — Frontend erg table enhancements (source filter, C2 badge, machine type, sync button)
-- [ ] 37-05-PLAN.md — Workout detail view (summary card + splits table)
-- [ ] 37-06-PLAN.md — Historical import UI + activity feed integration + verification
+- [x] 37-01-PLAN.md — Schema migration (WorkoutSplit model, machineType) + sync service enhancement
+- [x] 37-02-PLAN.md — C2 API test infrastructure (nock mock server, fixtures, sync tests)
+- [x] 37-03-PLAN.md — Historical import endpoints + coach sync with auto-match
+- [x] 37-04-PLAN.md — Frontend erg table enhancements (source filter, C2 badge, machine type, sync button)
+- [x] 37-05-PLAN.md — Workout detail view (summary card + splits table)
+- [x] 37-06-PLAN.md — Historical import UI + activity feed integration + verification
 
 ---
 

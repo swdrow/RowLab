@@ -3,11 +3,11 @@
 ## Current Status
 
 **Milestone:** v3.1 — Integrations, Analytics & Social Sharing
-**Phase:** 37 (Concept2 Workout Sync) — IN PROGRESS
-**Plan:** 5/8 complete
-**Status:** Plan 37-05 complete: Workout detail view with summary card (distance, time, pace, watts, HR, drag factor) and per-split breakdown table. WorkoutDetailView slide-over component wired to erg table. Design system compliant with glass cards and spring animations.
-**Next Plan:** 37-06 (Activity feed integration for C2 workouts)
-**Last activity:** 2026-02-11 — Completed 37-05-PLAN.md (Workout Detail View with Summary and Splits)
+**Phase:** 37 (Concept2 Workout Sync) — COMPLETE
+**Plan:** 6/6 complete
+**Status:** Phase 37 verified (20/20 must-haves). Full C2 sync pipeline: schema, sync service, coach sync, historical import, erg table, workout detail, activity feed.
+**Next Phase:** 38 (Share Card Platform)
+**Last activity:** 2026-02-11 — Completed Phase 37 (Concept2 Workout Sync)
 
 ## Project Reference
 
@@ -73,14 +73,14 @@ v2.2 Progress: ░░░░░░░░░░░░░░ (0 phases complete)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 37 | Concept2 Workout Sync | In Progress | 5/8 |
+| 37 | Concept2 Workout Sync | Complete ✅ | 6/6 |
 | 38 | Share Card Platform | Planned | TBD |
 | 39 | Strava Integration & Cross-Platform Sync | Planned | TBD |
 | 40 | Performance Analytics Engine | Planned | TBD |
 | 41 | Fitness Intelligence & Training Load | Planned | TBD |
 | 42 | Garmin Connect & On-Water Data | Planned | TBD |
 
-v3.1 Progress: ░░░░░░░░░░░░░░ (0 phases complete, 1 active)
+v3.1 Progress: ██░░░░░░░░░░░░ (1 phase complete)
 
 ### v3.0 Milestone (COMPLETE)
 
