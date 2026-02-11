@@ -18,7 +18,7 @@ import {
   handleWebhook,
   connectAthlete,
 } from '../services/concept2Service.js';
-import { syncUserWorkouts } from '../services/c2SyncService.js';
+import { syncUserWorkouts, browseC2Logbook, historicalImport } from '../services/c2SyncService.js';
 import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -446,6 +446,88 @@ router.post('/connect', authenticateToken, teamIsolation, async (req, res) => {
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to initiate connection' },
+    });
+  }
+});
+
+/**
+ * GET /api/v1/concept2/logbook/browse
+ * Browse C2 logbook for historical import
+ * Returns paginated list of workouts with import status
+ */
+router.get('/logbook/browse', authenticateToken, async (req, res) => {
+  try {
+    const { page = '1', perPage = '50', fromDate, toDate } = req.query;
+
+    // Validate perPage max
+    const perPageNum = Math.min(parseInt(perPage, 10), 100);
+
+    const result = await browseC2Logbook(req.user.id, {
+      page: parseInt(page, 10),
+      perPage: perPageNum,
+      fromDate,
+      toDate,
+    });
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    if (error.message === 'No Concept2 connection') {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_CONNECTED', message: error.message },
+      });
+    }
+    logger.error('Browse C2 logbook error:', { error: error.message, stack: error.stack });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to browse logbook' },
+    });
+  }
+});
+
+/**
+ * POST /api/v1/concept2/historical-import
+ * Import historical workouts by date range or specific workout IDs
+ */
+router.post('/historical-import', authenticateToken, teamIsolation, async (req, res) => {
+  try {
+    const { fromDate, toDate, resultIds } = req.body;
+
+    // Validate: at least one of (fromDate+toDate) or resultIds must be provided
+    if (!resultIds && (!fromDate || !toDate)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Must provide either resultIds or date range (fromDate + toDate)',
+        },
+      });
+    }
+
+    const result = await historicalImport(req.user.id, req.user.activeTeamId, {
+      fromDate,
+      toDate,
+      resultIds,
+    });
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    if (error.message === 'No Concept2 connection') {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_CONNECTED', message: error.message },
+      });
+    }
+    logger.error('Historical import error:', { error: error.message, stack: error.stack });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to import workouts' },
     });
   }
 });

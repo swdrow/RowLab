@@ -361,10 +361,254 @@ function determineTestType(distance) {
   return null;
 }
 
+/**
+ * Browse C2 logbook for historical import
+ * Returns paginated list of workouts with import status
+ *
+ * @param {string} userId - User ID
+ * @param {object} options - Browse options { page, perPage, fromDate, toDate }
+ * @returns {Promise<{results: Array, pagination: object}>}
+ */
+export async function browseC2Logbook(userId, options = {}) {
+  const { page = 1, perPage = 50, fromDate, toDate } = options;
+
+  // Get valid access token
+  const accessToken = await getValidToken(userId);
+
+  // Get C2 user profile
+  const { fetchUserProfile } = await import('./concept2Service.js');
+  const profile = await fetchUserProfile(accessToken);
+
+  // Fetch results from C2 API
+  const { results, pagination } = await fetchResults(accessToken, profile.id, { page, perPage });
+
+  // Filter by date range if provided
+  let filteredResults = results;
+  if (fromDate || toDate) {
+    filteredResults = results.filter((r) => {
+      const resultDate = new Date(r.date);
+      if (fromDate && resultDate < new Date(fromDate)) return false;
+      if (toDate && resultDate > new Date(toDate)) return false;
+      return true;
+    });
+  }
+
+  // Check which workouts are already imported
+  const c2LogbookIds = filteredResults.map((r) => String(r.id));
+  const existingWorkouts = await prisma.workout.findMany({
+    where: {
+      c2LogbookId: { in: c2LogbookIds },
+    },
+    select: { c2LogbookId: true },
+  });
+
+  const existingIds = new Set(existingWorkouts.map((w) => w.c2LogbookId));
+
+  // Annotate results with import status
+  const annotatedResults = filteredResults.map((r) => ({
+    id: r.id,
+    date: r.date,
+    distance: r.distance,
+    time: r.time ? r.time / 10 : null, // Convert to seconds
+    type: mapC2MachineType(r.type || r.workout_type),
+    machineType: mapC2MachineType(r.type || r.workout_type),
+    alreadyImported: existingIds.has(String(r.id)),
+  }));
+
+  return {
+    results: annotatedResults,
+    pagination,
+  };
+}
+
+/**
+ * Historical import - import workouts by date range or specific IDs
+ * Processes in batches to avoid memory bloat
+ *
+ * @param {string} userId - User ID
+ * @param {string} teamId - Team ID
+ * @param {object} options - Import options { fromDate, toDate, resultIds }
+ * @returns {Promise<{imported: number, skipped: number, total: number}>}
+ */
+export async function historicalImport(userId, teamId, options = {}) {
+  const { fromDate, toDate, resultIds } = options;
+
+  if (!resultIds && (!fromDate || !toDate)) {
+    throw new Error('Must provide either resultIds or date range (fromDate + toDate)');
+  }
+
+  // Get user's C2 auth
+  const auth = await prisma.concept2Auth.findUnique({
+    where: { userId },
+    include: { user: true },
+  });
+
+  if (!auth) {
+    throw new Error('No Concept2 connection');
+  }
+
+  // Find or create athlete record
+  let athlete = await prisma.athlete.findFirst({
+    where: { userId, teamId },
+  });
+
+  // Link existing athlete to C2 account if needed
+  if (athlete && !athlete.concept2UserId && auth.c2UserId) {
+    athlete = await prisma.athlete.update({
+      where: { id: athlete.id },
+      data: { concept2UserId: auth.c2UserId },
+    });
+  }
+
+  // Auto-create athlete profile if needed
+  if (!athlete) {
+    const user = auth.user;
+    const nameParts = user.email.split('@')[0].split(/[._-]/);
+    const firstName = nameParts[0]
+      ? nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)
+      : 'User';
+    const lastName = nameParts[1]
+      ? nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1)
+      : user.email.split('@')[0];
+
+    athlete = await prisma.athlete.create({
+      data: {
+        teamId,
+        userId,
+        firstName,
+        lastName,
+        email: user.email,
+        isManaged: false,
+        concept2UserId: auth.c2UserId,
+      },
+    });
+  }
+
+  // Get valid access token
+  const accessToken = await getValidToken(userId);
+  const { fetchUserProfile } = await import('./concept2Service.js');
+  const profile = await fetchUserProfile(accessToken);
+
+  let imported = 0;
+  let skipped = 0;
+  let total = 0;
+
+  // Mode 1: Import specific result IDs (browse & select)
+  if (resultIds && Array.isArray(resultIds)) {
+    for (const resultId of resultIds) {
+      total++;
+
+      // Check if already imported
+      const existing = await prisma.workout.findUnique({
+        where: { c2LogbookId: String(resultId) },
+      });
+
+      if (existing) {
+        skipped++;
+        continue;
+      }
+
+      // Fetch and store this result
+      try {
+        await fetchAndStoreResult(accessToken, profile.id, resultId, athlete.id, teamId);
+        imported++;
+      } catch (error) {
+        logger.error('Failed to import result', { resultId, error: error.message });
+        skipped++;
+      }
+    }
+
+    return { imported, skipped, total };
+  }
+
+  // Mode 2: Import by date range
+  // Fetch all pages in date range, process in batches of 50
+  let currentPage = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { results, pagination } = await fetchResults(accessToken, profile.id, {
+      page: currentPage,
+      perPage: 50,
+    });
+
+    // Filter by date range
+    const filteredResults = results.filter((r) => {
+      const resultDate = new Date(r.date);
+      if (fromDate && resultDate < new Date(fromDate)) return false;
+      if (toDate && resultDate > new Date(toDate)) return false;
+      return true;
+    });
+
+    // Process batch
+    for (const result of filteredResults) {
+      total++;
+
+      // Check if already imported (dedup)
+      const existing = await prisma.workout.findUnique({
+        where: { c2LogbookId: String(result.id) },
+      });
+
+      if (existing) {
+        skipped++;
+        continue;
+      }
+
+      // Extract machine type and metrics
+      const machineType = mapC2MachineType(result.type || result.workout_type);
+      const avgPace = result.stroke_data?.avg_pace || null;
+      const avgWatts = result.stroke_data?.avg_watts || null;
+      const avgHeartRate = result.heart_rate?.average || null;
+
+      // Extract splits
+      const splits = extractSplits(result);
+
+      // Create Workout + WorkoutSplits atomically
+      await prisma.$transaction(async (tx) => {
+        const workout = await tx.workout.create({
+          data: {
+            athleteId: athlete.id,
+            teamId,
+            source: 'concept2_sync',
+            c2LogbookId: String(result.id),
+            date: new Date(result.date),
+            distanceM: result.distance,
+            durationSeconds: result.time ? result.time / 10 : null,
+            strokeRate: result.stroke_rate,
+            calories: result.calories_total,
+            dragFactor: result.drag_factor,
+            machineType,
+            avgPace,
+            avgWatts,
+            avgHeartRate,
+            rawData: result,
+          },
+        });
+
+        if (splits.length > 0) {
+          await tx.workoutSplit.createMany({
+            data: splits.map((split) => ({ workoutId: workout.id, ...split })),
+          });
+        }
+      });
+
+      imported++;
+    }
+
+    // Check for more pages
+    hasMore = pagination.current_page < pagination.total_pages;
+    currentPage++;
+  }
+
+  return { imported, skipped, total };
+}
+
 export default {
   syncUserWorkouts,
   syncSingleResult,
   fetchAndStoreResult,
   mapC2MachineType,
   extractSplits,
+  browseC2Logbook,
+  historicalImport,
 };
