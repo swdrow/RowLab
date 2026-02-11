@@ -207,6 +207,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     onSuccess: () => {
       setAccessToken(null);
       delete (window as any).__rowlab_access_token;
+      delete (window as any).__devLoginAttempted;
       setError(null);
       // Clear all queries
       queryClient.clear();
@@ -216,6 +217,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Clear state regardless
       setAccessToken(null);
       delete (window as any).__rowlab_access_token;
+      delete (window as any).__devLoginAttempted;
       setError(null);
       queryClient.clear();
     },

@@ -17,9 +17,9 @@
  */
 
 import { useMemo } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRequireAuth } from '@/hooks/useAuth';
+import { useAuth } from '@v2/contexts/AuthContext';
 import { LoadingSkeleton, SkeletonLine } from '@v2/components/common';
 import { CanvasDock, useZone } from '@v2/components/shell/CanvasDock';
 import { CanvasToolbar } from '@v2/components/shell/CanvasToolbar';
@@ -68,8 +68,8 @@ export function CanvasLayout() {
   const location = useLocation();
   const showMobileLayout = useShowMobileLayout();
 
-  // Require authentication
-  const { isLoading: isAuthLoading } = useRequireAuth();
+  // Require authentication (V2 AuthContext — not the V1 stub)
+  const { isAuthenticated, isInitialized, isLoading: isAuthLoading } = useAuth();
 
   // Build CSS custom property values for the current zone
   const atmosphereVars = useMemo(
@@ -80,8 +80,8 @@ export function CanvasLayout() {
     [zone.id]
   ) as React.CSSProperties;
 
-  // Show loading state while auth is verified
-  if (isAuthLoading) {
+  // Wait for AuthContext to finish initializing before making auth decisions
+  if (!isInitialized || isAuthLoading) {
     return (
       <div className="v2 h-screen flex items-center justify-center bg-ink-deep">
         <LoadingSkeleton>
@@ -93,6 +93,11 @@ export function CanvasLayout() {
         </LoadingSkeleton>
       </div>
     );
+  }
+
+  // Redirect to login only AFTER auth has fully initialized
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return (
@@ -177,7 +182,7 @@ export function CanvasLayout() {
             ease: [0.16, 1, 0.3, 1],
           }}
           className={`relative z-10 px-6 max-w-7xl mx-auto min-h-screen ${
-            showMobileLayout ? 'pt-14 pb-16' : 'pt-20 pb-28'
+            showMobileLayout ? 'pt-14 pb-16' : 'pt-36 pb-28'
           }`}
         >
           <Outlet />

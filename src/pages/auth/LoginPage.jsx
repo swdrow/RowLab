@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layers, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
@@ -95,11 +95,18 @@ export default function LoginPage() {
     password: '',
   });
   const [formErrors, setFormErrors] = useState({});
-  const devLoginAttempted = useRef(false);
-
   // Auto dev-login from localhost/Tailscale/private networks
+  // Module-level flag survives SPA remounts but resets on full page reload
   useEffect(() => {
-    if (devLoginAttempted.current) return;
+    if (window.__rowlab_access_token) {
+      // Token already exists — just navigate, don't re-login
+      const from = location.state?.from?.pathname || '/app';
+      navigate(from, { replace: true });
+      return;
+    }
+
+    if (window.__devLoginAttempted) return;
+
     const host = window.location.hostname;
     const isDev =
       host === 'localhost' ||
@@ -109,7 +116,7 @@ export default function LoginPage() {
       host.startsWith('192.168.');
     if (!isDev) return;
 
-    devLoginAttempted.current = true;
+    window.__devLoginAttempted = true;
 
     (async () => {
       try {
@@ -122,7 +129,6 @@ export default function LoginPage() {
         const data = await res.json();
         if (data.success) {
           const { accessToken } = data.data;
-          // V2 auth: Set token for axios interceptor (AuthContext will load user data)
           window.__rowlab_access_token = accessToken;
           const from = location.state?.from?.pathname || '/app';
           navigate(from, { replace: true });

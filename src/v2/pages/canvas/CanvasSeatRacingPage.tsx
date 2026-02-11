@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAthleteRatings, useRecalculateRatings } from '@v2/hooks/useAthleteRatings';
 import { useSeatRaceSessions } from '@v2/hooks/useSeatRaceSessions';
-import { useRequireAuth } from '../../../hooks/useAuth';
+import { useAuth } from '@v2/contexts/AuthContext';
 import { useIsMobile, useIsTabletOrSmaller } from '@v2/hooks/useBreakpoint';
 import {
   RankingsChart,
@@ -263,8 +263,8 @@ export function CanvasSeatRacingPage() {
   const isMobile = useIsMobile();
   const isTabletOrSmaller = useIsTabletOrSmaller();
 
-  // Auth - redirects to login if not authenticated
-  const { isLoading: isAuthLoading } = useRequireAuth();
+  // Auth - these pages are already guarded by CanvasLayout
+  const { isLoading: isAuthLoading } = useAuth();
 
   // Data hooks (same as V2)
   const { ratings, isLoading: isLoadingRatings } = useAthleteRatings({

@@ -17,7 +17,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAthletes } from '@v2/hooks/useAthletes';
-import { useRequireAuth } from '../../../hooks/useAuth';
+import { useAuth } from '@v2/contexts/AuthContext';
 import { useIsMobile } from '@v2/hooks/useBreakpoint';
 import { LineupWorkspace } from '@v2/components/lineup';
 import { LineupSkeleton } from '@v2/features/lineup/components/LineupSkeleton';
@@ -66,8 +66,8 @@ function CanvasLineupLoading() {
 // ============================================
 
 export function CanvasLineupBuilderPage() {
-  // Auth - redirects to login if not authenticated
-  const { isLoading: isAuthLoading } = useRequireAuth();
+  // Auth - these pages are already guarded by CanvasLayout
+  const { isLoading: isAuthLoading } = useAuth();
 
   // Fetch athletes data
   const { allAthletes, isLoading: isAthletesLoading } = useAthletes();
