@@ -21,7 +21,7 @@ export function calculateWarmupSchedule(
   const { warmupDuration, travelToStartTime } = { ...DEFAULT_CONFIG, ...config };
   const schedule: WarmupScheduleItem[] = [];
 
-  races.forEach(race => {
+  races.forEach((race) => {
     if (!race.scheduledTime) return;
 
     const raceTime = new Date(race.scheduledTime);
@@ -81,6 +81,9 @@ export function detectWarmupConflicts(
   for (let i = 0; i < schedule.length - 1; i++) {
     const current = schedule[i];
     const next = schedule[i + 1];
+
+    // Guard: ensure both items exist
+    if (!current || !next) continue;
 
     // Check if next race launch conflicts with current race end
     const currentRaceEnd = current.raceTime;
@@ -146,7 +149,7 @@ export function groupWarmupsByTimeBlock(
 ): Map<string, WarmupScheduleItem[]> {
   const groups = new Map<string, WarmupScheduleItem[]>();
 
-  schedule.forEach(item => {
+  schedule.forEach((item) => {
     // Round down to nearest block
     const blockStart = new Date(item.launchTime);
     const minutes = blockStart.getMinutes();
