@@ -125,8 +125,8 @@ export function useZone(): ZoneConfig {
   )
     return ZONE_TEAM;
 
-  // Default: home (covers /canvas, /canvas/me, /canvas/coach/dashboard,
-  // /canvas/achievements, /canvas/challenges)
+  // Default: home (covers /app, /app/me, /app/coach/dashboard,
+  // /app/achievements, /app/challenges)
   return ZONE_HOME;
 }
 

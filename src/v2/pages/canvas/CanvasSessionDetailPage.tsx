@@ -79,7 +79,7 @@ export function CanvasSessionDetailPage() {
         sessionId,
         input: { status: 'ACTIVE' },
       });
-      navigate(`/app/canvas/training/sessions/${sessionId}/live`);
+      navigate(`/app/training/sessions/${sessionId}/live`);
     } catch (err) {
       console.error('Failed to start session:', err);
     }
@@ -89,7 +89,7 @@ export function CanvasSessionDetailPage() {
     if (!sessionId || !confirm('Are you sure you want to delete this session?')) return;
     try {
       await deleteSessionAsync(sessionId);
-      navigate('/app/canvas/training/sessions');
+      navigate('/app/training/sessions');
     } catch (err) {
       console.error('Failed to delete session:', err);
     }
@@ -145,7 +145,7 @@ export function CanvasSessionDetailPage() {
         <div className="max-w-5xl mx-auto px-4 lg:px-6 pt-6 pb-6">
           {/* Back link */}
           <button
-            onClick={() => navigate('/app/canvas/training/sessions')}
+            onClick={() => navigate('/app/training/sessions')}
             className="flex items-center gap-2 text-sm text-ink-secondary hover:text-ink-bright
                        transition-colors mb-6 group font-mono min-h-[44px] sm:min-h-0"
           >
@@ -180,7 +180,7 @@ export function CanvasSessionDetailPage() {
                   )}
 
                   {session.status === 'ACTIVE' && (
-                    <Link to={`/app/canvas/training/sessions/${session.id}/live`}>
+                    <Link to={`/app/training/sessions/${session.id}/live`}>
                       <CanvasButton variant="primary" className="min-h-[44px] text-sm lg:text-base">
                         <Play className="w-4 h-4" />
                         VIEW LIVE

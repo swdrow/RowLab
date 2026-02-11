@@ -104,7 +104,7 @@ export function CanvasLiveSessionPage() {
             <p className="text-sm text-ink-secondary mb-4">
               This session is not currently active. Return to the session detail page.
             </p>
-            <Link to={`/app/canvas/training/sessions/${session.id}`}>
+            <Link to={`/app/training/sessions/${session.id}`}>
               <CanvasButton variant="secondary">
                 <ChevronLeft className="w-4 h-4" />
                 BACK TO SESSION
