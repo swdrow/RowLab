@@ -343,6 +343,153 @@ function serializeWorkoutForPython(workout) {
 }
 
 /**
+ * Machine label map — matches Python renderer
+ */
+const MACHINE_LABELS = {
+  rower: 'ERG',
+  slides: 'DYNAMIC',
+  dynamic: 'DYNAMIC',
+  skierg: 'SKIERG',
+  bike: 'BIKEERG',
+  bikerg: 'BIKEERG',
+};
+
+/**
+ * Format distance for titles: 10000 → "10K", 2000 → "2K", 1169 → "1,169m"
+ */
+function formatDistanceTitle(meters) {
+  if (!meters) return '--';
+  if (meters >= 1000 && meters % 1000 === 0) return `${meters / 1000}K`;
+  return `${meters.toLocaleString()}m`;
+}
+
+/**
+ * Format time cleanly for titles, dropping trailing .0
+ */
+function formatTimeClean(seconds) {
+  if (!seconds) return '--:--';
+  seconds = parseFloat(seconds);
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  const tenths = Math.round((secs % 1) * 10);
+  const wholeSecs = Math.floor(secs);
+
+  if (hrs > 0) {
+    if (tenths === 0)
+      return `${hrs}:${String(mins).padStart(2, '0')}:${String(wholeSecs).padStart(2, '0')}`;
+    return `${hrs}:${String(mins).padStart(2, '0')}:${secs.toFixed(1).padStart(4, '0')}`;
+  }
+  if (tenths === 0) return `${mins}:${String(wholeSecs).padStart(2, '0')}`;
+  return `${mins}:${secs.toFixed(1).padStart(4, '0')}`;
+}
+
+/**
+ * Format rest time (tenths of seconds) for titles: 600→"1:00", 300→":30"
+ */
+function formatRestTenths(tenths) {
+  if (!tenths) return null;
+  const totalSeconds = tenths / 10;
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = Math.floor(totalSeconds % 60);
+  if (mins > 0) return `${mins}:${String(secs).padStart(2, '0')}`;
+  return `:${String(secs).padStart(2, '0')}`;
+}
+
+/**
+ * Build rest label for title: "/1:00r" or "/~:56r"
+ * Excludes last interval's rest (PM5 records cooldown, not real rest).
+ */
+function buildRestLabel(splits, approx = false) {
+  const workSplits = splits.length > 1 ? splits.slice(0, -1) : splits;
+  const restTimes = workSplits.map((s) => s.restTime).filter(Boolean);
+  if (!restTimes.length) return '';
+  const unique = new Set(restTimes);
+  if (unique.size === 1) {
+    const prefix = approx ? '/~' : '/';
+    return `${prefix}${formatRestTenths(restTimes[0])}r`;
+  }
+  const avg = restTimes.reduce((a, b) => a + b, 0) / restTimes.length;
+  return `/~${formatRestTenths(avg)}r`;
+}
+
+/**
+ * Build workout title in rower language.
+ * Mirrors Python build_title() — "7x11:00/1:00r BIKEERG", "10K DYNAMIC", etc.
+ */
+function buildWorkoutTitle(data) {
+  const wtype = data.workoutType || '';
+  const machine = (data.rawMachineType || data.machineType || 'rower').toLowerCase();
+  const mlabel = MACHINE_LABELS[machine] || 'ERG';
+  const splits = data.splits || [];
+  const distance = data.distanceM;
+  const duration = data.durationSeconds;
+  const isIntervalType = wtype.toLowerCase().includes('interval');
+
+  // Interval workouts
+  if (isIntervalType && splits.length > 0) {
+    const n = splits.length;
+
+    if (wtype === 'FixedDistanceInterval') {
+      const distances = splits.map((s) => s.distanceM).filter(Boolean);
+      if (distances.length && new Set(distances).size === 1) {
+        const rest = buildRestLabel(splits);
+        return `${n}x${formatDistanceTitle(distances[0])}${rest} ${mlabel}`;
+      }
+    }
+
+    if (wtype === 'FixedTimeInterval') {
+      const times = splits.map((s) => s.timeSeconds).filter(Boolean);
+      const roundedTimes = times.map((t) => Math.round(parseFloat(t)));
+      if (times.length && new Set(roundedTimes).size === 1) {
+        const rest = buildRestLabel(splits);
+        return `${n}x${formatTimeClean(times[0])}${rest} ${mlabel}`;
+      }
+    }
+
+    if (wtype === 'VariableInterval' || wtype === 'VariableIntervalUndefinedRest') {
+      const distances = splits.map((s) => s.distanceM).filter(Boolean);
+      if (distances.length && new Set(distances).size === 1) {
+        const rest = buildRestLabel(splits, true);
+        return `${n}x${formatDistanceTitle(distances[0])}${rest} ${mlabel}`;
+      }
+      return `${n} pieces ${mlabel}`;
+    }
+
+    const rest = buildRestLabel(splits);
+    return `${n} intervals${rest} ${mlabel}`;
+  }
+
+  // Continuous pieces
+  if (wtype === 'FixedTimeSplits') return `${formatTimeClean(duration)} ${mlabel}`;
+  if (wtype === 'FixedDistanceSplits') return `${formatDistanceTitle(distance)} ${mlabel}`;
+  if (distance) return `${formatDistanceTitle(distance)} ${mlabel}`;
+  if (duration) return `${formatTimeClean(duration)} ${mlabel}`;
+  return mlabel;
+}
+
+/**
+ * Build a description line for OG metadata: pace, watts, HR
+ */
+function buildWorkoutDescription(data) {
+  const machine = (data.rawMachineType || data.machineType || 'rower').toLowerCase();
+  const isBike = machine === 'bike' || machine === 'bikerg';
+  const paceUnit = isBike ? '/1000m' : '/500m';
+  const rateLabel = isBike ? 'rpm' : 'spm';
+
+  const parts = [];
+  if (data.avgPaceTenths) {
+    // Adjust pace for bike display
+    const displayTenths = isBike ? data.avgPaceTenths * 2 : data.avgPaceTenths;
+    parts.push(`${formatPaceTenths(displayTenths)}${paceUnit}`);
+  }
+  if (data.avgWatts) parts.push(`${data.avgWatts}W`);
+  if (data.strokeRate) parts.push(`${data.strokeRate} ${rateLabel}`);
+  if (data.avgHeartRate) parts.push(`${data.avgHeartRate} bpm`);
+  return parts.join(' | ') || 'Rowing workout';
+}
+
+/**
  * Generate metadata for OG tags based on card type
  */
 function generateMetadata(cardType, workoutData, athleteName) {
@@ -350,15 +497,16 @@ function generateMetadata(cardType, workoutData, athleteName) {
 
   switch (cardType) {
     case 'erg_summary':
-      return {
-        title: `${athlete}'s ${workoutData.distanceM}m Erg Test`,
-        description: `Split: ${formatPace(workoutData.avgPace)} | ${workoutData.avgWatts}W | ${workoutData.strokeRate} spm`,
-      };
+    case 'erg_summary_alt': {
+      const title = buildWorkoutTitle(workoutData);
+      const description = buildWorkoutDescription(workoutData);
+      return { title: `${athlete} — ${title}`, description };
+    }
 
     case 'erg_charts':
       return {
         title: `${athlete}'s Workout Analysis`,
-        description: `${workoutData.distanceM}m with detailed split and power charts`,
+        description: `${buildWorkoutTitle(workoutData)} with detailed split and power charts`,
       };
 
     case 'pr_celebration':
