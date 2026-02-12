@@ -33,6 +33,7 @@ import {
   LogOut,
 } from 'lucide-react';
 import { useAuth } from '@v2/contexts/AuthContext';
+import { RowLabLogo } from '@v2/components/brand/RowLabLogo';
 
 // ============================================
 // NAV CONFIG — groups, items, colors
@@ -127,9 +128,12 @@ export function MeshSidebar() {
           ============================================ */}
       <div className="px-5 pt-6 pb-4">
         <Link to="/mesh" className="block">
-          <h1 className="text-xl font-display font-bold tracking-tight mesh-gradient-text">
-            RowLab
-          </h1>
+          <div className="flex items-center gap-2.5">
+            <RowLabLogo size={28} />
+            <h1 className="text-xl font-display font-bold tracking-tight mesh-gradient-text">
+              RowLab
+            </h1>
+          </div>
         </Link>
         <p className="text-[11px] text-white/30 mt-0.5 font-mono tracking-widest uppercase">
           Gradient Mesh

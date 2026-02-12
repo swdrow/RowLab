@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RowLab Logo Mark — "The Sweep"
+
+  Abstract R inspired by sweep rowing:
+    · Vertical spine  = rower's torso / oar shaft
+    · Upper arc       = forward reach at the catch, blade path through air
+    · Diagonal leg    = oar shaft angling down to the waterline
+    · Spoon blade     = blade entry at the catch
+    · Water ripple    = surface disturbance at entry
+
+  ViewBox: 80 × 105
+  Primary: copper-to-bronze gradient
+  Accent:  #0070f3 (water)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 105" role="img" aria-label="RowLab">
+  <title>RowLab</title>
+
+  <defs>
+    <!-- Warm copper gradient running along the stroke's diagonal axis -->
+    <linearGradient id="sweepGrad" x1="13" y1="4" x2="62" y2="97" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#f5d070"/>
+      <stop offset="40%"  stop-color="#c07830"/>
+      <stop offset="100%" stop-color="#7c3d10"/>
+    </linearGradient>
+
+    <!-- Water ripple: blue, fades at both ends -->
+    <linearGradient id="waterGrad" x1="44" y1="0" x2="68" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#0070f3" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#0070f3" stop-opacity="0.7"/>
+      <stop offset="70%"  stop-color="#0070f3" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#0070f3" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Subtle glow filter on the main stroke -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!--
+    ═══════════════════════════════════════════════════
+    MAIN R STROKE — single continuous monoline path
+    ═══════════════════════════════════════════════════
+
+    Path segments:
+      1. M 13,92            bottom of left spine
+      2. C 14,72 12,48 12,15   up the vertical (slight organic lean)
+      3. C 14,7  21,4  31,4    curving into the upper arc
+      4. C 46,4  56,14 54,28   outer bulge of the R bow
+      5. C 52,42 42,52 28,55   inner arc returning inward
+      6. C 20,57 14,58 12,59   settling at the junction
+      7. C 20,70 39,83 62,97   diagonal leg — the oar shaft
+  -->
+  <path
+    d="M 13,92
+       C 14,72 12,48 12,15
+       C 14,7  21,4  31,4
+       C 46,4  56,14 54,28
+       C 52,42 42,52 28,55
+       C 20,57 14,58 12,59
+       C 20,70 39,83 62,97"
+    fill="none"
+    stroke="url(#sweepGrad)"
+    stroke-width="5.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#glow)"
+  />
+
+  <!--
+    ═══════════════════════════════════════════════════
+    OAR BLADE — spoon shape at the catch entry point
+    ═══════════════════════════════════════════════════
+
+    Shaft direction: from (12,59) to (62,97) → vector (50,38) → angle ≈ 37°
+    Blade is perpendicular to shaft → rotate(37 + 90) = rotate(127)
+    Centered on the shaft tip at (62,97)
+  -->
+  <g transform="translate(62,97) rotate(127)">
+    <path
+      d="M -9,0 C -8,-3.5 -2,-5 0,-5 C 2,-5 8,-3.5 9,0 C 8,3.5 2,5 0,5 C -2,5 -8,3.5 -9,0 Z"
+      fill="#7c3d10"
+      opacity="0.92"
+    />
+    <!-- Blade highlight — subtle sheen -->
+    <path
+      d="M -6,-1 C -4,-3 4,-3 6,-1"
+      fill="none"
+      stroke="#f5d070"
+      stroke-width="0.8"
+      stroke-linecap="round"
+      opacity="0.4"
+    />
+  </g>
+
+  <!--
+    ═══════════════════════════════════════════════════
+    WATER RIPPLE — two arcs at the blade entry
+    ═══════════════════════════════════════════════════
+  -->
+  <path
+    d="M 44,101 Q 53,98 64,101"
+    fill="none"
+    stroke="url(#waterGrad)"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+  <path
+    d="M 47,104 Q 55,101 63,104"
+    fill="none"
+    stroke="url(#waterGrad)"
+    stroke-width="1.0"
+    stroke-linecap="round"
+    opacity="0.5"
+  />
+
+</svg>
