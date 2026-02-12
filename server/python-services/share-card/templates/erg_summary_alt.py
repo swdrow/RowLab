@@ -667,7 +667,7 @@ def render_erg_summary_alt(format_key, workout_data, options):
             draw_text(ctx, lbl, "IBM Plex Sans", 36,
                       x, y + 90, TEXT_MUTED, weight='SemiBold', align=align)
 
-    # ── Splits / Intervals Table ──
+    # ── Splits / Intervals Table or Extended Summary ──
     if splits:
         # Determine how much vertical space the header section used
         stats_rows = 2 if len(stats) >= 4 else 1
@@ -678,93 +678,152 @@ def render_erg_summary_alt(format_key, workout_data, options):
         bar_h = 6  # 6px height
         draw_gradient_rect(ctx, (width - bar_w) / 2, table_start_y, bar_w, bar_h, GOLD, COPPER, direction='horizontal')
 
-        # Section header with pattern description (raised from 30px to 40px)
-        header_text = build_table_header(workout_data, splits)
-        header_y = table_start_y + 50
-        draw_text(ctx, header_text, "IBM Plex Sans", 40,
-                  width / 2, header_y, TEXT_PRIMARY, weight='Bold', align='center')
+        # Detect short workouts (1-3 splits, JustRow or FixedTimeSplits)
+        wtype = workout_data.get('workoutType', '')
+        is_short_workout = len(splits) <= 3 and wtype in ('JustRow', 'FixedTimeSplits')
 
-        # Decide rest row strategy for intervals
-        uniform_rest, uniform_rest_val = has_uniform_rest(splits)
-        show_rest_rows = intervals and (not uniform_rest or has_valuable_rest_data(splits))
+        if is_short_workout:
+            # Extended summary layout for short workouts (no table)
+            summary_y = table_start_y + 80
+            draw_text(ctx, "WORKOUT SUMMARY", "IBM Plex Sans", 40,
+                      width / 2, summary_y, TEXT_PRIMARY, weight='Bold', align='center')
 
-        # Set up column positions with symmetric margins and near-equal widths
-        columns = get_table_columns(workout_data)
-        margin = 160  # Symmetric margins (was asymmetric 140)
-        table_width = width - 2 * margin
-        n_cols = len(columns)
+            # 6-8 stat summary in 2-column grid
+            extended_stats = []
+            if distance_m:
+                extended_stats.append(("Total Distance", f"{distance_m:,}m"))
+            if duration_sec:
+                extended_stats.append(("Total Time", format_time_clean(duration_sec)))
+            if avg_pace_tenths:
+                extended_stats.append(("Avg Pace", f"{format_pace(avg_pace_tenths, workout_data)} {pace_unit(workout_data)}"))
+            if avg_watts:
+                extended_stats.append(("Avg Watts", str(avg_watts)))
+            if stroke_rate:
+                extended_stats.append(("Avg " + rate_label(workout_data), str(stroke_rate)))
+            if avg_hr:
+                extended_stats.append(("Avg Heart Rate", str(avg_hr)))
+            if calories:
+                extended_stats.append(("Calories", str(calories)))
+            if drag_factor:
+                extended_stats.append(("Drag Factor", str(drag_factor)))
 
-        # Near-equal width distribution: first column gets 1.3x weight, others get 1x
-        weights = [1.3] + [1.0] * (n_cols - 1)
-        total_weight = sum(weights)
-        col_widths = [(table_width / total_weight) * w for w in weights]
+            # Draw in 2-column layout
+            col_y = summary_y + 80
+            col_gap = 180
+            row_height = 120
+            left_x = 300
+            right_x = width - 300
 
-        col_positions = []
-        cx = margin
-        for ci, (key, header, fmt_fn, align) in enumerate(columns):
-            if align == 'right':
-                col_positions.append((cx + col_widths[ci] - 10,))
-            else:
-                col_positions.append((cx,))
-            cx += col_widths[ci]
+            for i, (label, value) in enumerate(extended_stats):
+                if i % 2 == 0:
+                    x, align = left_x, 'left'
+                else:
+                    x, align = right_x, 'right'
 
-        # Column headers
-        col_header_y = header_y + 60
-        cy = draw_table_header(ctx, columns, col_positions, col_header_y, width)
+                draw_text(ctx, value, "IBM Plex Mono", 64,
+                          x, col_y, GOLD if i % 4 < 2 else ROSE, weight='Bold', align=align)
+                draw_text(ctx, label, "IBM Plex Sans", 36,
+                          x, col_y + 80, TEXT_SECONDARY, weight='SemiBold', align=align)
 
-        # ── Dynamic sizing: scale row height to fill available space ──
-        branding_reserve = 220  # athlete name + branding at bottom
-        avail_height = height - cy - branding_reserve
+                if i % 2 == 1:
+                    col_y += row_height
 
-        # Estimate total rows needed (data rows + rest rows)
-        n_data_rows = len(splits)
-        n_rest_rows = 0
-        if intervals and show_rest_rows:
-            n_rest_rows = max(0, n_data_rows - 1)  # no rest after last
+            # Optional: inline splits as descriptive line
+            if len(splits) > 1:
+                splits_text = "Splits: " + " | ".join([format_pace(s.get('paceTenths'), workout_data) for s in splits if s.get('paceTenths')])
+                col_y += 60
+                draw_text(ctx, splits_text, "IBM Plex Mono", 40,
+                          width / 2, col_y, TEXT_MUTED, weight='Regular', align='center')
 
-        # Calculate ideal row height to fill space
-        total_content_units = n_data_rows + n_rest_rows * 0.5  # rest rows are ~half height
-        if total_content_units > 0:
-            ideal_row_h = avail_height / total_content_units
         else:
-            ideal_row_h = 80
+            # Standard table layout for longer workouts
+            # Section header with pattern description (raised from 30px to 40px)
+            header_text = build_table_header(workout_data, splits)
+            header_y = table_start_y + 50
+            draw_text(ctx, header_text, "IBM Plex Sans", 40,
+                      width / 2, header_y, TEXT_PRIMARY, weight='Bold', align='center')
 
-        # Clamp row height between reasonable bounds (raised minimums)
-        data_row_h = max(75, min(120, int(ideal_row_h)))
-        rest_row_h = max(40, min(60, int(ideal_row_h * 0.5)))
+            # Decide rest row strategy for intervals
+            uniform_rest, uniform_rest_val = has_uniform_rest(splits)
+            show_rest_rows = intervals and (not uniform_rest or has_valuable_rest_data(splits))
 
-        # Scale font size with row height (raised minimum from 28px to 44px, max from 42px to 52px)
-        data_font = max(44, min(52, int(data_row_h * 0.42)))
+            # Set up column positions with symmetric margins and near-equal widths
+            columns = get_table_columns(workout_data)
+            margin = 160  # Symmetric margins (was asymmetric 140)
+            table_width = width - 2 * margin
+            n_cols = len(columns)
 
-        # Check if all splits fit
-        total_h = n_data_rows * data_row_h + n_rest_rows * rest_row_h
-        if total_h > avail_height:
-            # Too many rows — shrink to fit or truncate (raised minimums)
-            scale = avail_height / total_h
-            data_row_h = max(60, int(data_row_h * scale))
-            rest_row_h = max(32, int(rest_row_h * scale))
-            data_font = max(44, int(data_font * scale))
+            # Near-equal width distribution: first column gets 1.3x weight, others get 1x
+            weights = [1.3] + [1.0] * (n_cols - 1)
+            total_weight = sum(weights)
+            col_widths = [(table_width / total_weight) * w for w in weights]
 
-        max_rows = max(1, int(avail_height / (data_row_h + (rest_row_h if show_rest_rows else 8))))
-        show = splits[:max_rows]
-        truncated = len(splits) > max_rows
+            col_positions = []
+            cx = margin
+            for ci, (key, header, fmt_fn, align) in enumerate(columns):
+                if align == 'right':
+                    col_positions.append((cx + col_widths[ci] - 10,))
+                else:
+                    col_positions.append((cx,))
+                cx += col_widths[ci]
 
-        is_last_interval_in_workout = lambda idx: idx == len(splits) - 1
-        for i, s in enumerate(show):
-            cy = draw_data_row_dynamic(ctx, s, i, workout_data, columns, col_positions,
-                                       pace_devs, cy, data_font, data_row_h)
-            if intervals and show_rest_rows and not is_last_interval_in_workout(i):
-                cy = draw_rest_row(ctx, s, col_positions, width, cy)
-                cy += rest_row_h - 36  # adjust for rest_row's own 36px
-            elif intervals:
-                cy += max(4, data_row_h - data_font * 2)
+            # Column headers
+            col_header_y = header_y + 60
+            cy = draw_table_header(ctx, columns, col_positions, col_header_y, width)
 
-        if truncated:
-            remaining = len(splits) - max_rows
-            word = "interval" if intervals else "split"
-            draw_text(ctx, f"+ {remaining} more {word}{'s' if remaining != 1 else ''}",
-                      "IBM Plex Sans", 36,
-                      width / 2, cy + 10, TEXT_MUTED, weight='Regular', align='center')
+            # ── Dynamic sizing: scale row height to fill available space ──
+            branding_reserve = 220  # athlete name + branding at bottom
+            avail_height = height - cy - branding_reserve
+
+            # Estimate total rows needed (data rows + rest rows)
+            n_data_rows = len(splits)
+            n_rest_rows = 0
+            if intervals and show_rest_rows:
+                n_rest_rows = max(0, n_data_rows - 1)  # no rest after last
+
+            # Calculate ideal row height to fill space
+            total_content_units = n_data_rows + n_rest_rows * 0.5  # rest rows are ~half height
+            if total_content_units > 0:
+                ideal_row_h = avail_height / total_content_units
+            else:
+                ideal_row_h = 80
+
+            # Clamp row height between reasonable bounds (raised minimums)
+            data_row_h = max(75, min(120, int(ideal_row_h)))
+            rest_row_h = max(40, min(60, int(ideal_row_h * 0.5)))
+
+            # Scale font size with row height (raised minimum from 28px to 44px, max from 42px to 52px)
+            data_font = max(44, min(52, int(data_row_h * 0.42)))
+
+            # Check if all splits fit
+            total_h = n_data_rows * data_row_h + n_rest_rows * rest_row_h
+            if total_h > avail_height:
+                # Too many rows — shrink to fit or truncate (raised minimums)
+                scale = avail_height / total_h
+                data_row_h = max(60, int(data_row_h * scale))
+                rest_row_h = max(32, int(rest_row_h * scale))
+                data_font = max(44, int(data_font * scale))
+
+            max_rows = max(1, int(avail_height / (data_row_h + (rest_row_h if show_rest_rows else 8))))
+            show = splits[:max_rows]
+            truncated = len(splits) > max_rows
+
+            is_last_interval_in_workout = lambda idx: idx == len(splits) - 1
+            for i, s in enumerate(show):
+                cy = draw_data_row_dynamic(ctx, s, i, workout_data, columns, col_positions,
+                                           pace_devs, cy, data_font, data_row_h)
+                if intervals and show_rest_rows and not is_last_interval_in_workout(i):
+                    cy = draw_rest_row(ctx, s, col_positions, width, cy)
+                    cy += rest_row_h - 44  # adjust for rest_row's own 44px
+                elif intervals:
+                    cy += max(4, data_row_h - data_font * 2)
+
+            if truncated:
+                remaining = len(splits) - max_rows
+                word = "interval" if intervals else "split"
+                draw_text(ctx, f"+ {remaining} more {word}{'s' if remaining != 1 else ''}",
+                          "IBM Plex Sans", 36,
+                          width / 2, cy + 10, TEXT_MUTED, weight='Regular', align='center')
 
     # ── Athlete Name (raised from 44px to 54px) ──
     if options.get('showName', True):
