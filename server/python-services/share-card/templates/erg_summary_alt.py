@@ -17,7 +17,7 @@ from templates.base_template import (
     setup_canvas, draw_text, draw_gradient_rect,
     draw_rounded_rect, draw_grain_texture, draw_rowlab_branding,
     surface_to_png_bytes, hex_to_rgb,
-    DARK_BG, GOLD, ROSE, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED
+    DARK_BG, GOLD, ROSE, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED, SLATE, COPPER
 )
 
 DIMENSIONS = {
@@ -596,7 +596,7 @@ def render_erg_summary_alt(format_key, workout_data, options):
 
     # ── Hero: Workout Title (no machine type) ──
     title = build_title(workout_data)
-    hero_y = 300
+
     # Auto-size based on title length (raised minimum from 80px to 100px)
     title_len = len(title)
     if title_len <= 12:
@@ -607,11 +607,24 @@ def render_erg_summary_alt(format_key, workout_data, options):
         hero_font_size = 120
     else:
         hero_font_size = 100
+
+    # Calculate hero section dimensions for panel background
+    hero_y = 300
+    metrics_y = hero_y + int(hero_font_size * 1.5)
+
+    # Draw subtle panel background behind hero section
+    panel_padding = 80
+    panel_y = hero_y - 60
+    panel_height = metrics_y - panel_y + 320  # Covers hero + summary stats
+    draw_rounded_rect(ctx, panel_padding, panel_y, width - 2 * panel_padding, panel_height, 24)
+    ctx.set_source_rgba(*SLATE, 0.3)
+    ctx.fill()
+
+    # Draw hero title
     draw_text(ctx, title, "IBM Plex Sans", hero_font_size,
               width / 2, hero_y, TEXT_PRIMARY, weight='Bold', align='center')
 
     # ── Secondary Metrics — 2x2 grid ──
-    metrics_y = hero_y + int(hero_font_size * 1.5)
     rl = rate_label(workout_data)
 
     # Build 4 summary stats — hero metric first, then complementary stats
@@ -660,11 +673,10 @@ def render_erg_summary_alt(format_key, workout_data, options):
         stats_rows = 2 if len(stats) >= 4 else 1
         table_start_y = metrics_y + stats_rows * stat_gap + 100
 
-        # Gold accent bar
-        bar_w = 200
-        ctx.set_source_rgb(*GOLD)
-        ctx.rectangle((width - bar_w) / 2, table_start_y, bar_w, 3)
-        ctx.fill()
+        # Enhanced gradient accent bar (wider, thicker, GOLD→COPPER gradient)
+        bar_w = int(width * 0.8)  # 80% of card width
+        bar_h = 6  # 6px height
+        draw_gradient_rect(ctx, (width - bar_w) / 2, table_start_y, bar_w, bar_h, GOLD, COPPER, direction='horizontal')
 
         # Section header with pattern description (raised from 30px to 40px)
         header_text = build_table_header(workout_data, splits)
