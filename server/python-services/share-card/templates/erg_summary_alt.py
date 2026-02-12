@@ -599,13 +599,20 @@ def render_erg_summary_alt(format_key, workout_data, options):
 
     rl = rate_label(workout_data)
 
-    if avg_watts is not None:
-        left_metrics.append((str(avg_watts), "WATTS"))
-    # For time intervals on bike where watts is hero, show avg pace as secondary
-    if workout_data.get('workoutType') == 'FixedTimeInterval' and is_bike(workout_data) and avg_watts:
+    # When hero is watts (bike time intervals), don't duplicate watts — show pace + rate instead
+    hero_is_watts = (workout_data.get('workoutType') == 'FixedTimeInterval'
+                     and is_bike(workout_data) and avg_watts)
+    if hero_is_watts:
         left_metrics.append((format_pace(avg_pace_tenths, workout_data), f"AVG PACE {pace_unit(workout_data)}"))
-    elif stroke_rate is not None:
-        left_metrics.append((str(stroke_rate), rl))
+        if stroke_rate is not None:
+            left_metrics.append((str(stroke_rate), rl))
+    elif avg_watts is not None:
+        left_metrics.append((str(avg_watts), "WATTS"))
+        if stroke_rate is not None:
+            left_metrics.append((str(stroke_rate), rl))
+    else:
+        if stroke_rate is not None:
+            left_metrics.append((str(stroke_rate), rl))
     if calories is not None and not left_metrics:
         left_metrics.append((str(calories), "CALORIES"))
 
