@@ -469,14 +469,14 @@ def get_table_columns(data):
 
 
 def draw_table_header(ctx, columns, col_positions, y, width):
-    """Draw column headers for the data table."""
+    """Draw column headers for the data table (raised from 24px to 40px)."""
     # #N header
-    draw_text(ctx, "#", "IBM Plex Sans", 24,
+    draw_text(ctx, "#", "IBM Plex Sans", 40,
               col_positions[0][0] - 80, y, TEXT_MUTED, weight='SemiBold', align='left')
 
     for i, (key, header, fmt_fn, align) in enumerate(columns):
         x = col_positions[i][0]
-        draw_text(ctx, header, "IBM Plex Sans", 24,
+        draw_text(ctx, header, "IBM Plex Sans", 40,
                   x, y, TEXT_MUTED, weight='SemiBold', align=align)
 
     # Subtle divider line below headers
@@ -523,7 +523,7 @@ def draw_data_row_dynamic(ctx, split, i, data, columns, col_positions, pace_devs
 
 
 def draw_rest_row(ctx, split, col_positions, width, y):
-    """Draw a rest row with recovery data. Returns new y position."""
+    """Draw a rest row with recovery data (raised font from 22px to 32px). Returns new y position."""
     rest_time = split.get('restTime')
     rest_hr = split.get('heartRateRest')
     rest_dist = split.get('restDistance')
@@ -545,9 +545,9 @@ def draw_rest_row(ctx, split, col_positions, width, y):
         return y + 8
 
     left_edge = col_positions[0][0] - 80
-    draw_text(ctx, "  ".join(parts), "IBM Plex Sans", 22,
+    draw_text(ctx, "  ".join(parts), "IBM Plex Sans", 32,
               left_edge, y, REST_COLOR, weight='Regular', align='left')
-    return y + 36
+    return y + 44
 
 
 # ─────────────────────────────────────────────
@@ -589,24 +589,24 @@ def render_erg_summary_alt(format_key, workout_data, options):
     # ── Date + Machine Label ──
     date_str = format_date(workout_data.get('date', ''))
     mlabel = machine_label(workout_data)
-    draw_text(ctx, date_str, "IBM Plex Sans", 28,
+    draw_text(ctx, date_str, "IBM Plex Sans", 36,
               120, 140, TEXT_MUTED, weight='Regular', align='left')
-    draw_text(ctx, mlabel, "IBM Plex Sans", 28,
+    draw_text(ctx, mlabel, "IBM Plex Sans", 36,
               width - 120, 140, TEXT_MUTED, weight='SemiBold', align='right')
 
     # ── Hero: Workout Title (no machine type) ──
     title = build_title(workout_data)
     hero_y = 300
-    # Auto-size based on title length
+    # Auto-size based on title length (raised minimum from 80px to 100px)
     title_len = len(title)
     if title_len <= 12:
-        hero_font_size = 160
+        hero_font_size = 200
     elif title_len <= 18:
-        hero_font_size = 130
+        hero_font_size = 160
     elif title_len <= 24:
-        hero_font_size = 100
+        hero_font_size = 120
     else:
-        hero_font_size = 80
+        hero_font_size = 100
     draw_text(ctx, title, "IBM Plex Sans", hero_font_size,
               width / 2, hero_y, TEXT_PRIMARY, weight='Bold', align='center')
 
@@ -632,9 +632,9 @@ def render_erg_summary_alt(format_key, workout_data, options):
     if avg_hr is not None:
         stats.append((str(avg_hr), "AVG HR"))
 
-    # Draw as 2x2 grid
-    stat_font = 56
-    stat_gap = 120
+    # Draw as 2x2 grid (raised stat values to 72px, labels to 36px)
+    stat_font = 72
+    stat_gap = 140
     if len(stats) >= 4:
         positions = [
             (240, metrics_y, 'left'),
@@ -651,8 +651,8 @@ def render_erg_summary_alt(format_key, workout_data, options):
             color = GOLD if i % 2 == 0 else ROSE
             draw_text(ctx, val, "IBM Plex Mono", stat_font,
                       x, y, color, weight='Bold', align=align)
-            draw_text(ctx, lbl, "IBM Plex Sans", 22,
-                      x, y + 70, TEXT_MUTED, weight='SemiBold', align=align)
+            draw_text(ctx, lbl, "IBM Plex Sans", 36,
+                      x, y + 90, TEXT_MUTED, weight='SemiBold', align=align)
 
     # ── Splits / Intervals Table ──
     if splits:
@@ -666,10 +666,10 @@ def render_erg_summary_alt(format_key, workout_data, options):
         ctx.rectangle((width - bar_w) / 2, table_start_y, bar_w, 3)
         ctx.fill()
 
-        # Section header with pattern description
+        # Section header with pattern description (raised from 30px to 40px)
         header_text = build_table_header(workout_data, splits)
         header_y = table_start_y + 50
-        draw_text(ctx, header_text, "IBM Plex Sans", 30,
+        draw_text(ctx, header_text, "IBM Plex Sans", 40,
                   width / 2, header_y, TEXT_PRIMARY, weight='Bold', align='center')
 
         # Decide rest row strategy for intervals
@@ -719,21 +719,21 @@ def render_erg_summary_alt(format_key, workout_data, options):
         else:
             ideal_row_h = 80
 
-        # Clamp row height between reasonable bounds
-        data_row_h = max(55, min(110, int(ideal_row_h)))
-        rest_row_h = max(30, min(55, int(ideal_row_h * 0.5)))
+        # Clamp row height between reasonable bounds (raised minimums)
+        data_row_h = max(75, min(120, int(ideal_row_h)))
+        rest_row_h = max(40, min(60, int(ideal_row_h * 0.5)))
 
-        # Scale font size with row height
-        data_font = max(28, min(42, int(data_row_h * 0.42)))
+        # Scale font size with row height (raised minimum from 28px to 44px, max from 42px to 52px)
+        data_font = max(44, min(52, int(data_row_h * 0.42)))
 
         # Check if all splits fit
         total_h = n_data_rows * data_row_h + n_rest_rows * rest_row_h
         if total_h > avail_height:
-            # Too many rows — shrink to fit or truncate
+            # Too many rows — shrink to fit or truncate (raised minimums)
             scale = avail_height / total_h
-            data_row_h = max(50, int(data_row_h * scale))
-            rest_row_h = max(26, int(rest_row_h * scale))
-            data_font = max(24, int(data_font * scale))
+            data_row_h = max(60, int(data_row_h * scale))
+            rest_row_h = max(32, int(rest_row_h * scale))
+            data_font = max(44, int(data_font * scale))
 
         max_rows = max(1, int(avail_height / (data_row_h + (rest_row_h if show_rest_rows else 8))))
         show = splits[:max_rows]
@@ -753,10 +753,10 @@ def render_erg_summary_alt(format_key, workout_data, options):
             remaining = len(splits) - max_rows
             word = "interval" if intervals else "split"
             draw_text(ctx, f"+ {remaining} more {word}{'s' if remaining != 1 else ''}",
-                      "IBM Plex Sans", 26,
+                      "IBM Plex Sans", 36,
                       width / 2, cy + 10, TEXT_MUTED, weight='Regular', align='center')
 
-    # ── Athlete Name ──
+    # ── Athlete Name (raised from 44px to 54px) ──
     if options.get('showName', True):
         athlete = workout_data.get('athlete')
         if athlete:
@@ -765,7 +765,7 @@ def render_erg_summary_alt(format_key, workout_data, options):
             name = options.get('athleteName', 'Athlete')
 
         name_y = height - 200
-        nw, nh = draw_text(ctx, name, "IBM Plex Sans", 44,
+        nw, nh = draw_text(ctx, name, "IBM Plex Sans", 54,
                            width / 2, name_y, TEXT_SECONDARY, weight='SemiBold', align='center')
         ctx.set_source_rgba(*GOLD, 0.4)
         ctx.rectangle((width - nw - 40) / 2, name_y + nh + 20, nw + 40, 3)
