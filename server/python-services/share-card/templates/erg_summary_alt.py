@@ -397,7 +397,7 @@ def get_table_columns(data):
     def fmt_time(s):
         return format_time_clean(s.get('timeSeconds'))
     def fmt_pace(s):
-        return f"{format_pace(s.get('paceTenths'), data)}{pu}"
+        return format_pace(s.get('paceTenths'), data)
     def fmt_watts(s):
         w = s.get('watts')
         return f"{w}" if w else '--'
@@ -408,11 +408,13 @@ def get_table_columns(data):
         hr = s.get('heartRate')
         return f"{hr}" if hr is not None else '--'
 
+    pace_header = f'PACE {pu}'
+
     if is_fixed_time_type(data):
         # Time is fixed → distance varies, no time column
         return [
             ('dist', 'DIST', fmt_dist, 'left'),
-            ('pace', f'PACE', fmt_pace, 'left'),
+            ('pace', pace_header, fmt_pace, 'left'),
             ('watts', 'WATTS', fmt_watts, 'right'),
             ('rate', rl.upper(), fmt_rate, 'right'),
             ('hr', 'HR', fmt_hr, 'right'),
@@ -421,7 +423,7 @@ def get_table_columns(data):
         # Distance is fixed → time varies, no distance column
         return [
             ('time', 'TIME', fmt_time, 'left'),
-            ('pace', f'PACE', fmt_pace, 'left'),
+            ('pace', pace_header, fmt_pace, 'left'),
             ('watts', 'WATTS', fmt_watts, 'right'),
             ('rate', rl.upper(), fmt_rate, 'right'),
             ('hr', 'HR', fmt_hr, 'right'),
@@ -431,7 +433,7 @@ def get_table_columns(data):
         return [
             ('dist', 'DIST', fmt_dist, 'left'),
             ('time', 'TIME', fmt_time, 'left'),
-            ('pace', f'PACE', fmt_pace, 'left'),
+            ('pace', pace_header, fmt_pace, 'left'),
             ('watts', 'WATTS', fmt_watts, 'right'),
             ('rate', rl.upper(), fmt_rate, 'right'),
             ('hr', 'HR', fmt_hr, 'right'),
@@ -439,7 +441,7 @@ def get_table_columns(data):
     else:
         # JustRow — pace is primary, show all
         return [
-            ('pace', f'PACE', fmt_pace, 'left'),
+            ('pace', pace_header, fmt_pace, 'left'),
             ('watts', 'WATTS', fmt_watts, 'right'),
             ('rate', rl.upper(), fmt_rate, 'right'),
             ('hr', 'HR', fmt_hr, 'right'),
@@ -561,71 +563,116 @@ def render_erg_summary_alt(format_key, workout_data, options):
 
     _, pace_devs = compute_pace_stats(splits)
 
-    # ── Title ──
-    title_x = 120
-    title_y = 140
     title = build_title(workout_data)
-    draw_text(ctx, title, "IBM Plex Sans", 72,
-              title_x, title_y, TEXT_PRIMARY, weight='Bold', align='left')
-
     date_str = format_date(workout_data.get('date', ''))
-    draw_text(ctx, date_str, "IBM Plex Sans", 28,
-              title_x, title_y + 100, TEXT_MUTED, weight='Regular', align='left')
-
-    # ── Hero Metric ──
-    hero_y = 380
-    hero_value, hero_label = get_hero(workout_data)
-
-    draw_text(ctx, hero_value, "IBM Plex Mono", 160,
-              width / 2, hero_y, TEXT_PRIMARY, weight='Bold', align='center')
-    draw_text(ctx, hero_label, "IBM Plex Sans", 30,
-              width / 2, hero_y + 195, ROSE, weight='Bold', align='center')
-
-    # ── Secondary Metrics — single row of 4 stats ──
-    metrics_y = hero_y + 280
     rl = rate_label(workout_data)
-    hero_is_watts = (workout_data.get('workoutType') == 'FixedTimeInterval'
-                     and is_bike(workout_data) and avg_watts)
 
-    # Build 4 summary stats (matching C2 Strava layout: 2x2 grid)
-    stats = []
-    if hero_is_watts:
-        stats.append((format_pace(avg_pace_tenths, workout_data), f"AVG PACE {pace_unit(workout_data)}"))
-    elif avg_watts is not None:
-        stats.append((str(avg_watts), "WATTS"))
-    elif duration_sec:
-        stats.append((format_time_clean(duration_sec), "TOTAL TIME"))
+    if intervals and splits:
+        # ═══════════════════════════════════════════
+        # INTERVAL LAYOUT: Title IS the hero → summary → table
+        # ═══════════════════════════════════════════
 
-    if stroke_rate is not None:
-        stats.append((str(stroke_rate), rl))
-    if avg_hr is not None:
-        stats.append((str(avg_hr), "AVG HR"))
-    if distance_m is not None:
-        stats.append((f"{distance_m:,}m", "DISTANCE"))
+        # Big title — the workout description is what matters
+        title_x = 120
+        title_y = 120
+        draw_text(ctx, title, "IBM Plex Sans", 90,
+                  title_x, title_y, TEXT_PRIMARY, weight='Bold', align='left')
+        draw_text(ctx, date_str, "IBM Plex Sans", 28,
+                  title_x, title_y + 120, TEXT_MUTED, weight='Regular', align='left')
 
-    # Draw as 2x2 grid
-    if len(stats) >= 4:
-        positions = [
-            (240, metrics_y, 'left'),
-            (width - 240, metrics_y, 'right'),
-            (240, metrics_y + 120, 'left'),
-            (width - 240, metrics_y + 120, 'right'),
-        ]
+        # Summary row — like PM5's totals line
+        summary_y = title_y + 200
+        summary_parts = []
+        if duration_sec:
+            summary_parts.append((format_time_clean(duration_sec), "TIME"))
+        if distance_m:
+            summary_parts.append((f"{distance_m:,}m", "DIST"))
+        if avg_pace_tenths:
+            summary_parts.append((format_pace(avg_pace_tenths, workout_data), f"PACE {pace_unit(workout_data)}"))
+        if avg_watts:
+            summary_parts.append((str(avg_watts), "WATTS"))
+        if stroke_rate is not None:
+            summary_parts.append((str(stroke_rate), rl))
+        if avg_hr:
+            summary_parts.append((str(avg_hr), "HR"))
+
+        # Draw summary as evenly-spaced horizontal row
+        n_parts = min(len(summary_parts), 6)
+        if n_parts > 0:
+            margin_s = 120
+            spacing = (width - 2 * margin_s) / n_parts
+            for si, (val, lbl) in enumerate(summary_parts[:n_parts]):
+                sx = margin_s + si * spacing + spacing / 2
+                draw_text(ctx, val, "IBM Plex Mono", 48,
+                          sx, summary_y, GOLD, weight='Bold', align='center')
+                draw_text(ctx, lbl, "IBM Plex Sans", 20,
+                          sx, summary_y + 60, TEXT_MUTED, weight='SemiBold', align='center')
+
+        # Gold divider
+        divider_y = summary_y + 110
+        ctx.set_source_rgba(*GOLD, 0.3)
+        ctx.rectangle(120, divider_y, width - 240, 2)
+        ctx.fill()
+
+        table_y = divider_y + 10
+
     else:
-        positions = [(240 + i * 480, metrics_y, 'left') for i in range(len(stats))]
+        # ═══════════════════════════════════════════
+        # CONTINUOUS LAYOUT: Title + Hero pace + secondary stats
+        # ═══════════════════════════════════════════
 
-    for i, (val, lbl) in enumerate(stats[:4]):
-        if i < len(positions):
-            x, y, align = positions[i]
-            color = GOLD if i % 2 == 0 else ROSE
-            draw_text(ctx, val, "IBM Plex Mono", 56,
-                      x, y, color, weight='Bold', align=align)
-            draw_text(ctx, lbl, "IBM Plex Sans", 22,
-                      x, y + 70, TEXT_MUTED, weight='SemiBold', align=align)
+        title_x = 120
+        title_y = 140
+        draw_text(ctx, title, "IBM Plex Sans", 72,
+                  title_x, title_y, TEXT_PRIMARY, weight='Bold', align='left')
+        draw_text(ctx, date_str, "IBM Plex Sans", 28,
+                  title_x, title_y + 100, TEXT_MUTED, weight='Regular', align='left')
+
+        # Hero metric (pace)
+        hero_y = 380
+        hero_value, hero_label = get_hero(workout_data)
+        draw_text(ctx, hero_value, "IBM Plex Mono", 160,
+                  width / 2, hero_y, TEXT_PRIMARY, weight='Bold', align='center')
+        draw_text(ctx, hero_label, "IBM Plex Sans", 30,
+                  width / 2, hero_y + 195, ROSE, weight='Bold', align='center')
+
+        # Secondary metrics — 2x2 grid
+        metrics_y = hero_y + 280
+        stats = []
+        if avg_watts is not None:
+            stats.append((str(avg_watts), "WATTS"))
+        elif duration_sec:
+            stats.append((format_time_clean(duration_sec), "TOTAL TIME"))
+        if stroke_rate is not None:
+            stats.append((str(stroke_rate), rl))
+        if avg_hr is not None:
+            stats.append((str(avg_hr), "AVG HR"))
+        if distance_m is not None:
+            stats.append((f"{distance_m:,}m", "DISTANCE"))
+
+        if len(stats) >= 4:
+            positions = [
+                (240, metrics_y, 'left'),
+                (width - 240, metrics_y, 'right'),
+                (240, metrics_y + 120, 'left'),
+                (width - 240, metrics_y + 120, 'right'),
+            ]
+        else:
+            positions = [(240 + i * 480, metrics_y, 'left') for i in range(len(stats))]
+
+        for i, (val, lbl) in enumerate(stats[:4]):
+            if i < len(positions):
+                x, y, align = positions[i]
+                color = GOLD if i % 2 == 0 else ROSE
+                draw_text(ctx, val, "IBM Plex Mono", 56,
+                          x, y, color, weight='Bold', align=align)
+                draw_text(ctx, lbl, "IBM Plex Sans", 22,
+                          x, y + 70, TEXT_MUTED, weight='SemiBold', align=align)
+
+        table_y = metrics_y + 280
 
     # ── Splits / Intervals Table ──
     if splits:
-        table_y = metrics_y + 280
 
         # Gold accent bar
         bar_w = 200
