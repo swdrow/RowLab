@@ -40,6 +40,7 @@ model User {
   attendanceOverrides    SessionAttendance[]   @relation("AttendanceOverrides")
   createdRecruitVisits   RecruitVisit[]
   draftedLineups         Lineup[]              @relation("lineupDrafts")
+  shareCards             ShareCard[]
 
   @@map("users")
 }
@@ -1541,4 +1542,33 @@ model EquipmentAssignment {
   @@index([teamId, assignedDate])
   @@index([shellId, assignedDate])
   @@map("equipment_assignments")
+}
+
+// ============================================
+// SHARE CARDS: Social sharing of workout results
+// ============================================
+
+model ShareCard {
+  id          String   @id // nanoid(10), not UUID — short for URLs
+  workoutId   String? // Optional — some card types (season recap, leaderboard) aren't workout-specific
+  userId      String // User who generated the card
+  teamId      String? // Team branding, if chosen
+  cardType    String // erg_summary, erg_charts, pr_celebration, regatta_result, regatta_summary, season_recap, team_leaderboard
+  format      String // '1:1' or '9:16'
+  filepath    String // Filesystem path to PNG
+  url         String // Relative URL for serving: /uploads/share-cards/abc123.png
+  options     Json     @default("{}") // Snapshot of generation options (showName, brandingType, qrCode, etc.)
+  title       String? // Card title for OG tags (e.g., "2000m Erg Test")
+  description String? // Card description for OG tags
+  athleteName String? // For display on public share page
+  version     Int      @default(1) // Template version for cache busting
+  expiresAt   DateTime // TTL — default 30 days from creation
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([workoutId])
+  @@index([expiresAt]) // For cleanup cron
+  @@map("share_cards")
 }
