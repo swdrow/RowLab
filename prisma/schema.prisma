@@ -402,6 +402,7 @@ model Workout {
   notes            String?  @db.Text // user-editable notes field
   deviceInfo       Json?
   rawData          Json?
+  inferredPattern  Json? // Detected training pattern from split analysis
   createdAt        DateTime @default(now())
 
   athlete     Athlete?            @relation(fields: [athleteId], references: [id], onDelete: Cascade)
