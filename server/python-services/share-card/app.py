@@ -8,8 +8,10 @@ from flask import Flask, request, jsonify, send_file
 from io import BytesIO
 import traceback
 
-# Import template modules (base_template will be created in Task 1b)
+# Import template modules
 from templates.base_template import render_test_card
+from templates.erg_summary import render_erg_summary
+from templates.erg_summary_alt import render_erg_summary_alt
 
 app = Flask(__name__)
 
@@ -20,9 +22,10 @@ DIMENSIONS = {
 }
 
 # Card renderer registry - maps cardType to renderer function
-# For now, only test renderer is available (more added in future plans)
 CARD_RENDERERS = {
     'test': render_test_card,
+    'erg_summary': render_erg_summary,  # Design A - Evolved v5
+    'erg_summary_alt': render_erg_summary_alt,  # Design B - Fresh Direction
 }
 
 
