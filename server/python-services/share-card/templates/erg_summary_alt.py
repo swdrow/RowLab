@@ -218,6 +218,12 @@ def build_title(data):
     distance = data.get('distanceM')
     duration = data.get('durationSeconds')
 
+    # Check for inferred title from JustRow workouts
+    is_just_row = wtype == 'JustRow' or wtype == 0
+    inferred_pattern = data.get('inferredPattern', {})
+    if is_just_row and inferred_pattern.get('inferredTitle'):
+        return inferred_pattern['inferredTitle']
+
     # ── Interval workouts ──
     if is_interval(data) and splits:
         n = len(splits)

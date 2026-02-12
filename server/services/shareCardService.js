@@ -339,6 +339,7 @@ function serializeWorkoutForPython(workout) {
           lastName: workout.athlete.lastName,
         }
       : null,
+    inferredPattern: workout.inferredPattern || null,
   };
 }
 
@@ -425,6 +426,12 @@ function buildWorkoutTitle(data) {
   const distance = data.distanceM;
   const duration = data.durationSeconds;
   const isIntervalType = wtype.toLowerCase().includes('interval');
+
+  // Check for inferred title from JustRow workouts
+  const isJustRow = wtype === 'JustRow' || wtype === 0;
+  if (isJustRow && data.inferredPattern?.inferredTitle) {
+    return `${data.inferredPattern.inferredTitle} ${mlabel}`;
+  }
 
   // Interval workouts
   if (isIntervalType && splits.length > 0) {
