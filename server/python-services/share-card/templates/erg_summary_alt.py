@@ -17,7 +17,7 @@ from templates.base_template import (
     setup_canvas, draw_text, draw_gradient_rect,
     draw_rounded_rect, draw_grain_texture, draw_rowlab_branding,
     surface_to_png_bytes, hex_to_rgb,
-    DARK_BG, GOLD, ROSE, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED, SLATE, COPPER
+    DARK_BG, GOLD, ROSE, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED, SLATE, COPPER, TEAL
 )
 
 DIMENSIONS = {
@@ -34,8 +34,7 @@ MACHINE_LABELS = {
     'bikerg': 'BIKEERG',
 }
 
-# Muted teal for rest rows
-REST_COLOR = (0.4, 0.6, 0.65)
+# Note: REST_COLOR imported as TEAL from base_template
 
 # Standard test distances where TOTAL TIME is the hero
 TEST_DISTANCES = {500, 1000, 2000, 5000, 6000}
@@ -493,7 +492,7 @@ def draw_data_row(ctx, split, i, data, columns, col_positions, pace_devs, y):
 
 
 def draw_data_row_dynamic(ctx, split, i, data, columns, col_positions, pace_devs, y, font_size, row_h):
-    """Draw a single data row with dynamic font size and row height."""
+    """Draw a single data row with dynamic font size, row height, and column-specific colors."""
     split_num = split.get('splitNumber', i + 1)
 
     # Pace dot
@@ -505,25 +504,46 @@ def draw_data_row_dynamic(ctx, split, i, data, columns, col_positions, pace_devs
     draw_text(ctx, f"{split_num}", "IBM Plex Mono", font_size,
               col_positions[0][0] - 80, y, TEXT_SECONDARY, weight='SemiBold', align='left')
 
-    # Data columns
+    # Data columns with color coding
     for ci, (key, header, fmt_fn, align) in enumerate(columns):
         x = col_positions[ci][0]
         val = fmt_fn(split)
+
+        # Determine color based on column type
         if ci == 0:
-            draw_text(ctx, val, "IBM Plex Mono", font_size + 2,
-                      x, y, TEXT_PRIMARY, weight='Bold', align=align)
+            # First column always white bold
+            color = TEXT_PRIMARY
+            weight = 'Bold'
+            size_adjust = 2
         elif key == 'watts':
-            draw_text(ctx, val, "IBM Plex Mono", font_size,
-                      x, y, GOLD, weight='SemiBold', align=align)
+            color = GOLD
+            weight = 'SemiBold'
+            size_adjust = 0
+        elif key == 'hr':
+            color = ROSE
+            weight = 'SemiBold'
+            size_adjust = 0
+        elif key == 'rate':
+            color = TEAL
+            weight = 'SemiBold'
+            size_adjust = 0
+        elif key == 'pace':
+            color = TEXT_PRIMARY
+            weight = 'Regular'
+            size_adjust = 0
         else:
-            draw_text(ctx, val, "IBM Plex Mono", font_size,
-                      x, y, TEXT_SECONDARY, weight='Regular', align=align)
+            color = TEXT_SECONDARY
+            weight = 'Regular'
+            size_adjust = 0
+
+        draw_text(ctx, val, "IBM Plex Mono", font_size + size_adjust,
+                  x, y, color, weight=weight, align=align)
 
     return y + row_h
 
 
 def draw_rest_row(ctx, split, col_positions, width, y):
-    """Draw a rest row with recovery data (raised font from 22px to 32px). Returns new y position."""
+    """Draw a rest row with recovery data (raised font from 22px to 32px, TEAL color). Returns new y position."""
     rest_time = split.get('restTime')
     rest_hr = split.get('heartRateRest')
     rest_dist = split.get('restDistance')
@@ -546,7 +566,7 @@ def draw_rest_row(ctx, split, col_positions, width, y):
 
     left_edge = col_positions[0][0] - 80
     draw_text(ctx, "  ".join(parts), "IBM Plex Sans", 32,
-              left_edge, y, REST_COLOR, weight='Regular', align='left')
+              left_edge, y, TEAL, weight='Regular', align='left')
     return y + 44
 
 
@@ -569,6 +589,13 @@ def render_erg_summary_alt(format_key, workout_data, options):
     ctx.set_source(gradient)
     ctx.rectangle(0, 0, width, height)
     ctx.fill()
+
+    # Warmer background glow behind data area
+    radial_bg = cairo.RadialGradient(width / 2, height * 0.4, 0, width / 2, height * 0.4, width * 0.6)
+    radial_bg.add_color_stop_rgba(0, 0.12, 0.09, 0.07, 0.15)  # Warmer center
+    radial_bg.add_color_stop_rgba(1, 0.03, 0.03, 0.04, 0)     # Fade to edges
+    ctx.set_source(radial_bg)
+    ctx.paint()
 
     draw_wave_pattern(ctx, width, height, GOLD, opacity=0.06)
 
