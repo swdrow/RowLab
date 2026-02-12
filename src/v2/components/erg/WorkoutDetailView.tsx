@@ -1,20 +1,23 @@
 /**
  * WorkoutDetailView Component
  * Phase 37-05: Detailed workout view with summary card and per-split breakdown table
+ * Phase 38-07: Added share button integration
  *
  * Shows:
  * - Summary card at top with key metrics (distance, time, pace, watts, HR, drag factor)
  * - Machine type badge for non-rower ergs
  * - C2 badge if synced from Concept2
  * - Per-split table with pace, watts, stroke rate, HR for each split
+ * - Share button to generate and share workout cards
  */
 
-import React from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWorkoutDetail } from '@v2/hooks/useErgWorkouts';
 import { MACHINE_TYPE_LABELS } from '@v2/types/workouts';
 import type { WorkoutSplit } from '@v2/types/workouts';
+import { ShareCardModal } from '../../features/share-cards/components/ShareCardModal';
 
 interface WorkoutDetailViewProps {
   workoutId: string | null;
@@ -254,6 +257,9 @@ function SplitsTable({ splits }: { splits: WorkoutSplit[] }) {
 export function WorkoutDetailView({ workoutId, onClose }: WorkoutDetailViewProps) {
   const { data: workout, isLoading, error } = useWorkoutDetail(workoutId);
 
+  // Share modal state
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+
   // Spring animation config (matching design system)
   const springConfig = { type: 'spring', stiffness: 300, damping: 30 };
 
@@ -283,13 +289,25 @@ export function WorkoutDetailView({ workoutId, onClose }: WorkoutDetailViewProps
             <div className="sticky top-0 z-10 bg-bg-surface/95 backdrop-blur-xl border-b border-white/10 px-6 py-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-txt-primary">Workout Details</h2>
-                <button
-                  onClick={onClose}
-                  className="p-2 rounded-lg hover:bg-white/5 transition-colors"
-                  aria-label="Close"
-                >
-                  <X size={20} className="text-txt-secondary" />
-                </button>
+                <div className="flex items-center gap-2">
+                  {/* Share button */}
+                  <button
+                    onClick={() => setShareModalOpen(true)}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all text-txt-primary"
+                    title="Share workout"
+                  >
+                    <Share2 size={16} />
+                    <span className="text-sm font-medium">Share</span>
+                  </button>
+                  {/* Close button */}
+                  <button
+                    onClick={onClose}
+                    className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+                    aria-label="Close"
+                  >
+                    <X size={20} className="text-txt-secondary" />
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -327,6 +345,16 @@ export function WorkoutDetailView({ workoutId, onClose }: WorkoutDetailViewProps
                 </>
               )}
             </div>
+
+            {/* Share Card Modal */}
+            {workoutId && (
+              <ShareCardModal
+                isOpen={shareModalOpen}
+                onClose={() => setShareModalOpen(false)}
+                workoutId={workoutId}
+                cardType="erg_summary"
+              />
+            )}
           </motion.div>
         </>
       )}

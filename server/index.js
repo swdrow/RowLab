@@ -278,6 +278,26 @@ app.get('/api/admin/storage', verifyToken, async (req, res) => {
 });
 
 /**
+ * Share page OG handler for social crawlers
+ * Detects social media crawlers and redirects to OG HTML endpoint
+ * MUST be before SPA catch-all to intercept /share/:shareId
+ */
+app.get('/share/:shareId', (req, res, next) => {
+  const userAgent = req.get('user-agent') || '';
+  const isCrawler = /facebookexternalhit|Twitterbot|Slackbot|LinkedInBot|Discordbot|WhatsApp/i.test(
+    userAgent
+  );
+
+  if (isCrawler) {
+    // Redirect crawlers to OG HTML endpoint
+    return res.redirect(`/api/v1/share-cards/og/${req.params.shareId}`);
+  }
+
+  // Let React SPA handle it for regular browsers
+  next();
+});
+
+/**
  * In production, serve the built React app
  */
 if (NODE_ENV === 'production') {
