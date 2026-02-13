@@ -261,48 +261,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [accessToken]);
 
   // Listen for auth:expired events from the API interceptor.
-  // Instead of redirecting to /login (which causes jarring page reloads),
-  // silently attempt to re-authenticate via dev-login (dev) or refresh (prod).
+  // api.ts handles ALL refresh logic (with mutex + cooldown).
+  // If refresh fails → expired event → clear state → redirect to login.
+  // No double-refresh, no cascade, no random reloads.
   useEffect(() => {
-    const handleExpired = async () => {
-      console.debug('[AuthContext] Token expired, attempting silent re-auth...');
-      try {
-        // Try dev-login first (development only)
-        if (import.meta.env.DEV) {
-          const res = await api.post('/api/v1/auth/dev-login');
-          if (res.data?.data?.accessToken) {
-            const token = res.data.data.accessToken;
-            setAccessToken(token);
-            (window as any).__rowlab_access_token = token;
-            // Refresh user data silently
-            await queryClient.fetchQuery({
-              queryKey: queryKeys.auth.user(),
-              queryFn: fetchCurrentUser,
-            });
-            console.debug('[AuthContext] Silent re-auth succeeded');
-            return;
-          }
-        }
-        // Fallback: try standard refresh
-        const refreshRes = await api.post('/api/v1/auth/refresh');
-        if (refreshRes.data?.data?.accessToken) {
-          const token = refreshRes.data.data.accessToken;
-          setAccessToken(token);
-          (window as any).__rowlab_access_token = token;
-          await queryClient.fetchQuery({
-            queryKey: queryKeys.auth.user(),
-            queryFn: fetchCurrentUser,
-          });
-          console.debug('[AuthContext] Silent refresh succeeded');
-          return;
-        }
-      } catch {
-        console.debug('[AuthContext] Silent re-auth failed, user must login');
-        // Clear auth state — CanvasLayout will redirect to /login
-        setAccessToken(null);
-        delete (window as any).__rowlab_access_token;
-        queryClient.setQueryData(queryKeys.auth.user(), null);
-      }
+    const handleExpired = () => {
+      console.debug('[AuthContext] Auth expired — clearing session');
+      setAccessToken(null);
+      delete (window as any).__rowlab_access_token;
+      queryClient.setQueryData(queryKeys.auth.user(), null);
+      // CanvasLayout will detect isAuthenticated=false and redirect to /login
     };
 
     window.addEventListener('rowlab:auth:expired', handleExpired);
