@@ -29,8 +29,21 @@ api.interceptors.request.use((config) => {
 // and all others wait for that same promise.
 let refreshPromise: Promise<string | null> | null = null;
 
+// Refresh cooldown — minimum time between refresh attempts
+const REFRESH_COOLDOWN_MS = 5000; // 5 seconds
+let lastRefreshAttemptAt = 0;
+
 function doRefresh(): Promise<string | null> {
+  // Check cooldown
+  const now = Date.now();
+  if (now - lastRefreshAttemptAt < REFRESH_COOLDOWN_MS) {
+    // Too soon since last refresh attempt — don't spam the server
+    return Promise.reject(new Error('Refresh cooldown active'));
+  }
+
   if (refreshPromise) return refreshPromise;
+
+  lastRefreshAttemptAt = now;
 
   refreshPromise = axios
     .post(`${API_URL}/api/v1/auth/refresh`, {}, { withCredentials: true })
@@ -64,6 +77,14 @@ api.interceptors.response.use(
 
     // If 401 and haven't retried yet, try to refresh token (deduped via mutex)
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Never retry the refresh endpoint itself (prevents refresh-of-refresh loop)
+      if (
+        originalRequest.url?.includes('/auth/refresh') ||
+        originalRequest.url?.includes('/auth/dev-login')
+      ) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       try {
@@ -72,7 +93,11 @@ api.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
         }
-      } catch {
+      } catch (refreshError: any) {
+        // If cooldown error, silently reject (user is probably already being logged out)
+        if (refreshError.message === 'Refresh cooldown active') {
+          return Promise.reject(error);
+        }
         return Promise.reject(error);
       }
     }
