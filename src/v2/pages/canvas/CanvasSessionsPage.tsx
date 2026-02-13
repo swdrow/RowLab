@@ -283,11 +283,31 @@ export function CanvasSessionsPage() {
           </div>
         )}
 
-        {/* Calendar View (placeholder) */}
+        {/* Calendar View */}
         {viewMode === 'calendar' && (
-          <CanvasConsoleReadout
-            items={[{ label: 'STATUS', value: 'CALENDAR VIEW - COMING SOON' }]}
-          />
+          <div className="space-y-4">
+            <RuledHeader>Calendar View</RuledHeader>
+            <CanvasConsoleReadout
+              items={[
+                { label: 'STATUS', value: 'NO SESSIONS TO DISPLAY' },
+                {
+                  label: 'ACTION',
+                  value:
+                    filteredSessions && filteredSessions.length > 0
+                      ? 'Switch to list view for session details'
+                      : 'Create your first training session',
+                },
+              ]}
+            />
+            {(!filteredSessions || filteredSessions.length === 0) && (
+              <div className="flex justify-center mt-6">
+                <CanvasButton variant="primary" onClick={() => setShowForm(true)}>
+                  <Plus className="w-4 h-4" />
+                  Create Session
+                </CanvasButton>
+              </div>
+            )}
+          </div>
         )}
       </motion.div>
 
