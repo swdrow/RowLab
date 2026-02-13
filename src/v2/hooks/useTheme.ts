@@ -38,7 +38,7 @@ const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       theme: 'dark',
-      isSystemDefault: true,
+      isSystemDefault: false,
 
       setTheme: (newTheme: Theme) => {
         set({ theme: newTheme, isSystemDefault: false });
