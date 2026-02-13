@@ -1,31 +1,88 @@
 /**
  * Personal dashboard: landing page for authenticated users.
  * Teamless-safe -- works with or without an active team.
- * Feature content comes in Phase 46.
+ *
+ * Route loader prefetches dashboard data via ensureQueryData.
+ * Suspense boundary shows skeleton while queries resolve.
+ * State detection: empty state for zero-data users, full content otherwise.
  */
+import { Suspense } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useAuth } from '@/features/auth/useAuth';
+import { queryClient } from '@/lib/queryClient';
+import {
+  statsQueryOptions,
+  recentWorkoutsQueryOptions,
+  prsQueryOptions,
+} from '@/features/dashboard/api';
+import { useDashboardData } from '@/features/dashboard/hooks/useDashboardData';
+import { DashboardSkeleton } from '@/features/dashboard/components/DashboardSkeleton';
+import { DashboardEmptyState } from '@/features/dashboard/components/DashboardEmptyState';
+import { DashboardContent } from '@/features/dashboard/components/DashboardContent';
+import type { TeamContextData } from '@/features/dashboard/types';
 
 export const Route = createFileRoute('/_authenticated/')({
   component: PersonalDashboard,
   staticData: {
     breadcrumb: 'Home',
   },
+  loader: async () => {
+    // Prefetch all dashboard queries in parallel — allSettled so one failure
+    // doesn't block the rest. Mock fallbacks in queryFns handle 404s gracefully.
+    await Promise.allSettled([
+      queryClient.ensureQueryData(statsQueryOptions()),
+      queryClient.ensureQueryData(recentWorkoutsQueryOptions()),
+      queryClient.ensureQueryData(prsQueryOptions()),
+    ]);
+    return {};
+  },
 });
 
 function PersonalDashboard() {
-  const { user } = useAuth();
+  return (
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardInner />
+    </Suspense>
+  );
+}
+
+function DashboardInner() {
+  const { user, activeTeamId, teams } = useAuth();
+  const data = useDashboardData();
+
+  // Zero-data users see the empty state with onboarding CTAs
+  if (!data.hasData) {
+    return <DashboardEmptyState />;
+  }
+
+  // Derive team context from auth state
+  // TODO(phase-45): Replace with real team context API when /me/team-context ships
+  const teamContext = deriveTeamContext(activeTeamId, teams);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-ink-deep p-8">
-      <div className="max-w-lg text-center">
-        <h1 className="text-2xl font-semibold text-ink-primary">
-          Welcome{user?.name ? `, ${user.name}` : ''}
-        </h1>
-        <p className="mt-2 text-ink-secondary">
-          Your personal training dashboard. Phase 46 will bring workouts, stats, and insights here.
-        </p>
-      </div>
-    </div>
+    <DashboardContent data={data} userName={user?.name ?? 'Athlete'} teamContext={teamContext} />
   );
+}
+
+/**
+ * Derive team context data from auth state.
+ * Returns null for standalone athletes (no active team).
+ * TODO(phase-45): Replace with real API call to /me/team-context
+ */
+function deriveTeamContext(
+  activeTeamId: string | null,
+  teams: Array<{ id: string; name: string; slug: string; role: string }>
+): TeamContextData | null {
+  if (!activeTeamId) return null;
+
+  const activeTeam = teams.find((t) => t.id === activeTeamId);
+  if (!activeTeam) return null;
+
+  // TODO(phase-45): Fetch real upcoming events and notices from API
+  return {
+    teamId: activeTeam.id,
+    teamName: activeTeam.name,
+    upcomingEvents: [],
+    notices: [],
+  };
 }
