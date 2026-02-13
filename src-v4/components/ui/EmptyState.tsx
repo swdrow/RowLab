@@ -5,7 +5,7 @@
  */
 
 import type { LucideIcon } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { fadeIn } from '@/lib/animations';
 import { Button } from '@/components/ui/Button';
@@ -48,18 +48,12 @@ function ActionButton({
   action: EmptyStateAction;
   variant: 'primary' | 'ghost';
 }) {
-  if (action.to) {
-    return (
-      <Link to={action.to}>
-        <Button variant={variant} size="sm">
-          {action.label}
-        </Button>
-      </Link>
-    );
-  }
+  const navigate = useNavigate();
+
+  const handleClick = action.to ? () => navigate({ to: action.to as '/' }) : action.onClick;
 
   return (
-    <Button variant={variant} size="sm" onClick={action.onClick}>
+    <Button variant={variant} size="sm" onClick={handleClick}>
       {action.label}
     </Button>
   );
