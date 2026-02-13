@@ -4,7 +4,7 @@
  * Wraps GlassCard with icon, label, value, footnote, and sparkline placeholder.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMotionValue, useTransform, animate } from 'motion/react';
 import type { LucideIcon } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
@@ -73,11 +73,10 @@ function AnimatedStatCard({
   const motionValue = useMotionValue(0);
   const rounded = useTransform(motionValue, (latest) => formatNumber(Math.round(latest)));
   const [displayValue, setDisplayValue] = useState('0');
-  const didAnimate = useRef(false);
 
   useEffect(() => {
-    if (didAnimate.current) return;
-    didAnimate.current = true;
+    // Reset motion value on mount (handles React Strict Mode re-mount)
+    motionValue.set(0);
 
     const controls = animate(motionValue, value, {
       duration: 0.8,

@@ -126,6 +126,23 @@ export function formatRelativeDate(isoDate: string | null | undefined): string {
 }
 
 /**
+ * Format erg test time from tenths of seconds to display string with decimal.
+ * Unlike formatDuration, this handles tenths-of-seconds input and shows .X precision.
+ * @example formatErgTime(3906) → "6:30.6"  (2k test time)
+ * @example formatErgTime(878)  → "1:27.8"  (500m time)
+ * @example formatErgTime(11460) → "19:06.0" (5k time)
+ */
+export function formatErgTime(tenths: number | null | undefined): string {
+  if (tenths == null || tenths < 0) return DASH;
+  const totalSeconds = tenths / 10;
+  const minutes = Math.floor(totalSeconds / 60);
+  const remainderSeconds = totalSeconds - minutes * 60;
+  const wholeSeconds = Math.floor(remainderSeconds);
+  const fraction = Math.round((remainderSeconds - wholeSeconds) * 10);
+  return `${minutes}:${String(wholeSeconds).padStart(2, '0')}.${fraction}`;
+}
+
+/**
  * Format large numbers with locale-aware separators.
  * @example formatNumber(245000) → "245,000"
  */

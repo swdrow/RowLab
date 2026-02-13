@@ -6,7 +6,7 @@
 
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { formatDuration, formatRelativeDate } from '@/lib/format';
+import { formatErgTime, formatRelativeDate } from '@/lib/format';
 import type { PRRecord } from '../types';
 
 interface PRCardProps {
@@ -28,7 +28,7 @@ export function PRCard({ record, className = '' }: PRCardProps) {
     <GlassCard padding="sm" className={className} as="article">
       <div
         className="flex flex-col gap-2"
-        aria-label={`${record.testType} personal record${hasBest ? `: ${formatDuration(record.bestTime)}` : ''}`}
+        aria-label={`${record.testType} personal record${hasBest ? `: ${formatErgTime(record.bestTime)}` : ''}`}
         role="group"
       >
         {/* Header: test type + machine badge */}
@@ -43,7 +43,7 @@ export function PRCard({ record, className = '' }: PRCardProps) {
         {hasBest ? (
           <>
             <span className="text-xl font-bold text-ink-primary tabular-nums">
-              {formatDuration(record.bestTime)}
+              {formatErgTime(record.bestTime)}
             </span>
 
             {/* Date + improvement */}
@@ -70,9 +70,9 @@ export function PRCard({ record, className = '' }: PRCardProps) {
 function ImprovementIndicator({ improvement }: { improvement: number | null }) {
   if (improvement == null || improvement === 0) return null;
 
-  // Positive improvement = faster (time decreased) = good
-  // Negative improvement = slower (time increased) = bad
-  const isImproved = improvement > 0;
+  // Negative improvement = time decreased = faster = good (e.g. -54 = 5.4s faster)
+  // Positive improvement = time increased = slower = bad
+  const isImproved = improvement < 0;
   const seconds = Math.abs(improvement / 10).toFixed(1);
 
   return (
