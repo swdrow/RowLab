@@ -54,6 +54,7 @@ export async function getWorkouts(teamId, filters = {}) {
       athlete: {
         select: { id: true, firstName: true, lastName: true },
       },
+      splits: { orderBy: { splitNumber: 'asc' } },
     },
     orderBy: { date: 'desc' },
     take: filters.limit ? parseInt(filters.limit) : 100,
