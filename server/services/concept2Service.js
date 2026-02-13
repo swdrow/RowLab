@@ -485,8 +485,42 @@ export async function getMyC2Status(userId) {
       username: null,
       lastSyncedAt: null,
       syncEnabled: false,
+      workoutCount: 0,
+      lastSyncedWorkoutDate: null,
     };
   }
+
+  // Get the user's athlete profile(s) (users can have multiple athlete records across teams)
+  const athletes = await prisma.athlete.findMany({
+    where: { userId },
+    select: { id: true },
+  });
+
+  const athleteIds = athletes.map((a) => a.id);
+
+  // Count synced C2 workouts for this user's athlete profiles
+  const workoutCount =
+    athleteIds.length > 0
+      ? await prisma.workout.count({
+          where: {
+            athleteId: { in: athleteIds },
+            source: 'concept2_sync',
+          },
+        })
+      : 0;
+
+  // Get the most recently synced workout date across all athlete profiles
+  const lastWorkout =
+    athleteIds.length > 0
+      ? await prisma.workout.findFirst({
+          where: {
+            athleteId: { in: athleteIds },
+            source: 'concept2_sync',
+          },
+          orderBy: { date: 'desc' },
+          select: { date: true },
+        })
+      : null;
 
   return {
     connected: true,
@@ -494,6 +528,8 @@ export async function getMyC2Status(userId) {
     c2UserId: auth.c2UserId,
     lastSyncedAt: auth.lastSyncedAt,
     syncEnabled: auth.syncEnabled,
+    workoutCount,
+    lastSyncedWorkoutDate: lastWorkout?.date || null,
   };
 }
 
