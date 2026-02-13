@@ -10,6 +10,7 @@
  */
 
 import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { ResponsiveGridLayout, useContainerWidth, Layout as RGLLayout } from 'react-grid-layout';
 import { DotsSixVertical, X } from '@phosphor-icons/react';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -20,6 +21,7 @@ import { PersonalStatsWidget } from './widgets/PersonalStatsWidget';
 import { TeamContextCard } from './widgets/TeamContextCard';
 import { TourLauncher } from './TourLauncher';
 import { EmptyDashboardState } from '../empty-states';
+import api from '../../../utils/api';
 
 // Import CSS for react-grid-layout
 import 'react-grid-layout/css/styles.css';
@@ -29,8 +31,21 @@ import 'react-grid-layout/css/styles.css';
  * Uses react-grid-layout for draggable/resizable widgets
  */
 export function AthleteDashboard() {
-  const { user } = useAuth();
-  const athleteId = user?.id || '';
+  const { user, activeTeamId, isAuthenticated } = useAuth();
+
+  // Query the athlete record for the current user to get the real athleteId
+  // (user.id is the User table ID, we need the Athlete table ID for ErgTest queries)
+  const { data: athleteData } = useQuery({
+    queryKey: ['current-athlete', user?.id, activeTeamId],
+    queryFn: async () => {
+      const response = await api.get(`/api/v1/athletes?userId=${user?.id}`);
+      return response.data.data?.athletes?.[0]; // First athlete for this user in active team
+    },
+    enabled: isAuthenticated && !!user?.id && !!activeTeamId,
+    staleTime: 5 * 60 * 1000, // 5 minutes - athlete ID doesn't change often
+  });
+
+  const athleteId = athleteData?.id || '';
 
   const { layout, isEditing, setIsEditing, updateLayout } = useDashboardLayout('athlete');
   const { teams, teamData, personalStats, isLoading } = useAthleteMultiTeamData(athleteId);
