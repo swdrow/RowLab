@@ -50,3 +50,5 @@ export type { CanvasButtonProps } from './CanvasButton';
 
 export { CanvasSelect } from './CanvasSelect';
 export type { CanvasSelectProps } from './CanvasSelect';
+
+export { CanvasErrorBoundary } from './ErrorBoundary';

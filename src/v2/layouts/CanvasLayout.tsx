@@ -25,6 +25,7 @@ import { CanvasDock, useZone } from '@v2/components/shell/CanvasDock';
 import { CanvasToolbar } from '@v2/components/shell/CanvasToolbar';
 import { MobileNav } from '@v2/components/shell/MobileNav';
 import { useShowMobileLayout } from '@v2/hooks/useBreakpoint';
+import { CanvasErrorBoundary } from '@v2/components/canvas';
 import '@v2/styles/canvas-atmosphere.css';
 
 // ============================================
@@ -185,7 +186,9 @@ export function CanvasLayout() {
             showMobileLayout ? 'pt-14 pb-16' : 'pt-36 pb-28'
           }`}
         >
-          <Outlet />
+          <CanvasErrorBoundary>
+            <Outlet />
+          </CanvasErrorBoundary>
         </motion.main>
       </AnimatePresence>
 
