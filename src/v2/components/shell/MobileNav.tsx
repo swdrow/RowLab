@@ -15,6 +15,78 @@ import {
 import { SPRING_CONFIG, SPRING_FAST, usePrefersReducedMotion } from '@v2/utils/animations';
 import { useShowMobileLayout } from '@v2/hooks/useBreakpoint';
 import { ZONES, useZone, type ZoneConfig } from '@v2/components/shell/CanvasDock';
+import { useAuth } from '../../contexts/AuthContext';
+import {
+  UserCheck,
+  ClipboardList,
+  Ship,
+  CalendarRange,
+  Briefcase,
+  Dumbbell,
+  LayoutGrid,
+  Flag,
+  BarChart2,
+  Swords,
+  Grid3X3,
+  Timer,
+  Award,
+  Target,
+  Gauge,
+} from 'lucide-react';
+
+interface SubNavItem {
+  label: string;
+  route: string;
+  icon: typeof Timer;
+  coachOnly?: boolean;
+}
+
+const ZONE_SUB_NAV: Record<string, SubNavItem[]> = {
+  home: [
+    { label: 'Coach Dashboard', route: '/app/coach/dashboard', icon: Gauge, coachOnly: true },
+    { label: 'Achievements', route: '/app/achievements', icon: Award },
+    { label: 'Challenges', route: '/app/challenges', icon: Target },
+  ],
+  team: [
+    { label: 'Attendance', route: '/app/attendance', icon: UserCheck },
+    { label: 'Whiteboard', route: '/app/coach/whiteboard', icon: ClipboardList, coachOnly: true },
+    { label: 'Fleet', route: '/app/coach/fleet', icon: Ship, coachOnly: true },
+    {
+      label: 'Availability',
+      route: '/app/coach/availability',
+      icon: CalendarRange,
+      coachOnly: true,
+    },
+    { label: 'Recruiting', route: '/app/recruiting', icon: Briefcase, coachOnly: true },
+  ],
+  training: [
+    { label: 'Sessions', route: '/app/training/sessions', icon: Dumbbell },
+    {
+      label: 'Lineup Builder',
+      route: '/app/coach/lineup-builder',
+      icon: LayoutGrid,
+      coachOnly: true,
+    },
+  ],
+  racing: [
+    { label: 'Rankings', route: '/app/rankings', icon: BarChart2 },
+    { label: 'Seat Racing', route: '/app/coach/seat-racing', icon: Swords, coachOnly: true },
+  ],
+  analysis: [
+    {
+      label: 'Advanced Rankings',
+      route: '/app/coach/seat-racing/advanced-rankings',
+      icon: Swords,
+      coachOnly: true,
+    },
+    {
+      label: 'Matrix Planner',
+      route: '/app/coach/seat-racing/matrix-planner',
+      icon: Grid3X3,
+      coachOnly: true,
+    },
+  ],
+};
 
 /**
  * Simple className utility for conditional classes
@@ -48,6 +120,9 @@ export const MobileNav: React.FC = () => {
   const showMobile = useShowMobileLayout();
   const prefersReducedMotion = usePrefersReducedMotion();
   const zone = useZone();
+  const { activeTeamRole } = useAuth();
+  const isCoach =
+    activeTeamRole === 'OWNER' || activeTeamRole === 'ADMIN' || activeTeamRole === 'COACH';
 
   // Get first 4 zones for bottom tabs, rest in "More" drawer
   const primaryZones = ZONES.slice(0, 4);
@@ -129,40 +204,69 @@ export const MobileNav: React.FC = () => {
               className="fixed top-14 left-0 bottom-0 w-72 max-w-[calc(100vw-3rem)] bg-ink-base border-r border-ink-border z-50 overflow-y-auto flex flex-col"
               aria-label="Mobile navigation"
             >
-              {/* Zone Navigation */}
+              {/* Zone Navigation with Sub-items */}
               <div className="p-4 border-b border-ink-border">
                 <p className="text-xs font-medium text-ink-tertiary mb-3 uppercase tracking-wider">
-                  Zones
+                  Navigation
                 </p>
                 <div className="space-y-1">
                   {ZONES.map((z) => {
                     const isActive = zone.id === z.id;
                     const Icon = z.icon;
+                    const subItems = (ZONE_SUB_NAV[z.id] || []).filter(
+                      (item) => isCoach || !item.coachOnly
+                    );
                     return (
-                      <button
-                        key={z.id}
-                        onClick={() => handleZoneNavigate(z)}
-                        className={cn(
-                          'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg min-h-[44px] transition-all duration-150',
-                          isActive
-                            ? 'bg-ink-raised text-ink-primary'
-                            : 'text-ink-secondary hover:bg-ink-hover hover:text-ink-primary'
+                      <div key={z.id}>
+                        <button
+                          onClick={() => handleZoneNavigate(z)}
+                          className={cn(
+                            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg min-h-[44px] transition-all duration-150',
+                            isActive
+                              ? 'bg-ink-raised text-ink-primary'
+                              : 'text-ink-secondary hover:bg-ink-hover hover:text-ink-primary'
+                          )}
+                          style={
+                            isActive
+                              ? {
+                                  borderLeft: `3px solid ${z.accent}`,
+                                  paddingLeft: '9px',
+                                }
+                              : {}
+                          }
+                        >
+                          <Icon
+                            className="w-5 h-5 flex-shrink-0"
+                            style={isActive ? { color: z.accent } : {}}
+                          />
+                          <span className="font-medium flex-1 text-left">{z.name}</span>
+                        </button>
+                        {/* Sub-navigation items */}
+                        {subItems.length > 0 && (
+                          <div className="ml-8 mt-0.5 mb-1 space-y-0.5">
+                            {subItems.map((item) => {
+                              const SubIcon = item.icon;
+                              const isSubActive = location.pathname === item.route;
+                              return (
+                                <button
+                                  key={item.route}
+                                  onClick={() => navigate(item.route)}
+                                  className={cn(
+                                    'w-full flex items-center gap-2.5 px-3 py-2 rounded-lg min-h-[36px] text-sm transition-all duration-150',
+                                    isSubActive
+                                      ? 'text-ink-primary bg-ink-raised/50'
+                                      : 'text-ink-tertiary hover:text-ink-secondary hover:bg-ink-hover'
+                                  )}
+                                  style={isSubActive ? { color: z.accent } : {}}
+                                >
+                                  <SubIcon className="w-4 h-4 flex-shrink-0" />
+                                  <span className="flex-1 text-left">{item.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
                         )}
-                        style={
-                          isActive
-                            ? {
-                                borderLeft: `3px solid ${z.accent}`,
-                                paddingLeft: '9px',
-                              }
-                            : {}
-                        }
-                      >
-                        <Icon
-                          className="w-5 h-5 flex-shrink-0"
-                          style={isActive ? { color: z.accent } : {}}
-                        />
-                        <span className="font-medium flex-1 text-left">{z.name}</span>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>

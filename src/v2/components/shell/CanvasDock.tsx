@@ -172,7 +172,7 @@ export function CanvasDock() {
                 className="relative flex items-center justify-center w-11 h-11 rounded-full
                            transition-colors duration-200 outline-none
                            focus-visible:ring-2 focus-visible:ring-white/20"
-                whileHover={{ scale: 1.15 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label={z.name}
                 aria-current={isActive ? 'page' : undefined}
@@ -220,7 +220,7 @@ export function CanvasDock() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 4, scale: 0.9 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute -top-10 left-1/2 -translate-x-1/2
+                    className="absolute -top-12 left-1/2 -translate-x-1/2
                                px-2.5 py-1 rounded-lg
                                bg-ink-raised/90 backdrop-blur-sm
                                border border-white/[0.06]
