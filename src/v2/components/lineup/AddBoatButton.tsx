@@ -65,7 +65,7 @@ export function AddBoatButton({
             className="
               absolute right-0 top-full mt-2 z-20
               w-64 rounded-lg border border-bdr-default
-              bg-bg-surface shadow-lg overflow-hidden
+              bg-bg-surface shadow-card-rest overflow-hidden
             "
           >
             {/* Header */}

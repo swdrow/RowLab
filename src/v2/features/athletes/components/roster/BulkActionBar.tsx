@@ -35,7 +35,7 @@ export function BulkActionBar({
             flex items-center gap-3 px-5 py-3
             bg-bg-surface/90 backdrop-blur-xl
             border border-bdr-default rounded-xl
-            shadow-lg shadow-black/10
+            shadow-card-rest shadow-black/10
           "
         >
           {/* Selected count */}

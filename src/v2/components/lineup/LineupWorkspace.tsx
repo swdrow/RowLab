@@ -471,7 +471,7 @@ export function LineupWorkspace({ lineupId, className = '' }: LineupWorkspacePro
       {/* Drag Overlay - Shows full athlete card at cursor */}
       <DragOverlay>
         {activeAthlete && activeSource ? (
-          <div className="bg-bg-surface border border-bdr-default rounded-lg shadow-lg">
+          <div className="bg-bg-surface border border-bdr-default rounded-lg shadow-card-rest">
             <DraggableAthleteCard athlete={activeAthlete} source={activeSource} />
           </div>
         ) : null}

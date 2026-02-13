@@ -49,7 +49,7 @@ function HeatmapTooltip({ cell, x, y }: HeatmapTooltipProps) {
 
   return (
     <div
-      className="fixed z-50 bg-bg-elevated border border-bdr-default rounded-md px-2.5 py-1.5 shadow-lg pointer-events-none"
+      className="fixed z-50 bg-bg-elevated border border-bdr-default rounded-md px-2.5 py-1.5 shadow-card-rest pointer-events-none"
       style={{ left: x, top: y - 40 }}
     >
       <span className="text-xs text-txt-primary font-medium block">{formatted}</span>

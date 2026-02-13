@@ -98,7 +98,7 @@ export function MobileAthleteSelector({
                 onClose();
               }
             }}
-            className="fixed bottom-0 left-0 right-0 bg-bg-base rounded-t-2xl shadow-lg z-50 h-[80vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 bg-bg-base rounded-t-2xl shadow-card-rest z-50 h-[80vh] flex flex-col"
           >
             {/* Handle bar for swipe */}
             <div className="flex items-center justify-center pt-3 pb-2">

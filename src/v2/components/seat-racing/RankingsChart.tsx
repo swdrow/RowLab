@@ -17,7 +17,7 @@ function CustomTooltip({ active, payload }: any) {
   const data = payload[0].payload;
 
   return (
-    <div className="bg-bg-surface border border-bdr-default rounded-lg p-3 shadow-lg">
+    <div className="bg-bg-surface border border-bdr-default rounded-lg p-3 shadow-card-rest">
       <p className="font-medium text-txt-primary mb-1">{data.name}</p>
       <div className="text-sm text-txt-secondary space-y-1">
         <p>

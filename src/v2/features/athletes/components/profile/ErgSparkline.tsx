@@ -29,7 +29,7 @@ function SparklineTooltip({ active, payload }: TooltipProps<number, string>) {
   const data = payload[0].payload as SparklineDataPoint;
 
   return (
-    <div className="bg-bg-elevated border border-bdr-default rounded-md px-2.5 py-1.5 shadow-lg">
+    <div className="bg-bg-elevated border border-bdr-default rounded-md px-2.5 py-1.5 shadow-card-rest">
       <span
         className="font-mono text-sm font-semibold text-txt-primary block"
         style={{ fontVariantNumeric: 'tabular-nums' }}

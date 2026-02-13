@@ -224,7 +224,7 @@ export function MatrixPlanner({ onScheduleGenerated, onClose }: MatrixPlannerPro
 
   return (
     <>
-      <div className="bg-bg-surface rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-bg-surface rounded-lg shadow-card-rest max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="px-6 py-4 border-b border-bdr-default flex items-center justify-between">
           <div>

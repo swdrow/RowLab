@@ -57,15 +57,13 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
       className={`
         pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg border
         ${colors[toast.type]}
-        shadow-lg max-w-md backdrop-blur-sm
+        shadow-card-rest max-w-md backdrop-blur-sm
       `}
       role="alert"
       aria-live="polite"
     >
       <Icon className={`w-5 h-5 flex-shrink-0 ${iconColors[toast.type]}`} />
-      <p className="text-sm text-[var(--color-text-primary)] flex-1">
-        {toast.message}
-      </p>
+      <p className="text-sm text-[var(--color-text-primary)] flex-1">{toast.message}</p>
       <button
         onClick={() => onDismiss(toast.id)}
         className="flex-shrink-0 p-1 rounded hover:bg-[var(--color-bg-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-interactive-primary)]"

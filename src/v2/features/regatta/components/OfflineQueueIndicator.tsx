@@ -75,7 +75,7 @@ export function OfflineQueueIndicator() {
         >
           <div
             className={cn(
-              'flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium shadow-lg',
+              'flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium shadow-card-rest',
               'backdrop-blur-sm border',
               isOffline && 'bg-data-warning/10 text-data-warning border-data-warning/20',
               isSyncing && 'bg-data-good/10 text-data-good border-data-good/20'
@@ -97,11 +97,7 @@ export function OfflineQueueIndicator() {
             </span>
 
             {isSyncing && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5 }}
-              >
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 }}>
                 <CheckCircle size={14} className="opacity-70" />
               </motion.div>
             )}

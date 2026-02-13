@@ -144,7 +144,7 @@ export function VersionHistory({
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 mt-2 w-96 origin-top-right rounded-xl bg-card-bg border border-bdr-primary shadow-lg focus:outline-none z-50 max-h-96 overflow-y-auto">
+          <Menu.Items className="absolute right-0 mt-2 w-96 origin-top-right rounded-xl bg-card-bg border border-bdr-primary shadow-card-rest focus:outline-none z-50 max-h-96 overflow-y-auto">
             <div className="p-3">
               <h3 className="text-sm font-semibold text-txt-primary mb-3">Saved Lineups</h3>
 

@@ -39,7 +39,7 @@ export function DragFeedback({
       style={{ cursor: 'grabbing' }}
     >
       <div
-        className="rounded-lg border border-bdr-strong shadow-lg overflow-hidden"
+        className="rounded-lg border border-bdr-strong shadow-card-rest overflow-hidden"
         style={{
           backgroundColor: 'var(--color-bg-float)',
           boxShadow: '0 20px 25px -5px rgba(15, 15, 15, 0.3)',
