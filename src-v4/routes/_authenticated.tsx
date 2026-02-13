@@ -3,9 +3,13 @@
  *
  * beforeLoad: redirects to /login if user is not authenticated.
  * Only redirects after auth initialization is complete (prevents flash).
- * Component: renders Outlet (shell comes in Plan 04).
+ * Component: responsive shell with sidebar/top bar/bottom tabs.
  */
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
+import { useIsMobile } from '@/hooks/useBreakpoint';
+import { Sidebar } from '@/components/shell/Sidebar';
+import { TopBar } from '@/components/shell/TopBar';
+import { BottomTabs } from '@/components/shell/BottomTabs';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context, location }) => {
@@ -27,7 +31,23 @@ export const Route = createFileRoute('/_authenticated')({
 });
 
 function AuthenticatedLayout() {
-  // Shell (sidebar, top bar) will be added in Plan 04.
-  // For now, just render the child route content.
-  return <Outlet />;
+  const isMobile = useIsMobile();
+
+  return (
+    <div className="flex h-screen bg-ink-deep">
+      {/* Sidebar: desktop (full) / tablet (rail) / mobile (hidden) */}
+      {!isMobile && <Sidebar />}
+
+      {/* Main content column */}
+      <div className="flex flex-1 flex-col min-w-0">
+        <TopBar />
+        <main className={`flex-1 overflow-auto ${isMobile ? 'pb-16' : ''}`}>
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Bottom tabs: mobile only */}
+      {isMobile && <BottomTabs />}
+    </div>
+  );
 }
