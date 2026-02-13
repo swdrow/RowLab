@@ -1,8 +1,143 @@
 @import 'tailwindcss';
 
+/* ================================================================
+   RowLab v4 Design Token System
+   Built on Tailwind v4 @theme with oklch color space.
+   All tokens are available as Tailwind utilities automatically.
+   e.g. bg-ink-deep, text-accent-copper, shadow-card
+   ================================================================ */
+
 @theme {
+  /* === INK SCALE (monochrome UI, oklch) === */
   --color-ink-deep: oklch(0.145 0.005 285);
-  --color-ink-primary: oklch(0.88 0.005 285);
+  --color-ink-base: oklch(0.195 0.005 285);
+  --color-ink-well: oklch(0.17 0.005 285);
+  --color-ink-raised: oklch(0.235 0.005 285);
+  --color-ink-hover: oklch(0.275 0.005 285);
   --color-ink-float: oklch(0.265 0.005 285);
   --color-ink-border: oklch(0.315 0.005 285);
+  --color-ink-border-strong: oklch(0.375 0.005 285);
+  --color-ink-muted: oklch(0.435 0.005 285);
+  --color-ink-tertiary: oklch(0.505 0.005 285);
+  --color-ink-secondary: oklch(0.595 0.005 285);
+  --color-ink-body: oklch(0.72 0.005 285);
+  --color-ink-primary: oklch(0.88 0.005 285);
+  --color-ink-bright: oklch(0.965 0.005 285);
+
+  /* === ACCENT COLORS === */
+  --color-accent-copper: oklch(0.62 0.12 55);
+  --color-accent-copper-hover: oklch(0.55 0.12 55);
+  --color-accent-primary: oklch(0.55 0.18 255);
+  --color-accent-primary-hover: oklch(0.48 0.18 255);
+
+  /* === DATA COLORS === */
+  --color-data-excellent: oklch(0.72 0.17 142);
+  --color-data-good: oklch(0.62 0.17 255);
+  --color-data-warning: oklch(0.75 0.14 75);
+  --color-data-poor: oklch(0.58 0.2 25);
+
+  /* === FONTS === */
+  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-body: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+
+  /* === ANIMATION EASINGS === */
+  --ease-precision: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-snap: cubic-bezier(0, 0, 0.2, 1);
+
+  /* === LAYOUT SPACING === */
+  --spacing-sidebar: 15rem;
+  --spacing-sidebar-sm: 4rem;
+  --spacing-topbar: 3.5rem;
+
+  /* === SHADOWS === */
+  --shadow-card:
+    0 0 0 1px oklch(0.965 0.005 285 / 0.06), 0 1px 2px oklch(0 0 0 / 0.3),
+    0 4px 16px oklch(0 0 0 / 0.2);
+  --shadow-card-hover:
+    0 0 0 1px oklch(0.965 0.005 285 / 0.1), 0 2px 4px oklch(0 0 0 / 0.3),
+    0 8px 24px oklch(0 0 0 / 0.25);
+  --shadow-glow-copper:
+    0 0 0 1px oklch(0.62 0.12 55 / 0.3), 0 0 20px -5px oklch(0.62 0.12 55 / 0.4);
+
+  /* === RADIUS === */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+}
+
+/* === SHIMMER KEYFRAMES === */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* === UTILITY CLASSES === */
+
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+  background-size: 200% 100%;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.88 0.005 285 / 0.06) 50%,
+    transparent 100%
+  );
+}
+
+.glass {
+  background: oklch(0.195 0.005 285 / 0.6);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid oklch(0.965 0.005 285 / 0.08);
+}
+
+.glass-hover:hover {
+  background: oklch(0.235 0.005 285 / 0.7);
+  border-color: oklch(0.965 0.005 285 / 0.12);
+}
+
+/* === BASE STYLES === */
+
+html {
+  font-family: var(--font-body);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: oklch(0.62 0.12 55 / 0.3);
+  color: oklch(0.965 0.005 285);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.315 0.005 285 / 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.375 0.005 285 / 0.7);
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid oklch(0.62 0.12 55 / 0.6);
+  outline-offset: 2px;
 }
