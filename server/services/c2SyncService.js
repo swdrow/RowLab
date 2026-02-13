@@ -8,6 +8,7 @@
 import { prisma } from '../db/connection.js';
 import logger from '../utils/logger.js';
 import { fetchResults, fetchResultWithStrokes, getValidToken } from './concept2Service.js';
+import { convertWorkoutToErgTest } from './workoutToErgTest.js';
 
 /**
  * Map C2 API machine type values to our enum
@@ -231,31 +232,20 @@ export async function syncUserWorkouts(userId, teamId) {
       }
 
       workoutsCreated++;
+
+      // Auto-create ErgTest for standard test distances
+      try {
+        const ergTest = await convertWorkoutToErgTest(workout, teamId);
+        if (ergTest) {
+          ergTestsCreated++;
+        }
+      } catch (error) {
+        logger.error('Failed to create ErgTest (non-blocking)', {
+          workoutId: workout.id,
+          error: error.message,
+        });
+      }
     });
-
-    // Also create ErgTest for standard test distances
-    const testType = determineTestType(result.distance);
-    if (testType) {
-      const timeSeconds = result.time ? result.time / 10 : 0;
-      const splitSeconds =
-        timeSeconds > 0 && result.distance > 0 ? timeSeconds / (result.distance / 500) : null;
-
-      await prisma.ergTest.create({
-        data: {
-          athleteId: athlete.id,
-          teamId,
-          testType,
-          testDate: new Date(result.date),
-          distanceM: result.distance,
-          timeSeconds,
-          splitSeconds,
-          watts: result.stroke_data?.avg_watts || null,
-          strokeRate: result.stroke_rate,
-        },
-      });
-
-      ergTestsCreated++;
-    }
   }
 
   // Update last synced timestamp
@@ -388,6 +378,16 @@ export async function fetchAndStoreResult(accessToken, c2UserId, resultId, athle
 
     return workout;
   });
+
+  // Auto-create ErgTest for standard test distances (non-blocking)
+  try {
+    await convertWorkoutToErgTest(workout, teamId);
+  } catch (error) {
+    logger.error('Failed to create ErgTest (non-blocking)', {
+      workoutId: workout.id,
+      error: error.message,
+    });
+  }
 
   // Run workout inference (non-blocking - errors logged but don't fail sync)
   try {
@@ -637,7 +637,7 @@ export async function historicalImport(userId, teamId, options = {}) {
       const splits = extractSplits(result);
 
       // Create Workout + WorkoutSplits atomically
-      await prisma.$transaction(async (tx) => {
+      const workout = await prisma.$transaction(async (tx) => {
         const workout = await tx.workout.create({
           data: {
             athleteId: athlete.id,
@@ -663,7 +663,19 @@ export async function historicalImport(userId, teamId, options = {}) {
             data: splits.map((split) => ({ workoutId: workout.id, ...split })),
           });
         }
+
+        return workout;
       });
+
+      // Auto-create ErgTest for standard test distances (non-blocking)
+      try {
+        await convertWorkoutToErgTest(workout, teamId);
+      } catch (error) {
+        logger.error('Failed to create ErgTest (non-blocking)', {
+          workoutId: workout.id,
+          error: error.message,
+        });
+      }
 
       imported++;
     }
@@ -772,7 +784,7 @@ export async function syncCoachWorkouts(userId, teamId) {
     const splits = extractSplits(result);
 
     // Create Workout + WorkoutSplits atomically
-    await prisma.$transaction(async (tx) => {
+    const workout = await prisma.$transaction(async (tx) => {
       const workout = await tx.workout.create({
         data: {
           athleteId, // null if unmatched
@@ -798,7 +810,22 @@ export async function syncCoachWorkouts(userId, teamId) {
           data: splits.map((split) => ({ workoutId: workout.id, ...split })),
         });
       }
+
+      return workout;
     });
+
+    // Auto-create ErgTest for standard test distances (non-blocking)
+    // Only if workout was matched to an athlete
+    if (athleteId) {
+      try {
+        await convertWorkoutToErgTest(workout, teamId);
+      } catch (error) {
+        logger.error('Failed to create ErgTest (non-blocking)', {
+          workoutId: workout.id,
+          error: error.message,
+        });
+      }
+    }
 
     if (athleteId) {
       matched++;
