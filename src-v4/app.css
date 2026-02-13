@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink-deep: oklch(0.145 0.005 285);
+  --color-ink-primary: oklch(0.88 0.005 285);
+  --color-ink-float: oklch(0.265 0.005 285);
+  --color-ink-border: oklch(0.315 0.005 285);
+}
