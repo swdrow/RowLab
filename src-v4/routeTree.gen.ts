@@ -9,14 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as InviteCodeRouteImport } from './routes/invite.$code'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/_team'
 import { Route as AuthenticatedTeamAthletesRouteImport } from './routes/_authenticated/_team/athletes'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -30,6 +37,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const InviteCodeRoute = InviteCodeRouteImport.update({
+  id: '/invite/$code',
+  path: '/invite/$code',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
@@ -55,39 +67,61 @@ const AuthenticatedTeamAthletesRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/invite/$code': typeof InviteCodeRoute
   '/athletes': typeof AuthenticatedTeamAthletesRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/': typeof AuthenticatedIndexRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/invite/$code': typeof InviteCodeRoute
   '/athletes': typeof AuthenticatedTeamAthletesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/_authenticated/_team': typeof AuthenticatedTeamRouteWithChildren
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/invite/$code': typeof InviteCodeRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/_team/athletes': typeof AuthenticatedTeamAthletesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/profile' | '/settings' | '/athletes'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/profile'
+    | '/settings'
+    | '/invite/$code'
+    | '/athletes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/' | '/profile' | '/settings' | '/athletes'
+  to:
+    | '/login'
+    | '/register'
+    | '/'
+    | '/profile'
+    | '/settings'
+    | '/invite/$code'
+    | '/athletes'
   id:
     | '__root__'
     | '/_authenticated'
     | '/login'
+    | '/register'
     | '/_authenticated/_team'
     | '/_authenticated/profile'
     | '/_authenticated/settings'
+    | '/invite/$code'
     | '/_authenticated/'
     | '/_authenticated/_team/athletes'
   fileRoutesById: FileRoutesById
@@ -95,10 +129,19 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  InviteCodeRoute: typeof InviteCodeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -119,6 +162,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/invite/$code': {
+      id: '/invite/$code'
+      path: '/invite/$code'
+      fullPath: '/invite/$code'
+      preLoaderRoute: typeof InviteCodeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -183,6 +233,8 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  InviteCodeRoute: InviteCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

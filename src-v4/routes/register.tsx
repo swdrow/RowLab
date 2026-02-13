@@ -1,0 +1,182 @@
+/**
+ * Registration page route.
+ * Public: redirects to / if already authenticated.
+ * Registration is gated behind a valid invite token.
+ */
+import { createFileRoute, redirect, Link } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
+import { z } from 'zod';
+import { useQuery } from '@tanstack/react-query';
+import { GlassCard } from '@/components/ui/GlassCard';
+import { RegisterForm } from '@/features/auth/RegisterForm';
+import { api } from '@/lib/api';
+
+const registerSearchSchema = z.object({
+  invite: z.string().optional(),
+});
+
+export const Route = createFileRoute('/register')({
+  validateSearch: zodValidator(registerSearchSchema),
+  beforeLoad: ({ context }) => {
+    if (context.auth.isInitialized && context.auth.isAuthenticated) {
+      throw redirect({ to: '/' });
+    }
+  },
+  component: RegisterPage,
+  staticData: {
+    breadcrumb: 'Register',
+  },
+});
+
+interface InviteData {
+  invitation: {
+    id: string;
+    email?: string;
+    role?: string;
+    team?: {
+      id: string;
+      name: string;
+    };
+    status: string;
+  };
+}
+
+function RegisterPage() {
+  const { invite } = Route.useSearch();
+
+  // No invite token: show "invitation required" message
+  if (!invite) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-ink-deep p-4">
+        <div className="w-full max-w-md">
+          <GlassCard padding="lg" className="rounded-2xl text-center">
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold tracking-tight text-ink-primary font-display">
+                Row<span className="text-accent-copper">Lab</span>
+              </h1>
+            </div>
+            <div className="flex flex-col gap-3">
+              <h2 className="text-lg font-semibold text-ink-primary">Invitation required</h2>
+              <p className="text-sm text-ink-secondary">
+                Registration requires an invitation. Ask your team admin for an invite link.
+              </p>
+              <Link
+                to="/login"
+                className="mt-2 inline-flex items-center justify-center text-sm font-medium text-accent-copper hover:text-accent-copper-hover transition-colors duration-150"
+              >
+                Back to login
+              </Link>
+            </div>
+          </GlassCard>
+        </div>
+      </div>
+    );
+  }
+
+  // Has invite token: validate and show form or error
+  return <InviteGatedRegister inviteToken={invite} />;
+}
+
+function InviteGatedRegister({ inviteToken }: { inviteToken: string }) {
+  const { data, isLoading, isError, error } = useQuery<InviteData>({
+    queryKey: ['invites', 'validate', inviteToken],
+    queryFn: async () => {
+      const res = await api.get(`/api/v1/invites/validate/${inviteToken}`);
+      return res.data.data;
+    },
+    retry: false,
+    staleTime: Infinity,
+  });
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-ink-deep p-4">
+      <div className="w-full max-w-md">
+        <GlassCard padding="lg" className="rounded-2xl">
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-ink-primary font-display">
+              Row<span className="text-accent-copper">Lab</span>
+            </h1>
+            <p className="mt-1.5 text-sm text-ink-secondary">Create your account</p>
+          </div>
+
+          {isLoading && <RegisterSkeleton />}
+
+          {isError && (
+            <div className="flex flex-col gap-3 text-center">
+              <div className="rounded-lg bg-data-poor/10 border border-data-poor/20 px-3 py-2.5 text-sm text-data-poor">
+                {(error as { response?: { data?: { error?: { message?: string } } } })?.response
+                  ?.data?.error?.message || 'This invitation has expired or is invalid.'}
+              </div>
+              <Link
+                to="/login"
+                className="mt-2 inline-flex items-center justify-center text-sm font-medium text-accent-copper hover:text-accent-copper-hover transition-colors duration-150"
+              >
+                Back to login
+              </Link>
+            </div>
+          )}
+
+          {data && (
+            <>
+              {data.invitation.team && (
+                <div className="mb-4 rounded-lg bg-ink-raised/50 border border-ink-border px-3 py-2.5 text-sm text-ink-body text-center">
+                  You've been invited to join{' '}
+                  <span className="font-semibold text-ink-primary">
+                    {data.invitation.team.name}
+                  </span>
+                </div>
+              )}
+              <RegisterForm
+                inviteToken={inviteToken}
+                prefilledEmail={data.invitation.email || ''}
+                emailLocked={!!data.invitation.email}
+                assignedRole={data.invitation.role}
+              />
+            </>
+          )}
+
+          <div className="mt-6 border-t border-ink-border pt-5 text-center">
+            <p className="text-sm text-ink-secondary">
+              Already have an account?{' '}
+              <Link
+                to="/login"
+                className="text-accent-copper hover:text-accent-copper-hover font-medium transition-colors duration-150"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </GlassCard>
+      </div>
+    </div>
+  );
+}
+
+function RegisterSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Name field skeleton */}
+      <div className="flex flex-col gap-1.5">
+        <div className="h-4 w-20 rounded-sm bg-ink-raised animate-shimmer" />
+        <div className="h-10 w-full rounded-xl bg-ink-raised animate-shimmer" />
+      </div>
+      {/* Email field skeleton */}
+      <div className="flex flex-col gap-1.5">
+        <div className="h-4 w-12 rounded-sm bg-ink-raised animate-shimmer" />
+        <div className="h-10 w-full rounded-xl bg-ink-raised animate-shimmer" />
+      </div>
+      {/* Password field skeleton */}
+      <div className="flex flex-col gap-1.5">
+        <div className="h-4 w-16 rounded-sm bg-ink-raised animate-shimmer" />
+        <div className="h-10 w-full rounded-xl bg-ink-raised animate-shimmer" />
+      </div>
+      {/* Confirm password field skeleton */}
+      <div className="flex flex-col gap-1.5">
+        <div className="h-4 w-28 rounded-sm bg-ink-raised animate-shimmer" />
+        <div className="h-10 w-full rounded-xl bg-ink-raised animate-shimmer" />
+      </div>
+      {/* Button skeleton */}
+      <div className="mt-1 h-12 w-full rounded-xl bg-ink-raised animate-shimmer" />
+    </div>
+  );
+}
