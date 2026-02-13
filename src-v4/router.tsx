@@ -1,5 +1,6 @@
 import { createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
+import type { User } from './types/auth';
 
 export interface RouterContext {
   auth: {
@@ -9,13 +10,6 @@ export interface RouterContext {
     activeTeamId: string | null;
     activeTeamRole: string | null;
   };
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatarUrl: string | null;
 }
 
 export const router = createRouter({
