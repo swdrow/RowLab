@@ -26,6 +26,8 @@ import { Route as AuthenticatedWorkoutsWorkoutIdRouteImport } from './routes/_au
 import { Route as AuthenticatedTeamIdentifierRouteImport } from './routes/_authenticated/team/$identifier'
 import { Route as AuthenticatedTeamAthletesRouteImport } from './routes/_authenticated/_team/athletes'
 import { Route as AuthenticatedCoachWhiteboardRouteImport } from './routes/_authenticated/_coach/whiteboard'
+import { Route as AuthenticatedCoachTrainingRouteImport } from './routes/_authenticated/_coach/training'
+import { Route as AuthenticatedCoachSeatRacingRouteImport } from './routes/_authenticated/_coach/seat-racing'
 import { Route as AuthenticatedCoachRecruitingRouteImport } from './routes/_authenticated/_coach/recruiting'
 import { Route as AuthenticatedCoachLineupsRouteImport } from './routes/_authenticated/_coach/lineups'
 import { Route as AuthenticatedCoachFleetRouteImport } from './routes/_authenticated/_coach/fleet'
@@ -123,6 +125,18 @@ const AuthenticatedCoachWhiteboardRoute =
     path: '/whiteboard',
     getParentRoute: () => AuthenticatedCoachRoute,
   } as any)
+const AuthenticatedCoachTrainingRoute =
+  AuthenticatedCoachTrainingRouteImport.update({
+    id: '/training',
+    path: '/training',
+    getParentRoute: () => AuthenticatedCoachRoute,
+  } as any)
+const AuthenticatedCoachSeatRacingRoute =
+  AuthenticatedCoachSeatRacingRouteImport.update({
+    id: '/seat-racing',
+    path: '/seat-racing',
+    getParentRoute: () => AuthenticatedCoachRoute,
+  } as any)
 const AuthenticatedCoachRecruitingRoute =
   AuthenticatedCoachRecruitingRouteImport.update({
     id: '/recruiting',
@@ -190,6 +204,8 @@ export interface FileRoutesByFullPath {
   '/fleet': typeof AuthenticatedCoachFleetRoute
   '/lineups': typeof AuthenticatedCoachLineupsRoute
   '/recruiting': typeof AuthenticatedCoachRecruitingRoute
+  '/seat-racing': typeof AuthenticatedCoachSeatRacingRoute
+  '/training': typeof AuthenticatedCoachTrainingRoute
   '/whiteboard': typeof AuthenticatedCoachWhiteboardRoute
   '/athletes': typeof AuthenticatedTeamAthletesRoute
   '/team/$identifier': typeof AuthenticatedTeamIdentifierRouteWithChildren
@@ -214,6 +230,8 @@ export interface FileRoutesByTo {
   '/fleet': typeof AuthenticatedCoachFleetRoute
   '/lineups': typeof AuthenticatedCoachLineupsRoute
   '/recruiting': typeof AuthenticatedCoachRecruitingRoute
+  '/seat-racing': typeof AuthenticatedCoachSeatRacingRoute
+  '/training': typeof AuthenticatedCoachTrainingRoute
   '/whiteboard': typeof AuthenticatedCoachWhiteboardRoute
   '/athletes': typeof AuthenticatedTeamAthletesRoute
   '/team/$identifier': typeof AuthenticatedTeamIdentifierRouteWithChildren
@@ -243,6 +261,8 @@ export interface FileRoutesById {
   '/_authenticated/_coach/fleet': typeof AuthenticatedCoachFleetRoute
   '/_authenticated/_coach/lineups': typeof AuthenticatedCoachLineupsRoute
   '/_authenticated/_coach/recruiting': typeof AuthenticatedCoachRecruitingRoute
+  '/_authenticated/_coach/seat-racing': typeof AuthenticatedCoachSeatRacingRoute
+  '/_authenticated/_coach/training': typeof AuthenticatedCoachTrainingRoute
   '/_authenticated/_coach/whiteboard': typeof AuthenticatedCoachWhiteboardRoute
   '/_authenticated/_team/athletes': typeof AuthenticatedTeamAthletesRoute
   '/_authenticated/team/$identifier': typeof AuthenticatedTeamIdentifierRouteWithChildren
@@ -270,6 +290,8 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/lineups'
     | '/recruiting'
+    | '/seat-racing'
+    | '/training'
     | '/whiteboard'
     | '/athletes'
     | '/team/$identifier'
@@ -294,6 +316,8 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/lineups'
     | '/recruiting'
+    | '/seat-racing'
+    | '/training'
     | '/whiteboard'
     | '/athletes'
     | '/team/$identifier'
@@ -322,6 +346,8 @@ export interface FileRouteTypes {
     | '/_authenticated/_coach/fleet'
     | '/_authenticated/_coach/lineups'
     | '/_authenticated/_coach/recruiting'
+    | '/_authenticated/_coach/seat-racing'
+    | '/_authenticated/_coach/training'
     | '/_authenticated/_coach/whiteboard'
     | '/_authenticated/_team/athletes'
     | '/_authenticated/team/$identifier'
@@ -463,6 +489,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCoachWhiteboardRouteImport
       parentRoute: typeof AuthenticatedCoachRoute
     }
+    '/_authenticated/_coach/training': {
+      id: '/_authenticated/_coach/training'
+      path: '/training'
+      fullPath: '/training'
+      preLoaderRoute: typeof AuthenticatedCoachTrainingRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
+    '/_authenticated/_coach/seat-racing': {
+      id: '/_authenticated/_coach/seat-racing'
+      path: '/seat-racing'
+      fullPath: '/seat-racing'
+      preLoaderRoute: typeof AuthenticatedCoachSeatRacingRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
     '/_authenticated/_coach/recruiting': {
       id: '/_authenticated/_coach/recruiting'
       path: '/recruiting'
@@ -564,6 +604,8 @@ interface AuthenticatedCoachRouteChildren {
   AuthenticatedCoachFleetRoute: typeof AuthenticatedCoachFleetRoute
   AuthenticatedCoachLineupsRoute: typeof AuthenticatedCoachLineupsRoute
   AuthenticatedCoachRecruitingRoute: typeof AuthenticatedCoachRecruitingRoute
+  AuthenticatedCoachSeatRacingRoute: typeof AuthenticatedCoachSeatRacingRoute
+  AuthenticatedCoachTrainingRoute: typeof AuthenticatedCoachTrainingRoute
   AuthenticatedCoachWhiteboardRoute: typeof AuthenticatedCoachWhiteboardRoute
   AuthenticatedCoachTrainingSessionsRoute: typeof AuthenticatedCoachTrainingSessionsRouteWithChildren
 }
@@ -573,6 +615,8 @@ const AuthenticatedCoachRouteChildren: AuthenticatedCoachRouteChildren = {
   AuthenticatedCoachFleetRoute: AuthenticatedCoachFleetRoute,
   AuthenticatedCoachLineupsRoute: AuthenticatedCoachLineupsRoute,
   AuthenticatedCoachRecruitingRoute: AuthenticatedCoachRecruitingRoute,
+  AuthenticatedCoachSeatRacingRoute: AuthenticatedCoachSeatRacingRoute,
+  AuthenticatedCoachTrainingRoute: AuthenticatedCoachTrainingRoute,
   AuthenticatedCoachWhiteboardRoute: AuthenticatedCoachWhiteboardRoute,
   AuthenticatedCoachTrainingSessionsRoute:
     AuthenticatedCoachTrainingSessionsRouteWithChildren,
