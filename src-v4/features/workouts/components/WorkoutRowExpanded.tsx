@@ -1,0 +1,209 @@
+/**
+ * Expanded detail panel for a workout row.
+ * Shows splits table, mini watts bar chart, notes, and secondary metrics.
+ * Animates open/closed with AnimatePresence.
+ */
+
+import { motion } from 'motion/react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  type TooltipProps,
+} from 'recharts';
+
+import { formatPace } from '@/lib/format';
+import { SPRING_GENTLE } from '@/lib/animations';
+import type { Workout, WorkoutSplit } from '../types';
+
+/* ------------------------------------------------------------------ */
+/* Types                                                               */
+/* ------------------------------------------------------------------ */
+
+interface WorkoutRowExpandedProps {
+  workout: Workout;
+  onNavigateToDetail: (id: string) => void;
+}
+
+/* ------------------------------------------------------------------ */
+/* Splits table                                                        */
+/* ------------------------------------------------------------------ */
+
+const DASH = '\u2014';
+
+function SplitsTable({ splits }: { splits: WorkoutSplit[] }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm font-mono">
+        <thead>
+          <tr className="text-ink-tertiary uppercase text-xs tracking-wider">
+            <th className="text-left py-1.5 pr-3 font-medium">Split</th>
+            <th className="text-right py-1.5 px-3 font-medium">Pace</th>
+            <th className="text-right py-1.5 px-3 font-medium">Watts</th>
+            <th className="text-right py-1.5 pl-3 font-medium">SPM</th>
+          </tr>
+        </thead>
+        <tbody>
+          {splits.map((split) => (
+            <tr key={split.splitNumber} className="border-b border-ink-border last:border-0">
+              <td className="py-1.5 pr-3 text-ink-secondary">{split.splitNumber}</td>
+              <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
+                {formatPace(split.pace)}
+              </td>
+              <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
+                {split.watts != null ? split.watts : DASH}
+              </td>
+              <td className="py-1.5 pl-3 text-right text-ink-secondary tabular-nums">
+                {split.strokeRate != null ? split.strokeRate : DASH}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Chart tooltip                                                       */
+/* ------------------------------------------------------------------ */
+
+interface SplitChartPoint {
+  split: number;
+  watts: number;
+}
+
+function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
+  if (!active || !payload || payload.length === 0 || !payload[0]) return null;
+  const data = payload[0].payload as SplitChartPoint;
+  return (
+    <div className="bg-ink-raised border border-ink-border rounded-md px-2.5 py-1.5 shadow-card">
+      <span className="font-mono text-sm font-semibold text-ink-primary block">{data.watts}w</span>
+      <span className="text-[10px] text-ink-tertiary">Split {data.split}</span>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Mini bar chart                                                      */
+/* ------------------------------------------------------------------ */
+
+function WattsChart({ splits }: { splits: WorkoutSplit[] }) {
+  const data: SplitChartPoint[] = splits
+    .filter((s) => s.watts != null)
+    .map((s) => ({ split: s.splitNumber, watts: s.watts! }));
+
+  if (data.length === 0) return null;
+
+  return (
+    <div className="h-[160px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-ink-border)" vertical={false} />
+          <XAxis
+            dataKey="split"
+            tick={{ fontSize: 11, fill: 'var(--color-ink-tertiary)' }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fontSize: 11, fill: 'var(--color-ink-tertiary)' }}
+            axisLine={false}
+            tickLine={false}
+            width={36}
+          />
+          <Tooltip
+            content={<ChartTooltip />}
+            cursor={{ fill: 'var(--color-ink-hover)', opacity: 0.5 }}
+          />
+          <Bar
+            dataKey="watts"
+            fill="var(--color-accent-copper)"
+            radius={[3, 3, 0, 0]}
+            maxBarSize={32}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Secondary metrics                                                   */
+/* ------------------------------------------------------------------ */
+
+function SecondaryMetrics({ workout }: { workout: Workout }) {
+  const items: Array<{ label: string; value: string }> = [];
+
+  if (workout.strokeRate != null) {
+    items.push({ label: 'Avg SPM', value: String(workout.strokeRate) });
+  }
+  if (workout.avgHeartRate != null) {
+    items.push({ label: 'Avg HR', value: `${workout.avgHeartRate} bpm` });
+  }
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="flex items-center gap-4">
+      {items.map((item) => (
+        <div key={item.label} className="flex items-center gap-1.5">
+          <span className="text-xs text-ink-muted">{item.label}:</span>
+          <span className="text-xs font-mono text-ink-secondary tabular-nums">{item.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* WorkoutRowExpanded                                                   */
+/* ------------------------------------------------------------------ */
+
+export function WorkoutRowExpanded({ workout, onNavigateToDetail }: WorkoutRowExpandedProps) {
+  const hasSplits = workout.splits && workout.splits.length > 0;
+  const hasNotes = workout.notes && workout.notes.trim().length > 0;
+  const hasContent = hasSplits || hasNotes;
+
+  return (
+    <motion.div
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: 'auto', opacity: 1 }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={SPRING_GENTLE}
+      className="overflow-hidden"
+    >
+      <div className="px-3 pb-4 pt-1 ml-12 space-y-4 border-l-2 border-ink-border">
+        {hasSplits && (
+          <>
+            <SplitsTable splits={workout.splits!} />
+            <WattsChart splits={workout.splits!} />
+          </>
+        )}
+
+        {hasNotes && <p className="text-ink-secondary text-sm italic">{workout.notes}</p>}
+
+        <SecondaryMetrics workout={workout} />
+
+        {!hasContent && <p className="text-ink-muted text-sm">No additional details</p>}
+
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNavigateToDetail(workout.id);
+            }}
+            className="text-accent-copper hover:underline text-sm transition-colors"
+          >
+            View full detail
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
