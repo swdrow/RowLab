@@ -4,21 +4,20 @@
  *
  * - personal: always visible (workouts, profile)
  * - team: visible when user has an active team
- * - coach: visible when activeTeamRole is 'coach' or 'admin'
+ * - coach: visible when activeTeamRole is COACH or OWNER (uppercase from backend)
  */
 import {
   LayoutDashboard,
   Dumbbell,
   Calendar,
   Users,
-  ClipboardList,
-  UserCheck,
   Rows3,
   Sailboat,
   Warehouse,
   Settings,
   User,
 } from 'lucide-react';
+import { isCoachOrAbove } from '@/features/team/types';
 import type { NavConfig, NavItem, NavSection } from '@/types/navigation';
 
 /* === PERSONAL ZONE (always visible) === */
@@ -44,17 +43,7 @@ const profileSection: NavSection = {
 const teamSection: NavSection = {
   id: 'team',
   label: 'Team',
-  items: [
-    { id: 'team-dashboard', label: 'Team Dashboard', icon: Users, path: '/team', zone: 'team' },
-    { id: 'athletes', label: 'Athletes', icon: ClipboardList, path: '/athletes', zone: 'team' },
-    {
-      id: 'attendance',
-      label: 'Attendance',
-      icon: UserCheck,
-      path: '/team/attendance',
-      zone: 'team',
-    },
-  ],
+  items: [{ id: 'team-dashboard', label: 'Team', icon: Users, path: '/team', zone: 'team' }],
 };
 
 /* === COACH ZONE (visible when coach or admin) === */
@@ -122,15 +111,13 @@ export const sidebarFooterItems: NavItem[] = [
  * Sections with no visible items after filtering are excluded.
  */
 export function getNavConfig(role: string | null, hasTeam: boolean): NavConfig {
-  const isCoach = role === 'coach' || role === 'admin';
-
   const sections = allSections
     .map((section) => ({
       ...section,
       items: section.items.filter((item) => {
         if (item.zone === 'personal') return true;
         if (item.zone === 'team') return hasTeam;
-        if (item.zone === 'coach') return hasTeam && isCoach;
+        if (item.zone === 'coach') return hasTeam && isCoachOrAbove(role);
         return false;
       }),
     }))
