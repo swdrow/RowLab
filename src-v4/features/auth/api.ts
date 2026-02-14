@@ -72,8 +72,12 @@ export interface MeResponse {
 
 export interface SwitchTeamResponse {
   accessToken: string;
-  activeTeamId: string;
-  activeTeamRole: string;
+  team: {
+    id: string;
+    name: string;
+    slug: string;
+    role: string;
+  };
 }
 
 // --- API functions ---

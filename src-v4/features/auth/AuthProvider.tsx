@@ -145,8 +145,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const switchTeam = useCallback(async (teamId: string) => {
     const data = await switchTeamApi({ teamId });
     setAccessToken(data.accessToken);
-    setActiveTeamId(data.activeTeamId);
-    setActiveTeamRole(data.activeTeamRole);
+    setActiveTeamId(data.team.id);
+    setActiveTeamRole(data.team.role);
     // Invalidate team-scoped queries
     void queryClient.invalidateQueries();
   }, []);
