@@ -56,8 +56,8 @@ function computeExpiresAt(expiry) {
  * @returns {Promise<object>} Created invite code record
  */
 export async function generateInviteCode({ teamId, role, expiry, maxUses, createdBy }) {
-  if (!['COACH', 'ATHLETE'].includes(role)) {
-    throw new Error('Role must be COACH or ATHLETE');
+  if (!['ADMIN', 'COACH', 'ATHLETE'].includes(role)) {
+    throw new Error('Role must be ADMIN, COACH, or ATHLETE');
   }
 
   // Generate unique code with retry

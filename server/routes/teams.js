@@ -547,7 +547,7 @@ router.post(
     try {
       // Verify OWNER or COACH role
       const team = await getTeam(req.params.id, req.user.id);
-      if (!['OWNER', 'COACH'].includes(team.role)) {
+      if (!['OWNER', 'ADMIN', 'COACH'].includes(team.role)) {
         return res.status(403).json({
           success: false,
           error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
@@ -660,7 +660,7 @@ router.post(
   authenticateToken,
   [
     param('id').isUUID(),
-    body('role').isIn(['COACH', 'ATHLETE']),
+    body('role').isIn(['ADMIN', 'COACH', 'ATHLETE']),
     body('expiry').optional().isIn(['24h', '7d', '30d', 'never']),
     body('maxUses').optional({ nullable: true }).isInt({ min: 1, max: 100 }),
   ],
@@ -669,7 +669,7 @@ router.post(
     try {
       // Verify OWNER or COACH role
       const team = await getTeam(req.params.id, req.user.id);
-      if (!['OWNER', 'COACH'].includes(team.role)) {
+      if (!['OWNER', 'ADMIN', 'COACH'].includes(team.role)) {
         return res.status(403).json({
           success: false,
           error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
@@ -711,7 +711,7 @@ router.get(
     try {
       // Verify OWNER or COACH role
       const team = await getTeam(req.params.id, req.user.id);
-      if (!['OWNER', 'COACH'].includes(team.role)) {
+      if (!['OWNER', 'ADMIN', 'COACH'].includes(team.role)) {
         return res.status(403).json({
           success: false,
           error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
@@ -746,7 +746,7 @@ router.delete(
     try {
       // Verify OWNER or COACH role
       const team = await getTeam(req.params.id, req.user.id);
-      if (!['OWNER', 'COACH'].includes(team.role)) {
+      if (!['OWNER', 'ADMIN', 'COACH'].includes(team.role)) {
         return res.status(403).json({
           success: false,
           error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
@@ -825,7 +825,7 @@ router.patch(
   [
     param('id').isUUID(),
     param('userId').isUUID(),
-    body('role').isIn(['OWNER', 'COACH', 'COXSWAIN', 'ATHLETE']),
+    body('role').isIn(['OWNER', 'ADMIN', 'COACH', 'COXSWAIN', 'ATHLETE']),
   ],
   validateRequest,
   async (req, res) => {

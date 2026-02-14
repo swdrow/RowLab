@@ -2,9 +2,7 @@ import Stripe from 'stripe';
 import { prisma } from '../db/connection.js';
 
 // Initialize Stripe (will be null if no key)
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY)
-  : null;
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
 // Plan configuration
 export const PLAN_LIMITS = {
@@ -176,7 +174,7 @@ export async function getSubscriptionStatus(teamId) {
     prisma.teamMembership.count({
       where: {
         teamId,
-        role: { in: ['OWNER', 'COACH'] },
+        role: { in: ['OWNER', 'ADMIN', 'COACH'] },
       },
     }),
   ]);
@@ -223,12 +221,7 @@ export async function getAvailablePlans() {
       priceId: null,
       interval: null,
       limits: PLAN_LIMITS.free,
-      features: [
-        'Up to 15 athletes',
-        '1 coach',
-        'Basic lineup creation',
-        'Athlete profiles',
-      ],
+      features: ['Up to 15 athletes', '1 coach', 'Basic lineup creation', 'Athlete profiles'],
     },
     {
       id: 'starter',
@@ -415,15 +408,12 @@ export async function cancelSubscription(teamId, atPeriodEnd = true) {
   let canceledSubscription;
   if (atPeriodEnd) {
     // Schedule cancellation at end of period
-    canceledSubscription = await stripe.subscriptions.update(
-      subscription.stripeSubscriptionId,
-      { cancel_at_period_end: true }
-    );
+    canceledSubscription = await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+      cancel_at_period_end: true,
+    });
   } else {
     // Cancel immediately
-    canceledSubscription = await stripe.subscriptions.cancel(
-      subscription.stripeSubscriptionId
-    );
+    canceledSubscription = await stripe.subscriptions.cancel(subscription.stripeSubscriptionId);
   }
 
   // Update local record

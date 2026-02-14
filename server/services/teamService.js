@@ -480,7 +480,7 @@ export async function updateTeam(teamId, userId, updates) {
     where: { userId_teamId: { userId, teamId } },
   });
 
-  if (!membership || !['OWNER', 'COACH'].includes(membership.role)) {
+  if (!membership || !['OWNER', 'ADMIN', 'COACH'].includes(membership.role)) {
     throw new Error('Only team owner or coach can update settings');
   }
 
@@ -644,7 +644,7 @@ export async function regenerateInviteCode(teamId, userId) {
     where: { userId_teamId: { userId, teamId } },
   });
 
-  if (!membership || !['OWNER', 'COACH'].includes(membership.role)) {
+  if (!membership || !['OWNER', 'ADMIN', 'COACH'].includes(membership.role)) {
     throw new Error('Insufficient permissions');
   }
 
@@ -672,7 +672,7 @@ export async function updateMemberRole(teamId, targetUserId, newRole, requesterI
     where: { userId_teamId: { userId: requesterId, teamId } },
   });
 
-  if (!requesterMembership || !['OWNER', 'COACH'].includes(requesterMembership.role)) {
+  if (!requesterMembership || !['OWNER', 'ADMIN', 'COACH'].includes(requesterMembership.role)) {
     throw new Error('Insufficient permissions to update roles');
   }
 
@@ -681,7 +681,7 @@ export async function updateMemberRole(teamId, targetUserId, newRole, requesterI
     throw new Error('Cannot change your own role');
   }
 
-  const validRoles = ['OWNER', 'COACH', 'COXSWAIN', 'ATHLETE'];
+  const validRoles = ['OWNER', 'ADMIN', 'COACH', 'COXSWAIN', 'ATHLETE'];
   if (!validRoles.includes(newRole)) {
     throw new Error('Invalid role');
   }
@@ -695,9 +695,20 @@ export async function updateMemberRole(teamId, targetUserId, newRole, requesterI
     throw new Error('Member not found');
   }
 
-  const roleHierarchy = { OWNER: 4, COACH: 3, COXSWAIN: 2, ATHLETE: 1 };
+  const roleHierarchy = { OWNER: 5, ADMIN: 4, COACH: 3, COXSWAIN: 2, ATHLETE: 1 };
   const currentLevel = roleHierarchy[targetMembership.role];
   const newLevel = roleHierarchy[newRole];
+
+  // ADMIN-specific restrictions
+  if (requesterMembership.role === 'ADMIN') {
+    // Admins can manage up to COACH level but cannot promote to OWNER or ADMIN
+    if (newLevel >= roleHierarchy['ADMIN']) {
+      throw new Error('Only team owner can promote to ADMIN or OWNER');
+    }
+    if (currentLevel >= roleHierarchy['ADMIN']) {
+      throw new Error('Only team owner can change admin or owner roles');
+    }
+  }
 
   // COACH-specific restrictions
   if (requesterMembership.role === 'COACH') {
@@ -754,7 +765,7 @@ export async function removeMember(teamId, targetUserId, requesterId) {
     where: { userId_teamId: { userId: requesterId, teamId } },
   });
 
-  if (!requesterMembership || !['OWNER', 'COACH'].includes(requesterMembership.role)) {
+  if (!requesterMembership || !['OWNER', 'ADMIN', 'COACH'].includes(requesterMembership.role)) {
     throw new Error('Insufficient permissions');
   }
 
@@ -777,9 +788,14 @@ export async function removeMember(teamId, targetUserId, requesterId) {
     throw new Error('Cannot remove team owner');
   }
 
+  // ADMIN can't be removed by non-owners
+  if (targetMembership.role === 'ADMIN' && requesterMembership.role !== 'OWNER') {
+    throw new Error('Only team owner can remove admins');
+  }
+
   // Coach can only remove athletes
-  if (requesterMembership.role === 'COACH' && targetMembership.role === 'COACH') {
-    throw new Error('Coaches cannot remove other coaches');
+  if (requesterMembership.role === 'COACH' && ['ADMIN', 'COACH'].includes(targetMembership.role)) {
+    throw new Error('Coaches cannot remove admins or other coaches');
   }
 
   await prisma.teamMember.delete({
