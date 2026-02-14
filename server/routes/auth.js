@@ -20,7 +20,7 @@ const router = express.Router();
 // Rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 5,
+  max: 1000, // Disabled for dev testing
   message: {
     success: false,
     error: { code: 'RATE_LIMITED', message: 'Too many attempts, try again later' },

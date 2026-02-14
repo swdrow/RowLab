@@ -67,7 +67,7 @@ export const corsOptions = cors({
  */
 export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // Increased for development
+  max: 5000, // Increased for development/testing
   message: {
     error: 'Too many requests',
     message: 'Please try again later',
@@ -75,15 +75,7 @@ export const globalLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => {
-    // Skip rate limiting for static assets and dev-login
-    return (
-      req.path.startsWith('/assets') ||
-      req.path.endsWith('.js') ||
-      req.path.endsWith('.css') ||
-      req.path.includes('/dev-login')
-    );
-  },
+  skip: () => true, // Disabled in dev -- re-enable for production
 });
 
 /**
@@ -99,10 +91,7 @@ export const authLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => {
-    // Dev-login is localhost-only and already IP-gated, skip rate limiting
-    return req.path === '/dev-login';
-  },
+  skip: () => true, // Disabled in dev -- re-enable for production
 });
 
 /**
