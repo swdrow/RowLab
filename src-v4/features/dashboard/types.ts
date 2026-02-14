@@ -8,13 +8,14 @@ export interface StatsData {
     totalMeters: number;
     workoutCount: number;
     activeDays: number;
+    totalDurationSeconds: number;
     firstWorkoutDate: string | null;
   };
   range: {
     meters: number;
     workouts: number;
     activeDays: number;
-    period: '7d' | '30d' | '90d' | 'all';
+    period: '7d' | '30d' | '90d' | '1y' | 'all';
   };
   streak: {
     current: number;
