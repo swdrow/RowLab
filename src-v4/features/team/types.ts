@@ -140,15 +140,20 @@ export interface UpdateTeamInput {
 // ---------------------------------------------------------------------------
 
 export const ROLE_DISPLAY: Record<string, string> = {
-  OWNER: 'Admin',
+  OWNER: 'Owner',
+  ADMIN: 'Admin',
   COACH: 'Coach',
   ATHLETE: 'Athlete',
 };
 
 export function isAdmin(role: string | null): boolean {
-  return role === 'OWNER';
+  return role === 'OWNER' || role === 'ADMIN';
+}
+
+export function isAdminOrAbove(role: string | null): boolean {
+  return role === 'OWNER' || role === 'ADMIN';
 }
 
 export function isCoachOrAbove(role: string | null): boolean {
-  return role === 'OWNER' || role === 'COACH';
+  return role === 'OWNER' || role === 'ADMIN' || role === 'COACH';
 }
