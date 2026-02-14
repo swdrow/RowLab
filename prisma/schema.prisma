@@ -24,6 +24,7 @@ model User {
   avatarUrl    String?
   bannerUrl    String?
   status       String   @default("active") // active, suspended
+  activeTeamId String? // Persisted active team preference
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -53,10 +54,14 @@ model User {
 model Team {
   id                String   @id @default(uuid())
   name              String
-  slug              String   @unique
+  slug              String?  @unique // Nullable -- generatedId is the required identifier
+  generatedId       String   @unique // Adjective-animal ID (e.g., "swift-otter"), immutable after creation
   inviteCode        String?  @unique
   isPublic          Boolean  @default(false)
   visibilitySetting String   @default("coaches_only") // open, coaches_only, opt_in
+  description       String?  @db.Text // Team description
+  sport             String? // Sport type (e.g., "rowing")
+  welcomeMessage    String?  @db.Text // Shown to new members on join
   settings          Json     @default("{}")
   aiModel           String? // Preferred AI model (e.g., "phi4-mini-reasoning:3.8b")
   createdAt         DateTime @default(now())
@@ -91,6 +96,8 @@ model Team {
   riggingProfiles     RiggingProfile[]
   lineupTemplates     LineupTemplate[]
   equipmentAssignments EquipmentAssignment[]
+  inviteCodes         TeamInviteCode[]
+  activities          TeamActivity[]
 
   @@map("teams")
 }
@@ -1613,4 +1620,41 @@ model Notification {
   @@index([userId, readAt])
   @@index([userId, createdAt])
   @@map("notifications")
+}
+
+// ============================================
+// TEAM EXPERIENCE: Invite codes and activity feed
+// ============================================
+
+model TeamInviteCode {
+  id        String    @id @default(uuid())
+  teamId    String
+  code      String    @unique
+  role      String    @default("ATHLETE")
+  expiresAt DateTime?
+  maxUses   Int?
+  usesCount Int       @default(0)
+  createdBy String
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@map("team_invite_codes")
+}
+
+model TeamActivity {
+  id        String   @id @default(uuid())
+  teamId    String
+  userId    String?
+  type      String
+  title     String
+  data      Json?
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, createdAt])
+  @@map("team_activities")
 }
