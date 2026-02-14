@@ -401,7 +401,7 @@ model Workout {
   id               String   @id @default(uuid())
   athleteId        String? // Optional - may be synced by user without athlete record
   userId           String? // For user-level syncs (Strava, etc.)
-  teamId           String
+  teamId           String? // Nullable — personal workouts can exist without a team
   source           String // manual, concept2_sync, strava_sync, csv_import, bluetooth, fit_import
   type             String? // on_water, erg, strength, cardio, other
   c2LogbookId      String?  @unique
@@ -423,7 +423,7 @@ model Workout {
   createdAt        DateTime @default(now())
 
   athlete     Athlete?            @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  team        Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team        Team?               @relation(fields: [teamId], references: [id], onDelete: SetNull)
   telemetry   WorkoutTelemetry?
   completions WorkoutCompletion[]
   splits      WorkoutSplit[]
