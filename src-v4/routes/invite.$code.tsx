@@ -1,30 +1,61 @@
 /**
  * Invite claim route: /invite/:code
- * Handles both new users (redirect to register) and existing users (claim invite).
+ *
+ * Handles BOTH invite systems:
+ * 1. New TeamInviteCode system (ABC-1234 format): joins via POST /api/u/teams/join
+ * 2. Old Invitation system (hex codes): validates then claims via /api/v1/invites/
+ *
+ * Detection: tries new system first. On 404, falls back to old system.
+ *
+ * Search params:
+ * - ?role= (hint from invite link, actual role comes from code record)
  *
  * States:
- * 1. Loading: skeleton while validating invite
+ * 1. Loading: skeleton while resolving invite
  * 2. Invalid: error card with link to login
  * 3. Valid + not authenticated: redirect to /register?invite={code}
- * 4. Valid + authenticated: show claim card (accept/decline)
+ * 4. Valid + authenticated (new system): show join card
+ * 5. Valid + authenticated (old system): show legacy claim card
  */
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { z } from 'zod';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/features/auth/useAuth';
 import { api } from '@/lib/api';
+import { joinTeamByCode } from '@/features/team/api';
+import type { TeamDetail } from '@/features/team/types';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 
+// ---------------------------------------------------------------------------
+// Search params
+// ---------------------------------------------------------------------------
+
+const inviteSearchSchema = z.object({
+  role: z.string().optional(),
+});
+
+// ---------------------------------------------------------------------------
+// Route definition
+// ---------------------------------------------------------------------------
+
 export const Route = createFileRoute('/invite/$code')({
   component: InviteClaimPage,
+  validateSearch: zodValidator(inviteSearchSchema),
   staticData: {
     breadcrumb: 'Invite',
   },
 });
 
-interface InviteValidation {
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+/** Old invitation system validation response */
+interface LegacyInviteValidation {
   invitation: {
     id: string;
     email?: string;
@@ -37,18 +68,66 @@ interface InviteValidation {
   };
 }
 
+/** Unified resolved invite data */
+type ResolvedInvite =
+  | {
+      system: 'new';
+      teamName: string;
+      role: string;
+      code: string;
+    }
+  | {
+      system: 'legacy';
+      invitation: LegacyInviteValidation['invitation'];
+      code: string;
+    };
+
+// ---------------------------------------------------------------------------
+// Invite resolution: tries new system first, falls back to legacy
+// ---------------------------------------------------------------------------
+
+async function resolveInvite(code: string): Promise<ResolvedInvite> {
+  // Try new TeamInviteCode system first via validate endpoint
+  try {
+    const res = await api.get(`/api/u/teams/invite-codes/validate/${encodeURIComponent(code)}`);
+    const data = res.data.data as { teamName: string; role: string; code: string };
+    return {
+      system: 'new',
+      teamName: data.teamName,
+      role: data.role,
+      code,
+    };
+  } catch (newErr: unknown) {
+    const status = (newErr as { response?: { status?: number } })?.response?.status;
+    // If not a 404, the code was found but had another error -- don't fallback
+    if (status && status !== 404) {
+      throw newErr;
+    }
+  }
+
+  // Fall back to old Invitation system
+  const res = await api.get(`/api/v1/invites/validate/${code}`);
+  const data = res.data.data as LegacyInviteValidation;
+  return {
+    system: 'legacy',
+    invitation: data.invitation,
+    code,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Main page component
+// ---------------------------------------------------------------------------
+
 function InviteClaimPage() {
   const { code } = Route.useParams();
   const { isAuthenticated, isInitialized } = useAuth();
   const navigate = useNavigate();
   const [hasRedirected, setHasRedirected] = useState(false);
 
-  const { data, isLoading, isError, error } = useQuery<InviteValidation>({
-    queryKey: ['invites', 'validate', code],
-    queryFn: async () => {
-      const res = await api.get(`/api/v1/invites/validate/${code}`);
-      return res.data.data;
-    },
+  const { data, isLoading, isError, error } = useQuery<ResolvedInvite>({
+    queryKey: ['invites', 'resolve', code],
+    queryFn: () => resolveInvite(code),
     retry: false,
     staleTime: Infinity,
   });
@@ -106,9 +185,12 @@ function InviteClaimPage() {
     );
   }
 
-  // Valid invite + authenticated: show claim card
+  // Valid invite + authenticated: render appropriate claim card
   if (isAuthenticated && data) {
-    return <InviteClaimCard code={code} invitation={data.invitation} />;
+    if (data.system === 'new') {
+      return <NewInviteClaimCard resolved={data} />;
+    }
+    return <LegacyInviteClaimCard code={code} invitation={data.invitation} />;
   }
 
   // Valid invite + not authenticated: redirecting to register (show loading)
@@ -123,12 +205,95 @@ function InviteClaimPage() {
   );
 }
 
-function InviteClaimCard({
+// ---------------------------------------------------------------------------
+// New system claim card (TeamInviteCode)
+// ---------------------------------------------------------------------------
+
+function NewInviteClaimCard({
+  resolved,
+}: {
+  resolved: Extract<ResolvedInvite, { system: 'new' }>;
+}) {
+  const navigate = useNavigate();
+  const { refreshAuth, switchTeam } = useAuth();
+
+  const joinMutation = useMutation<
+    { team: TeamDetail; role: string; welcomeMessage?: string },
+    Error,
+    string
+  >({
+    mutationFn: (inviteCode) => joinTeamByCode(inviteCode),
+    onSuccess: async (result) => {
+      await refreshAuth();
+      await switchTeam(result.team.id);
+
+      if (result.welcomeMessage) {
+        toast.success(result.welcomeMessage);
+      } else {
+        toast.success(`Joined "${result.team.name}"!`);
+      }
+
+      await navigate({ to: '/' as string });
+    },
+    onError: (err: unknown) => {
+      const message =
+        (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error
+          ?.message || 'Failed to join team.';
+      toast.error(message);
+    },
+  });
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-ink-deep p-4">
+      <div className="w-full max-w-md">
+        <GlassCard padding="lg" className="rounded-2xl text-center">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold tracking-tight text-ink-primary font-display">
+              Row<span className="text-accent-copper">Lab</span>
+            </h1>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <h2 className="text-lg font-semibold text-ink-primary">Team invitation</h2>
+
+            <p className="text-sm text-ink-body">
+              You've been invited to join{' '}
+              <span className="font-semibold text-ink-primary">{resolved.teamName}</span> as a{' '}
+              <span className="font-semibold text-accent-copper capitalize">
+                {resolved.role.toLowerCase()}
+              </span>
+            </p>
+
+            <div className="flex gap-3 mt-2">
+              <Button
+                variant="primary"
+                className="flex-1"
+                onClick={() => joinMutation.mutate(resolved.code)}
+                loading={joinMutation.isPending}
+              >
+                Join team
+              </Button>
+              <Button variant="ghost" className="flex-1" onClick={() => void navigate({ to: '/' })}>
+                Decline
+              </Button>
+            </div>
+          </div>
+        </GlassCard>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Legacy system claim card (old Invitation model)
+// ---------------------------------------------------------------------------
+
+function LegacyInviteClaimCard({
   code,
   invitation,
 }: {
   code: string;
-  invitation: InviteValidation['invitation'];
+  invitation: LegacyInviteValidation['invitation'];
 }) {
   const navigate = useNavigate();
   const { refreshAuth } = useAuth();
@@ -141,13 +306,12 @@ function InviteClaimCard({
     onSuccess: async () => {
       const teamName = invitation.team?.name || 'the team';
       toast.success(`Joined ${teamName}!`);
-      // Refresh auth to pick up new team membership
       await refreshAuth();
       await navigate({ to: '/' });
     },
-    onError: (error: unknown) => {
+    onError: (err: unknown) => {
       const message =
-        (error as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error
+        (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error
           ?.message || 'Failed to claim invitation.';
       toast.error(message);
     },
@@ -191,7 +355,7 @@ function InviteClaimCard({
               >
                 Accept
               </Button>
-              <Button variant="ghost" className="flex-1" onClick={() => navigate({ to: '/' })}>
+              <Button variant="ghost" className="flex-1" onClick={() => void navigate({ to: '/' })}>
                 Decline
               </Button>
             </div>
@@ -201,6 +365,10 @@ function InviteClaimCard({
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Skeleton
+// ---------------------------------------------------------------------------
 
 function InviteSkeleton() {
   return (
