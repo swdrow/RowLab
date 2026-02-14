@@ -4,7 +4,7 @@ import { ApiError } from '../../middleware/rfc7807.js';
 
 const router = express.Router();
 
-const VALID_RANGES = ['7d', '30d', '90d', 'all'];
+const VALID_RANGES = ['7d', '30d', '90d', '1y', 'all'];
 
 router.get('/', async (req, res, next) => {
   try {

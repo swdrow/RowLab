@@ -18,7 +18,7 @@ const STANDARD_DISTANCES = ['500m', '1k', '2k', '5k', '6k', '10k', 'hm', 'fm'];
 function getDateFilter(range) {
   if (!range || range === 'all') return undefined;
 
-  const days = { '7d': 7, '30d': 30, '90d': 90 }[range];
+  const days = { '7d': 7, '30d': 30, '90d': 90, '1y': 365 }[range];
   if (!days) return undefined;
 
   const d = new Date();
@@ -410,6 +410,7 @@ export async function getUserStats(userId, range = 'all') {
       id: true,
       date: true,
       distanceM: true,
+      durationSeconds: true,
       teamId: true,
     },
     orderBy: { date: 'desc' },
@@ -420,11 +421,12 @@ export async function getUserStats(userId, range = 'all') {
     return {
       allTime: {
         totalMeters: 0,
+        totalDurationSeconds: 0,
         workoutCount: 0,
         activeDays: 0,
         firstWorkoutDate: null,
       },
-      range: { meters: 0, workouts: 0, activeDays: 0, period: range },
+      range: { meters: 0, durationSeconds: 0, workouts: 0, activeDays: 0, period: range },
       streak: { current: 0, longest: 0, lastActivityDate: null },
       byTeam: {},
     };
@@ -432,6 +434,10 @@ export async function getUserStats(userId, range = 'all') {
 
   // All-time stats
   const totalMeters = allWorkouts.reduce((sum, w) => sum + (w.distanceM || 0), 0);
+  const totalDurationSeconds = allWorkouts.reduce(
+    (sum, w) => sum + (Number(w.durationSeconds) || 0),
+    0
+  );
   const allDates = allWorkouts.map((w) => w.date);
   const uniqueAllDays = new Set(allDates.map((d) => d.toISOString().split('T')[0]));
   const firstWorkoutDate = allWorkouts[allWorkouts.length - 1].date.toISOString();
@@ -443,6 +449,10 @@ export async function getUserStats(userId, range = 'all') {
     rangeWorkouts = allWorkouts.filter((w) => w.date >= dateFilter.gte);
   }
   const rangeMeters = rangeWorkouts.reduce((sum, w) => sum + (w.distanceM || 0), 0);
+  const rangeDurationSeconds = rangeWorkouts.reduce(
+    (sum, w) => sum + (Number(w.durationSeconds) || 0),
+    0
+  );
   const uniqueRangeDays = new Set(rangeWorkouts.map((w) => w.date.toISOString().split('T')[0]));
 
   // Per-team breakdown
@@ -463,12 +473,14 @@ export async function getUserStats(userId, range = 'all') {
   return {
     allTime: {
       totalMeters,
+      totalDurationSeconds,
       workoutCount: allWorkouts.length,
       activeDays: uniqueAllDays.size,
       firstWorkoutDate,
     },
     range: {
       meters: rangeMeters,
+      durationSeconds: rangeDurationSeconds,
       workouts: rangeWorkouts.length,
       activeDays: uniqueRangeDays.size,
       period: range,
