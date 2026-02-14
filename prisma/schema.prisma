@@ -98,6 +98,7 @@ model Team {
   equipmentAssignments EquipmentAssignment[]
   inviteCodes         TeamInviteCode[]
   activities          TeamActivity[]
+  featureFlags        TeamFeatureFlag[]
 
   @@map("teams")
 }
@@ -1657,4 +1658,23 @@ model TeamActivity {
 
   @@index([teamId, createdAt])
   @@map("team_activities")
+}
+
+// ============================================
+// FEATURE FLAGS: Per-tool athlete visibility toggles
+// ============================================
+
+model TeamFeatureFlag {
+  id              String   @id @default(uuid())
+  teamId          String
+  tool            String   // 'lineup', 'seat_racing', 'fleet', 'training', 'attendance', 'whiteboard', 'recruiting'
+  athleteReadOnly Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, tool])
+  @@index([teamId])
+  @@map("team_feature_flags")
 }
