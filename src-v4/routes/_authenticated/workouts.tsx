@@ -1,0 +1,299 @@
+/**
+ * /workouts layout route.
+ *
+ * Provides:
+ * - URL search param validation via zodValidator (view, type, source, dates, calendarMode)
+ * - Tab toggle (Feed | Calendar) that updates ?view= param
+ * - Filter button with active filter count badge
+ * - FAB (+) button that opens the workout slide-over
+ * - WorkoutSlideOver for create/edit at the layout level (overlays all child views)
+ * - WorkoutPageContext to pass onEdit/onDelete/onCreateNew to child routes
+ */
+
+import { useState, useCallback, useMemo } from 'react';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
+import { z } from 'zod';
+import { Filter, Plus } from 'lucide-react';
+
+import { useIsMobile } from '@/hooks/useBreakpoint';
+import {
+  WorkoutPageContext,
+  type WorkoutPageContextValue,
+} from '@/features/workouts/WorkoutPageContext';
+import { FilterPopover, countActiveFilters } from '@/features/workouts/components/FilterPopover';
+import { WorkoutSlideOver } from '@/features/workouts/components/WorkoutSlideOver';
+import { useDeleteWorkout } from '@/features/workouts/hooks/useWorkoutMutations';
+import type { Workout } from '@/features/workouts/types';
+
+/* ------------------------------------------------------------------ */
+/* Search schema                                                       */
+/* ------------------------------------------------------------------ */
+
+const workoutSearchSchema = z.object({
+  view: z.enum(['feed', 'calendar']).catch('feed'),
+  type: z.string().optional().catch(undefined),
+  source: z.enum(['manual', 'concept2', 'strava', 'garmin']).optional().catch(undefined),
+  dateFrom: z.string().optional().catch(undefined),
+  dateTo: z.string().optional().catch(undefined),
+  calendarMode: z.enum(['monthly', 'weekly']).catch('monthly'),
+});
+
+export type WorkoutSearch = z.infer<typeof workoutSearchSchema>;
+
+/* ------------------------------------------------------------------ */
+/* Route definition                                                    */
+/* ------------------------------------------------------------------ */
+
+export const Route = createFileRoute('/_authenticated/workouts')({
+  validateSearch: zodValidator(workoutSearchSchema),
+  staticData: {
+    breadcrumb: 'Workouts',
+  },
+  component: WorkoutsLayout,
+});
+
+/* ------------------------------------------------------------------ */
+/* Layout component                                                    */
+/* ------------------------------------------------------------------ */
+
+function WorkoutsLayout() {
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const isMobile = useIsMobile();
+
+  // Slide-over state
+  const [slideOverOpen, setSlideOverOpen] = useState(false);
+  const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
+
+  // Filter popover state
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  // Delete dialog state
+  const [deletingWorkout, setDeletingWorkout] = useState<Workout | null>(null);
+
+  const handleCreateNew = useCallback(() => {
+    setEditingWorkout(null);
+    setSlideOverOpen(true);
+  }, []);
+
+  const handleEdit = useCallback((workout: Workout) => {
+    setEditingWorkout(workout);
+    setSlideOverOpen(true);
+  }, []);
+
+  const handleDelete = useCallback((workout: Workout) => {
+    setDeletingWorkout(workout);
+  }, []);
+
+  const handleSlideOverClose = useCallback(() => {
+    setSlideOverOpen(false);
+    setEditingWorkout(null);
+  }, []);
+
+  const handleSlideOverSuccess = useCallback(() => {
+    setSlideOverOpen(false);
+    setEditingWorkout(null);
+  }, []);
+
+  const setView = useCallback(
+    (view: 'feed' | 'calendar') => {
+      void navigate({
+        search: (prev) => ({ ...prev, view }),
+      });
+    },
+    [navigate]
+  );
+
+  const handleFilterChange = useCallback(
+    (key: string, value: string | undefined) => {
+      void navigate({
+        search: (prev) => ({ ...prev, [key]: value }),
+      });
+    },
+    [navigate]
+  );
+
+  const handleClearAllFilters = useCallback(() => {
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        type: undefined,
+        source: undefined,
+        dateFrom: undefined,
+        dateTo: undefined,
+      }),
+    });
+  }, [navigate]);
+
+  const activeFilterCount = countActiveFilters(search);
+
+  // Context value for child routes
+  const contextValue: WorkoutPageContextValue = useMemo(
+    () => ({
+      onEdit: handleEdit,
+      onDelete: handleDelete,
+      onCreateNew: handleCreateNew,
+    }),
+    [handleEdit, handleDelete, handleCreateNew]
+  );
+
+  return (
+    <WorkoutPageContext.Provider value={contextValue}>
+      <div className="max-w-3xl mx-auto px-4 py-6">
+        {/* Page header */}
+        <h1 className="text-ink-primary text-2xl font-display font-semibold mb-4">Workouts</h1>
+
+        {/* Tab toggle + Filter bar */}
+        <div className="flex items-center justify-between mb-5">
+          {/* Tab toggle */}
+          <div className="flex bg-ink-well rounded-lg p-0.5">
+            <button
+              type="button"
+              onClick={() => setView('feed')}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                search.view === 'feed'
+                  ? 'bg-ink-raised text-ink-primary'
+                  : 'text-ink-secondary hover:text-ink-body'
+              }`}
+            >
+              Feed
+            </button>
+            <button
+              type="button"
+              onClick={() => setView('calendar')}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                search.view === 'calendar'
+                  ? 'bg-ink-raised text-ink-primary'
+                  : 'text-ink-secondary hover:text-ink-body'
+              }`}
+            >
+              Calendar
+            </button>
+          </div>
+
+          {/* Filter button */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setFilterOpen((prev) => !prev)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                filterOpen || activeFilterCount > 0
+                  ? 'bg-ink-raised text-ink-primary'
+                  : 'text-ink-secondary hover:text-ink-body hover:bg-ink-hover'
+              }`}
+            >
+              <Filter size={14} />
+              <span className="hidden sm:inline">Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="ml-0.5 inline-flex items-center justify-center w-5 h-5 rounded-full bg-accent-copper text-ink-deep text-xs font-semibold">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+
+            <FilterPopover
+              isOpen={filterOpen}
+              onClose={() => setFilterOpen(false)}
+              activeType={search.type}
+              activeSource={search.source}
+              activeDateFrom={search.dateFrom}
+              activeDateTo={search.dateTo}
+              onFilterChange={handleFilterChange}
+              onClearAll={handleClearAllFilters}
+            />
+          </div>
+        </div>
+
+        {/* Child route content */}
+        <Outlet />
+      </div>
+
+      {/* FAB */}
+      <button
+        type="button"
+        onClick={handleCreateNew}
+        className={`fixed z-30 w-14 h-14 bg-accent-copper hover:bg-accent-copper-hover text-ink-deep rounded-full shadow-glow-copper flex items-center justify-center transition-colors ${
+          isMobile ? 'bottom-20 right-4' : 'bottom-6 right-6'
+        }`}
+        aria-label="Log new workout"
+      >
+        <Plus size={24} />
+      </button>
+
+      {/* Slide-over */}
+      <WorkoutSlideOver
+        isOpen={slideOverOpen}
+        onClose={handleSlideOverClose}
+        editingWorkout={editingWorkout}
+        onSuccess={handleSlideOverSuccess}
+      />
+
+      {/* Delete confirmation dialog */}
+      {deletingWorkout && (
+        <DeleteConfirmDialog
+          workout={deletingWorkout}
+          onCancel={() => setDeletingWorkout(null)}
+          onConfirmed={() => setDeletingWorkout(null)}
+        />
+      )}
+    </WorkoutPageContext.Provider>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Delete confirmation dialog                                          */
+/* ------------------------------------------------------------------ */
+
+function DeleteConfirmDialog({
+  workout,
+  onCancel,
+  onConfirmed,
+}: {
+  workout: Workout;
+  onCancel: () => void;
+  onConfirmed: () => void;
+}) {
+  const deleteWorkout = useDeleteWorkout();
+
+  const handleConfirm = async () => {
+    await deleteWorkout.mutateAsync(workout.id);
+    onConfirmed();
+  };
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/50 z-50" onClick={onCancel} />
+      {/* Dialog */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+          className="bg-ink-base border border-ink-border rounded-xl shadow-card p-5 max-w-sm w-full"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3 className="text-ink-primary text-base font-semibold mb-2">Delete workout?</h3>
+          <p className="text-ink-secondary text-sm mb-5">
+            This cannot be undone. This workout will be permanently removed from your log.
+          </p>
+          <div className="flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-ink-secondary hover:text-ink-body hover:bg-ink-hover transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirm}
+              disabled={deleteWorkout.isPending}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-data-poor text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {deleteWorkout.isPending ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
