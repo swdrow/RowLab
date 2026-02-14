@@ -14,9 +14,12 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as InviteCodeRouteImport } from './routes/invite.$code'
+import { Route as AuthenticatedWorkoutsRouteImport } from './routes/_authenticated/workouts'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/_team'
+import { Route as AuthenticatedWorkoutsIndexRouteImport } from './routes/_authenticated/workouts.index'
+import { Route as AuthenticatedWorkoutsWorkoutIdRouteImport } from './routes/_authenticated/workouts.$workoutId'
 import { Route as AuthenticatedTeamAthletesRouteImport } from './routes/_authenticated/_team/athletes'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -43,6 +46,11 @@ const InviteCodeRoute = InviteCodeRouteImport.update({
   path: '/invite/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWorkoutsRoute = AuthenticatedWorkoutsRouteImport.update({
+  id: '/workouts',
+  path: '/workouts',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -57,6 +65,18 @@ const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
   id: '/_team',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedWorkoutsIndexRoute =
+  AuthenticatedWorkoutsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedWorkoutsRoute,
+  } as any)
+const AuthenticatedWorkoutsWorkoutIdRoute =
+  AuthenticatedWorkoutsWorkoutIdRouteImport.update({
+    id: '/$workoutId',
+    path: '/$workoutId',
+    getParentRoute: () => AuthenticatedWorkoutsRoute,
+  } as any)
 const AuthenticatedTeamAthletesRoute =
   AuthenticatedTeamAthletesRouteImport.update({
     id: '/athletes',
@@ -70,8 +90,11 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/workouts': typeof AuthenticatedWorkoutsRouteWithChildren
   '/invite/$code': typeof InviteCodeRoute
   '/athletes': typeof AuthenticatedTeamAthletesRoute
+  '/workouts/$workoutId': typeof AuthenticatedWorkoutsWorkoutIdRoute
+  '/workouts/': typeof AuthenticatedWorkoutsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -81,6 +104,8 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/invite/$code': typeof InviteCodeRoute
   '/athletes': typeof AuthenticatedTeamAthletesRoute
+  '/workouts/$workoutId': typeof AuthenticatedWorkoutsWorkoutIdRoute
+  '/workouts': typeof AuthenticatedWorkoutsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -90,9 +115,12 @@ export interface FileRoutesById {
   '/_authenticated/_team': typeof AuthenticatedTeamRouteWithChildren
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/workouts': typeof AuthenticatedWorkoutsRouteWithChildren
   '/invite/$code': typeof InviteCodeRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/_team/athletes': typeof AuthenticatedTeamAthletesRoute
+  '/_authenticated/workouts/$workoutId': typeof AuthenticatedWorkoutsWorkoutIdRoute
+  '/_authenticated/workouts/': typeof AuthenticatedWorkoutsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -102,8 +130,11 @@ export interface FileRouteTypes {
     | '/register'
     | '/profile'
     | '/settings'
+    | '/workouts'
     | '/invite/$code'
     | '/athletes'
+    | '/workouts/$workoutId'
+    | '/workouts/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -113,6 +144,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/invite/$code'
     | '/athletes'
+    | '/workouts/$workoutId'
+    | '/workouts'
   id:
     | '__root__'
     | '/_authenticated'
@@ -121,9 +154,12 @@ export interface FileRouteTypes {
     | '/_authenticated/_team'
     | '/_authenticated/profile'
     | '/_authenticated/settings'
+    | '/_authenticated/workouts'
     | '/invite/$code'
     | '/_authenticated/'
     | '/_authenticated/_team/athletes'
+    | '/_authenticated/workouts/$workoutId'
+    | '/_authenticated/workouts/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -170,6 +206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InviteCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/workouts': {
+      id: '/_authenticated/workouts'
+      path: '/workouts'
+      fullPath: '/workouts'
+      preLoaderRoute: typeof AuthenticatedWorkoutsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -190,6 +233,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedTeamRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/workouts/': {
+      id: '/_authenticated/workouts/'
+      path: '/'
+      fullPath: '/workouts/'
+      preLoaderRoute: typeof AuthenticatedWorkoutsIndexRouteImport
+      parentRoute: typeof AuthenticatedWorkoutsRoute
+    }
+    '/_authenticated/workouts/$workoutId': {
+      id: '/_authenticated/workouts/$workoutId'
+      path: '/$workoutId'
+      fullPath: '/workouts/$workoutId'
+      preLoaderRoute: typeof AuthenticatedWorkoutsWorkoutIdRouteImport
+      parentRoute: typeof AuthenticatedWorkoutsRoute
     }
     '/_authenticated/_team/athletes': {
       id: '/_authenticated/_team/athletes'
@@ -212,10 +269,26 @@ const AuthenticatedTeamRouteChildren: AuthenticatedTeamRouteChildren = {
 const AuthenticatedTeamRouteWithChildren =
   AuthenticatedTeamRoute._addFileChildren(AuthenticatedTeamRouteChildren)
 
+interface AuthenticatedWorkoutsRouteChildren {
+  AuthenticatedWorkoutsWorkoutIdRoute: typeof AuthenticatedWorkoutsWorkoutIdRoute
+  AuthenticatedWorkoutsIndexRoute: typeof AuthenticatedWorkoutsIndexRoute
+}
+
+const AuthenticatedWorkoutsRouteChildren: AuthenticatedWorkoutsRouteChildren = {
+  AuthenticatedWorkoutsWorkoutIdRoute: AuthenticatedWorkoutsWorkoutIdRoute,
+  AuthenticatedWorkoutsIndexRoute: AuthenticatedWorkoutsIndexRoute,
+}
+
+const AuthenticatedWorkoutsRouteWithChildren =
+  AuthenticatedWorkoutsRoute._addFileChildren(
+    AuthenticatedWorkoutsRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRouteWithChildren
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedWorkoutsRoute: typeof AuthenticatedWorkoutsRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -223,6 +296,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedTeamRoute: AuthenticatedTeamRouteWithChildren,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedWorkoutsRoute: AuthenticatedWorkoutsRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
