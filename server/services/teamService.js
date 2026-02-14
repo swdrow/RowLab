@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { prisma } from '../db/connection.js';
+import { generateTeamId } from '../utils/teamIdGenerator.js';
 
 /**
  * Generate unique slug from team name
@@ -23,16 +24,20 @@ function generateInviteCode() {
 /**
  * Create a new team
  */
-export async function createTeam({ name, userId, isPublic = false }) {
+export async function createTeam({ name, userId, isPublic = false, description, sport }) {
   const slug = generateSlug(name);
   const inviteCode = generateInviteCode();
+  const generatedId = await generateTeamId(prisma);
 
   const team = await prisma.team.create({
     data: {
       name,
       slug,
+      generatedId,
       inviteCode,
       isPublic,
+      description: description || null,
+      sport: sport || null,
       members: {
         create: {
           userId,
@@ -49,8 +54,11 @@ export async function createTeam({ name, userId, isPublic = false }) {
     id: team.id,
     name: team.name,
     slug: team.slug,
+    generatedId: team.generatedId,
     inviteCode: team.inviteCode,
     isPublic: team.isPublic,
+    description: team.description,
+    sport: team.sport,
     role: 'OWNER',
   };
 }
@@ -86,9 +94,13 @@ export async function getTeam(teamId, userId) {
     id: team.id,
     name: team.name,
     slug: team.slug,
+    generatedId: team.generatedId,
     inviteCode: team.members[0].role === 'OWNER' ? team.inviteCode : null,
     isPublic: team.isPublic,
     visibilitySetting: team.visibilitySetting,
+    description: team.description,
+    sport: team.sport,
+    welcomeMessage: team.welcomeMessage,
     role: team.members[0].role,
     athleteCount: team._count.athletes,
     memberCount: team._count.members,
