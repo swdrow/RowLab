@@ -241,7 +241,7 @@ export function WorkoutRow({ workout, isExpanded, onToggle, onEdit, onDelete }: 
         <div className="flex-1 flex items-center justify-end gap-4 sm:gap-6 min-w-0">
           <Metric label="Dist" value={formatDistance(workout.distanceM)} />
           <Metric label="Time" value={formatDuration(workout.durationSeconds)} />
-          <Metric label="Pace" value={formatPace(workout.avgPace)} />
+          <Metric label="Pace" value={formatPace(workout.avgPace, workout.machineType)} />
           <Metric
             label="Watts"
             value={workout.avgWatts != null ? String(workout.avgWatts) : DASH}

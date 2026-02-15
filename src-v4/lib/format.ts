@@ -12,12 +12,17 @@ const DASH = '\u2014'; // em dash
 
 /**
  * Format erg pace from tenths of seconds per 500m to display string.
+ * DB always stores pace as tenths/500m. For bike erg display, pass
+ * machineType='bikerg' to auto-convert to /1000m basis (×2).
  * @example formatPace(1146) → "1:54.6"
  * @example formatPace(1200) → "2:00.0"
+ * @example formatPace(556, 'bikerg') → "1:51.2" (556 × 2 = 1112 tenths/1000m)
  */
-export function formatPace(tenths: number | null | undefined): string {
+export function formatPace(tenths: number | null | undefined, machineType?: string | null): string {
   if (tenths == null || tenths <= 0) return DASH;
-  const totalSeconds = tenths / 10;
+  // Bike erg: DB stores /500m, display needs /1000m
+  const adjusted = machineType === 'bikerg' ? tenths * 2 : tenths;
+  const totalSeconds = adjusted / 10;
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   const wholeSeconds = Math.floor(seconds);

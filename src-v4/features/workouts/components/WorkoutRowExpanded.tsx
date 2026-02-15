@@ -35,7 +35,14 @@ interface WorkoutRowExpandedProps {
 
 const DASH = '\u2014';
 
-function SplitsTable({ splits }: { splits: WorkoutSplit[] }) {
+function SplitsTable({
+  splits,
+  machineType,
+}: {
+  splits: WorkoutSplit[];
+  machineType?: string | null;
+}) {
+  const rateLabel = machineType === 'bikerg' ? 'RPM' : 'SPM';
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm font-mono">
@@ -44,7 +51,7 @@ function SplitsTable({ splits }: { splits: WorkoutSplit[] }) {
             <th className="text-left py-1.5 pr-3 font-medium">Split</th>
             <th className="text-right py-1.5 px-3 font-medium">Pace</th>
             <th className="text-right py-1.5 px-3 font-medium">Watts</th>
-            <th className="text-right py-1.5 pl-3 font-medium">SPM</th>
+            <th className="text-right py-1.5 pl-3 font-medium">{rateLabel}</th>
           </tr>
         </thead>
         <tbody>
@@ -52,7 +59,7 @@ function SplitsTable({ splits }: { splits: WorkoutSplit[] }) {
             <tr key={split.splitNumber} className="border-b border-ink-border last:border-0">
               <td className="py-1.5 pr-3 text-ink-secondary">{split.splitNumber}</td>
               <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
-                {formatPace(split.pace)}
+                {formatPace(split.pace, machineType)}
               </td>
               <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
                 {split.watts != null ? split.watts : DASH}
@@ -138,9 +145,10 @@ function WattsChart({ splits }: { splits: WorkoutSplit[] }) {
 
 function SecondaryMetrics({ workout }: { workout: Workout }) {
   const items: Array<{ label: string; value: string }> = [];
+  const rateLabel = workout.machineType === 'bikerg' ? 'RPM' : 'SPM';
 
   if (workout.strokeRate != null) {
-    items.push({ label: 'Avg SPM', value: String(workout.strokeRate) });
+    items.push({ label: `Avg ${rateLabel}`, value: String(workout.strokeRate) });
   }
   if (workout.avgHeartRate != null) {
     items.push({ label: 'Avg HR', value: `${workout.avgHeartRate} bpm` });
@@ -180,7 +188,7 @@ export function WorkoutRowExpanded({ workout, onNavigateToDetail }: WorkoutRowEx
       <div className="px-3 pb-4 pt-1 ml-12 space-y-4 border-l-2 border-ink-border">
         {hasSplits && (
           <>
-            <SplitsTable splits={workout.splits!} />
+            <SplitsTable splits={workout.splits!} machineType={workout.machineType} />
             <WattsChart splits={workout.splits!} />
           </>
         )}

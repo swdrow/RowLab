@@ -151,7 +151,7 @@ function CompactRow({
           {formatDuration(workout.durationSeconds)}
         </span>
         <span className="font-mono text-xs text-ink-muted tabular-nums hidden md:inline">
-          {workout.avgPace ? formatPace(workout.avgPace) : DASH}
+          {workout.avgPace ? formatPace(workout.avgPace, workout.machineType) : DASH}
         </span>
       </div>
 

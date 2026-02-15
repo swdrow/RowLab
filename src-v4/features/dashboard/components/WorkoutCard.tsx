@@ -89,7 +89,11 @@ export function WorkoutCard({ workout, className = '' }: WorkoutCardProps) {
     workout.distanceM != null ? formatDistance(workout.distanceM, false) : null;
   const formattedDuration =
     workout.durationSeconds != null ? formatDuration(workout.durationSeconds) : null;
-  const formattedPace = workout.avgPace != null ? `${formatPace(workout.avgPace)}/500m` : null;
+  const paceUnit = workout.machineType === 'bikerg' ? '/1000m' : '/500m';
+  const formattedPace =
+    workout.avgPace != null
+      ? `${formatPace(workout.avgPace, workout.machineType)}${paceUnit}`
+      : null;
 
   const handleClick = () => {
     navigate({ to: `/workouts/${workout.id}` as '/' });

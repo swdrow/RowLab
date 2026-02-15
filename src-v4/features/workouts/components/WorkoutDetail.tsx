@@ -210,7 +210,7 @@ export function WorkoutDetail() {
               <HeroMetric label="Time" value={formatDuration(workout.durationSeconds)} />
               <HeroMetric
                 label={`Pace ${config.paceUnit ?? ''}`}
-                value={formatPace(workout.avgPace)}
+                value={formatPace(workout.avgPace, workout.machineType)}
               />
               <HeroMetric
                 label="Watts"
@@ -250,8 +250,8 @@ export function WorkoutDetail() {
       {hasSplits && (
         <div className="space-y-4">
           <h3 className="text-ink-primary text-lg font-medium">Splits</h3>
-          <SplitsTable splits={workout.splits!} />
-          <SplitsChart splits={workout.splits!} />
+          <SplitsTable splits={workout.splits!} machineType={workout.machineType} />
+          <SplitsChart splits={workout.splits!} machineType={workout.machineType} />
         </div>
       )}
 

@@ -31,6 +31,7 @@ import type { WorkoutSplit } from '../types';
 
 interface SplitsChartProps {
   splits: WorkoutSplit[];
+  machineType?: string | null;
 }
 
 type TrainingZone = 'ut2' | 'ut1' | 'at' | 'tr';
@@ -42,6 +43,7 @@ interface ChartDataPoint {
   spm: number | null;
   isRest: boolean;
   zone: TrainingZone;
+  rateLabel: string;
 }
 
 type ChartMode = 'bar' | 'line';
@@ -164,7 +166,11 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
           {formatPace(Math.round(data.pace * 10))}
         </p>
       )}
-      {data.spm != null && <p className="font-mono text-xs text-ink-muted">{data.spm} spm</p>}
+      {data.spm != null && (
+        <p className="font-mono text-xs text-ink-muted">
+          {data.spm} {data.rateLabel}
+        </p>
+      )}
       {data.isRest && (
         <span className="inline-block mt-1 text-[10px] text-ink-muted bg-ink-hover px-1.5 py-0.5 rounded">
           Rest
@@ -195,7 +201,7 @@ function ZoneLegend() {
 /* SplitsChart                                                         */
 /* ------------------------------------------------------------------ */
 
-export function SplitsChart({ splits }: SplitsChartProps) {
+export function SplitsChart({ splits, machineType }: SplitsChartProps) {
   const [mode, setMode] = useState<ChartMode>('bar');
 
   const { chartData, isInterval, maxWatts } = useMemo(() => {
@@ -205,13 +211,18 @@ export function SplitsChart({ splits }: SplitsChartProps) {
     const allWatts = splits.filter((s) => s.watts != null).map((s) => s.watts!);
     const mw = allWatts.length > 0 ? Math.max(...allWatts) : 0;
 
+    const rl = machineType === 'bikerg' ? 'rpm' : 'spm';
     const data: ChartDataPoint[] = splits.map((s, i) => ({
       split: s.splitNumber,
-      pace: s.pace != null ? Number(s.pace) / 10 : null,
+      pace:
+        s.pace != null
+          ? (machineType === 'bikerg' ? Number(s.pace) * 2 : Number(s.pace)) / 10
+          : null,
       watts: s.watts ?? null,
       spm: s.strokeRate ?? null,
       isRest: restFlags[i] ?? false,
       zone: classifyZone(s.watts ?? null, mw),
+      rateLabel: rl,
     }));
 
     return {

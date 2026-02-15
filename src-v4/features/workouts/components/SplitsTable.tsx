@@ -18,10 +18,12 @@ const DASH = '\u2014';
 
 interface SplitsTableProps {
   splits: WorkoutSplit[];
+  machineType?: string | null;
 }
 
-export function SplitsTable({ splits }: SplitsTableProps) {
+export function SplitsTable({ splits, machineType }: SplitsTableProps) {
   const hasHeartRate = splits.some((s) => s.heartRate != null);
+  const rateLabel = machineType === 'bikerg' ? 'RPM' : 'SPM';
 
   return (
     <div className="bg-ink-raised rounded-xl border border-ink-border overflow-hidden">
@@ -39,7 +41,7 @@ export function SplitsTable({ splits }: SplitsTableProps) {
                 Watts
               </th>
               <th className="text-right py-2.5 px-4 text-ink-tertiary text-xs uppercase tracking-wider font-medium">
-                SPM
+                {rateLabel}
               </th>
               {hasHeartRate && (
                 <th className="text-right py-2.5 px-4 text-ink-tertiary text-xs uppercase tracking-wider font-medium">
@@ -58,7 +60,7 @@ export function SplitsTable({ splits }: SplitsTableProps) {
               >
                 <td className="py-2 px-4 text-ink-muted">{split.splitNumber}</td>
                 <td className="py-2 px-4 text-right text-ink-body tabular-nums">
-                  {formatPace(split.pace)}
+                  {formatPace(split.pace, machineType)}
                 </td>
                 <td className="py-2 px-4 text-right text-ink-body tabular-nums">
                   {split.watts != null ? split.watts : DASH}
