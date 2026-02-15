@@ -18,7 +18,9 @@ const STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token';
 const getConfig = () => ({
   clientId: process.env.STRAVA_CLIENT_ID,
   clientSecret: process.env.STRAVA_CLIENT_SECRET,
-  redirectUri: process.env.STRAVA_REDIRECT_URI || `${process.env.APP_URL || 'http://localhost:5173'}/app/strava/callback`,
+  redirectUri:
+    process.env.STRAVA_REDIRECT_URI ||
+    `${process.env.APP_URL || 'http://localhost:8000'}/api/v1/strava/callback`,
 });
 
 // ============================================
@@ -99,7 +101,7 @@ export async function refreshAccessToken(refreshToken) {
       client_id: clientId,
       client_secret: clientSecret,
       grant_type: 'refresh_token',
-      refresh_token: decrypt(refreshToken),
+      refresh_token: decrypt(refreshToken) || refreshToken, // fallback to plaintext for legacy tokens
     }),
   });
 
@@ -189,7 +191,7 @@ export async function getValidToken(userId) {
     }
   }
 
-  return decrypt(auth.accessToken);
+  return decrypt(auth.accessToken) || auth.accessToken; // fallback to plaintext for legacy tokens
 }
 
 // ============================================
@@ -353,11 +355,12 @@ function buildActivityName(workout) {
 
   // Add workout type
   const type = workout.type?.toLowerCase() || 'rower';
-  const typeLabel = {
-    rower: 'Row',
-    bikeerg: 'BikeErg',
-    skierg: 'SkiErg',
-  }[type] || 'Erg';
+  const typeLabel =
+    {
+      rower: 'Row',
+      bikeerg: 'BikeErg',
+      skierg: 'SkiErg',
+    }[type] || 'Erg';
 
   parts.push(typeLabel);
 
@@ -374,7 +377,7 @@ function buildActivityDescription(workout) {
 
   if (time && distance) {
     // Calculate pace (time per 500m)
-    const pace500m = (time / (distance / 500));
+    const pace500m = time / (distance / 500);
     const paceMin = Math.floor(pace500m / 60);
     const paceSec = (pace500m % 60).toFixed(1);
     lines.push(`\nPace: ${paceMin}:${paceSec.padStart(4, '0')}/500m`);
@@ -409,7 +412,10 @@ function buildActivityDescription(workout) {
 /**
  * Sync activities to workouts
  */
-export async function syncActivities(userId, { after, activityTypes = ['Rowing', 'Workout', 'WeightTraining'] } = {}) {
+export async function syncActivities(
+  userId,
+  { after, activityTypes = ['Rowing', 'Workout', 'WeightTraining'] } = {}
+) {
   const auth = await prisma.stravaAuth.findUnique({
     where: { userId },
     include: { user: { include: { memberships: true } } },
@@ -441,8 +447,8 @@ export async function syncActivities(userId, { after, activityTypes = ['Rowing',
   }
 
   // Filter to rowing-related activities
-  const rowingActivities = activities.filter((a) =>
-    activityTypes.includes(a.type) || a.type.toLowerCase().includes('row')
+  const rowingActivities = activities.filter(
+    (a) => activityTypes.includes(a.type) || a.type.toLowerCase().includes('row')
   );
 
   const synced = [];
@@ -596,7 +602,9 @@ export async function syncC2ToStrava(userId, options = {}) {
   }
 
   if (!auth.scope?.includes('activity:write')) {
-    throw new Error('Strava write permission required. Please reconnect Strava to grant upload permission.');
+    throw new Error(
+      'Strava write permission required. Please reconnect Strava to grant upload permission.'
+    );
   }
 
   // Get allowed workout types
@@ -610,7 +618,8 @@ export async function syncC2ToStrava(userId, options = {}) {
   }
 
   // Find C2 workouts that haven't been synced to Strava yet
-  const { after = auth.lastC2SyncedAt || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } = options;
+  const { after = auth.lastC2SyncedAt || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } =
+    options;
 
   // Get workouts from Concept2 source that haven't been posted to Strava
   const workouts = await prisma.workout.findMany({
@@ -729,7 +738,7 @@ export async function disconnect(userId) {
 
   // Revoke access token with Strava (optional, best practice)
   try {
-    const token = decrypt(auth.accessToken);
+    const token = decrypt(auth.accessToken) || auth.accessToken; // fallback to plaintext for legacy tokens
     await fetch(`${STRAVA_AUTH_URL}/deauthorize`, {
       method: 'POST',
       headers: {

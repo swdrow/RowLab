@@ -11,6 +11,16 @@ import stravaService from '../services/stravaService.js';
 
 const router = Router();
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // ============================================
 // OAuth Flow
 // ============================================
@@ -39,28 +49,92 @@ router.get('/auth-url', authenticate, async (req, res) => {
 
 /**
  * GET /api/v1/strava/callback
- * OAuth callback handler
+ * OAuth callback handler (no auth required - called by Strava)
+ * Returns HTML that sends postMessage to opener window for popup flow
  */
 router.get('/callback', async (req, res) => {
-  const { code, state, error } = req.query;
+  // Helper to send response HTML that communicates with opener
+  const sendPopupResponse = (success, data = {}) => {
+    const message = success
+      ? { type: 'strava_oauth_success', ...data }
+      : { type: 'strava_oauth_error', error: data.error || 'Unknown error' };
 
-  // Handle OAuth errors
-  if (error) {
-    console.error('Strava OAuth error:', error);
-    return res.redirect(`${process.env.APP_URL || 'http://localhost:5173'}/app/settings?tab=integrations&strava=error&message=${encodeURIComponent(error)}`);
-  }
-
-  if (!code || !state) {
-    return res.redirect(`${process.env.APP_URL || 'http://localhost:5173'}/app/settings?tab=integrations&strava=error&message=missing_params`);
-  }
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Strava Connection</title>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+              background: #0a0a0f;
+              color: #ffffff;
+            }
+            .container {
+              text-align: center;
+              padding: 40px;
+            }
+            .icon {
+              font-size: 48px;
+              margin-bottom: 20px;
+            }
+            h1 { font-size: 24px; margin-bottom: 10px; }
+            p { color: #888; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="icon">${success ? '✓' : '✗'}</div>
+            <h1>${success ? 'Connected!' : 'Connection Failed'}</h1>
+            <p>${success ? 'You can close this window.' : escapeHtml(data.error) || 'Please try again.'}</p>
+          </div>
+          <script>
+            // Send message to opener window
+            // Message is base64 encoded to prevent XSS
+            if (window.opener) {
+              try {
+                const encoded = '${Buffer.from(JSON.stringify(message)).toString('base64')}';
+                const message = JSON.parse(atob(encoded));
+                window.opener.postMessage(message, window.location.origin);
+              } catch (e) {
+                console.error('Failed to send OAuth message:', e);
+              }
+              // Auto-close after a short delay
+              setTimeout(() => window.close(), 1500);
+            } else {
+              // If no opener (direct navigation), redirect
+              setTimeout(() => {
+                window.location.href = '/app/settings?tab=integrations${success ? '&strava_connected=true' : ''}';
+              }, 2000);
+            }
+          </script>
+        </body>
+      </html>
+    `);
+  };
 
   try {
+    const { code, state, error } = req.query;
+
+    if (error) {
+      return sendPopupResponse(false, { error });
+    }
+
+    if (!code || !state) {
+      return sendPopupResponse(false, { error: 'Missing required parameters' });
+    }
+
     // Decode state to get user ID
     const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
     const { userId } = stateData;
 
     if (!userId) {
-      throw new Error('Invalid state parameter');
+      return sendPopupResponse(false, { error: 'Invalid state parameter' });
     }
 
     // Exchange code for tokens
@@ -69,11 +143,11 @@ router.get('/callback', async (req, res) => {
     // Store tokens
     await stravaService.storeTokens(userId, tokens);
 
-    // Redirect to success
-    res.redirect(`${process.env.APP_URL || 'http://localhost:5173'}/app/settings?tab=integrations&strava=success`);
+    // Send success response
+    sendPopupResponse(true, { username: tokens.athlete?.username });
   } catch (error) {
     console.error('Strava callback error:', error);
-    res.redirect(`${process.env.APP_URL || 'http://localhost:5173'}/app/settings?tab=integrations&strava=error&message=${encodeURIComponent(error.message)}`);
+    sendPopupResponse(false, { error: error.message });
   }
 });
 
