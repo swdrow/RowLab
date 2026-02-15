@@ -8,6 +8,7 @@
 import { Router } from 'express';
 import { authenticateToken as authenticate, optionalAuth } from '../middleware/auth.js';
 import stravaService from '../services/stravaService.js';
+import { prisma } from '../db/connection.js';
 
 const router = Router();
 
@@ -312,6 +313,81 @@ router.post('/c2-sync/trigger', authenticate, async (req, res) => {
       success: false,
       error: { code: 'SYNC_FAILED', message: error.message },
     });
+  }
+});
+
+// ============================================
+// Webhooks (no auth - called by Strava directly)
+// ============================================
+
+/**
+ * GET /api/v1/strava/webhook
+ * Subscription validation handler - Strava sends this to verify the endpoint
+ * before creating a webhook subscription.
+ */
+router.get('/webhook', (req, res) => {
+  const mode = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
+
+  if (mode === 'subscribe' && token === process.env.STRAVA_VERIFY_TOKEN) {
+    console.log('Strava webhook validation successful');
+    res.json({ 'hub.challenge': challenge });
+  } else {
+    console.warn('Strava webhook validation failed', { mode, hasToken: !!token });
+    res.status(403).end();
+  }
+});
+
+/**
+ * POST /api/v1/strava/webhook
+ * Event receiver - Strava sends activity create/update/delete events here.
+ * Always responds 200 immediately (Strava retries on non-200), then processes async.
+ */
+router.post('/webhook', async (req, res) => {
+  // Always acknowledge receipt immediately
+  res.status(200).json({ received: true });
+
+  const { object_type, object_id, aspect_type, owner_id } = req.body;
+
+  // Only process activity events
+  if (object_type !== 'activity') {
+    return;
+  }
+
+  try {
+    // Look up user by Strava athlete ID
+    const auth = await prisma.stravaAuth.findFirst({
+      where: { stravaAthleteId: BigInt(owner_id) },
+    });
+
+    if (!auth) {
+      console.warn(`Strava webhook: no user found for athlete ${owner_id}`);
+      return;
+    }
+
+    if (!auth.syncEnabled) {
+      console.log(`Strava webhook: sync disabled for user ${auth.userId}, skipping`);
+      return;
+    }
+
+    if (aspect_type === 'create' || aspect_type === 'update') {
+      console.log(`Strava webhook: ${aspect_type} activity ${object_id} for user ${auth.userId}`);
+      const result = await stravaService.syncSingleActivity(auth.userId, object_id);
+      console.log(`Strava webhook sync result:`, result);
+    } else if (aspect_type === 'delete') {
+      console.log(`Strava webhook: delete activity ${object_id} for user ${auth.userId}`);
+      await prisma.workout.deleteMany({
+        where: {
+          userId: auth.userId,
+          stravaActivityId: String(object_id),
+        },
+      });
+      console.log(`Strava webhook: deleted workout for activity ${object_id}`);
+    }
+  } catch (error) {
+    // Never throw - we already responded 200
+    console.error('Strava webhook processing error:', error);
   }
 });
 
