@@ -25,7 +25,7 @@ const validateRequest = (req, res, next) => {
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const prefs = await prisma.dashboardPreferences.findUnique({
-      where: { userId: req.user.userId },
+      where: { userId: req.user.id },
     });
 
     res.json({
@@ -36,7 +36,7 @@ router.get('/', authenticateToken, async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error('Get dashboard preferences error', { error: error.message, userId: req.user.userId });
+    logger.error('Get dashboard preferences error', { error: error.message, userId: req.user.id });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to load preferences' },
@@ -81,10 +81,10 @@ router.put(
       if (hiddenSources !== undefined) updateData.hiddenSources = hiddenSources;
 
       const prefs = await prisma.dashboardPreferences.upsert({
-        where: { userId: req.user.userId },
+        where: { userId: req.user.id },
         update: updateData,
         create: {
-          userId: req.user.userId,
+          userId: req.user.id,
           pinnedModules: pinnedModules || [],
           hiddenSources: hiddenSources || [],
         },
@@ -95,7 +95,7 @@ router.put(
         data: prefs,
       });
     } catch (error) {
-      logger.error('Update dashboard preferences error', { error: error.message, userId: req.user.userId });
+      logger.error('Update dashboard preferences error', { error: error.message, userId: req.user.id });
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Failed to save preferences' },
