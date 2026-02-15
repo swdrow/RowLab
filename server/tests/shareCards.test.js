@@ -59,15 +59,17 @@ describe('Share Cards XSS Protection - Route Logic', () => {
       const teamName = 'Evil Team">><img src=x>';
       const side = 'Port';
       
-      const description = `${escapeHtml(athleteName)} - ${side} side rower from ${escapeHtml(teamName)}`;
-      const metaContent = escapeHtmlAttr(description);
+      // Build description from raw values (correct approach - no double-escaping)
+      const rawDescription = `${athleteName} - ${side} side rower from ${teamName}`;
+      const metaContent = escapeHtmlAttr(rawDescription);
       
       // Verify no executable content in meta attribute
       expect(metaContent).not.toContain('<script>');
       expect(metaContent).not.toContain('<img');
-      // Double-escaped because we escaped once for HTML, then again for attribute
-      expect(metaContent).toContain('&amp;lt;');
-      expect(metaContent).toContain('&amp;gt;');
+      // Single-escaped (correct behavior)
+      expect(metaContent).toContain('&lt;');
+      expect(metaContent).toContain('&gt;');
+      expect(metaContent).not.toContain('&amp;lt;'); // No double-escaping
     });
   });
 
@@ -84,12 +86,15 @@ describe('Share Cards XSS Protection - Route Logic', () => {
         },
       };
 
-      // Escape all fields as done in the route
+      // Escape for HTML content (body text)
       const athleteName = escapeHtml(`${athlete.firstName} ${athlete.lastName}`);
       const teamName = escapeHtml(athlete.team.name);
       const side = escapeHtml(athlete.side);
       const weight = escapeHtml(`${athlete.weight}kg`);
-      const description = `${athleteName} - ${side} side rower${weight ? `, ${weight}` : ''} from ${teamName}`;
+      
+      // Build description from raw values for attribute context (no double-escaping)
+      const rawDescription = `${athlete.firstName} ${athlete.lastName} - ${athlete.side} side rower${athlete.weight ? `, ${athlete.weight}kg` : ''} from ${athlete.team.name}`;
+      const descriptionForAttr = escapeHtmlAttr(rawDescription);
 
       // Generate HTML (simplified version of actual route)
       const html = `
@@ -98,7 +103,7 @@ describe('Share Cards XSS Protection - Route Logic', () => {
   <head>
     <title>${athleteName}</title>
     <meta property="og:title" content="${athleteName}" />
-    <meta property="og:description" content="${escapeHtmlAttr(description)}" />
+    <meta property="og:description" content="${descriptionForAttr}" />
   </head>
   <body>
     <h1>${athleteName}</h1>
