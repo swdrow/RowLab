@@ -177,7 +177,7 @@ export function CanvasRegattasPage() {
   return (
     <div className="h-full flex flex-col bg-void">
       {/* Page header — text against void */}
-      <div className="px-4 lg:px-6 pt-8 pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-8 pb-6 border-b border-white/[0.06]/30">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
             <div>
@@ -355,7 +355,7 @@ export function CanvasRegattasPage() {
       </div>
 
       {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-3 bg-ink-well/20">
+      <div className="border-t border-white/[0.06]/30 px-4 lg:px-6 py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[

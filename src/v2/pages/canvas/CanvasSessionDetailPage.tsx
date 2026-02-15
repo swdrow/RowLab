@@ -343,7 +343,7 @@ export function CanvasSessionDetailPage() {
       </div>
 
       {/* Console readout footer */}
-      <div className="border-t border-ink-border/30 px-6 py-3 bg-ink-well/20">
+      <div className="border-t border-white/[0.06]/30 px-6 py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[

@@ -81,7 +81,7 @@ function CanvasErgTestsTable({ tests }: { tests: ErgTest[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-ink-border">
+          <tr className="border-b border-white/[0.06]">
             <th className="text-left py-2 px-2 text-[10px] font-mono font-medium text-ink-muted uppercase tracking-wider">
               Date
             </th>
@@ -100,7 +100,7 @@ function CanvasErgTestsTable({ tests }: { tests: ErgTest[] }) {
           {tests.map((test) => (
             <tr
               key={test.id}
-              className="border-b border-ink-border/50 hover:bg-ink-hover/50 transition-colors"
+              className="border-b border-white/[0.06]/50 hover:bg-ink-hover/50 transition-colors"
             >
               <td className="py-2 px-2 text-ink-secondary text-sm">
                 {new Date(test.testDate).toLocaleDateString('en-US', {
@@ -347,7 +347,7 @@ export function CanvasAthleteDetailPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-4 lg:px-6">
+      <div className="flex-shrink-0 border-t border-white/[0.06] px-4 lg:px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'ERG TESTS', value: recentErgTests.length.toString() },

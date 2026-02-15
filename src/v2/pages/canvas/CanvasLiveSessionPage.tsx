@@ -113,7 +113,7 @@ export function CanvasLiveSessionPage() {
           </CanvasChamferPanel>
         </div>
 
-        <div className="border-t border-ink-border/30 px-6 py-3 bg-ink-well/20">
+        <div className="border-t border-white/[0.06]/30 px-6 py-3 bg-ink-well/20">
           <div className="max-w-5xl mx-auto">
             <CanvasConsoleReadout
               items={[
@@ -134,7 +134,7 @@ export function CanvasLiveSessionPage() {
   return (
     <div className="h-full flex flex-col bg-void">
       {/* Page header with live indicator */}
-      <div className="px-4 lg:px-6 pt-4 lg:pt-8 pb-4 lg:pb-6 border-b border-ink-border/30">
+      <div className="px-4 lg:px-6 pt-4 lg:pt-8 pb-4 lg:pb-6 border-b border-white/[0.06]/30">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 min-w-0">
@@ -187,7 +187,7 @@ export function CanvasLiveSessionPage() {
       </div>
 
       {/* Console readout footer - compact on mobile */}
-      <div className="border-t border-ink-border/30 px-4 lg:px-6 py-2 lg:py-3 bg-ink-well/20">
+      <div className="border-t border-white/[0.06]/30 px-4 lg:px-6 py-2 lg:py-3 bg-ink-well/20">
         <div className="max-w-5xl mx-auto">
           <CanvasConsoleReadout
             items={[
