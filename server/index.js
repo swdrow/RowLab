@@ -59,6 +59,7 @@ import equipmentRoutes from './routes/equipment.js';
 import riggingRoutes from './routes/rigging.js';
 import lineupTemplateRoutes from './routes/lineupTemplates.js';
 import dashboardExceptionsRoutes from './routes/dashboardExceptions.js';
+import shareCardsRoutes from './routes/shareCards.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
@@ -160,6 +161,7 @@ app.use('/api/v1/seasons', apiLimiter, seasonRoutes);
 app.use('/api/v1/equipment', apiLimiter, equipmentRoutes);
 app.use('/api/v1/rigging', apiLimiter, riggingRoutes);
 app.use('/api/v1/dashboard', apiLimiter, dashboardExceptionsRoutes);
+app.use('/api/v1/share-cards', shareCardsRoutes); // No auth required for public sharing
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
