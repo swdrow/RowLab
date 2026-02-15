@@ -149,7 +149,7 @@ export const CoachDashboard: React.FC = () => {
           description="Please select or create a team to view your dashboard."
           action={{
             label: 'Go to Teams',
-            to: '/app/settings/teams',
+            to: '/app/settings?tab=team',
           }}
         />
       </div>

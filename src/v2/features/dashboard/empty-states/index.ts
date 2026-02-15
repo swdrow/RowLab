@@ -24,11 +24,11 @@ export const EmptyRosterState: React.FC = () => {
       'Start building your team by importing your roster or adding athletes one at a time.',
     action: {
       label: 'Import Roster',
-      to: '/app/athletes?import=true',
+      to: '/app/athletes?action=import',
     },
     secondaryAction: {
       label: 'Add Manually',
-      to: '/app/athletes/new',
+      to: '/app/athletes?action=create',
     },
   });
 };
@@ -43,7 +43,7 @@ export const EmptyPracticeState: React.FC = () => {
     description: 'Create your first practice session to start tracking attendance and performance.',
     action: {
       label: 'Schedule Practice',
-      to: '/app/sessions/new',
+      to: '/app/training/sessions?action=create',
     },
   });
 };
@@ -58,11 +58,11 @@ export const EmptyErgState: React.FC = () => {
     description: 'Log erg test results to track athlete progress and performance over time.',
     action: {
       label: 'Log Erg Test',
-      to: '/app/erg/new',
+      to: '/app/erg-tests?action=create',
     },
     secondaryAction: {
       label: 'Import CSV',
-      to: '/app/erg?import=true',
+      to: '/app/erg-tests?action=import',
     },
   });
 };
@@ -106,7 +106,7 @@ export const EmptyDashboardState: React.FC = () => {
       "Your rowing management platform is ready. Let's get started by setting up your team.",
     action: {
       label: 'Import Roster',
-      to: '/app/athletes?import=true',
+      to: '/app/athletes?action=import',
     },
   });
 };
