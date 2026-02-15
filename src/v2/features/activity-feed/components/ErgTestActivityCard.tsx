@@ -54,8 +54,8 @@ export function ErgTestActivityCard({ activity }: ErgTestActivityCardProps) {
     >
       <div className="flex items-start gap-3">
         {/* Icon */}
-        <div className="w-10 h-10 rounded-full bg-blue-400/10 flex items-center justify-center shrink-0">
-          <Timer className="w-5 h-5 text-blue-400" weight="duotone" />
+        <div className="w-10 h-10 rounded-full bg-data-good/10 flex items-center justify-center shrink-0">
+          <Timer className="w-5 h-5 text-data-good" weight="duotone" />
         </div>
 
         {/* Content */}
@@ -87,7 +87,7 @@ export function ErgTestActivityCard({ activity }: ErgTestActivityCardProps) {
 
         {/* PR Badge */}
         {personalBest && (
-          <div className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-md bg-amber-400/10 text-amber-400 border border-amber-400/20">
+          <div className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-md bg-data-warning/10 text-data-warning border border-data-warning/20">
             <Trophy className="w-4 h-4" weight="fill" />
             <span className="text-xs font-semibold">PR!</span>
           </div>

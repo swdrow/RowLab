@@ -55,7 +55,7 @@ export function AchievementCard({
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <h3 className="font-medium text-txt-primary truncate">{name}</h3>
-              {isUnlocked && <Check size={16} className="text-green-500 flex-shrink-0" />}
+              {isUnlocked && <Check size={16} className="text-data-excellent flex-shrink-0" />}
             </div>
 
             {isUnlocked && onTogglePin && (
@@ -83,9 +83,9 @@ export function AchievementCard({
             <span
               className={`
               text-xs px-2 py-0.5 rounded-full
-              ${category === 'Erg' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : ''}
-              ${category === 'Attendance' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : ''}
-              ${category === 'Racing' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' : ''}
+              ${category === 'Erg' ? 'bg-data-good/20 text-data-good' : ''}
+              ${category === 'Attendance' ? 'bg-data-excellent/20 text-data-excellent' : ''}
+              ${category === 'Racing' ? 'bg-data-warning/20 text-data-warning' : ''}
             `}
             >
               {category}
@@ -94,9 +94,9 @@ export function AchievementCard({
               className={`
               text-xs px-2 py-0.5 rounded-full
               ${rarity === 'Common' ? 'bg-surface-elevated text-txt-secondary' : ''}
-              ${rarity === 'Rare' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : ''}
-              ${rarity === 'Epic' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' : ''}
-              ${rarity === 'Legendary' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-accent-primary' : ''}
+              ${rarity === 'Rare' ? 'bg-data-good/20 text-data-good' : ''}
+              ${rarity === 'Epic' ? 'bg-chart-2/20 text-chart-2' : ''}
+              ${rarity === 'Legendary' ? 'bg-data-warning/20 text-data-warning' : ''}
             `}
             >
               {rarity}

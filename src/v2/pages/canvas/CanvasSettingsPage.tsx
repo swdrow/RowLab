@@ -23,6 +23,11 @@ import {
   CanvasButton,
   CanvasConsoleReadout,
 } from '@v2/components/canvas';
+import { IntegrationsSection } from '@v2/features/settings/components/IntegrationsSection';
+import { NotificationsSection } from '@v2/features/settings/components/NotificationsSection';
+import { TeamSection } from '@v2/features/settings/components/TeamSection';
+// Note: BillingSection has broken import (subscriptionStore doesn't exist) - leaving as placeholder for now
+// import { BillingSection } from '@v2/features/settings/components/BillingSection';
 import type { SettingsTab, UserProfile, UserPreferences } from '@v2/types/settings';
 
 const validTabs: SettingsTab[] = [
@@ -380,29 +385,41 @@ export const CanvasSettingsPage: React.FC = () => {
           )}
 
           {/* ============================================ */}
-          {/* OTHER TABS - placeholder */}
+          {/* INTEGRATIONS TAB */}
           {/* ============================================ */}
-          {activeTab === 'integrations' && (
-            <CanvasConsoleReadout
-              items={[{ label: 'STATUS', value: 'NO INTEGRATIONS CONFIGURED' }]}
-            />
-          )}
-          {activeTab === 'notifications' && (
-            <CanvasConsoleReadout items={[{ label: 'STATUS', value: 'NOTIFICATION SETTINGS' }]} />
-          )}
+          {activeTab === 'integrations' && <IntegrationsSection />}
+
+          {/* ============================================ */}
+          {/* NOTIFICATIONS TAB */}
+          {/* ============================================ */}
+          {activeTab === 'notifications' && <NotificationsSection />}
+
+          {/* ============================================ */}
+          {/* FEATURES TAB - placeholder (no dedicated component yet) */}
+          {/* ============================================ */}
           {activeTab === 'features' && (
             <CanvasConsoleReadout items={[{ label: 'STATUS', value: 'FEATURE FLAGS' }]} />
           )}
-          {activeTab === 'team' && isOwner && (
-            <CanvasConsoleReadout items={[{ label: 'STATUS', value: 'TEAM SETTINGS' }]} />
-          )}
+
+          {/* ============================================ */}
+          {/* TEAM TAB */}
+          {/* ============================================ */}
+          {activeTab === 'team' && isOwner && <TeamSection isOwner={isOwner} />}
           {activeTab === 'team' && !isOwner && (
             <CanvasConsoleReadout
               items={[{ label: 'ACCESS', value: 'TEAM SETTINGS - OWNER ONLY' }]}
             />
           )}
+
+          {/* ============================================ */}
+          {/* BILLING TAB */}
+          {/* Note: BillingSection has broken dependencies - needs subscriptionStore to be created */}
+          {/* TODO: Fix BillingSection import issues and replace placeholder */}
+          {/* ============================================ */}
           {activeTab === 'billing' && (
-            <CanvasConsoleReadout items={[{ label: 'STATUS', value: 'BILLING SETTINGS' }]} />
+            <CanvasConsoleReadout
+              items={[{ label: 'STATUS', value: isOwner ? 'BILLING SETTINGS' : 'BILLING - OWNER ONLY' }]}
+            />
           )}
         </motion.div>
       </motion.div>
