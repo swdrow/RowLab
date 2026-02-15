@@ -272,8 +272,18 @@ router.get('/me', authenticateToken, async (req, res) => {
 /**
  * POST /api/v1/auth/dev-login
  * Passwordless admin login — only from localhost or Tailscale (100.x.x.x)
+ * SECURITY: Disabled in production environments
  */
 router.post('/dev-login', async (req, res) => {
+  // Disable in production
+  if (process.env.NODE_ENV === 'production') {
+    logger.warn('Dev-login attempt rejected in production environment');
+    return res.status(404).json({
+      success: false,
+      error: { code: 'NOT_FOUND', message: 'Endpoint not found' },
+    });
+  }
+
   // Check source IP
   const forwarded = req.headers['x-forwarded-for'];
   const rawIp = forwarded ? String(forwarded).split(',')[0].trim() : req.socket.remoteAddress;
