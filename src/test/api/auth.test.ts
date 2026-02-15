@@ -261,6 +261,52 @@ describe('Auth API', () => {
       expect(response.ok).toBe(false);
     });
   });
+
+  describe('POST /api/v1/auth/dev-login', () => {
+    it('should reject request in production environment', async () => {
+      // Simulate production environment response
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => ({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Endpoint not found' },
+        }),
+      });
+
+      const response = await fetch(`${API_BASE}/dev-login`, {
+        method: 'POST',
+      });
+
+      expect(response.ok).toBe(false);
+      const data = await response.json();
+      expect(data.error.code).toBe('NOT_FOUND');
+    });
+
+    it('should allow request in development environment', async () => {
+      // Simulate development environment response
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: {
+            user: { id: 'admin', email: 'admin@test.com', isAdmin: true },
+            teams: [],
+            activeTeamId: null,
+            accessToken: 'dev-token-123',
+          },
+        }),
+      });
+
+      const response = await fetch(`${API_BASE}/dev-login`, {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+      expect(data.success).toBe(true);
+      expect(data.data.user.isAdmin).toBe(true);
+    });
+  });
 });
 
 describe('Health API', () => {
