@@ -64,6 +64,21 @@ export const scaleIn = {
   transition: SPRING_SNAPPY,
 } as const;
 
+/* === CARD INTERACTION PRESETS === */
+
+/** Hover state for interactive cards -- subtle upward lift */
+export const cardHover = {
+  y: -2,
+  transition: { type: 'spring', stiffness: 400, damping: 25 } as Transition,
+} as const;
+
+/** Tap/active state for interactive cards -- press down effect */
+export const cardTap = {
+  y: 0,
+  scale: 0.99,
+  transition: { type: 'spring', stiffness: 500, damping: 30 } as Transition,
+} as const;
+
 /* === STAGGER HELPERS === */
 
 export function staggerChildren(staggerDelay = 0.05): Transition {

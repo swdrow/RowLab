@@ -59,6 +59,9 @@
     0 8px 24px oklch(0 0 0 / 0.25);
   --shadow-glow-copper:
     0 0 0 1px oklch(0.62 0.12 55 / 0.3), 0 0 20px -5px oklch(0.62 0.12 55 / 0.4);
+  --shadow-card-glow:
+    0 0 0 1px oklch(0.62 0.12 55 / 0.15), 0 0 20px -5px oklch(0.62 0.12 55 / 0.15),
+    0 1px 2px oklch(0 0 0 / 0.3), 0 4px 16px oklch(0 0 0 / 0.2);
 
   /* === RADIUS === */
   --radius-sm: 0.25rem;
@@ -111,6 +114,32 @@
 .glass-hover:hover {
   background: oklch(0.235 0.005 285 / 0.7);
   border-color: oklch(0.965 0.005 285 / 0.12);
+}
+
+.hover-lift {
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.card-interactive {
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-glow);
+}
+
+.card-interactive:active {
+  transform: translateY(0);
 }
 
 .text-heading-gradient {
