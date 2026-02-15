@@ -55,13 +55,18 @@ router.get(
   [
     query('isTemplate').optional().isBoolean(),
     query('phase').optional().isIn(['Base', 'Build', 'Peak', 'Taper', 'Recovery']),
-    query('limit').optional().isInt({ min: 1, max: 100 }),
+    query('limit').optional().isInt({ min: 1, max: 200 }),
   ],
   validateRequest,
   async (req, res) => {
     try {
       const filters = {
-        isTemplate: req.query.isTemplate === 'true' ? true : req.query.isTemplate === 'false' ? false : undefined,
+        isTemplate:
+          req.query.isTemplate === 'true'
+            ? true
+            : req.query.isTemplate === 'false'
+              ? false
+              : undefined,
         phase: req.query.phase,
         limit: req.query.limit,
       };
@@ -119,25 +124,21 @@ router.post(
  * GET /api/v1/training-plans/templates
  * Get available periodization templates
  */
-router.get(
-  '/templates',
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const templates = getTemplates();
-      res.json({
-        success: true,
-        data: { templates },
-      });
-    } catch (error) {
-      logger.error('Get templates error', { error: error.message });
-      res.status(500).json({
-        success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to get templates' },
-      });
-    }
+router.get('/templates', authenticateToken, async (req, res) => {
+  try {
+    const templates = getTemplates();
+    res.json({
+      success: true,
+      data: { templates },
+    });
+  } catch (error) {
+    logger.error('Get templates error', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to get templates' },
+    });
   }
-);
+});
 
 /**
  * POST /api/v1/training-plans/from-template
@@ -220,22 +221,14 @@ router.get(
   '/athlete/:athleteId/load',
   authenticateToken,
   teamIsolation,
-  [
-    param('athleteId').isUUID(),
-    query('startDate').isISO8601(),
-    query('endDate').isISO8601(),
-  ],
+  [param('athleteId').isUUID(), query('startDate').isISO8601(), query('endDate').isISO8601()],
   validateRequest,
   async (req, res) => {
     try {
-      const load = await getTrainingLoad(
-        req.params.athleteId,
-        req.user.activeTeamId,
-        {
-          startDate: req.query.startDate,
-          endDate: req.query.endDate,
-        }
-      );
+      const load = await getTrainingLoad(req.params.athleteId, req.user.activeTeamId, {
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+      });
       res.json({
         success: true,
         data: { load },
@@ -262,10 +255,7 @@ router.get(
   '/compliance/weekly',
   authenticateToken,
   teamIsolation,
-  [
-    query('weekStart').isISO8601(),
-    query('athleteId').optional().isUUID(),
-  ],
+  [query('weekStart').isISO8601(), query('athleteId').optional().isUUID()],
   validateRequest,
   async (req, res) => {
     try {
@@ -300,10 +290,7 @@ router.get(
   validateRequest,
   async (req, res) => {
     try {
-      const report = await getComplianceReport(
-        req.user.activeTeamId,
-        req.query.weekStart
-      );
+      const report = await getComplianceReport(req.user.activeTeamId, req.query.weekStart);
       res.json({
         success: true,
         data: { report },
@@ -366,10 +353,7 @@ router.get(
   validateRequest,
   async (req, res) => {
     try {
-      const linkedData = await linkAttendanceToTraining(
-        req.user.activeTeamId,
-        req.query.date
-      );
+      const linkedData = await linkAttendanceToTraining(req.user.activeTeamId, req.query.date);
       res.json({
         success: true,
         data: linkedData,
@@ -573,7 +557,11 @@ router.put(
   validateRequest,
   async (req, res) => {
     try {
-      const workout = await updatePlannedWorkout(req.params.workoutId, req.user.activeTeamId, req.body);
+      const workout = await updatePlannedWorkout(
+        req.params.workoutId,
+        req.user.activeTeamId,
+        req.body
+      );
       res.json({
         success: true,
         data: { workout },
@@ -603,10 +591,7 @@ router.delete(
   authenticateToken,
   teamIsolation,
   requireRole('OWNER', 'COACH'),
-  [
-    param('id').isUUID(),
-    param('workoutId').isUUID(),
-  ],
+  [param('id').isUUID(), param('workoutId').isUUID()],
   validateRequest,
   async (req, res) => {
     try {
@@ -699,10 +684,7 @@ router.delete(
   authenticateToken,
   teamIsolation,
   requireRole('OWNER', 'COACH'),
-  [
-    param('id').isUUID(),
-    param('assignmentId').isUUID(),
-  ],
+  [param('id').isUUID(), param('assignmentId').isUUID()],
   validateRequest,
   async (req, res) => {
     try {
@@ -735,10 +717,7 @@ router.get(
   '/:id/assignments/:assignmentId/compliance',
   authenticateToken,
   teamIsolation,
-  [
-    param('id').isUUID(),
-    param('assignmentId').isUUID(),
-  ],
+  [param('id').isUUID(), param('assignmentId').isUUID()],
   validateRequest,
   async (req, res) => {
     try {
