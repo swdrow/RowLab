@@ -42,4 +42,15 @@ export const queryKeys = {
     achievements: () => [...queryKeys.profile.all, 'achievements'] as const,
     prs: () => [...queryKeys.profile.all, 'prs'] as const,
   },
+  integrations: {
+    all: ['integrations'] as const,
+    c2: {
+      all: ['integrations', 'c2'] as const,
+      status: () => ['integrations', 'c2', 'status'] as const,
+    },
+    strava: {
+      all: ['integrations', 'strava'] as const,
+      status: () => ['integrations', 'strava', 'status'] as const,
+    },
+  },
 } as const;
