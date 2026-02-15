@@ -6,13 +6,15 @@
  * so athletes in seats can be re-dragged to other seats.
  *
  * Visual states:
- * - empty: dashed border, muted placeholder
+ * - empty: dashed border, muted placeholder with seat number
  * - occupied: shows DraggableAthleteCard in compact mode
- * - drag-over: highlighted border, subtle background shift
+ * - drag-over (empty): copper glow border + subtle copper background pulse
+ * - drag-over (occupied): copper glow + swap icon overlay
  * - readOnly: occupant visible but no drop target, no remove button
  */
 import { useRef, useState, useEffect } from 'react';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { ArrowLeftRight } from 'lucide-react';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
 import type { AthleteInfo } from './DraggableAthleteCard';
 import type { Side } from '../types';
@@ -100,17 +102,18 @@ export function SeatSlot({
       }}
       aria-label={`${isCoxswain ? 'Coxswain' : `Seat ${seatNumber}`}, ${side}${isEmpty ? ', empty' : `, ${athlete.firstName} ${athlete.lastName}`}`}
       className={`
-        group relative flex items-center gap-2 rounded-lg transition-all duration-150
+        group relative flex items-center gap-2 rounded-xl transition-all duration-200 ease-out
         ${
           isEmpty
-            ? 'border border-dashed border-ink-border bg-ink-deep/40 py-3 px-3'
+            ? 'border-2 border-dashed border-ink-border/50 bg-ink-well/20 py-3 px-3'
             : 'border border-ink-border bg-ink-raised/40 p-1'
         }
         ${
           isOver
-            ? 'border-accent-copper bg-accent-copper/5 ring-1 ring-accent-copper/30 scale-[1.01]'
+            ? 'border-2 border-accent-copper/60 bg-accent-copper/5 shadow-[0_0_20px_-5px_oklch(0.62_0.12_55/0.3)] scale-[1.02]'
             : ''
         }
+        ${isOver && isEmpty ? 'animate-pulse-subtle' : ''}
         ${isEmpty && onTapEmpty ? 'cursor-pointer hover:border-ink-border-strong hover:bg-ink-well' : ''}
       `.trim()}
     >
@@ -119,15 +122,21 @@ export function SeatSlot({
         {isCoxswain ? (
           <span className="text-[10px] font-bold text-accent-primary uppercase">Cox</span>
         ) : (
-          <span className="text-xs font-semibold text-ink-muted">{seatNumber}</span>
+          <span
+            className={`text-xs font-semibold ${isOver ? 'text-accent-copper' : 'text-ink-muted'}`}
+          >
+            {seatNumber}
+          </span>
         )}
       </div>
 
       {/* Content: empty placeholder or occupied athlete card */}
       <div className="flex-1 min-w-0">
         {isEmpty ? (
-          <span className="text-xs text-ink-muted select-none">
-            {isCoxswain ? 'Assign coxswain' : 'Empty'}
+          <span
+            className={`text-xs select-none ${isOver ? 'text-accent-copper/80' : 'text-ink-muted'}`}
+          >
+            {isCoxswain ? 'Assign coxswain' : `Seat ${seatNumber}`}
           </span>
         ) : (
           <DraggableAthleteCard
@@ -141,6 +150,13 @@ export function SeatSlot({
           />
         )}
       </div>
+
+      {/* Swap icon overlay (occupied + drag hovering) */}
+      {isOver && !isEmpty && (
+        <div className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-accent-copper/15 text-accent-copper">
+          <ArrowLeftRight size={12} />
+        </div>
+      )}
 
       {/* Side indicator (not for coxswain) */}
       {!isCoxswain && (

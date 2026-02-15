@@ -23,6 +23,7 @@ import { Ship } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useIsMobile } from '@/hooks/useBreakpoint';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { SectionHeader } from '@/components/ui/SectionHeader';
 
 import { useLineupState } from '../hooks/useLineupState';
 import { lineupsOptions, lineupDetailOptions, useSaveLineup, useUpdateLineup } from '../api';
@@ -295,18 +296,25 @@ export function LineupWorkspace({ teamId, lineupId, readOnly = false }: LineupWo
 
   return (
     <div className="flex flex-col h-full gap-3">
-      {/* Toolbar */}
-      <LineupToolbar
-        onSave={() => setIsSaveOpen(true)}
-        onLoad={() => setIsLoadOpen(true)}
-        onClear={handleClear}
-        onUndo={() => dispatch({ type: 'UNDO' })}
-        onRedo={() => dispatch({ type: 'REDO' })}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        isDirty={state.isDirty}
-        readOnly={readOnly}
-        lineupName={activeLineupName}
+      {/* Section header */}
+      <SectionHeader
+        title="Lineup Builder"
+        description={activeLineupName ?? 'Build and arrange boat lineups'}
+        icon={<Ship size={18} />}
+        action={
+          <LineupToolbar
+            onSave={() => setIsSaveOpen(true)}
+            onLoad={() => setIsLoadOpen(true)}
+            onClear={handleClear}
+            onUndo={() => dispatch({ type: 'UNDO' })}
+            onRedo={() => dispatch({ type: 'REDO' })}
+            canUndo={canUndo}
+            canRedo={canRedo}
+            isDirty={state.isDirty}
+            readOnly={readOnly}
+            lineupName={activeLineupName}
+          />
+        }
       />
 
       {/* Main content area */}
@@ -389,8 +397,15 @@ export function LineupWorkspace({ teamId, lineupId, readOnly = false }: LineupWo
             />
           </div>
 
-          {/* Boats area */}
-          <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+          {/* Boats area with subtle background grid pattern */}
+          <div
+            className="flex-1 overflow-y-auto space-y-3 pr-1 rounded-xl"
+            style={{
+              backgroundImage:
+                'radial-gradient(circle, oklch(0.35 0.01 285 / 0.08) 1px, transparent 1px)',
+              backgroundSize: '20px 20px',
+            }}
+          >
             {state.boats.length === 0 ? (
               <EmptyState
                 icon={Ship}

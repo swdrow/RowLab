@@ -142,9 +142,9 @@ export function BoatView({
   }
 
   return (
-    <div className="glass rounded-xl overflow-hidden">
+    <div className="relative overflow-hidden rounded-[28px] border-2 border-ink-border/30 bg-ink-base/40 p-1 shadow-card">
       {/* Boat header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-ink-border/30">
+      <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-sm font-bold text-accent-copper">{boat.boatClass}</span>
           <span className="text-sm font-medium text-ink-primary truncate">
@@ -175,9 +175,16 @@ export function BoatView({
         )}
       </div>
 
-      {/* Coxswain seat (if applicable) */}
+      {/* Bow indicator (pointed shape) */}
+      <div className="flex justify-center pb-1">
+        <svg width="40" height="16" viewBox="0 0 40 16" className="text-ink-border/40" aria-hidden>
+          <path d="M20 0 L38 16 L2 16 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      </div>
+
+      {/* Coxswain seat (if applicable, at bow) */}
       {boat.hasCoxswain && (
-        <div className="px-3 pt-3 pb-1">
+        <div className="px-3 pb-1">
           <SeatSlot
             boatIndex={boatIndex}
             seatNumber={0}
@@ -197,8 +204,26 @@ export function BoatView({
 
       {/* Seats grid */}
       <div className="px-3 pb-3 pt-2">
-        {/* Bow label */}
-        {seats.length > 1 && (
+        {/* Port / Starboard column labels (sweep boats only) */}
+        {!sculling && seats.length > 1 && (
+          <div className="grid grid-cols-2 gap-1.5 px-1 pb-2">
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-data-poor/40" />
+              <span className="text-[10px] font-semibold text-data-poor uppercase tracking-wider">
+                Port
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-data-excellent/40" />
+              <span className="text-[10px] font-semibold text-data-excellent uppercase tracking-wider">
+                Starboard
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Bow label (sculling / single column) */}
+        {sculling && seats.length > 1 && (
           <div className="px-1 pb-1.5">
             <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider">
               Bow
@@ -207,32 +232,49 @@ export function BoatView({
         )}
 
         <div className={`grid gap-1.5 ${sculling ? 'grid-cols-1' : 'grid-cols-2'}`}>
-          {seats.map((seat) => (
-            <SeatSlot
+          {seats.map((seat, idx) => (
+            <div
               key={`${boatIndex}-seat-${seat.seatNumber}`}
-              boatIndex={boatIndex}
-              seatNumber={seat.seatNumber}
-              side={seat.side}
-              athlete={seat.athleteId ? athletes.get(seat.athleteId) : null}
-              readOnly={readOnly}
-              onTapEmpty={selectedAthleteId ? () => handleTapEmptySeat(seat.seatNumber) : undefined}
-              onRemove={
-                seat.athleteId && !readOnly
-                  ? () => dispatch({ type: 'UNASSIGN_ATHLETE', athleteId: seat.athleteId! })
-                  : undefined
+              className={
+                idx % 2 === 0 && !sculling
+                  ? ''
+                  : sculling && idx % 2 === 1
+                    ? 'bg-ink-well/10 rounded-lg'
+                    : ''
               }
-            />
+            >
+              <SeatSlot
+                boatIndex={boatIndex}
+                seatNumber={seat.seatNumber}
+                side={seat.side}
+                athlete={seat.athleteId ? athletes.get(seat.athleteId) : null}
+                readOnly={readOnly}
+                onTapEmpty={
+                  selectedAthleteId ? () => handleTapEmptySeat(seat.seatNumber) : undefined
+                }
+                onRemove={
+                  seat.athleteId && !readOnly
+                    ? () => dispatch({ type: 'UNASSIGN_ATHLETE', athleteId: seat.athleteId! })
+                    : undefined
+                }
+              />
+            </div>
           ))}
         </div>
 
         {/* Stroke label */}
         {seats.length > 1 && (
-          <div className="px-1 pt-1.5">
+          <div className="px-1 pt-1.5 flex justify-center">
             <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider">
               Stroke
             </span>
           </div>
         )}
+      </div>
+
+      {/* Stern indicator */}
+      <div className="flex justify-center pt-0.5 pb-2">
+        <div className="w-12 h-1 rounded-full bg-ink-border/30" />
       </div>
     </div>
   );

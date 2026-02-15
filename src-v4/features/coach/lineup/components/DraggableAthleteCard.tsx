@@ -5,9 +5,9 @@
  * The `draggable()` call returns a cleanup function that runs on unmount.
  *
  * Visual states:
- * - idle: glass card with grab cursor
- * - dragging: reduced opacity + scale
- * - selected: accent border highlight (mobile tap-select mode)
+ * - idle: GlassCard styling with grab cursor and interactive hover lift
+ * - dragging: reduced opacity + scale on source card
+ * - selected: copper accent border highlight (mobile tap-select mode)
  *
  * When `readOnly` is true, drag is disabled (draggable() is never called).
  */
@@ -128,14 +128,17 @@ export function DraggableAthleteCard({
       aria-label={`${athlete.firstName} ${athlete.lastName}${athlete.side ? `, ${athlete.side}` : ''}. ${readOnly ? '' : 'Drag to assign.'}`}
       aria-roledescription={readOnly ? undefined : 'draggable'}
       className={`
-        group flex items-center gap-2.5 rounded-lg transition-all duration-150
+        group relative flex items-center gap-2.5 rounded-xl
+        transition-all duration-200 ease-out
         ${compact ? 'px-2 py-1.5' : 'px-3 py-2.5'}
         ${readOnly ? 'cursor-default' : isDragging ? 'cursor-grabbing' : 'cursor-grab'}
-        ${isDragging ? 'opacity-40 scale-95' : 'opacity-100 scale-100'}
+        ${isDragging ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}
         ${
           isSelected
-            ? 'bg-accent-copper/10 border border-accent-copper ring-1 ring-accent-copper/30'
-            : 'bg-ink-raised/60 border border-ink-border hover:bg-ink-hover hover:border-ink-border-strong'
+            ? 'bg-accent-copper/10 border border-accent-copper ring-1 ring-accent-copper/30 shadow-glow-copper'
+            : compact
+              ? 'bg-transparent border-0'
+              : 'glass border border-ink-border/50 shadow-card hover:-translate-y-0.5 hover:shadow-card-hover hover:border-ink-border-strong'
         }
         ${className}
       `.trim()}
@@ -144,7 +147,7 @@ export function DraggableAthleteCard({
       <div
         className={`
           flex-shrink-0 flex items-center justify-center rounded-lg
-          bg-ink-hover text-ink-secondary font-semibold
+          bg-ink-well text-ink-secondary font-semibold
           ${compact ? 'w-7 h-7 text-xs' : 'w-8 h-8 text-xs'}
         `}
       >
@@ -156,11 +159,17 @@ export function DraggableAthleteCard({
         <div className={`font-medium text-ink-primary truncate ${compact ? 'text-xs' : 'text-sm'}`}>
           {athlete.firstName} {athlete.lastName}
         </div>
-        {!compact && (athlete.erg2k || athlete.weight) && (
+        {!compact && (
           <div className="flex items-center gap-2 mt-0.5">
-            {athlete.erg2k && <span className="text-[11px] text-ink-muted">{athlete.erg2k}</span>}
             {athlete.weight && (
-              <span className="text-[11px] text-ink-muted">{athlete.weight}kg</span>
+              <span className="text-[11px] text-ink-muted px-1.5 py-0.5 rounded bg-ink-well/60">
+                {athlete.weight}kg
+              </span>
+            )}
+            {athlete.erg2k && (
+              <span className="text-[11px] text-ink-muted px-1.5 py-0.5 rounded bg-ink-well/60">
+                {athlete.erg2k}
+              </span>
             )}
           </div>
         )}
