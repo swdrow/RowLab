@@ -70,17 +70,26 @@ function formatTimeDisplay(seconds: number): string {
 }
 
 /**
- * Calculate split from watts
+ * Calculate split from watts using Concept2 formula
+ * Formula: Watts = 2.80 / pace³ where pace is seconds per meter
+ * Returns split in seconds per 500m
  */
 function wattsToSplit(watts: number): number {
-  return Math.pow(2.8 / watts, 1 / 3);
+  // pace = (2.80 / watts)^(1/3) seconds per meter
+  // split per 500m = pace * 500
+  const pacePerMeter = Math.pow(2.80 / watts, 1/3);
+  return pacePerMeter * 500;
 }
 
 /**
- * Calculate watts from split
+ * Calculate watts from split using Concept2 formula
+ * Formula: Watts = 2.80 / pace³ where pace is seconds per meter
+ * Split is in seconds per 500m
  */
 function splitToWatts(splitSeconds: number): number {
-  return 2.8 / Math.pow(splitSeconds, 3);
+  // Convert split per 500m to pace per meter
+  const pacePerMeter = splitSeconds / 500;
+  return 2.80 / Math.pow(pacePerMeter, 3);
 }
 
 /**
