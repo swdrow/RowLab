@@ -170,16 +170,9 @@ export async function storeTokens(userId, c2UserId, tokens, username = null) {
   const expiresAt = new Date();
   expiresAt.setSeconds(expiresAt.getSeconds() + tokens.expiresIn);
 
-  // Encrypt tokens before storage (if ENCRYPTION_KEY is set)
-  let encryptedAccessToken = tokens.accessToken;
-  let encryptedRefreshToken = tokens.refreshToken;
-
-  if (process.env.ENCRYPTION_KEY) {
-    encryptedAccessToken = encrypt(tokens.accessToken);
-    encryptedRefreshToken = encrypt(tokens.refreshToken);
-  } else {
-    logger.warn('ENCRYPTION_KEY not set - storing tokens unencrypted (NOT RECOMMENDED)');
-  }
+  // Encrypt tokens before storage - throws error if ENCRYPTION_KEY not set
+  const encryptedAccessToken = encrypt(tokens.accessToken);
+  const encryptedRefreshToken = encrypt(tokens.refreshToken);
 
   await prisma.concept2Auth.upsert({
     where: { userId },
@@ -219,16 +212,14 @@ export async function getValidToken(userId) {
   let refreshToken = auth.refreshToken;
   let needsMigration = false;
 
-  if (process.env.ENCRYPTION_KEY) {
-    if (isEncrypted(auth.accessToken)) {
-      // Token is encrypted - decrypt it
-      accessToken = decrypt(auth.accessToken);
-      refreshToken = decrypt(auth.refreshToken);
-    } else {
-      // Token is plaintext (legacy) - flag for migration
-      needsMigration = true;
-      logger.info('Migrating plaintext tokens to encrypted storage', { userId });
-    }
+  if (isEncrypted(auth.accessToken)) {
+    // Token is encrypted - decrypt it
+    accessToken = decrypt(auth.accessToken);
+    refreshToken = decrypt(auth.refreshToken);
+  } else {
+    // Token is plaintext (legacy) - flag for migration
+    needsMigration = true;
+    logger.info('Migrating plaintext tokens to encrypted storage', { userId });
   }
 
   // Check if token is expired (with 5 min buffer)
@@ -244,7 +235,7 @@ export async function getValidToken(userId) {
   }
 
   // Lazy migration: re-store with encryption if tokens were plaintext
-  if (needsMigration && process.env.ENCRYPTION_KEY) {
+  if (needsMigration) {
     // Calculate remaining expiry time
     const remainingSeconds = Math.floor((auth.tokenExpiresAt - now) / 1000);
     await storeTokens(

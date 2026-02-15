@@ -7,6 +7,7 @@
 
 import crypto from 'crypto';
 import { prisma } from '../db/connection.js';
+import { encrypt, decrypt } from '../utils/encryption.js';
 
 // Strava API endpoints
 const STRAVA_API_URL = 'https://www.strava.com/api/v3';
@@ -18,61 +19,7 @@ const getConfig = () => ({
   clientId: process.env.STRAVA_CLIENT_ID,
   clientSecret: process.env.STRAVA_CLIENT_SECRET,
   redirectUri: process.env.STRAVA_REDIRECT_URI || `${process.env.APP_URL || 'http://localhost:5173'}/app/strava/callback`,
-  encryptionKey: process.env.ENCRYPTION_KEY,
 });
-
-// ============================================
-// ENCRYPTION (same as concept2Service)
-// ============================================
-
-function encrypt(text) {
-  const { encryptionKey } = getConfig();
-  if (!encryptionKey) {
-    console.warn('ENCRYPTION_KEY not set - storing tokens in plaintext');
-    return text;
-  }
-
-  const key = Buffer.from(encryptionKey, 'hex');
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  const authTag = cipher.getAuthTag().toString('hex');
-
-  return `${iv.toString('hex')}:${authTag}:${encrypted}`;
-}
-
-function decrypt(encryptedText) {
-  const { encryptionKey } = getConfig();
-
-  // Handle plaintext tokens (migration case)
-  if (!encryptedText.includes(':')) {
-    return encryptedText;
-  }
-
-  if (!encryptionKey) {
-    console.warn('Cannot decrypt - ENCRYPTION_KEY not set');
-    return encryptedText;
-  }
-
-  try {
-    const [ivHex, authTagHex, encrypted] = encryptedText.split(':');
-    const key = Buffer.from(encryptionKey, 'hex');
-    const iv = Buffer.from(ivHex, 'hex');
-    const authTag = Buffer.from(authTagHex, 'hex');
-
-    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
-    decipher.setAuthTag(authTag);
-
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-  } catch (err) {
-    console.error('Decryption failed:', err.message);
-    return encryptedText;
-  }
-}
 
 // ============================================
 // OAuth Flow

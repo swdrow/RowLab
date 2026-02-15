@@ -95,6 +95,10 @@ export function decrypt(ciphertext) {
 
     return decrypted;
   } catch (err) {
+    // Re-throw errors related to missing encryption key
+    if (err.message?.includes('ENCRYPTION_KEY')) {
+      throw err;
+    }
     // Decryption failed - likely plaintext or corrupted data
     return null;
   }
