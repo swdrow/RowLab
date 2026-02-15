@@ -6,7 +6,7 @@
  */
 export function ProfileSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       {/* Banner skeleton */}
       <div className="h-48 w-full rounded-b-xl animate-shimmer bg-ink-well" />
 

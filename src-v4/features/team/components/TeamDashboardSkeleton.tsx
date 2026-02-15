@@ -98,7 +98,7 @@ export function TeamDashboardSkeleton({ tabOnly }: TeamDashboardSkeletonProps) {
   }
 
   return (
-    <SkeletonGroup className="mx-auto max-w-7xl p-4 md:p-6 pb-20 gap-6">
+    <SkeletonGroup className="mx-auto max-w-6xl p-4 md:p-6 pb-20 gap-6">
       {/* Header skeleton */}
       <div className="space-y-2">
         <Skeleton height="1.75rem" width="10rem" rounded="sm" />

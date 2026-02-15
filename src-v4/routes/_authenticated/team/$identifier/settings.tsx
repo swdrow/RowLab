@@ -33,7 +33,7 @@ function TeamSettingsRoute() {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-3xl p-4 md:p-6 pb-20 md:pb-6">
+        <div className="mx-auto max-w-5xl p-4 md:p-6 pb-20 md:pb-6">
           <div className="mb-6">
             <div className="h-8 w-48 bg-ink-well/50 animate-shimmer rounded-lg" />
             <div className="mt-2 h-4 w-64 bg-ink-well/30 animate-shimmer rounded" />

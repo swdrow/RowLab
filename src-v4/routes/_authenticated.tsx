@@ -41,7 +41,9 @@ function AuthenticatedLayout() {
       {/* Main content column */}
       <div className="flex flex-1 flex-col min-w-0">
         <TopBar />
-        <main className={`flex flex-1 flex-col overflow-auto ${isMobile ? 'pb-16' : ''}`}>
+        <main
+          className={`flex flex-1 flex-col overflow-auto [&>*]:w-full ${isMobile ? 'pb-16' : ''}`}
+        >
           <Outlet />
         </main>
       </div>
