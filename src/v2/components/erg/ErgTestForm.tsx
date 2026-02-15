@@ -16,19 +16,25 @@ export interface ErgTestFormProps {
 // Test type options
 const TEST_TYPES: TestType[] = ['2k', '6k', '30min', '500m'];
 
+// Distance mapping for test types
+const TEST_TYPE_DISTANCES: Record<TestType, number> = {
+  '2k': 2000,
+  '6k': 6000,
+  '30min': 0, // Time-based, not distance
+  '500m': 500,
+};
+
 // Validation schema
 const ergTestSchema = z.object({
   athleteId: z.string().min(1, 'Athlete is required'),
-  testType: z.enum(['2k', '6k', '30min', '500m'] as const, {
-    errorMap: () => ({ message: 'Invalid test type' }),
-  }),
+  testType: z.enum(['2k', '6k', '30min', '500m'] as const),
   testDate: z.string().min(1, 'Test date is required'),
-  timeSeconds: z.coerce.number().positive('Time must be positive'),
-  distanceM: z.coerce.number().positive().nullable().optional(),
-  splitSeconds: z.coerce.number().positive().nullable().optional(),
-  watts: z.coerce.number().positive().nullable().optional(),
-  strokeRate: z.coerce.number().min(10).max(60).nullable().optional(),
-  weightKg: z.coerce.number().positive().max(300).nullable().optional(),
+  timeSeconds: z.number().positive('Time must be positive'),
+  distanceM: z.number().positive().nullable().optional(),
+  splitSeconds: z.number().positive().nullable().optional(),
+  watts: z.number().positive().nullable().optional(),
+  strokeRate: z.number().min(10).max(60).nullable().optional(),
+  weightKg: z.number().positive().max(300).nullable().optional(),
   notes: z.string().nullable().optional(),
 });
 
@@ -77,6 +83,25 @@ function splitToWatts(splitSeconds: number): number {
   return 2.8 / Math.pow(splitSeconds, 3);
 }
 
+/**
+ * Calculate split per 500m from total time and distance
+ */
+function timeToSplit(timeSeconds: number, distanceM: number): number {
+  if (distanceM <= 0) return 0;
+  return (timeSeconds / distanceM) * 500;
+}
+
+/**
+ * Get today's date in YYYY-MM-DD format
+ */
+function getTodayDate(): string {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function ErgTestForm({
   initialData,
   onSubmit,
@@ -92,7 +117,6 @@ export function ErgTestForm({
   const {
     register,
     handleSubmit,
-    reset,
     setValue,
     watch,
     formState: { errors },
@@ -111,7 +135,12 @@ export function ErgTestForm({
           weightKg: initialData.weightKg || undefined,
           notes: initialData.notes || '',
         }
-      : undefined,
+      : {
+          // Smart defaults for new tests
+          testType: '2k',
+          testDate: getTodayDate(),
+          distanceM: 2000,
+        },
   });
 
   // Initialize display values from initialData
@@ -127,39 +156,57 @@ export function ErgTestForm({
     }
   }, [initialData]);
 
-  // Watch split and watts for auto-calculation
-  const splitSeconds = watch('splitSeconds');
-  const watts = watch('watts');
+  // Watch form fields for auto-calculation and smart defaults
+  const athleteId = watch('athleteId');
+  const testType = watch('testType');
+  const timeSeconds = watch('timeSeconds');
+  const distanceM = watch('distanceM');
 
-  // Auto-calculate watts from split
+  // Pre-fill weight from athlete profile when athlete is selected
   useEffect(() => {
-    if (splitInput && !wattsInput) {
-      const split = parseTimeInput(splitInput);
-      if (split > 0) {
-        const calculatedWatts = splitToWatts(split);
+    if (athleteId && !isEditMode) {
+      const selectedAthlete = athletes.find((a) => a.id === athleteId);
+      if (selectedAthlete?.weightKg) {
+        setValue('weightKg', selectedAthlete.weightKg);
+      }
+    }
+  }, [athleteId, athletes, isEditMode, setValue]);
+
+  // Update distance when test type changes (only for new tests)
+  useEffect(() => {
+    if (!isEditMode && testType) {
+      const defaultDistance = TEST_TYPE_DISTANCES[testType];
+      if (defaultDistance > 0) {
+        setValue('distanceM', defaultDistance);
+      }
+    }
+  }, [testType, isEditMode, setValue]);
+
+  // Auto-calculate split and watts from time when time changes
+  useEffect(() => {
+    if (timeSeconds > 0 && distanceM && distanceM > 0 && timeInput) {
+      const calculatedSplit = timeToSplit(timeSeconds, distanceM);
+      if (calculatedSplit > 0 && !splitInput) {
+        setSplitInput(formatTimeDisplay(calculatedSplit));
+        setValue('splitSeconds', calculatedSplit);
+        
+        // Also calculate watts from the split
+        const calculatedWatts = splitToWatts(calculatedSplit);
         setWattsInput(calculatedWatts.toFixed(0));
         setValue('watts', calculatedWatts);
       }
     }
-  }, [splitInput, wattsInput, setValue]);
-
-  // Auto-calculate split from watts
-  useEffect(() => {
-    if (wattsInput && !splitInput) {
-      const wattsNum = parseFloat(wattsInput);
-      if (wattsNum > 0) {
-        const calculatedSplit = wattsToSplit(wattsNum);
-        setSplitInput(formatTimeDisplay(calculatedSplit));
-        setValue('splitSeconds', calculatedSplit);
-      }
-    }
-  }, [wattsInput, splitInput, setValue]);
+  }, [timeSeconds, distanceM, timeInput, splitInput, setValue]);
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setTimeInput(value);
     const seconds = parseTimeInput(value);
     setValue('timeSeconds', seconds);
+    
+    // Clear split and watts to trigger auto-calculation
+    setSplitInput('');
+    setWattsInput('');
   };
 
   const handleSplitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,13 +215,28 @@ export function ErgTestForm({
     setWattsInput(''); // Clear watts to trigger recalc
     const seconds = parseTimeInput(value);
     setValue('splitSeconds', seconds);
+    
+    // Auto-calculate watts from split
+    if (seconds > 0) {
+      const calculatedWatts = splitToWatts(seconds);
+      setWattsInput(calculatedWatts.toFixed(0));
+      setValue('watts', calculatedWatts);
+    }
   };
 
   const handleWattsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setWattsInput(value);
     setSplitInput(''); // Clear split to trigger recalc
-    setValue('watts', parseFloat(value) || undefined);
+    const wattsNum = parseFloat(value);
+    setValue('watts', wattsNum || undefined);
+    
+    // Auto-calculate split from watts
+    if (wattsNum > 0) {
+      const calculatedSplit = wattsToSplit(wattsNum);
+      setSplitInput(formatTimeDisplay(calculatedSplit));
+      setValue('splitSeconds', calculatedSplit);
+    }
   };
 
   const handleFormSubmit = (data: ErgTestFormData) => {
@@ -260,7 +322,7 @@ export function ErgTestForm({
       {/* Time */}
       <div>
         <label htmlFor="timeSeconds" className="block text-sm font-medium text-txt-primary mb-1">
-          Time * <span className="text-txt-tertiary text-xs">(MM:SS.s or seconds)</span>
+          Time * <span className="text-txt-tertiary text-xs">(MM:SS.s or seconds) — auto-calculates split & watts</span>
         </label>
         <input
           id="timeSeconds"
@@ -280,7 +342,7 @@ export function ErgTestForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="splitSeconds" className="block text-sm font-medium text-txt-primary mb-1">
-            Split/500m <span className="text-txt-tertiary text-xs">(MM:SS.s)</span>
+            Split/500m <span className="text-txt-tertiary text-xs">(auto-calculated)</span>
           </label>
           <input
             id="splitSeconds"
@@ -295,7 +357,7 @@ export function ErgTestForm({
 
         <div>
           <label htmlFor="watts" className="block text-sm font-medium text-txt-primary mb-1">
-            Watts <span className="text-txt-tertiary text-xs">(auto from split)</span>
+            Watts <span className="text-txt-tertiary text-xs">(auto-calculated)</span>
           </label>
           <input
             id="watts"
@@ -345,7 +407,7 @@ export function ErgTestForm({
       {/* Weight */}
       <div>
         <label htmlFor="weightKg" className="block text-sm font-medium text-txt-primary mb-1">
-          Weight (kg)
+          Weight (kg) <span className="text-txt-tertiary text-xs">(optional, auto-filled from profile)</span>
         </label>
         <input
           id="weightKg"
