@@ -161,7 +161,7 @@ app.use('/api/v1/seasons', apiLimiter, seasonRoutes);
 app.use('/api/v1/equipment', apiLimiter, equipmentRoutes);
 app.use('/api/v1/rigging', apiLimiter, riggingRoutes);
 app.use('/api/v1/dashboard', apiLimiter, dashboardExceptionsRoutes);
-app.use('/api/v1/share-cards', shareCardsRoutes); // No auth required for public sharing
+app.use('/api/v1/share-cards', apiLimiter, shareCardsRoutes); // Rate limited for public sharing
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility

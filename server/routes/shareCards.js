@@ -26,7 +26,7 @@ const validateRequest = (req, res, next) => {
  */
 router.get(
   '/athlete/:athleteId',
-  [param('athleteId').isString().notEmpty()],
+  [param('athleteId').isUUID().withMessage('Invalid athlete ID format')],
   validateRequest,
   async (req, res) => {
     try {
@@ -66,8 +66,9 @@ router.get(
       const side = escapeHtml(athlete.side || 'Unknown');
       const weight = athlete.weight ? escapeHtml(`${athlete.weight}kg`) : '';
       
-      // Build description with escaped data
-      const description = `${athleteName} - ${side} side rower${weight ? `, ${weight}` : ''} from ${teamName}`;
+      // Build description - use original values and escape once for attribute context
+      const rawDescription = `${athlete.firstName} ${athlete.lastName} - ${athlete.side || 'Unknown'} side rower${athlete.weight ? `, ${athlete.weight}kg` : ''} from ${athlete.team?.name || 'RowLab Team'}`;
+      const descriptionForAttr = escapeHtmlAttr(rawDescription);
 
       // Generate OG HTML with all data properly escaped
       const html = `
@@ -81,13 +82,13 @@ router.get(
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="profile" />
     <meta property="og:title" content="${athleteName}" />
-    <meta property="og:description" content="${escapeHtmlAttr(description)}" />
+    <meta property="og:description" content="${descriptionForAttr}" />
     <meta property="og:site_name" content="RowLab" />
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="${athleteName}" />
-    <meta name="twitter:description" content="${escapeHtmlAttr(description)}" />
+    <meta name="twitter:description" content="${descriptionForAttr}" />
     
     <style>
       body {
