@@ -68,17 +68,15 @@ router.get(
   teamIsolation,
   [
     query('testType').isIn(['2k', '6k', '30min', '500m']),
-    query('limit').optional().isInt({ min: 1, max: 100 }),
+    query('limit').optional().isInt({ min: 1, max: 200 }),
   ],
   validateRequest,
   async (req, res) => {
     try {
       const { testType, limit } = req.query;
-      const leaderboard = await getTeamLeaderboard(
-        req.user.activeTeamId,
-        testType,
-        { limit: limit ? parseInt(limit) : 20 }
-      );
+      const leaderboard = await getTeamLeaderboard(req.user.activeTeamId, testType, {
+        limit: limit ? parseInt(limit) : 20,
+      });
       res.json({
         success: true,
         data: { leaderboard },
@@ -105,10 +103,7 @@ router.get(
   validateRequest,
   async (req, res) => {
     try {
-      const history = await getAthleteTestHistory(
-        req.user.activeTeamId,
-        req.params.athleteId
-      );
+      const history = await getAthleteTestHistory(req.user.activeTeamId, req.params.athleteId);
       res.json({
         success: true,
         data: history,

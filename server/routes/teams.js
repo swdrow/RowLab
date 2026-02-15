@@ -28,16 +28,28 @@ const validateRequest = (req, res, next) => {
 };
 
 /**
+ * GET /api/v1/teams
+ * List teams for authenticated user
+ * Returns 405 - use GET /api/v1/teams/:id instead
+ */
+router.get('/', authenticateToken, (req, res) => {
+  res.status(405).json({
+    success: false,
+    error: {
+      code: 'METHOD_NOT_ALLOWED',
+      message: 'Use GET /api/v1/teams/:id to fetch a specific team',
+    },
+  });
+});
+
+/**
  * POST /api/v1/teams
  * Create a new team
  */
 router.post(
   '/',
   authenticateToken,
-  [
-    body('name').trim().isLength({ min: 2, max: 100 }),
-    body('isPublic').optional().isBoolean(),
-  ],
+  [body('name').trim().isLength({ min: 2, max: 100 }), body('isPublic').optional().isBoolean()],
   validateRequest,
   async (req, res) => {
     try {
@@ -126,39 +138,33 @@ router.post(
  * GET /api/v1/teams/:id
  * Get team details
  */
-router.get(
-  '/:id',
-  authenticateToken,
-  [param('id').isUUID()],
-  validateRequest,
-  async (req, res) => {
-    try {
-      const team = await getTeam(req.params.id, req.user.id);
-      res.json({
-        success: true,
-        data: { team },
-      });
-    } catch (error) {
-      if (error.message === 'Team not found') {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: error.message },
-        });
-      }
-      if (error.message === 'Not a member of this team') {
-        return res.status(403).json({
-          success: false,
-          error: { code: 'FORBIDDEN', message: error.message },
-        });
-      }
-      logger.error('Get team error', { error: error.message });
-      res.status(500).json({
+router.get('/:id', authenticateToken, [param('id').isUUID()], validateRequest, async (req, res) => {
+  try {
+    const team = await getTeam(req.params.id, req.user.id);
+    res.json({
+      success: true,
+      data: { team },
+    });
+  } catch (error) {
+    if (error.message === 'Team not found') {
+      return res.status(404).json({
         success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to get team' },
+        error: { code: 'NOT_FOUND', message: error.message },
       });
     }
+    if (error.message === 'Not a member of this team') {
+      return res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: error.message },
+      });
+    }
+    logger.error('Get team error', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to get team' },
+    });
   }
-);
+});
 
 /**
  * PATCH /api/v1/teams/:id
@@ -280,10 +286,7 @@ router.patch(
 router.delete(
   '/:id/members/:userId',
   authenticateToken,
-  [
-    param('id').isUUID(),
-    param('userId').isUUID(),
-  ],
+  [param('id').isUUID(), param('userId').isUUID()],
   validateRequest,
   async (req, res) => {
     try {

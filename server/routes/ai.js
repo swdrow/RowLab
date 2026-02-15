@@ -1,4 +1,5 @@
 import express from 'express';
+import { body, validationResult } from 'express-validator';
 import logger from '../utils/logger.js';
 import { authenticateToken, requireRole, teamIsolation } from '../middleware/auth.js';
 import { aiChatLimiter } from '../middleware/security.js';
@@ -12,6 +13,17 @@ import {
 import prisma from '../db/connection.js';
 
 const router = express.Router();
+
+const validateRequest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', details: errors.array() },
+    });
+  }
+  next();
+};
 
 // Ollama configuration
 const OLLAMA_ENDPOINT = process.env.OLLAMA_ENDPOINT || 'http://localhost:11434';
@@ -84,22 +96,13 @@ router.post(
   authenticateToken,
   teamIsolation,
   requireRole('OWNER', 'COACH'),
+  [
+    body('headers').isArray({ min: 1 }).withMessage('headers must be a non-empty array'),
+    body('sampleRow').isArray({ min: 1 }).withMessage('sampleRow must be a non-empty array'),
+  ],
+  validateRequest,
   async (req, res) => {
     const { headers, sampleRow } = req.body;
-
-    if (!headers || !Array.isArray(headers)) {
-      return res.status(400).json({
-        success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'headers array is required' },
-      });
-    }
-
-    if (!sampleRow || !Array.isArray(sampleRow)) {
-      return res.status(400).json({
-        success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'sampleRow array is required' },
-      });
-    }
 
     try {
       const available = await isOllamaAvailable();
@@ -146,22 +149,17 @@ router.post(
   authenticateToken,
   teamIsolation,
   requireRole('OWNER', 'COACH'),
+  [
+    body('inputName')
+      .isString()
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage('inputName string is required'),
+    body('athletes').isArray({ min: 1 }).withMessage('athletes must be a non-empty array'),
+  ],
+  validateRequest,
   async (req, res) => {
     const { inputName, athletes } = req.body;
-
-    if (!inputName || typeof inputName !== 'string') {
-      return res.status(400).json({
-        success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'inputName string is required' },
-      });
-    }
-
-    if (!athletes || !Array.isArray(athletes)) {
-      return res.status(400).json({
-        success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'athletes array is required' },
-      });
-    }
 
     try {
       const available = await isOllamaAvailable();
@@ -200,22 +198,18 @@ router.post(
   authenticateToken,
   teamIsolation,
   requireRole('OWNER', 'COACH'),
+  [
+    body('athletes').isArray({ min: 1 }).withMessage('athletes must be a non-empty array'),
+    body('boatClass')
+      .isString()
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage('boatClass string is required'),
+    body('constraints').optional().isObject().withMessage('constraints must be an object'),
+  ],
+  validateRequest,
   async (req, res) => {
     const { athletes, boatClass, constraints } = req.body;
-
-    if (!athletes || !Array.isArray(athletes)) {
-      return res.status(400).json({
-        success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'athletes array is required' },
-      });
-    }
-
-    if (!boatClass || typeof boatClass !== 'string') {
-      return res.status(400).json({
-        success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'boatClass string is required' },
-      });
-    }
 
     try {
       const available = await isOllamaAvailable();
@@ -291,15 +285,18 @@ router.post('/chat', authenticateToken, aiChatLimiter, teamIsolation, async (req
     });
 
     if (athletes.length > 0) {
-      const portCount = athletes.filter(a => a.side === 'P' || a.side === 'B').length;
-      const starboardCount = athletes.filter(a => a.side === 'S' || a.side === 'B').length;
-      const coxCount = athletes.filter(a => a.side === 'Cox').length;
+      const portCount = athletes.filter((a) => a.side === 'P' || a.side === 'B').length;
+      const starboardCount = athletes.filter((a) => a.side === 'S' || a.side === 'B').length;
+      const coxCount = athletes.filter((a) => a.side === 'Cox').length;
       contextStr += `\nRoster: ${athletes.length} athletes (${portCount} port, ${starboardCount} starboard, ${coxCount} coxswains)`;
 
       // Include top athletes by erg if available
-      const withErg = athletes.filter(a => a.ergScore).sort((a, b) => a.ergScore - b.ergScore);
+      const withErg = athletes.filter((a) => a.ergScore).sort((a, b) => a.ergScore - b.ergScore);
       if (withErg.length > 0) {
-        contextStr += `\nTop 5 by erg: ${withErg.slice(0, 5).map(a => `${a.lastName} (${a.ergScore})`).join(', ')}`;
+        contextStr += `\nTop 5 by erg: ${withErg
+          .slice(0, 5)
+          .map((a) => `${a.lastName} (${a.ergScore})`)
+          .join(', ')}`;
       }
     }
 
@@ -315,11 +312,13 @@ router.post('/chat', authenticateToken, aiChatLimiter, teamIsolation, async (req
     });
 
     if (lineups.length > 0) {
-      contextStr += `\nRecent lineups: ${lineups.map(l => {
-        const filled = l.athletes?.length || 0;
-        const total = l.boatConfig?.seats || 0;
-        return `${l.boatConfig?.name || 'Lineup'} (${filled}/${total} filled)`;
-      }).join(', ')}`;
+      contextStr += `\nRecent lineups: ${lineups
+        .map((l) => {
+          const filled = l.athletes?.length || 0;
+          const total = l.boatConfig?.seats || 0;
+          return `${l.boatConfig?.name || 'Lineup'} (${filled}/${total} filled)`;
+        })
+        .join(', ')}`;
     }
   } catch (dbErr) {
     // Log but don't fail - context is optional enhancement
