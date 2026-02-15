@@ -1054,7 +1054,7 @@ Authorization: Bearer <token>
 **Query Parameters**:
 - `isTemplate` (boolean): Filter templates
 - `phase` (string): Filter by phase
-- `limit` (number): Max results (1-100)
+- `limit` (number): Max results (1-200)
 
 **Response** (200):
 ```json

@@ -55,7 +55,7 @@ router.get(
   [
     query('isTemplate').optional().isBoolean(),
     query('phase').optional().isIn(['Base', 'Build', 'Peak', 'Taper', 'Recovery']),
-    query('limit').optional().isInt({ min: 1, max: 100 }),
+    query('limit').optional().isInt({ min: 1, max: 200 }),
   ],
   validateRequest,
   async (req, res) => {
