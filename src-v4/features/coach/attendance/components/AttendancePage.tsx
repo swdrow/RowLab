@@ -18,6 +18,8 @@ import {
   Users,
   ClipboardList,
 } from 'lucide-react';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { teamRosterOptions } from '@/features/team/api';
 import type { RosterMember } from '@/features/team/types';
 import {
@@ -78,13 +80,11 @@ export function AttendancePage({ teamId, readOnly }: AttendancePageProps) {
     <div className="mx-auto max-w-5xl p-4 pb-24 md:p-6">
       {/* Page header */}
       <div className="mb-6">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-muted mb-1">
-          TEAM
-        </p>
-        <h1 className="text-2xl font-semibold text-ink-primary tracking-tight lg:text-3xl">
-          Attendance
-        </h1>
-        <p className="mt-1 text-sm text-ink-secondary">Record and track practice attendance</p>
+        <SectionHeader
+          title="Attendance"
+          description="Track daily practice attendance"
+          icon={<ClipboardList className="h-4 w-4" />}
+        />
       </div>
 
       {/* Tabs */}
@@ -239,7 +239,7 @@ function DailyTab({ teamId, date, setDate, readOnly }: DailyTabProps) {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="rounded-lg border border-white/[0.06] bg-ink-raised px-3 py-2 font-mono text-sm text-ink-primary transition-colors focus:border-accent-copper/50 focus:outline-none"
+            className="rounded-lg border border-ink-border bg-ink-raised px-3 py-2 font-mono text-sm text-ink-primary transition-colors focus:border-accent-copper/50 focus:outline-none"
           />
 
           <button
@@ -346,7 +346,7 @@ function AthleteRow({ athlete, status, readOnly, onMark }: AthleteRowProps) {
     <div
       className={`flex items-center gap-4 rounded-lg p-3 transition-colors ${
         status
-          ? 'bg-ink-raised/60 border border-white/[0.04]'
+          ? 'bg-ink-raised/60 border border-ink-border/50'
           : 'bg-ink-raised border border-accent-copper/20'
       }`}
     >
@@ -437,7 +437,7 @@ function SummaryTab({ teamId }: SummaryTabProps) {
             type="date"
             value={range.start}
             onChange={(e) => setRange((r) => ({ ...r, start: e.target.value }))}
-            className="rounded-lg border border-white/[0.06] bg-ink-raised px-3 py-2 font-mono text-sm text-ink-primary transition-colors focus:border-accent-copper/50 focus:outline-none"
+            className="rounded-lg border border-ink-border bg-ink-raised px-3 py-2 font-mono text-sm text-ink-primary transition-colors focus:border-accent-copper/50 focus:outline-none"
           />
         </div>
 
@@ -449,7 +449,7 @@ function SummaryTab({ teamId }: SummaryTabProps) {
             type="date"
             value={range.end}
             onChange={(e) => setRange((r) => ({ ...r, end: e.target.value }))}
-            className="rounded-lg border border-white/[0.06] bg-ink-raised px-3 py-2 font-mono text-sm text-ink-primary transition-colors focus:border-accent-copper/50 focus:outline-none"
+            className="rounded-lg border border-ink-border bg-ink-raised px-3 py-2 font-mono text-sm text-ink-primary transition-colors focus:border-accent-copper/50 focus:outline-none"
           />
         </div>
 
@@ -479,37 +479,39 @@ function SummaryTab({ teamId }: SummaryTabProps) {
           <p className="text-sm font-medium text-ink-muted">No attendance data for this period</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-white/[0.06] bg-ink-raised">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                  Athlete
-                </th>
-                <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-emerald-400/70">
-                  P
-                </th>
-                <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-amber-400/70">
-                  L
-                </th>
-                <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-sky-400/70">
-                  E
-                </th>
-                <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-rose-400/70">
-                  U
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                  Rate
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.04]">
-              {summary.map((row) => (
-                <SummaryRow key={row.athlete.id} row={row} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <GlassCard padding="none">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-ink-border">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-ink-muted">
+                    Athlete
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-emerald-400/70">
+                    P
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-amber-400/70">
+                    L
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-sky-400/70">
+                    E
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-rose-400/70">
+                    U
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-ink-muted">
+                    Rate
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink-border/50">
+                {summary.map((row) => (
+                  <SummaryRow key={row.athlete.id} row={row} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GlassCard>
       )}
     </div>
   );
@@ -537,14 +539,24 @@ function SummaryRow({ row }: { row: AttendanceSummaryRow }) {
       <td className="px-3 py-3 text-center font-mono text-amber-400">{row.late}</td>
       <td className="px-3 py-3 text-center font-mono text-sky-400">{row.excused}</td>
       <td className="px-3 py-3 text-center font-mono text-rose-400">{row.unexcused}</td>
-      <td className="px-4 py-3 text-right">
-        <span
-          className={`font-mono font-semibold ${
-            rate >= 90 ? 'text-emerald-400' : rate >= 75 ? 'text-amber-400' : 'text-rose-400'
-          }`}
-        >
-          {rate}%
-        </span>
+      <td className="px-4 py-3">
+        <div className="flex items-center justify-end gap-2">
+          <div className="hidden sm:block h-1.5 w-16 rounded-full bg-ink-well overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${
+                rate >= 90 ? 'bg-emerald-400' : rate >= 75 ? 'bg-amber-400' : 'bg-rose-400'
+              }`}
+              style={{ width: `${rate}%` }}
+            />
+          </div>
+          <span
+            className={`font-mono font-semibold ${
+              rate >= 90 ? 'text-emerald-400' : rate >= 75 ? 'text-amber-400' : 'text-rose-400'
+            }`}
+          >
+            {rate}%
+          </span>
+        </div>
       </td>
     </tr>
   );

@@ -12,6 +12,7 @@ import { Anchor, Plus, Pencil, Trash2, SailboatIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { GlassCard } from '@/components/ui/GlassCard';
+import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ReadOnlyBadge } from '@/components/ui/ReadOnlyBadge';
@@ -41,6 +42,7 @@ import {
   OAR_TYPE_DISPLAY,
   STATUS_DISPLAY,
   STATUS_COLOR,
+  STATUS_DOT,
 } from '../types';
 
 import { FleetSkeleton } from './FleetSkeleton';
@@ -200,9 +202,15 @@ function ShellsTable({
               className="border-b border-ink-border/20 hover:bg-ink-hover/30 transition-colors"
             >
               <td className="py-2.5 px-3">
-                <div>
-                  <span className="font-medium text-ink-primary">{shell.name}</span>
-                  <span className="block text-xs text-ink-muted">{shell.boatClass}</span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`h-2 w-2 shrink-0 rounded-full ${STATUS_DOT[shell.status]}`}
+                    title={STATUS_DISPLAY[shell.status]}
+                  />
+                  <div>
+                    <span className="font-medium text-ink-primary">{shell.name}</span>
+                    <span className="block text-xs text-ink-muted">{shell.boatClass}</span>
+                  </div>
                 </div>
               </td>
               <td className="py-2.5 px-3 text-ink-secondary">{SHELL_TYPE_DISPLAY[shell.type]}</td>
@@ -462,23 +470,22 @@ export function FleetPage({ teamId, readOnly }: FleetPageProps) {
   return (
     <motion.div {...fadeIn} className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-ink-primary">Fleet</h1>
-          <p className="text-sm text-ink-secondary mt-0.5">
-            Manage your team&apos;s shells and oar sets
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {readOnly && <ReadOnlyBadge />}
-          {!readOnly && (
-            <Button size="sm" onClick={activeTab === 'shells' ? handleAddShell : handleAddOarSet}>
-              <Plus size={16} />
-              {activeTab === 'shells' ? 'Add Shell' : 'Add Oar Set'}
-            </Button>
-          )}
-        </div>
-      </div>
+      <SectionHeader
+        title="Fleet Management"
+        description="Manage your team's shells and oar sets"
+        icon={<SailboatIcon className="h-4 w-4" />}
+        action={
+          <div className="flex items-center gap-3">
+            {readOnly && <ReadOnlyBadge />}
+            {!readOnly && (
+              <Button size="sm" onClick={activeTab === 'shells' ? handleAddShell : handleAddOarSet}>
+                <Plus size={16} />
+                {activeTab === 'shells' ? 'Add Shell' : 'Add Oar Set'}
+              </Button>
+            )}
+          </div>
+        }
+      />
 
       {/* Tabs */}
       <div className="flex gap-1 p-1 bg-ink-well/40 rounded-xl w-fit">

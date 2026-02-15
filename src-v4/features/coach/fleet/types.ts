@@ -58,6 +58,14 @@ export const STATUS_COLOR: Record<EquipmentStatus, string> = {
   RETIRED: 'text-ink-muted',
 };
 
+/** Condition dot background color for visual status indicator */
+export const STATUS_DOT: Record<EquipmentStatus, string> = {
+  AVAILABLE: 'bg-data-great',
+  IN_USE: 'bg-accent-copper',
+  MAINTENANCE: 'bg-data-fair',
+  RETIRED: 'bg-ink-muted',
+};
+
 // ---------------------------------------------------------------------------
 // Shell
 // ---------------------------------------------------------------------------
