@@ -63,7 +63,7 @@ export function CanvasAttendancePage() {
   });
   const [selectedAthleteId, setSelectedAthleteId] = useState<string | null>(null);
 
-  const { athletes } = useAthletes();
+  const { athletes, isLoading: athletesLoading } = useAthletes();
   const {
     attendanceMap,
     isLoading: attendanceLoading,
@@ -267,7 +267,7 @@ export function CanvasAttendancePage() {
             </div>
 
             {/* Roster */}
-            {attendanceLoading ? (
+            {attendanceLoading || athletesLoading ? (
               <AttendanceSkeleton rowCount={6} />
             ) : athletes.length === 0 ? (
               <div className="py-12 text-center">
