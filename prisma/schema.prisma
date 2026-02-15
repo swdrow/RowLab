@@ -17,10 +17,12 @@ model User {
   id           String   @id @default(uuid())
   email        String?  @unique // Optional for admin accounts
   username     String?  @unique // For admin accounts (non-email login)
-  passwordHash String
+  passwordHash String?  // Optional for OAuth users
   name         String
   isAdmin      Boolean  @default(false) // Admin accounts have special privileges
   status       String   @default("active") // active, suspended
+  googleId     String?  @unique // Google OAuth ID
+  provider     String?  // auth provider: 'local', 'google'
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

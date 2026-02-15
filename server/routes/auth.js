@@ -1,6 +1,7 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
 import rateLimit from 'express-rate-limit';
+import passport from 'passport';
 import {
   registerUser,
   loginUser,
@@ -8,6 +9,7 @@ import {
   getCurrentUser,
   logoutUser,
 } from '../services/authService.js';
+import { handleGoogleOAuth, generateOAuthResponse } from '../services/googleOAuthService.js';
 import { rotateRefreshToken, generateAccessToken } from '../services/tokenService.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { prisma } from '../db/connection.js';
@@ -360,5 +362,73 @@ router.post('/dev-login', async (req, res) => {
     });
   }
 });
+
+/**
+ * GET /api/v1/auth/google
+ * Redirect to Google consent screen
+ */
+router.get(
+  '/google',
+  (req, res, next) => {
+    // Store return URL in session if provided
+    if (req.query.returnTo) {
+      req.session = req.session || {};
+      req.session.returnTo = req.query.returnTo;
+    }
+    next();
+  },
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    session: false,
+  })
+);
+
+/**
+ * GET /api/v1/auth/google/callback
+ * Handle Google OAuth callback
+ */
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login?error=oauth_failed' }),
+  async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.redirect('/login?error=oauth_failed');
+      }
+
+      // Generate tokens
+      const result = await generateOAuthResponse(req.user);
+
+      // Set both tokens as HTTP-only cookies for security
+      res.cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      // Access token in cookie (shorter lived)
+      res.cookie('accessToken', result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+
+      // Redirect to frontend
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3001';
+      const returnTo = req.session?.returnTo || '/';
+      const redirectUrl = new URL(returnTo, frontendUrl);
+
+      // Clear session after successful auth
+      req.session = null;
+
+      res.redirect(redirectUrl.toString());
+    } catch (error) {
+      logger.error('Google OAuth callback error', { error: error.message });
+      res.redirect('/login?error=oauth_failed');
+    }
+  }
+);
 
 export default router;
