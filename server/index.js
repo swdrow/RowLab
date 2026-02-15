@@ -5,6 +5,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import passport from 'passport';
+import { configureGoogleStrategy } from './services/googleOAuthService.js';
 
 // Routes
 import authRoutes from './routes/auth.js';
@@ -102,6 +105,29 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Cookie parsing (for refresh tokens)
 app.use(cookieParser());
+
+// Session middleware (for OAuth state)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'fallback-secret-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: NODE_ENV === 'production',
+      httpOnly: true,
+      maxAge: 10 * 60 * 1000, // 10 minutes - just for OAuth flow
+    },
+  })
+);
+
+// Configure Passport for Google OAuth
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  configureGoogleStrategy(passport);
+  app.use(passport.initialize());
+  logger.info('Google OAuth configured');
+} else {
+  logger.warn('Google OAuth not configured - missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
+}
 
 // Request logging
 app.use(requestLogger);
