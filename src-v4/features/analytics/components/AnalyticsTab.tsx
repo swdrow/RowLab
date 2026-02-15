@@ -1,20 +1,23 @@
 /**
- * AnalyticsTab -- orchestrator for the PMC chart on the profile page.
+ * AnalyticsTab -- orchestrator for the Analytics profile tab.
  *
- * Wires range selector, sport filter, data sufficiency banner, and
- * PMC chart together. Manages local filter state and data fetching.
- * Volume trends and training insights will be added in Plans 03 and 04.
+ * Wires PMC chart (range selector, sport filter, data sufficiency banner)
+ * and Volume Trends (summary stats, grouped bar chart, toggles) together.
+ * Manages local filter state and data fetching for both sections.
+ * Training insights will be added in Plan 04.
  */
 
 import { useState, useCallback } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 
-import { useAnalyticsPMC } from '../api';
+import { useAnalyticsPMC, useAnalyticsVolume } from '../api';
 import { PMCChart } from './PMCChart';
 import { RangeSelector } from './RangeSelector';
 import { SportFilter } from './SportFilter';
 import { DataSufficiencyBanner } from './DataSufficiencyBanner';
-import type { PMCRange } from '../types';
+import { VolumeChart } from './VolumeChart';
+import { AnalyticsSummaryStats } from './AnalyticsSummaryStats';
+import type { PMCRange, VolumeRange, VolumeGranularity, VolumeMetric } from '../types';
 
 /* ------------------------------------------------------------------ */
 /* Skeleton loader                                                     */
@@ -87,6 +90,34 @@ function ValueCard({ label, value, colorClass, format }: ValueCardProps) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Volume skeleton loader                                              */
+/* ------------------------------------------------------------------ */
+
+function VolumeChartSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      {/* Summary stats row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-16 rounded-xl bg-ink-border/30" />
+        ))}
+      </div>
+      {/* Chart skeleton */}
+      <div className="rounded-xl bg-ink-border/30 p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-5 w-32 rounded bg-ink-border/50" />
+          <div className="flex gap-2">
+            <div className="h-7 w-36 rounded-lg bg-ink-border/50" />
+            <div className="h-7 w-32 rounded-lg bg-ink-border/50" />
+          </div>
+        </div>
+        <div className="h-[220px] md:h-[300px] rounded-lg bg-ink-border/20" />
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* AnalyticsTab                                                        */
 /* ------------------------------------------------------------------ */
 
@@ -95,7 +126,27 @@ export function AnalyticsTab() {
   const [sport, setSport] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Volume local state
+  const [volumeRange] = useState<VolumeRange>('12w');
+  const [volumeGranularity, setVolumeGranularity] = useState<VolumeGranularity>('weekly');
+  const [volumeMetric, setVolumeMetric] = useState<VolumeMetric>('distance');
+
   const { data, isLoading, isError, error, refetch } = useAnalyticsPMC(range, sport);
+  const { data: volumeData, isLoading: volumeLoading } = useAnalyticsVolume(
+    volumeRange,
+    volumeGranularity,
+    volumeMetric
+  );
+
+  const handleVolumeBarClick = useCallback(
+    (startDate: string, endDate: string) => {
+      void navigate({
+        to: '/workouts' as string,
+        search: { dateFrom: startDate, dateTo: endDate },
+      } as Parameters<typeof navigate>[0]);
+    },
+    [navigate]
+  );
 
   const handleDayClick = useCallback(
     (date: string) => {
@@ -163,6 +214,29 @@ export function AnalyticsTab() {
           format={(v) => v.toFixed(2)}
         />
       </div>
+
+      {/* Volume Trends Section */}
+      <section className="mt-10">
+        {volumeLoading && <VolumeChartSkeleton />}
+        {volumeData && (
+          <>
+            <AnalyticsSummaryStats
+              summary={volumeData.summary}
+              metric={volumeMetric}
+              granularity={volumeGranularity}
+            />
+            <VolumeChart
+              data={volumeData.buckets}
+              rollingAverage={volumeData.rollingAverage}
+              metric={volumeMetric}
+              granularity={volumeGranularity}
+              onMetricChange={setVolumeMetric}
+              onGranularityChange={setVolumeGranularity}
+              onBarClick={handleVolumeBarClick}
+            />
+          </>
+        )}
+      </section>
     </div>
   );
 }
