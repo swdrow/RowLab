@@ -580,6 +580,9 @@ function App() {
             {/* Beta routes — redirect to /app for bookmark compatibility */}
             <Route path="/beta/*" element={<LegacyRedirect />} />
 
+            {/* Calendar redirect — /calendar is not a standalone route */}
+            <Route path="/calendar" element={<Navigate to="/app/coach/training" replace />} />
+
             {/* 404 fallback */}
             <Route
               path="*"
