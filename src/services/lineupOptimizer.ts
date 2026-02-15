@@ -146,7 +146,7 @@ export function optimizeLineup(
   } = options;
 
   // Filter athletes
-  let candidates = availableAthletes.filter(
+  const candidates = availableAthletes.filter(
     (a) => !excludeAthletes.includes(a.id) && !a.isCoxswain
   );
 

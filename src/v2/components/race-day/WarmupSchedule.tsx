@@ -27,7 +27,7 @@ export function WarmupSchedule({
   // Calculate schedule
   const schedule = useMemo(() => {
     const racesWithTime = races.filter(r => r.scheduledTime);
-    let items = calculateWarmupSchedule(
+    const items = calculateWarmupSchedule(
       racesWithTime.map(r => ({
         id: r.id,
         eventName: r.eventName,

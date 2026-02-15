@@ -47,7 +47,7 @@ export function WeightProfileSelector({
     >;
     const otherTotal = otherKeys.reduce((sum, k) => sum + localWeights[k], 0);
 
-    let newWeights = { ...localWeights, [key]: value };
+    const newWeights = { ...localWeights, [key]: value };
 
     // Redistribute remaining weight proportionally to other factors
     if (otherTotal > 0) {

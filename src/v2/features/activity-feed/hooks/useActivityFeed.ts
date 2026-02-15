@@ -2,7 +2,7 @@
 // TanStack Query infinite query hook for unified activity feed
 
 import { useInfiniteQuery } from '@tanstack/react-query';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 import api from '../../../utils/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import { queryKeys } from '../../../lib/queryKeys';
