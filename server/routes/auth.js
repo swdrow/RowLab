@@ -399,7 +399,7 @@ router.get(
       // Generate tokens
       const result = await generateOAuthResponse(req.user);
 
-      // Set refresh token as HTTP-only cookie
+      // Set both tokens as HTTP-only cookies for security
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -407,11 +407,21 @@ router.get(
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
-      // Redirect to frontend with access token
+      // Access token in cookie (shorter lived)
+      res.cookie('accessToken', result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+
+      // Redirect to frontend
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3001';
       const returnTo = req.session?.returnTo || '/';
-      const redirectUrl = new URL(returnTo, 'http://localhost:3001');
-      redirectUrl.searchParams.set('token', result.accessToken);
-      redirectUrl.searchParams.set('userId', result.user.id);
+      const redirectUrl = new URL(returnTo, frontendUrl);
+
+      // Clear session after successful auth
+      req.session = null;
 
       res.redirect(redirectUrl.toString());
     } catch (error) {

@@ -52,9 +52,20 @@ Add the following to your `.env` file:
 GOOGLE_CLIENT_ID=your_google_client_id_here
 GOOGLE_CLIENT_SECRET=your_google_client_secret_here
 GOOGLE_REDIRECT_URI=http://localhost:3001/api/v1/auth/google/callback
+
+# Frontend URL (for OAuth redirects)
+FRONTEND_URL=http://localhost:3001
+
+# Session secret (required for OAuth state management)
+SESSION_SECRET=generate_a_secure_random_string_here
 ```
 
-For production, update `GOOGLE_REDIRECT_URI` to your production domain.
+For production, update `GOOGLE_REDIRECT_URI` and `FRONTEND_URL` to your production domain.
+
+**Important Security Notes:**
+- `SESSION_SECRET` is required. If not set, the server will fail to start.
+- Never use the same secret in production as in development
+- Generate secure random strings with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 
 ## Step 5: Restart the Server
 
@@ -106,8 +117,10 @@ const handleGoogleSignIn = () => {
 ```
 
 After successful authentication, users will be redirected back to the frontend with:
-- Access token as a query parameter
-- Refresh token set as an HTTP-only cookie
+- Access token set as an HTTP-only cookie (15 minutes expiry)
+- Refresh token set as an HTTP-only cookie (7 days expiry)
+
+The frontend should read the access token from cookies and use it for API requests.
 
 ## Troubleshooting
 

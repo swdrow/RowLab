@@ -107,9 +107,14 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // Session middleware (for OAuth state)
+if (!process.env.SESSION_SECRET && !process.env.JWT_SECRET) {
+  logger.error('CRITICAL: No SESSION_SECRET or JWT_SECRET configured. OAuth will not work securely.');
+  throw new Error('SESSION_SECRET or JWT_SECRET environment variable is required');
+}
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'fallback-secret-change-in-production',
+    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
