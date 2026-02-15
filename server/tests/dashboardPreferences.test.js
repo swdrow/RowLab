@@ -1,6 +1,10 @@
 /**
  * Dashboard Preferences Route Tests
  * Verifies that req.user.id (not req.user.userId) is used correctly
+ * 
+ * Note: These are implementation tests that verify the bug fix by checking source code.
+ * This approach was chosen for quick validation without setting up full integration tests
+ * with database and auth mocks. Consider adding behavioral tests in the future.
  */
 
 import { describe, it, expect } from 'vitest';
