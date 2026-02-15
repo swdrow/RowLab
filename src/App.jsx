@@ -7,6 +7,7 @@ import './App.css';
 
 // Lazy load all pages for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage.tsx'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.tsx'));
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
@@ -584,19 +585,9 @@ function App() {
             <Route
               path="*"
               element={
-                <div className="min-h-screen bg-gradient-to-br from-light-bg via-white to-light-bg dark:from-dark-bg dark:via-dark-card dark:to-dark-bg flex items-center justify-center p-4">
-                  <div className="glass-card p-8 text-center max-w-md">
-                    <div className="text-6xl mb-4">🚣</div>
-                    <h1 className="text-2xl font-bold text-text-primary mb-2">Page Not Found</h1>
-                    <p className="text-text-secondary mb-4">Looks like you've rowed off course!</p>
-                    <a
-                      href="/app"
-                      className="inline-block px-4 py-2 bg-blade-blue text-white rounded-lg hover:bg-blade-blue/90 transition-colors"
-                    >
-                      Back to Dashboard
-                    </a>
-                  </div>
-                </div>
+                <Suspense fallback={<LoadingFallback message="Loading..." />}>
+                  <NotFoundPage />
+                </Suspense>
               }
             />
           </Routes>
