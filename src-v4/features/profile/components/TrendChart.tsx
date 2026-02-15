@@ -2,8 +2,10 @@
  * Reusable trend chart for profile Overview tab.
  * Supports area chart (volume/frequency) and stacked bar chart (sport breakdown).
  * Uses design-system CSS variables for all colors.
+ * Area charts use gradient fill from accent color to transparent.
  */
 
+import { useMemo } from 'react';
 import {
   AreaChart,
   Area,
@@ -49,6 +51,17 @@ interface TrendChartProps {
 }
 
 /* ------------------------------------------------------------------ */
+/* Color resolver                                                      */
+/* ------------------------------------------------------------------ */
+
+/** Resolve CSS variable to actual color value for SVG gradient stops */
+function resolveAccentColor(): string {
+  if (typeof document === 'undefined') return 'oklch(0.62 0.12 55)';
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue('--color-accent-copper').trim() || 'oklch(0.62 0.12 55)';
+}
+
+/* ------------------------------------------------------------------ */
 /* Formatters                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -64,23 +77,26 @@ function formatKValue(value: number): string {
 }
 
 /* ------------------------------------------------------------------ */
-/* Custom tooltip                                                      */
+/* Custom glass tooltip                                                */
 /* ------------------------------------------------------------------ */
 
 function ChartTooltip({ active, payload, label }: TooltipProps<number, string>) {
   if (!active || !payload || payload.length === 0) return null;
 
   return (
-    <div className="bg-ink-raised border border-ink-border rounded-lg shadow-card p-2.5 min-w-[120px]">
-      <p className="text-ink-tertiary text-[10px] uppercase tracking-wider mb-1">{label}</p>
+    <div className="backdrop-blur-xl bg-ink-raised/90 border border-ink-border rounded-xl px-3 py-2 shadow-card min-w-[120px]">
+      <p className="text-ink-muted text-[10px] uppercase tracking-wider mb-1.5">{label}</p>
       {payload.map((entry) => (
-        <p key={entry.name} className="font-mono text-sm text-ink-primary">
+        <div key={entry.name} className="flex items-center gap-2 py-0.5">
           <span
-            className="inline-block w-2 h-2 rounded-full mr-1.5"
+            className="w-2 h-2 rounded-full flex-shrink-0"
             style={{ backgroundColor: entry.color }}
           />
-          {entry.name}: {typeof entry.value === 'number' ? formatKValue(entry.value) : entry.value}
-        </p>
+          <p className="text-ink-primary font-medium text-sm">
+            {typeof entry.value === 'number' ? formatKValue(entry.value) : entry.value}
+          </p>
+          <p className="text-ink-muted text-xs">{entry.name}</p>
+        </div>
       ))}
     </div>
   );
@@ -91,6 +107,12 @@ function ChartTooltip({ active, payload, label }: TooltipProps<number, string>) 
 /* ------------------------------------------------------------------ */
 
 export function TrendChart({ data, dataKey, type, label }: TrendChartProps) {
+  // Resolve CSS var for SVG gradient stops
+  const accentColor = useMemo(() => resolveAccentColor(), []);
+
+  // Unique gradient ID per chart instance to avoid collisions
+  const gradientId = `trendFill-${dataKey}`;
+
   if (data.length === 0) {
     return (
       <div className="bg-ink-raised rounded-xl border border-ink-border p-4">
@@ -119,6 +141,12 @@ export function TrendChart({ data, dataKey, type, label }: TrendChartProps) {
         <ResponsiveContainer width="100%" height="100%">
           {type === 'area' ? (
             <AreaChart data={data} margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
+              <defs>
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={accentColor} stopOpacity={0.3} />
+                  <stop offset="100%" stopColor={accentColor} stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} vertical={false} />
               <XAxis
                 dataKey="week"
@@ -141,8 +169,7 @@ export function TrendChart({ data, dataKey, type, label }: TrendChartProps) {
                 name={dataKey === 'meters' ? 'Volume' : 'Workouts'}
                 stroke={COPPER}
                 strokeWidth={2}
-                fill={COPPER}
-                fillOpacity={0.15}
+                fill={`url(#${gradientId})`}
                 isAnimationActive={false}
               />
             </AreaChart>
