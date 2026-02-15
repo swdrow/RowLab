@@ -7,7 +7,7 @@ import './App.css';
 
 // Lazy load all pages for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage.tsx'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.tsx'));
 
 // Auth pages
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
