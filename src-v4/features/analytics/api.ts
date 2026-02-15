@@ -4,12 +4,13 @@
  * Each queryFn calls /api/u/analytics/* and returns the data envelope.
  * Follows the exact pattern established in profile/api.ts.
  */
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type {
   PMCResponse,
   VolumeResponse,
+  AnalyticsSettings,
   PMCRange,
   VolumeRange,
   VolumeGranularity,
@@ -63,4 +64,37 @@ export function useAnalyticsVolume(
   metric: VolumeMetric = 'distance'
 ) {
   return useQuery(volumeQueryOptions(range, granularity, metric));
+}
+
+// ---------------------------------------------------------------------------
+// Analytics settings
+// ---------------------------------------------------------------------------
+
+export function analyticsSettingsQueryOptions() {
+  return queryOptions<AnalyticsSettings>({
+    queryKey: [...queryKeys.analytics.all, 'settings'] as const,
+    staleTime: 10 * 60_000,
+    queryFn: async () => {
+      const res = await api.get('/api/u/analytics/settings');
+      return res.data.data as AnalyticsSettings;
+    },
+  });
+}
+
+export function useAnalyticsSettings() {
+  return useQuery(analyticsSettingsQueryOptions());
+}
+
+export function useUpdateAnalyticsSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (settings: Partial<AnalyticsSettings>) => {
+      const res = await api.patch('/api/u/analytics/settings', settings);
+      return res.data.data;
+    },
+    onSuccess: () => {
+      // Invalidate settings + PMC (recalculates with new thresholds)
+      void queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all });
+    },
+  });
 }

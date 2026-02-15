@@ -1,10 +1,10 @@
 /**
  * AnalyticsTab -- orchestrator for the Analytics profile tab.
  *
- * Wires PMC chart (range selector, sport filter, data sufficiency banner)
- * and Volume Trends (summary stats, grouped bar chart, toggles) together.
- * Manages local filter state and data fetching for both sections.
- * Training insights will be added in Plan 04.
+ * Wires PMC chart (range selector, sport filter, data sufficiency banner),
+ * Volume Trends (summary stats, grouped bar chart, toggles),
+ * and Training Insights (data-gated action banners) together.
+ * Manages local filter state and data fetching for all sections.
  */
 
 import { useState, useCallback } from 'react';
@@ -17,6 +17,8 @@ import { SportFilter } from './SportFilter';
 import { DataSufficiencyBanner } from './DataSufficiencyBanner';
 import { VolumeChart } from './VolumeChart';
 import { AnalyticsSummaryStats } from './AnalyticsSummaryStats';
+import { TrainingInsights } from './TrainingInsights';
+import { AnalyticsSettingsCallout } from './AnalyticsSettingsCallout';
 import type { PMCRange, VolumeRange, VolumeGranularity, VolumeMetric } from '../types';
 
 /* ------------------------------------------------------------------ */
@@ -173,6 +175,9 @@ export function AnalyticsTab() {
 
   return (
     <div className="space-y-4">
+      {/* Settings callout (dismissible) */}
+      <AnalyticsSettingsCallout hasCustomSettings={data.hasCustomSettings} />
+
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h3 className="text-sm font-semibold text-ink-primary">Performance Management Chart</h3>
@@ -236,6 +241,15 @@ export function AnalyticsTab() {
             />
           </>
         )}
+      </section>
+
+      {/* Training Insights */}
+      <section className="mt-10">
+        <TrainingInsights
+          insights={data.insights ?? []}
+          daysWithData={data.daysWithData ?? 0}
+          isReliable={(data.daysWithData ?? 0) >= 42}
+        />
       </section>
     </div>
   );

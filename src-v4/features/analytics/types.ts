@@ -21,6 +21,16 @@ export interface PMCResponse {
   totalDays: number;
   acwr: number | null;
   insights: InsightItem[];
+  hasCustomSettings: boolean;
+}
+
+export interface AnalyticsSettings {
+  dateOfBirth: string | null;
+  maxHeartRate: number | null;
+  lactateThresholdHR: number | null;
+  functionalThresholdPower: number | null;
+  tsbAlertThreshold: number | null;
+  acwrAlertThreshold: number | null;
 }
 
 export interface VolumeBucket {
