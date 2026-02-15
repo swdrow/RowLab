@@ -263,14 +263,41 @@ export async function updateMemberRole(teamId, targetUserId, newRole, requesterI
     throw new Error('Invalid role');
   }
 
-  const updated = await prisma.teamMember.update({
-    where: { userId_teamId: { userId: targetUserId, teamId } },
-    data: { role: newRole },
-    include: {
-      user: {
-        select: { id: true, name: true, email: true },
+  // Use transaction to atomically check owner count and update role
+  const updated = await prisma.$transaction(async (tx) => {
+    // Get target member's current role
+    const targetMembership = await tx.teamMember.findUnique({
+      where: { userId_teamId: { userId: targetUserId, teamId } },
+    });
+
+    if (!targetMembership) {
+      throw new Error('Target member not found');
+    }
+
+    // If demoting from OWNER, check if they're the last owner
+    if (targetMembership.role === 'OWNER' && newRole !== 'OWNER') {
+      const ownerCount = await tx.teamMember.count({
+        where: {
+          teamId,
+          role: 'OWNER',
+        },
+      });
+
+      if (ownerCount <= 1) {
+        throw new Error('Cannot demote the last team owner. Transfer ownership to another member first.');
+      }
+    }
+
+    // Update the role
+    return await tx.teamMember.update({
+      where: { userId_teamId: { userId: targetUserId, teamId } },
+      data: { role: newRole },
+      include: {
+        user: {
+          select: { id: true, name: true, email: true },
+        },
       },
-    },
+    });
   });
 
   return {
@@ -285,35 +312,48 @@ export async function updateMemberRole(teamId, targetUserId, newRole, requesterI
  * Remove member from team
  */
 export async function removeMember(teamId, targetUserId, requesterId) {
-  // Verify requester permissions
-  const requesterMembership = await prisma.teamMember.findUnique({
-    where: { userId_teamId: { userId: requesterId, teamId } },
-  });
+  // Use transaction to atomically check owner count and remove member
+  await prisma.$transaction(async (tx) => {
+    // Verify requester permissions
+    const requesterMembership = await tx.teamMember.findUnique({
+      where: { userId_teamId: { userId: requesterId, teamId } },
+    });
 
-  if (!requesterMembership || !['OWNER', 'COACH'].includes(requesterMembership.role)) {
-    throw new Error('Insufficient permissions');
-  }
+    if (!requesterMembership || !['OWNER', 'COACH'].includes(requesterMembership.role)) {
+      throw new Error('Insufficient permissions');
+    }
 
-  // Get target membership
-  const targetMembership = await prisma.teamMember.findUnique({
-    where: { userId_teamId: { userId: targetUserId, teamId } },
-  });
+    // Get target membership
+    const targetMembership = await tx.teamMember.findUnique({
+      where: { userId_teamId: { userId: targetUserId, teamId } },
+    });
 
-  if (!targetMembership) {
-    throw new Error('Member not found');
-  }
+    if (!targetMembership) {
+      throw new Error('Member not found');
+    }
 
-  // Owner can't be removed
-  if (targetMembership.role === 'OWNER') {
-    throw new Error('Cannot remove team owner');
-  }
+    // If removing an owner (including self-removal), check if they're the last owner
+    if (targetMembership.role === 'OWNER') {
+      const ownerCount = await tx.teamMember.count({
+        where: {
+          teamId,
+          role: 'OWNER',
+        },
+      });
 
-  // Coach can only remove athletes
-  if (requesterMembership.role === 'COACH' && targetMembership.role === 'COACH') {
-    throw new Error('Coaches cannot remove other coaches');
-  }
+      if (ownerCount <= 1) {
+        throw new Error('Cannot remove the last team owner. Transfer ownership to another member first.');
+      }
+    }
 
-  await prisma.teamMember.delete({
-    where: { userId_teamId: { userId: targetUserId, teamId } },
+    // Coach can only remove athletes
+    if (requesterMembership.role === 'COACH' && ['COACH', 'OWNER'].includes(targetMembership.role)) {
+      throw new Error('Coaches cannot remove other coaches or owners');
+    }
+
+    // Perform the deletion
+    await tx.teamMember.delete({
+      where: { userId_teamId: { userId: targetUserId, teamId } },
+    });
   });
 }
