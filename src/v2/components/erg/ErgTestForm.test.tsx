@@ -144,7 +144,7 @@ describe('ErgTestForm Calculations', () => {
       expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     });
 
-    it('should return todays date', () => {
+    it("should return today's date", () => {
       const today = new Date();
       const expectedYear = today.getFullYear();
       const date = getTodayDate();

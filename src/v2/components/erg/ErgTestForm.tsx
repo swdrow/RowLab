@@ -148,7 +148,7 @@ export function ErgTestForm({
           // Smart defaults for new tests
           testType: '2k',
           testDate: getTodayDate(),
-          distanceM: 2000,
+          distanceM: TEST_TYPE_DISTANCES['2k'],
         },
   });
 
@@ -193,7 +193,7 @@ export function ErgTestForm({
 
   // Auto-calculate split and watts from time when time changes
   useEffect(() => {
-    if (timeSeconds > 0 && distanceM && distanceM > 0 && timeInput) {
+    if (timeSeconds > 0 && distanceM > 0 && timeInput) {
       const calculatedSplit = timeToSplit(timeSeconds, distanceM);
       if (calculatedSplit > 0 && !splitInput) {
         setSplitInput(formatTimeDisplay(calculatedSplit));
