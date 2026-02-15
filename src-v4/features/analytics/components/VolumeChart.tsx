@@ -32,12 +32,23 @@ import type { VolumeBucket, VolumeMetric, VolumeGranularity } from '../types';
 
 const GRID_COLOR = 'var(--color-ink-border)';
 const TICK_COLOR = 'var(--color-ink-tertiary)';
-const ROLLING_AVG_COLOR = 'var(--color-ink-primary)';
+const ROLLING_AVG_COLOR = 'var(--color-accent-copper)';
 
 /** Map SPORT_CONFIG color tokens to CSS variable references */
 const SPORT_COLORS: Record<string, string> = Object.fromEntries(
   Object.entries(SPORT_CONFIG).map(([key, cfg]) => [key, `var(--color-${cfg.color})`])
 );
+
+/** Resolve sport colors at runtime for SVG gradient stopColor */
+function resolveSportColors(): Record<string, string> {
+  const style = getComputedStyle(document.documentElement);
+  return Object.fromEntries(
+    Object.entries(SPORT_CONFIG).map(([key, cfg]) => [
+      key,
+      style.getPropertyValue(`--color-${cfg.color}`).trim() || '#888',
+    ])
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Formatters                                                          */
@@ -151,23 +162,31 @@ function VolumeTooltip({ active, payload, label, metric, granularity }: VolumeTo
   const total = sportEntries.reduce((sum, entry) => sum + ((entry.value as number) ?? 0), 0);
 
   return (
-    <div className="bg-ink-raised border border-ink-border rounded-lg shadow-card p-3 min-w-[160px]">
-      <p className="text-ink-tertiary text-[10px] uppercase tracking-wider mb-2">{periodLabel}</p>
-      <div className="space-y-1">
+    <div className="backdrop-blur-xl bg-ink-raised/95 border border-ink-border rounded-xl px-4 py-3 shadow-card min-w-[180px]">
+      <p className="text-[10px] uppercase tracking-wider text-ink-muted font-medium mb-2">
+        {periodLabel}
+      </p>
+      <div className="space-y-1.5">
         {sportEntries.map((entry) => (
-          <p key={entry.name} className="font-mono text-sm text-ink-primary">
+          <div key={entry.name} className="flex items-center gap-2">
             <span
-              className="inline-block w-2 h-2 rounded-full mr-1.5"
+              className="w-2 h-2 rounded-full shrink-0"
               style={{ backgroundColor: entry.color }}
             />
-            {entry.name}: {formatTooltipValue((entry.value as number) ?? 0, metric)}
-          </p>
+            <span className="text-sm text-ink-secondary">{entry.name}:</span>
+            <span className="text-sm font-semibold text-ink-primary tabular-nums">
+              {formatTooltipValue((entry.value as number) ?? 0, metric)}
+            </span>
+          </div>
         ))}
       </div>
       {sportEntries.length > 1 && (
-        <p className="font-mono text-xs text-ink-secondary mt-2 pt-1.5 border-t border-ink-border">
-          Total: {formatTooltipValue(total, metric)}
-        </p>
+        <div className="mt-2 pt-1.5 border-t border-ink-border/50 flex items-center justify-between">
+          <span className="text-xs text-ink-secondary">Total</span>
+          <span className="text-sm font-semibold text-ink-primary tabular-nums">
+            {formatTooltipValue(total, metric)}
+          </span>
+        </div>
       )}
     </div>
   );
@@ -206,6 +225,9 @@ export function VolumeChart({
   onGranularityChange,
   onBarClick,
 }: VolumeChartProps) {
+  // Resolve sport colors for gradient defs
+  const resolvedColors = useMemo(resolveSportColors, []);
+
   // Merge rolling average into chart data
   const chartData = useMemo(
     () =>
@@ -298,6 +320,26 @@ export function VolumeChart({
             margin={{ top: 8, right: 8, bottom: 4, left: 4 }}
             onClick={handleChartClick}
           >
+            {/* Gradient definitions for sport bar fills */}
+            <defs>
+              {activeSportKeys.map((sport) => {
+                const color = resolvedColors[sport] || '#888';
+                return (
+                  <linearGradient
+                    key={`gradFill-${sport}`}
+                    id={`gradFill-${sport}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor={color} stopOpacity={0.9} />
+                    <stop offset="100%" stopColor={color} stopOpacity={0.4} />
+                  </linearGradient>
+                );
+              })}
+            </defs>
+
             <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} vertical={false} />
 
             <XAxis
@@ -329,13 +371,13 @@ export function VolumeChart({
               )}
             />
 
-            {/* Grouped bars per sport type */}
+            {/* Grouped bars per sport type with gradient fills */}
             {activeSportKeys.map((sport, idx) => (
               <Bar
                 key={sport}
                 dataKey={`byType.${sport}`}
                 name={SPORT_CONFIG[sport as keyof typeof SPORT_CONFIG]?.label ?? sport}
-                fill={SPORT_COLORS[sport] ?? 'var(--color-ink-tertiary)'}
+                fill={`url(#gradFill-${sport})`}
                 radius={idx === activeSportKeys.length - 1 ? [2, 2, 0, 0] : undefined}
                 barSize={activeSportKeys.length > 3 ? 8 : 14}
                 isAnimationActive={false}
@@ -348,7 +390,7 @@ export function VolumeChart({
               name="4-period avg"
               stroke={ROLLING_AVG_COLOR}
               strokeWidth={2}
-              strokeDasharray="6 3"
+              strokeDasharray="4 4"
               dot={false}
               isAnimationActive={false}
               connectNulls

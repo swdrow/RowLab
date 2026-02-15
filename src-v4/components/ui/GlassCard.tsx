@@ -7,6 +7,7 @@
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
   hover?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   as?: 'div' | 'section' | 'article';
@@ -26,6 +27,7 @@ const paddingMap = {
 export function GlassCard({
   children,
   className = '',
+  style,
   hover = false,
   padding = 'md',
   as: Component = 'div',
@@ -41,6 +43,7 @@ export function GlassCard({
         ${interactive ? 'hover:-translate-y-0.5 transition-transform duration-150' : ''}
         ${className}
       `.trim()}
+      style={style}
     >
       {/* Noise texture overlay */}
       <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none mix-blend-overlay" />

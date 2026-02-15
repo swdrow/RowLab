@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useMotionValue, useTransform, animate } from 'motion/react';
 import type { LucideIcon } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
+import { Sparkline } from '@/components/ui/Sparkline';
 import { formatNumber } from '@/lib/format';
 
 interface StatCardProps {
@@ -16,6 +17,8 @@ interface StatCardProps {
   value: number;
   formattedValue?: string;
   footnote?: string;
+  sparklineData?: number[];
+  sparklineColor?: string;
   className?: string;
 }
 
@@ -28,6 +31,8 @@ export function StatCard({
   value,
   formattedValue,
   footnote,
+  sparklineData,
+  sparklineColor,
   className = '',
 }: StatCardProps) {
   const displayLabel = formattedValue ?? formatNumber(value);
@@ -40,6 +45,8 @@ export function StatCard({
         label={label}
         displayValue={displayLabel}
         footnote={footnote}
+        sparklineData={sparklineData}
+        sparklineColor={sparklineColor}
         className={className}
       />
     );
@@ -51,6 +58,8 @@ export function StatCard({
       label={label}
       value={value}
       footnote={footnote}
+      sparklineData={sparklineData}
+      sparklineColor={sparklineColor}
       className={className}
     />
   );
@@ -62,12 +71,16 @@ function AnimatedStatCard({
   label,
   value,
   footnote,
+  sparklineData,
+  sparklineColor,
   className = '',
 }: {
   icon: LucideIcon;
   label: string;
   value: number;
   footnote?: string;
+  sparklineData?: number[];
+  sparklineColor?: string;
   className?: string;
 }) {
   const motionValue = useMotionValue(0);
@@ -104,6 +117,8 @@ function AnimatedStatCard({
       label={label}
       displayValue={displayValue}
       footnote={footnote}
+      sparklineData={sparklineData}
+      sparklineColor={sparklineColor}
       className={className}
     />
   );
@@ -115,16 +130,20 @@ function StatCardShell({
   label,
   displayValue,
   footnote,
+  sparklineData,
+  sparklineColor,
   className = '',
 }: {
   icon: LucideIcon;
   label: string;
   displayValue: string;
   footnote?: string;
+  sparklineData?: number[];
+  sparklineColor?: string;
   className?: string;
 }) {
   return (
-    <GlassCard padding="md" className={className} as="article">
+    <GlassCard padding="md" className={className} as="article" interactive>
       <div className="flex flex-col gap-3" aria-label={`${label}: ${displayValue}`} role="group">
         {/* Icon */}
         <div
@@ -142,9 +161,18 @@ function StatCardShell({
           {displayValue}
         </span>
 
-        {/* Sparkline placeholder */}
-        {/* TODO(phase-48): Add sparkline component here */}
-        <div className="h-10" />
+        {/* Sparkline trend */}
+        {sparklineData && sparklineData.length >= 2 ? (
+          <Sparkline
+            data={sparklineData}
+            height={32}
+            width={100}
+            color={sparklineColor}
+            className="mt-1"
+          />
+        ) : (
+          <div className="h-8" />
+        )}
 
         {/* Footnote */}
         {footnote && <span className="text-xs text-ink-tertiary">{footnote}</span>}

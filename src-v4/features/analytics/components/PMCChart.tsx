@@ -13,6 +13,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   ComposedChart,
   Line,
+  Area,
   Bar,
   XAxis,
   YAxis,
@@ -50,11 +51,38 @@ function resolveChartColors() {
 /* ------------------------------------------------------------------ */
 
 const TSB_ZONES = [
-  { y1: -50, y2: -30, fill: '#EF4444', opacity: 0.06, label: 'Fatigued' },
-  { y1: -30, y2: -10, fill: '#F59E0B', opacity: 0.04, label: 'Loading' },
-  { y1: -10, y2: 5, fill: 'transparent', opacity: 0, label: 'Neutral' },
-  { y1: 5, y2: 25, fill: '#22C55E', opacity: 0.06, label: 'Fresh' },
-  { y1: 25, y2: 50, fill: '#3B82F6', opacity: 0.04, label: 'Detrained' },
+  {
+    y1: -50,
+    y2: -10,
+    fill: '#EF4444',
+    opacity: 0.06,
+    label: 'Stale',
+    textFill: 'rgba(239,68,68,0.4)',
+  },
+  {
+    y1: -10,
+    y2: 5,
+    fill: '#F59E0B',
+    opacity: 0.04,
+    label: 'Grey Zone',
+    textFill: 'rgba(245,158,11,0.4)',
+  },
+  {
+    y1: 5,
+    y2: 25,
+    fill: '#22C55E',
+    opacity: 0.06,
+    label: 'Optimal',
+    textFill: 'rgba(34,197,94,0.4)',
+  },
+  {
+    y1: 25,
+    y2: 50,
+    fill: '#3B82F6',
+    opacity: 0.04,
+    label: 'Transition',
+    textFill: 'rgba(59,130,246,0.4)',
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -128,26 +156,41 @@ function PMCTooltip({ active, payload, label }: TooltipProps<number, string>) {
     year: 'numeric',
   });
 
+  const tsbColor = data.tsb >= 0 ? 'text-data-good' : 'text-data-poor';
+
   return (
-    <div className="bg-ink-raised border border-ink-border rounded-lg shadow-card p-3 min-w-[160px]">
-      <p className="text-ink-tertiary text-[10px] uppercase tracking-wider mb-2">{dateLabel}</p>
-      <div className="space-y-1">
-        <p className="font-mono text-sm text-ink-primary">
-          <span className="inline-block w-2 h-2 rounded-full mr-1.5 bg-data-good" />
-          CTL: {data.ctl.toFixed(1)}
-        </p>
-        <p className="font-mono text-sm text-ink-primary">
-          <span className="inline-block w-2 h-2 rounded-full mr-1.5 bg-data-poor" />
-          ATL: {data.atl.toFixed(1)}
-        </p>
-        <p className="font-mono text-sm text-ink-primary">
-          <span className="inline-block w-2 h-2 rounded-full mr-1.5 bg-data-excellent" />
-          TSB: {data.tsb.toFixed(1)}
-        </p>
+    <div className="backdrop-blur-xl bg-ink-raised/95 border border-ink-border rounded-xl px-4 py-3 shadow-card min-w-[180px]">
+      <p className="text-[10px] uppercase tracking-wider text-ink-muted font-medium mb-2">
+        {dateLabel}
+      </p>
+      <div className="space-y-1.5">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-data-good" />
+          <span className="text-sm text-ink-secondary">CTL:</span>
+          <span className="text-sm font-semibold text-ink-primary tabular-nums">
+            {data.ctl.toFixed(1)}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-data-poor" />
+          <span className="text-sm text-ink-secondary">ATL:</span>
+          <span className="text-sm font-semibold text-ink-primary tabular-nums">
+            {data.atl.toFixed(1)}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-data-excellent" />
+          <span className="text-sm text-ink-secondary">TSB:</span>
+          <span className={`text-sm font-semibold tabular-nums ${tsbColor}`}>
+            {data.tsb.toFixed(1)}
+          </span>
+        </div>
         {data.tss > 0 && (
-          <p className="font-mono text-xs text-ink-tertiary mt-1">
-            Daily TSS: {data.tss.toFixed(0)}
-          </p>
+          <div className="pt-1 mt-1 border-t border-ink-border/50">
+            <span className="text-xs text-ink-tertiary tabular-nums">
+              Daily TSS: {data.tss.toFixed(0)}
+            </span>
+          </div>
         )}
       </div>
     </div>
@@ -270,7 +313,15 @@ export function PMCChart({ data, currentCTL, currentATL, currentTSB, onDayClick 
             margin={{ top: 8, right: 8, bottom: 4, left: 4 }}
             onClick={handleChartClick}
           >
-            {/* TSB zone bands */}
+            {/* Gradient definitions for CTL area fill */}
+            <defs>
+              <linearGradient id="ctlFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={chartColors.ctl} stopOpacity={0.15} />
+                <stop offset="100%" stopColor={chartColors.ctl} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            {/* TSB zone bands with labels */}
             {TSB_ZONES.map((zone) => (
               <ReferenceArea
                 key={zone.label}
@@ -280,6 +331,15 @@ export function PMCChart({ data, currentCTL, currentATL, currentTSB, onDayClick 
                 fill={zone.fill}
                 fillOpacity={zone.opacity}
                 ifOverflow="hidden"
+                label={{
+                  value: zone.label,
+                  position: 'insideTopRight',
+                  fontSize: 10,
+                  fontWeight: 500,
+                  fill: zone.textFill,
+                  dx: -8,
+                  dy: 4,
+                }}
               />
             ))}
 
@@ -329,6 +389,20 @@ export function PMCChart({ data, currentCTL, currentATL, currentTSB, onDayClick 
               barSize={2}
               isAnimationActive={false}
             />
+
+            {/* CTL (Fitness) area fill for fitness accumulation visual */}
+            {!hiddenLines.has('ctl') && (
+              <Area
+                yAxisId="left"
+                type="monotone"
+                dataKey="ctl"
+                name="Fitness fill"
+                stroke="none"
+                fill="url(#ctlFill)"
+                isAnimationActive={false}
+                legendType="none"
+              />
+            )}
 
             {/* CTL (Fitness) line */}
             {!hiddenLines.has('ctl') && (
