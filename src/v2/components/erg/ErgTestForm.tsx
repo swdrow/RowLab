@@ -189,7 +189,7 @@ export function ErgTestForm({
       notes: data.notes || null,
     };
 
-    onSubmit(payload as any);
+    onSubmit(payload as CreateErgTestInput);
   };
 
   return (

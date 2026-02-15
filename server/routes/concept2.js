@@ -30,6 +30,16 @@ import { authenticateToken, requireRole, teamIsolation } from '../middleware/aut
 
 const router = express.Router();
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -117,7 +127,7 @@ router.get('/callback', async (req, res) => {
           <div class="container">
             <div class="icon">${success ? '✓' : '✗'}</div>
             <h1>${success ? 'Connected!' : 'Connection Failed'}</h1>
-            <p>${success ? 'You can close this window.' : data.error || 'Please try again.'}</p>
+            <p>${success ? 'You can close this window.' : escapeHtml(data.error) || 'Please try again.'}</p>
           </div>
           <script>
             // Send message to opener window

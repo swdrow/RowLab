@@ -294,10 +294,10 @@ async function getErgPerformanceData(teamId) {
   const ninetyDaysAgo = new Date();
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-  const ergTests = await prisma.ergScore.findMany({
+  const ergTests = await prisma.ergTest.findMany({
     where: {
       athlete: { teamId },
-      date: { gte: ninetyDaysAgo },
+      testDate: { gte: ninetyDaysAgo },
     },
     include: {
       athlete: { select: { id: true } },
@@ -314,7 +314,7 @@ async function getErgPerformanceData(teamId) {
 
     // Convert time to watts (approximate) for comparison
     // Lower time = better = higher "score"
-    const timeSeconds = test.time || 0;
+    const timeSeconds = Number(test.timeSeconds) || 0;
     const score = timeSeconds > 0 ? 1000 / timeSeconds : 0; // Inverse time as score
 
     if (!athleteData.has(athleteId)) {
@@ -347,7 +347,7 @@ async function getAttendanceData(teamId) {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const attendance = await prisma.attendanceRecord.findMany({
+  const attendance = await prisma.attendance.findMany({
     where: {
       athlete: { teamId },
       date: { gte: thirtyDaysAgo },

@@ -22,9 +22,11 @@ const SOURCE_BADGES: Record<RankingSource, { label: string; color: string }> = {
 export function RankingsView({ onSelectTeam }: RankingsViewProps) {
   const [selectedBoatClass, setSelectedBoatClass] = useState<string | null>(null);
   const boatClasses = getBoatClasses();
-  const { data: rankings, isLoading: loadingRankings } = useBoatClassRankings(
-    selectedBoatClass || undefined
-  );
+  const {
+    data: rankings,
+    isLoading: loadingRankings,
+    error: rankingsError,
+  } = useBoatClassRankings(selectedBoatClass || undefined);
 
   // Find our team in rankings
   const ourRanking = useMemo(() => {
@@ -57,6 +59,18 @@ export function RankingsView({ onSelectTeam }: RankingsViewProps) {
       </div>
 
       {/* Rankings table */}
+      {!selectedBoatClass && (
+        <div className="relative py-16 text-center overflow-hidden">
+          <TrendingUp className="w-14 h-14 mx-auto mb-4 text-accent-copper/30" strokeWidth={1} />
+          <p className="text-lg font-display font-semibold text-ink-primary">
+            Select a boat class to view rankings
+          </p>
+          <p className="text-sm text-ink-tertiary mt-1.5">
+            Choose a boat class above to see team speed rankings
+          </p>
+        </div>
+      )}
+
       {selectedBoatClass && (
         <div className="rounded-2xl bg-ink-raised overflow-hidden shadow-card border border-ink-border">
           {/* Header with copper accent */}
@@ -88,6 +102,17 @@ export function RankingsView({ onSelectTeam }: RankingsViewProps) {
           {loadingRankings ? (
             <div className="p-4">
               <RankingsSkeleton />
+            </div>
+          ) : rankingsError ? (
+            <div className="relative py-16 text-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-data-poor/[0.03] to-transparent pointer-events-none" />
+              <TrendingUp className="w-14 h-14 mx-auto mb-4 text-data-poor/30" strokeWidth={1} />
+              <p className="text-lg font-display font-semibold text-ink-primary">
+                Unable to load rankings
+              </p>
+              <p className="text-sm text-ink-tertiary mt-1.5">
+                There was an error fetching ranking data. Please try again later.
+              </p>
             </div>
           ) : rankings && rankings.length > 0 ? (
             <LayoutGroup>

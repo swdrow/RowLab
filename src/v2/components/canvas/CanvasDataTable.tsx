@@ -155,15 +155,16 @@ export function CanvasDataTable<T>({
     );
   }
 
-  // Determine container height class
-  const containerHeightClass = maxHeight || (virtualized ? 'max-h-[50vh] lg:max-h-[60vh]' : '');
+  // Determine container height class — virtualized tables need an explicit height
+  // for the scroll container so the virtualizer can calculate visible rows
+  const containerHeightClass = maxHeight || (virtualized ? 'h-[50vh] lg:h-[60vh]' : '');
 
   return (
     <div className={`w-full ${className}`}>
       <div
         ref={tableContainerRef}
         className={`canvas-table-scroll ${containerHeightClass} ${virtualized ? 'overflow-auto' : ''}`}
-        style={virtualized ? { contain: 'strict' } : undefined}
+        style={virtualized ? { contain: 'content' } : undefined}
       >
         <table className="w-full">
           <thead className={virtualized ? 'sticky top-0 z-10 bg-ink-raised' : ''}>

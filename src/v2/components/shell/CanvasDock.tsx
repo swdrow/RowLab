@@ -105,9 +105,17 @@ export function useZone(): ZoneConfig {
 
   // Match route patterns to zones (order matters — most specific first)
   if (pathname.startsWith('/app/settings')) return ZONE_SETTINGS;
-  if (pathname.startsWith('/app/erg-tests') || pathname.startsWith('/app/coach/seat-racing'))
+  if (
+    pathname.startsWith('/app/erg-tests') ||
+    pathname.startsWith('/app/coach/seat-racing/advanced-rankings') ||
+    pathname.startsWith('/app/coach/seat-racing/matrix-planner')
+  )
     return ZONE_ANALYSIS;
-  if (pathname.startsWith('/app/regattas') || pathname.startsWith('/app/rankings'))
+  if (
+    pathname.startsWith('/app/regattas') ||
+    pathname.startsWith('/app/rankings') ||
+    pathname.startsWith('/app/coach/seat-racing')
+  )
     return ZONE_RACING;
   if (
     pathname.startsWith('/app/training') ||

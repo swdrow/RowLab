@@ -23,6 +23,20 @@ const validateRequest = (req, res, next) => {
 };
 
 /**
+ * GET /api/v1/availability
+ * Base route - requires auth, returns 405
+ */
+router.get('/', authenticateToken, (req, res) => {
+  res.status(405).json({
+    success: false,
+    error: {
+      code: 'METHOD_NOT_ALLOWED',
+      message: 'Use GET /api/v1/availability/team or /api/v1/availability/:athleteId',
+    },
+  });
+});
+
+/**
  * GET /api/v1/availability/team
  * Get team-wide availability grid
  *
@@ -37,12 +51,8 @@ router.get(
   authenticateToken,
   teamIsolation,
   [
-    query('startDate')
-      .isISO8601()
-      .withMessage('startDate must be ISO8601 format'),
-    query('endDate')
-      .isISO8601()
-      .withMessage('endDate must be ISO8601 format'),
+    query('startDate').isISO8601().withMessage('startDate must be ISO8601 format'),
+    query('endDate').isISO8601().withMessage('endDate must be ISO8601 format'),
   ],
   validateRequest,
   async (req, res) => {
@@ -89,15 +99,9 @@ router.get(
   authenticateToken,
   teamIsolation,
   [
-    param('athleteId')
-      .isUUID()
-      .withMessage('athleteId must be a valid UUID'),
-    query('startDate')
-      .isISO8601()
-      .withMessage('startDate must be ISO8601 format'),
-    query('endDate')
-      .isISO8601()
-      .withMessage('endDate must be ISO8601 format'),
+    param('athleteId').isUUID().withMessage('athleteId must be a valid UUID'),
+    query('startDate').isISO8601().withMessage('startDate must be ISO8601 format'),
+    query('endDate').isISO8601().withMessage('endDate must be ISO8601 format'),
   ],
   validateRequest,
   async (req, res) => {
@@ -174,12 +178,8 @@ router.put(
   authenticateToken,
   teamIsolation,
   [
-    param('athleteId')
-      .isUUID()
-      .withMessage('athleteId must be a valid UUID'),
-    body('availability')
-      .isArray()
-      .withMessage('availability must be an array'),
+    param('athleteId').isUUID().withMessage('athleteId must be a valid UUID'),
+    body('availability').isArray().withMessage('availability must be an array'),
     body('availability.*.date')
       .isISO8601()
       .withMessage('Each availability date must be ISO8601 format'),
@@ -224,7 +224,7 @@ router.put(
       if (!isCoachOrOwner && !isOwnAthlete) {
         return res.status(403).json({
           success: false,
-          error: { code: 'FORBIDDEN', message: 'Cannot edit other athletes\' availability' },
+          error: { code: 'FORBIDDEN', message: "Cannot edit other athletes' availability" },
         });
       }
 

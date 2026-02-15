@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { getHeadshotUrl } from '@v2/utils/countryFlags';
 
 export interface AthleteAvatarProps {
   firstName: string;
@@ -24,10 +23,10 @@ function stringToHSL(str: string): string {
   const hue = Math.abs(hash % 360);
 
   // Saturation: 45-75% (vibrant but not oversaturated)
-  const saturation = 45 + (Math.abs(hash % 30));
+  const saturation = 45 + Math.abs(hash % 30);
 
   // Lightness: 35-55% (readable contrast for white text)
-  const lightness = 35 + (Math.abs(hash % 20));
+  const lightness = 35 + Math.abs(hash % 20);
 
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
@@ -63,8 +62,9 @@ export function AthleteAvatar({
     [firstName, lastName]
   );
 
-  // Try to use headshot URL if not provided
-  const imageUrl = photoUrl || (showHeadshot && lastName ? getHeadshotUrl(lastName) : null);
+  // Only use an explicitly provided photo URL — don't guess URLs by last name
+  // as that causes 404 errors for athletes without headshots
+  const imageUrl = photoUrl || null;
 
   if (imageUrl && !imageError) {
     return (

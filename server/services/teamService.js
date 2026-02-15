@@ -244,15 +244,6 @@ export async function regenerateInviteCode(teamId, userId) {
  * Update member role
  */
 export async function updateMemberRole(teamId, targetUserId, newRole, requesterId) {
-  // Verify requester is owner
-  const requesterMembership = await prisma.teamMember.findUnique({
-    where: { userId_teamId: { userId: requesterId, teamId } },
-  });
-
-  if (!requesterMembership || requesterMembership.role !== 'OWNER') {
-    throw new Error('Only team owner can update roles');
-  }
-
   // Cannot change your own role
   if (targetUserId === requesterId) {
     throw new Error('Cannot change your own role');
@@ -263,57 +254,102 @@ export async function updateMemberRole(teamId, targetUserId, newRole, requesterI
     throw new Error('Invalid role');
   }
 
-  const updated = await prisma.teamMember.update({
-    where: { userId_teamId: { userId: targetUserId, teamId } },
-    data: { role: newRole },
-    include: {
-      user: {
-        select: { id: true, name: true, email: true },
-      },
-    },
-  });
+  return prisma.$transaction(
+    async (tx) => {
+      // Verify requester is owner
+      const requesterMembership = await tx.teamMember.findUnique({
+        where: { userId_teamId: { userId: requesterId, teamId } },
+      });
 
-  return {
-    userId: updated.user.id,
-    name: updated.user.name,
-    email: updated.user.email,
-    role: updated.role,
-  };
+      if (!requesterMembership || requesterMembership.role !== 'OWNER') {
+        throw new Error('Only team owner can update roles');
+      }
+
+      // Get current target membership
+      const targetMembership = await tx.teamMember.findUnique({
+        where: { userId_teamId: { userId: targetUserId, teamId } },
+      });
+
+      if (!targetMembership) {
+        throw new Error('Member not found');
+      }
+
+      // If demoting an owner, check that they are not the last one
+      if (targetMembership.role === 'OWNER' && newRole !== 'OWNER') {
+        const ownerCount = await tx.teamMember.count({
+          where: { teamId, role: 'OWNER' },
+        });
+
+        if (ownerCount <= 1) {
+          throw new Error('Cannot demote the last team owner');
+        }
+      }
+
+      const updated = await tx.teamMember.update({
+        where: { userId_teamId: { userId: targetUserId, teamId } },
+        data: { role: newRole },
+        include: {
+          user: {
+            select: { id: true, name: true, email: true },
+          },
+        },
+      });
+
+      return {
+        userId: updated.user.id,
+        name: updated.user.name,
+        email: updated.user.email,
+        role: updated.role,
+      };
+    },
+    { isolationLevel: 'Serializable' }
+  );
 }
 
 /**
  * Remove member from team
  */
 export async function removeMember(teamId, targetUserId, requesterId) {
-  // Verify requester permissions
-  const requesterMembership = await prisma.teamMember.findUnique({
-    where: { userId_teamId: { userId: requesterId, teamId } },
-  });
+  return prisma.$transaction(
+    async (tx) => {
+      // Verify requester permissions
+      const requesterMembership = await tx.teamMember.findUnique({
+        where: { userId_teamId: { userId: requesterId, teamId } },
+      });
 
-  if (!requesterMembership || !['OWNER', 'COACH'].includes(requesterMembership.role)) {
-    throw new Error('Insufficient permissions');
-  }
+      if (!requesterMembership || !['OWNER', 'COACH'].includes(requesterMembership.role)) {
+        throw new Error('Insufficient permissions');
+      }
 
-  // Get target membership
-  const targetMembership = await prisma.teamMember.findUnique({
-    where: { userId_teamId: { userId: targetUserId, teamId } },
-  });
+      // Get target membership
+      const targetMembership = await tx.teamMember.findUnique({
+        where: { userId_teamId: { userId: targetUserId, teamId } },
+      });
 
-  if (!targetMembership) {
-    throw new Error('Member not found');
-  }
+      if (!targetMembership) {
+        throw new Error('Member not found');
+      }
 
-  // Owner can't be removed
-  if (targetMembership.role === 'OWNER') {
-    throw new Error('Cannot remove team owner');
-  }
+      // If removing an owner, check that they are not the last one
+      if (targetMembership.role === 'OWNER') {
+        const ownerCount = await tx.teamMember.count({
+          where: { teamId, role: 'OWNER' },
+        });
 
-  // Coach can only remove athletes
-  if (requesterMembership.role === 'COACH' && targetMembership.role === 'COACH') {
-    throw new Error('Coaches cannot remove other coaches');
-  }
+        if (ownerCount <= 1) {
+          throw new Error('Cannot remove the last team owner');
+        }
+      }
 
-  await prisma.teamMember.delete({
-    where: { userId_teamId: { userId: targetUserId, teamId } },
-  });
+      // Coach can only remove athletes
+      if (requesterMembership.role === 'COACH' && targetMembership.role === 'COACH') {
+        throw new Error('Coaches cannot remove other coaches');
+      }
+
+      await tx.teamMember.delete({
+        where: { userId_teamId: { userId: targetUserId, teamId } },
+      });
+    },
+    { isolationLevel: 'Serializable' }
+  );
 }

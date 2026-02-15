@@ -51,11 +51,7 @@ router.post(
   validateRequest,
   async (req, res) => {
     try {
-      const result = await createBoatSession(
-        req.user.activeTeamId,
-        req.user.id,
-        req.body
-      );
+      const result = await createBoatSession(req.user.activeTeamId, req.user.id, req.body);
 
       res.status(201).json({
         success: true,
@@ -78,11 +74,7 @@ router.post(
 router.get('/history', async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 20, 100);
-    const history = await getCoxswainHistory(
-      req.user.activeTeamId,
-      req.user.id,
-      limit
-    );
+    const history = await getCoxswainHistory(req.user.activeTeamId, req.user.id, limit);
 
     res.json({
       success: true,
@@ -107,7 +99,7 @@ router.get(
   [
     query('startDate').optional().isISO8601(),
     query('endDate').optional().isISO8601(),
-    query('limit').optional().isInt({ min: 1, max: 100 }),
+    query('limit').optional().isInt({ min: 1, max: 200 }),
   ],
   validateRequest,
   async (req, res) => {
@@ -136,36 +128,28 @@ router.get(
  * GET /api/v1/water-sessions/:id
  * Get a specific water session by ID
  */
-router.get(
-  '/:id',
-  [param('id').isUUID()],
-  validateRequest,
-  async (req, res) => {
-    try {
-      const session = await getWaterSessionById(
-        req.params.id,
-        req.user.activeTeamId
-      );
+router.get('/:id', [param('id').isUUID()], validateRequest, async (req, res) => {
+  try {
+    const session = await getWaterSessionById(req.params.id, req.user.activeTeamId);
 
-      res.json({
-        success: true,
-        data: { session },
-      });
-    } catch (error) {
-      if (error.message === 'Water session not found') {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: error.message },
-        });
-      }
-      logger.error('Get water session error', { error: error.message });
-      res.status(500).json({
+    res.json({
+      success: true,
+      data: { session },
+    });
+  } catch (error) {
+    if (error.message === 'Water session not found') {
+      return res.status(404).json({
         success: false,
-        error: { code: 'SERVER_ERROR', message: error.message },
+        error: { code: 'NOT_FOUND', message: error.message },
       });
     }
+    logger.error('Get water session error', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: error.message },
+    });
   }
-);
+});
 
 /**
  * PATCH /api/v1/water-sessions/boat/:id
@@ -173,19 +157,11 @@ router.get(
  */
 router.patch(
   '/boat/:id',
-  [
-    param('id').isUUID(),
-    body('notes').optional().isString(),
-    body('pieces').optional().isArray(),
-  ],
+  [param('id').isUUID(), body('notes').optional().isString(), body('pieces').optional().isArray()],
   validateRequest,
   async (req, res) => {
     try {
-      const session = await updateBoatSession(
-        req.params.id,
-        req.user.activeTeamId,
-        req.body
-      );
+      const session = await updateBoatSession(req.params.id, req.user.activeTeamId, req.body);
 
       res.json({
         success: true,

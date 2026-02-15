@@ -62,12 +62,14 @@ export const corsOptions = cors({
   maxAge: 86400, // 24 hours
 });
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 /**
- * Global rate limiter - 100 requests per 15 minutes
+ * Global rate limiter - 100 requests per 15 minutes (500 in dev)
  */
 export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // Increased for development
+  max: isDev ? 500 : 100,
   message: {
     error: 'Too many requests',
     message: 'Please try again later',
@@ -87,11 +89,11 @@ export const globalLimiter = rateLimit({
 });
 
 /**
- * Auth rate limiter - stricter limits for login attempts
+ * Auth rate limiter - stricter limits for login attempts (10 in prod, 200 in dev)
  */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // 200 attempts per 15 minutes (increased for dev testing)
+  max: isDev ? 200 : 10,
   message: {
     error: 'Too many login attempts',
     message: 'Account temporarily locked. Please try again later.',
