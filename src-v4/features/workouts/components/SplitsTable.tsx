@@ -1,10 +1,12 @@
 /**
  * Splits data table for the workout detail page.
  * Shows pace, watts, SPM (and heart rate if available) per split.
+ * When intervalInfo is provided, rest splits are dimmed and labeled.
  */
 
 import { formatPace } from '@/lib/format';
 import type { WorkoutSplit } from '../types';
+import type { IntervalPattern } from '../utils';
 
 /* ------------------------------------------------------------------ */
 /* Constants                                                           */
@@ -19,14 +21,34 @@ const DASH = '\u2014';
 interface SplitsTableProps {
   splits: WorkoutSplit[];
   machineType?: string | null;
+  intervalInfo?: IntervalPattern;
 }
 
-export function SplitsTable({ splits, machineType }: SplitsTableProps) {
+export function SplitsTable({ splits, machineType, intervalInfo }: SplitsTableProps) {
   const hasHeartRate = splits.some((s) => s.heartRate != null);
   const rateLabel = machineType === 'bikerg' ? 'RPM' : 'SPM';
 
+  // Build a set of rest split numbers for dimming
+  const restSplitNumbers = new Set<number>();
+  if (intervalInfo?.isInterval) {
+    for (const block of intervalInfo.intervals) {
+      if (block.type === 'rest') {
+        for (const s of block.splits) {
+          restSplitNumbers.add(s.splitNumber);
+        }
+      }
+    }
+  }
+
   return (
     <div className="bg-ink-raised rounded-xl border border-ink-border overflow-hidden">
+      {intervalInfo?.isInterval && (
+        <div className="px-4 py-2 border-b border-ink-border/50">
+          <span className="text-xs text-accent-copper font-mono font-medium">
+            {intervalInfo.pattern}
+          </span>
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full text-sm font-mono">
           <thead>
@@ -51,30 +73,33 @@ export function SplitsTable({ splits, machineType }: SplitsTableProps) {
             </tr>
           </thead>
           <tbody>
-            {splits.map((split, idx) => (
-              <tr
-                key={split.splitNumber}
-                className={`hover:bg-ink-hover transition-colors ${
-                  idx % 2 === 1 ? 'bg-ink-well/50' : 'bg-ink-base'
-                }`}
-              >
-                <td className="py-2 px-4 text-ink-muted">{split.splitNumber}</td>
-                <td className="py-2 px-4 text-right text-ink-body tabular-nums">
-                  {formatPace(split.pace, machineType)}
-                </td>
-                <td className="py-2 px-4 text-right text-ink-body tabular-nums">
-                  {split.watts != null ? split.watts : DASH}
-                </td>
-                <td className="py-2 px-4 text-right text-ink-secondary tabular-nums">
-                  {split.strokeRate != null ? split.strokeRate : DASH}
-                </td>
-                {hasHeartRate && (
-                  <td className="py-2 px-4 text-right text-ink-secondary tabular-nums">
-                    {split.heartRate != null ? split.heartRate : DASH}
+            {splits.map((split, idx) => {
+              const isRest = restSplitNumbers.has(split.splitNumber);
+              return (
+                <tr
+                  key={split.splitNumber}
+                  className={`hover:bg-ink-hover transition-colors ${
+                    idx % 2 === 1 ? 'bg-ink-well/50' : 'bg-ink-base'
+                  } ${isRest ? 'opacity-40' : ''}`}
+                >
+                  <td className="py-2 px-4 text-ink-muted">{isRest ? 'R' : split.splitNumber}</td>
+                  <td className="py-2 px-4 text-right text-ink-body tabular-nums">
+                    {formatPace(split.pace, machineType)}
                   </td>
-                )}
-              </tr>
-            ))}
+                  <td className="py-2 px-4 text-right text-ink-body tabular-nums">
+                    {split.watts != null ? split.watts : DASH}
+                  </td>
+                  <td className="py-2 px-4 text-right text-ink-secondary tabular-nums">
+                    {split.strokeRate != null ? split.strokeRate : DASH}
+                  </td>
+                  {hasHeartRate && (
+                    <td className="py-2 px-4 text-right text-ink-secondary tabular-nums">
+                      {split.heartRate != null ? split.heartRate : DASH}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

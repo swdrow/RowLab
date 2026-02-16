@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 import { SPORT_CONFIG, SOURCE_CONFIG, type SportType, type SourceType } from '../constants';
-import { getSportFromWorkout } from '../utils';
+import { getSportFromWorkout, parseIntervalPattern } from '../utils';
 import { formatDistance, formatDuration, formatPace } from '@/lib/format';
 import { listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import type { Workout } from '../types';
@@ -208,6 +208,7 @@ export function WorkoutRow({ workout, isExpanded, onToggle, onEdit, onDelete }: 
   const SourceIcon = resolveSourceIcon(sourceKey);
   const sourceColor = SOURCE_CONFIG[sourceKey].color;
   const intensity = getIntensity(workout);
+  const intervalInfo = parseIntervalPattern(workout.splits);
 
   return (
     <motion.div variants={listItemVariants} transition={SPRING_SMOOTH} className="group">
@@ -232,10 +233,15 @@ export function WorkoutRow({ workout, isExpanded, onToggle, onEdit, onDelete }: 
           <SportIcon size={18} className={`text-${config.color}`} />
         </div>
 
-        {/* Sport label */}
-        <span className="text-sm font-medium text-ink-primary w-16 shrink-0 truncate">
-          {config.label}
-        </span>
+        {/* Sport label + interval badge */}
+        <div className="flex items-center gap-1.5 shrink-0 min-w-0">
+          <span className="text-sm font-medium text-ink-primary truncate">{config.label}</span>
+          {intervalInfo.isInterval && (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-accent-copper-subtle text-accent-copper whitespace-nowrap">
+              {intervalInfo.pattern}
+            </span>
+          )}
+        </div>
 
         {/* Metrics */}
         <div className="flex-1 flex items-center justify-end gap-4 sm:gap-6 min-w-0">

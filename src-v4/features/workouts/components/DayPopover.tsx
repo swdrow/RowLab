@@ -19,7 +19,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-import { getSportFromWorkout, getWorkoutVolume } from '../utils';
+import { getSportFromWorkout, getWorkoutVolume, parseIntervalPattern } from '../utils';
 import { SPORT_CONFIG } from '../constants';
 import { formatDistance, formatDuration } from '@/lib/format';
 import { scaleIn } from '@/lib/animations';
@@ -184,6 +184,7 @@ export function DayPopover({ day, workouts, onClose, anchorRect }: DayPopoverPro
               const sport = getSportFromWorkout(w);
               const config = SPORT_CONFIG[sport];
               const Icon = ICON_MAP[config.icon] ?? Activity;
+              const interval = parseIntervalPattern(w.splits);
 
               return (
                 <div
@@ -199,9 +200,16 @@ export function DayPopover({ day, workouts, onClose, anchorRect }: DayPopoverPro
                     <Icon size={14} className={`text-${config.color}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs font-medium text-ink-primary block truncate">
-                      {config.label}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-medium text-ink-primary truncate">
+                        {config.label}
+                      </span>
+                      {interval.isInterval && (
+                        <span className="inline-flex items-center px-1 py-px rounded text-[9px] font-mono font-medium bg-accent-copper-subtle text-accent-copper whitespace-nowrap shrink-0">
+                          {interval.pattern}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="text-xs font-mono text-ink-secondary tabular-nums">

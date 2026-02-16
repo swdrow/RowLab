@@ -1,29 +1,18 @@
 /**
  * Notifications settings section -- toggle switches for email and push preferences.
- * Preferences stored in localStorage pending backend API.
- * // TODO(phase-53): Wire to backend notification preferences API
+ * Synced to backend via TanStack Query with optimistic updates.
+ * Falls back to localStorage defaults for new users.
  */
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Bell, Mail, Smartphone } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { GlassCard } from '@/components/ui/GlassCard';
+import { settingsQueryOptions, useUpdateSettings, type NotificationPrefs } from '../api';
 
 /* ------------------------------------------------------------------ */
-/* Types & Defaults                                                     */
+/* Defaults                                                            */
 /* ------------------------------------------------------------------ */
-
-interface NotificationPrefs {
-  email: {
-    weeklyTrainingSummary: boolean;
-    prAchievements: boolean;
-    teamAnnouncements: boolean;
-    productUpdates: boolean;
-  };
-  push: {
-    workoutReminders: boolean;
-    teamActivity: boolean;
-  };
-}
 
 const DEFAULT_PREFS: NotificationPrefs = {
   email: {
@@ -38,22 +27,6 @@ const DEFAULT_PREFS: NotificationPrefs = {
   },
 };
 
-const STORAGE_KEY = 'rowlab-notification-prefs';
-
-function loadPrefs(): NotificationPrefs {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return JSON.parse(stored) as NotificationPrefs;
-  } catch {
-    // Corrupted data -- reset
-  }
-  return DEFAULT_PREFS;
-}
-
-function savePrefs(prefs: NotificationPrefs): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-}
-
 /* ------------------------------------------------------------------ */
 /* Toggle Switch                                                        */
 /* ------------------------------------------------------------------ */
@@ -63,11 +36,13 @@ function ToggleSwitch({
   onChange,
   label,
   description,
+  disabled,
 }: {
   checked: boolean;
   onChange: (value: boolean) => void;
   label: string;
   description?: string;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between gap-4 py-2">
@@ -80,10 +55,12 @@ function ToggleSwitch({
         role="switch"
         aria-checked={checked}
         aria-label={label}
+        disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`
           relative shrink-0 w-11 h-6 rounded-full transition-colors duration-150 cursor-pointer
           ${checked ? 'bg-accent-copper' : 'bg-ink-well'}
+          ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `.trim()}
       >
         <span
@@ -103,26 +80,32 @@ function ToggleSwitch({
 /* ------------------------------------------------------------------ */
 
 export function NotificationsSection() {
-  const [prefs, setPrefs] = useState<NotificationPrefs>(loadPrefs);
+  const { data: settings } = useQuery(settingsQueryOptions());
+  const { mutate: updateSettings, isPending } = useUpdateSettings();
 
-  // Persist on change
-  useEffect(() => {
-    savePrefs(prefs);
-  }, [prefs]);
+  const prefs: NotificationPrefs = settings?.notificationPrefs ?? DEFAULT_PREFS;
 
-  const updateEmail = useCallback((key: keyof NotificationPrefs['email'], value: boolean) => {
-    setPrefs((prev) => ({
-      ...prev,
-      email: { ...prev.email, [key]: value },
-    }));
-  }, []);
+  const updateEmail = useCallback(
+    (key: keyof NotificationPrefs['email'], value: boolean) => {
+      const updated: NotificationPrefs = {
+        ...prefs,
+        email: { ...prefs.email, [key]: value },
+      };
+      updateSettings({ notificationPrefs: updated });
+    },
+    [prefs, updateSettings]
+  );
 
-  const updatePush = useCallback((key: keyof NotificationPrefs['push'], value: boolean) => {
-    setPrefs((prev) => ({
-      ...prev,
-      push: { ...prev.push, [key]: value },
-    }));
-  }, []);
+  const updatePush = useCallback(
+    (key: keyof NotificationPrefs['push'], value: boolean) => {
+      const updated: NotificationPrefs = {
+        ...prefs,
+        push: { ...prefs.push, [key]: value },
+      };
+      updateSettings({ notificationPrefs: updated });
+    },
+    [prefs, updateSettings]
+  );
 
   return (
     <div className="space-y-6">
@@ -144,24 +127,28 @@ export function NotificationsSection() {
             description="Receive a weekly recap of your training activity"
             checked={prefs.email.weeklyTrainingSummary}
             onChange={(v) => updateEmail('weeklyTrainingSummary', v)}
+            disabled={isPending}
           />
           <ToggleSwitch
             label="PR Achievements"
             description="Get notified when you set a new personal record"
             checked={prefs.email.prAchievements}
             onChange={(v) => updateEmail('prAchievements', v)}
+            disabled={isPending}
           />
           <ToggleSwitch
             label="Team Announcements"
             description="Updates from your team coaches and admins"
             checked={prefs.email.teamAnnouncements}
             onChange={(v) => updateEmail('teamAnnouncements', v)}
+            disabled={isPending}
           />
           <ToggleSwitch
             label="Product Updates"
             description="New features and improvements to RowLab"
             checked={prefs.email.productUpdates}
             onChange={(v) => updateEmail('productUpdates', v)}
+            disabled={isPending}
           />
         </div>
       </GlassCard>
@@ -178,12 +165,14 @@ export function NotificationsSection() {
             description="Remind you before scheduled training sessions"
             checked={prefs.push.workoutReminders}
             onChange={(v) => updatePush('workoutReminders', v)}
+            disabled={isPending}
           />
           <ToggleSwitch
             label="Team Activity"
             description="Updates when teammates complete workouts or set PRs"
             checked={prefs.push.teamActivity}
             onChange={(v) => updatePush('teamActivity', v)}
+            disabled={isPending}
           />
         </div>
       </GlassCard>

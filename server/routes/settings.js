@@ -61,6 +61,9 @@ router.patch('/', authenticateToken, async (req, res) => {
       'firstName',
       'lastName',
       'avatar',
+      // Granular preferences stored as JSON in UserSettings
+      'notificationPrefs',
+      'privacyPrefs',
     ];
 
     const filteredUpdates = {};
@@ -105,44 +108,53 @@ router.patch('/', authenticateToken, async (req, res) => {
  * Get team visibility settings
  * Accessible by OWNER and COACH
  */
-router.get('/team', authenticateToken, teamIsolation, requireRole('OWNER', 'COACH'), async (req, res) => {
-  try {
-    const team = await prisma.team.findUnique({
-      where: { id: req.user.activeTeamId },
-      select: { id: true, name: true, settings: true },
-    });
+router.get(
+  '/team',
+  authenticateToken,
+  teamIsolation,
+  requireRole('OWNER', 'COACH'),
+  async (req, res) => {
+    try {
+      const team = await prisma.team.findUnique({
+        where: { id: req.user.activeTeamId },
+        select: { id: true, name: true, settings: true },
+      });
 
-    if (!team) {
-      return res.status(404).json({
+      if (!team) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Team not found' },
+        });
+      }
+
+      // Extract visibility settings with defaults
+      const settings = team.settings || {};
+      const visibility = {
+        athletesCanSeeRankings: settings.athletesCanSeeRankings !== false,
+        athletesCanSeeOthersErgData: settings.athletesCanSeeOthersErgData !== false,
+        athletesCanSeeOthersLineups: settings.athletesCanSeeOthersLineups !== false,
+      };
+
+      res.json({
+        success: true,
+        data: {
+          teamId: team.id,
+          teamName: team.name,
+          visibility,
+        },
+      });
+    } catch (error) {
+      logger.error('Get team settings error', {
+        error: error.message,
+        teamId: req.user?.activeTeamId,
+      });
+      res.status(500).json({
         success: false,
-        error: { code: 'NOT_FOUND', message: 'Team not found' },
+        error: { code: 'SERVER_ERROR', message: 'Failed to get team settings' },
       });
     }
-
-    // Extract visibility settings with defaults
-    const settings = team.settings || {};
-    const visibility = {
-      athletesCanSeeRankings: settings.athletesCanSeeRankings !== false,
-      athletesCanSeeOthersErgData: settings.athletesCanSeeOthersErgData !== false,
-      athletesCanSeeOthersLineups: settings.athletesCanSeeOthersLineups !== false,
-    };
-
-    res.json({
-      success: true,
-      data: {
-        teamId: team.id,
-        teamName: team.name,
-        visibility,
-      },
-    });
-  } catch (error) {
-    logger.error('Get team settings error', { error: error.message, teamId: req.user?.activeTeamId });
-    res.status(500).json({
-      success: false,
-      error: { code: 'SERVER_ERROR', message: 'Failed to get team settings' },
-    });
   }
-});
+);
 
 /**
  * PATCH /api/v1/settings/team
@@ -211,7 +223,10 @@ router.patch('/team', authenticateToken, teamIsolation, requireRole('OWNER'), as
       },
     });
   } catch (error) {
-    logger.error('Update team settings error', { error: error.message, teamId: req.user?.activeTeamId });
+    logger.error('Update team settings error', {
+      error: error.message,
+      teamId: req.user?.activeTeamId,
+    });
     res.status(500).json({
       success: false,
       error: { code: 'SERVER_ERROR', message: 'Failed to update team settings' },

@@ -29,7 +29,7 @@ import {
 import { useWorkoutDetail } from '../hooks/useWorkoutDetail';
 import { WorkoutPageContext } from '../WorkoutPageContext';
 import { SPORT_CONFIG, SOURCE_CONFIG, type SportType, type SourceType } from '../constants';
-import { getSportFromWorkout } from '../utils';
+import { getSportFromWorkout, parseIntervalPattern } from '../utils';
 import { formatDistance, formatDuration, formatPace, formatRelativeDate } from '@/lib/format';
 import { GradientBorder } from '@/components/ui/GradientBorder';
 import { SplitsTable } from './SplitsTable';
@@ -124,6 +124,7 @@ export function WorkoutDetail() {
   const SportIcon = resolveSportIcon(sport);
   const sourceKey = (workout.source ?? 'manual') as SourceType;
   const hasSplits = workout.splits && workout.splits.length > 0;
+  const intervalInfo = parseIntervalPattern(workout.splits);
   const workoutDate = new Date(workout.date);
 
   return (
@@ -191,9 +192,16 @@ export function WorkoutDetail() {
                   <SportIcon size={24} className={`text-${config.color}`} />
                 </div>
                 <div>
-                  <h2 className="text-ink-primary text-lg font-display font-semibold">
-                    {config.label}
-                  </h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-ink-primary text-lg font-display font-semibold">
+                      {config.label}
+                    </h2>
+                    {intervalInfo.isInterval && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-mono font-medium bg-accent-copper-subtle text-accent-copper">
+                        {intervalInfo.pattern}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-ink-secondary text-sm">
                     {format(workoutDate, 'EEEE, MMMM d, yyyy')}
                   </p>
@@ -249,8 +257,19 @@ export function WorkoutDetail() {
       {/* Splits section */}
       {hasSplits && (
         <div className="space-y-4">
-          <h3 className="text-ink-primary text-lg font-medium">Splits</h3>
-          <SplitsTable splits={workout.splits!} machineType={workout.machineType} />
+          <div className="flex items-center gap-3">
+            <h3 className="text-ink-primary text-lg font-medium">Splits</h3>
+            {intervalInfo.isInterval && (
+              <span className="text-xs text-ink-muted font-mono">
+                {intervalInfo.workCount} work intervals
+              </span>
+            )}
+          </div>
+          <SplitsTable
+            splits={workout.splits!}
+            machineType={workout.machineType}
+            intervalInfo={intervalInfo}
+          />
           <SplitsChart splits={workout.splits!} machineType={workout.machineType} />
         </div>
       )}

@@ -18,6 +18,7 @@ import {
 
 import { formatPace } from '@/lib/format';
 import { SPRING_GENTLE } from '@/lib/animations';
+import { parseIntervalPattern } from '../utils';
 import type { Workout, WorkoutSplit } from '../types';
 
 /* ------------------------------------------------------------------ */
@@ -43,8 +44,27 @@ function SplitsTable({
   machineType?: string | null;
 }) {
   const rateLabel = machineType === 'bikerg' ? 'RPM' : 'SPM';
+  const intervalInfo = parseIntervalPattern(splits);
+
+  // Build a set of rest split numbers for dimming
+  const restSplitNumbers = new Set<number>();
+  if (intervalInfo.isInterval) {
+    for (const block of intervalInfo.intervals) {
+      if (block.type === 'rest') {
+        for (const s of block.splits) {
+          restSplitNumbers.add(s.splitNumber);
+        }
+      }
+    }
+  }
+
   return (
     <div className="overflow-x-auto">
+      {intervalInfo.isInterval && (
+        <div className="mb-2 text-xs text-accent-copper font-mono font-medium">
+          {intervalInfo.pattern}
+        </div>
+      )}
       <table className="w-full text-sm font-mono">
         <thead>
           <tr className="text-ink-tertiary uppercase text-xs tracking-wider">
@@ -55,20 +75,28 @@ function SplitsTable({
           </tr>
         </thead>
         <tbody>
-          {splits.map((split) => (
-            <tr key={split.splitNumber} className="border-b border-ink-border last:border-0">
-              <td className="py-1.5 pr-3 text-ink-secondary">{split.splitNumber}</td>
-              <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
-                {formatPace(split.pace, machineType)}
-              </td>
-              <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
-                {split.watts != null ? split.watts : DASH}
-              </td>
-              <td className="py-1.5 pl-3 text-right text-ink-secondary tabular-nums">
-                {split.strokeRate != null ? split.strokeRate : DASH}
-              </td>
-            </tr>
-          ))}
+          {splits.map((split) => {
+            const isRest = restSplitNumbers.has(split.splitNumber);
+            return (
+              <tr
+                key={split.splitNumber}
+                className={`border-b border-ink-border last:border-0 ${isRest ? 'opacity-40' : ''}`}
+              >
+                <td className="py-1.5 pr-3 text-ink-secondary">
+                  {isRest ? 'R' : split.splitNumber}
+                </td>
+                <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
+                  {formatPace(split.pace, machineType)}
+                </td>
+                <td className="py-1.5 px-3 text-right text-ink-primary tabular-nums">
+                  {split.watts != null ? split.watts : DASH}
+                </td>
+                <td className="py-1.5 pl-3 text-right text-ink-secondary tabular-nums">
+                  {split.strokeRate != null ? split.strokeRate : DASH}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

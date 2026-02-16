@@ -1,46 +1,23 @@
 /**
  * Privacy settings section -- radio groups for profile and workout visibility.
- * Preferences stored in localStorage pending backend API.
- * // TODO(phase-53): Wire to backend privacy settings API
+ * Synced to backend via TanStack Query with optimistic updates.
  */
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Shield, Eye, Trophy } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { GlassCard } from '@/components/ui/GlassCard';
+import { settingsQueryOptions, useUpdateSettings, type PrivacyPrefs } from '../api';
 
 /* ------------------------------------------------------------------ */
-/* Types & Defaults                                                     */
+/* Defaults                                                            */
 /* ------------------------------------------------------------------ */
-
-type Visibility = 'public' | 'team' | 'private';
-
-interface PrivacyPrefs {
-  profileVisibility: Visibility;
-  workoutVisibility: 'same' | 'team' | 'private';
-  showInLeaderboards: boolean;
-}
 
 const DEFAULT_PREFS: PrivacyPrefs = {
   profileVisibility: 'team',
   workoutVisibility: 'same',
   showInLeaderboards: true,
 };
-
-const STORAGE_KEY = 'rowlab-privacy-prefs';
-
-function loadPrefs(): PrivacyPrefs {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return JSON.parse(stored) as PrivacyPrefs;
-  } catch {
-    // Corrupted data -- reset
-  }
-  return DEFAULT_PREFS;
-}
-
-function savePrefs(prefs: PrivacyPrefs): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-}
 
 /* ------------------------------------------------------------------ */
 /* Radio Option                                                         */
@@ -94,7 +71,7 @@ function RadioOption<T extends string>({
 }
 
 /* ------------------------------------------------------------------ */
-/* Toggle Switch (reused from Notifications for leaderboard toggle)     */
+/* Toggle Switch                                                        */
 /* ------------------------------------------------------------------ */
 
 function ToggleSwitch({
@@ -102,11 +79,13 @@ function ToggleSwitch({
   onChange,
   label,
   description,
+  disabled,
 }: {
   checked: boolean;
   onChange: (value: boolean) => void;
   label: string;
   description?: string;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between gap-4 py-2">
@@ -119,10 +98,12 @@ function ToggleSwitch({
         role="switch"
         aria-checked={checked}
         aria-label={label}
+        disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`
           relative shrink-0 w-11 h-6 rounded-full transition-colors duration-150 cursor-pointer
           ${checked ? 'bg-accent-copper' : 'bg-ink-well'}
+          ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `.trim()}
       >
         <span
@@ -142,16 +123,18 @@ function ToggleSwitch({
 /* ------------------------------------------------------------------ */
 
 export function PrivacySection() {
-  const [prefs, setPrefs] = useState<PrivacyPrefs>(loadPrefs);
+  const { data: settings } = useQuery(settingsQueryOptions());
+  const { mutate: updateSettings, isPending } = useUpdateSettings();
 
-  // Persist on change
-  useEffect(() => {
-    savePrefs(prefs);
-  }, [prefs]);
+  const prefs: PrivacyPrefs = settings?.privacyPrefs ?? DEFAULT_PREFS;
 
-  const updatePref = useCallback(<K extends keyof PrivacyPrefs>(key: K, value: PrivacyPrefs[K]) => {
-    setPrefs((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  const updatePref = useCallback(
+    <K extends keyof PrivacyPrefs>(key: K, value: PrivacyPrefs[K]) => {
+      const updated: PrivacyPrefs = { ...prefs, [key]: value };
+      updateSettings({ privacyPrefs: updated });
+    },
+    [prefs, updateSettings]
+  );
 
   return (
     <div className="space-y-6">
@@ -234,6 +217,7 @@ export function PrivacySection() {
           description="Your stats will appear in team rankings and leaderboards"
           checked={prefs.showInLeaderboards}
           onChange={(v) => updatePref('showInLeaderboards', v)}
+          disabled={isPending}
         />
       </GlassCard>
     </div>

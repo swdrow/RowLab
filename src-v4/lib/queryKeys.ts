@@ -49,6 +49,10 @@ export const queryKeys = {
     volume: (filters: { range: string; granularity: string; metric: string }) =>
       [...queryKeys.analytics.all, 'volume', filters] as const,
   },
+  settings: {
+    all: ['settings'] as const,
+    user: () => [...queryKeys.settings.all, 'user'] as const,
+  },
   integrations: {
     all: ['integrations'] as const,
     c2: {
