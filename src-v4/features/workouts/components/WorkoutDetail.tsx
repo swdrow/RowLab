@@ -5,7 +5,7 @@
  * splits table + chart, notes section, C2 logbook link, and edit trigger.
  */
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import {
@@ -23,6 +23,7 @@ import {
   ChevronRight,
   ExternalLink,
   ArrowLeft,
+  Share2,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -34,6 +35,7 @@ import { formatDistance, formatDuration, formatPace, formatRelativeDate } from '
 import { GradientBorder } from '@/components/ui/GradientBorder';
 import { SplitsTable } from './SplitsTable';
 import { SplitsChart } from './SplitsChart';
+import { ShareCardModal } from '@/features/share';
 import type { Workout } from '../types';
 
 /* ------------------------------------------------------------------ */
@@ -101,6 +103,7 @@ export function WorkoutDetail() {
   // WorkoutPageContext may be null if user navigated directly to this route
   const pageCtx = useContext(WorkoutPageContext);
   const onEdit = pageCtx?.onEdit ?? null;
+  const [shareOpen, setShareOpen] = useState(false);
 
   if (isLoading) return null; // Handled by Suspense fallback
 
@@ -141,6 +144,14 @@ export function WorkoutDetail() {
         </button>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShareOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-ink-secondary hover:text-ink-primary hover:bg-ink-hover rounded-lg transition-colors"
+          >
+            <Share2 size={14} />
+            <span>Share</span>
+          </button>
           {onEdit && (
             <button
               type="button"
@@ -308,6 +319,14 @@ export function WorkoutDetail() {
           View on Concept2 Logbook
         </a>
       )}
+
+      {/* Share card modal */}
+      <ShareCardModal
+        workoutId={workoutId}
+        workoutLabel={`${config.label} — ${format(workoutDate, 'MMM d, yyyy')}`}
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+      />
     </div>
   );
 }
