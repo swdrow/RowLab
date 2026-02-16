@@ -34,12 +34,22 @@ export function Sidebar() {
     [favorites, allItems]
   );
 
+  const searchParams = routerState.location.search;
+
   const isActive = useCallback(
-    (path: string) => {
-      if (path === '/') return currentPath === '/';
-      return currentPath === path || currentPath.startsWith(path + '/');
+    (item: { path: string; search?: Record<string, string> }) => {
+      if (item.path === '/') return currentPath === '/';
+      const pathMatch = currentPath === item.path || currentPath.startsWith(item.path + '/');
+      if (!pathMatch) return false;
+      // If item has search params, verify they match (e.g. calendar view=calendar)
+      if (item.search) {
+        return Object.entries(item.search).every(
+          ([k, v]) => (searchParams as Record<string, unknown>)[k] === v
+        );
+      }
+      return true;
     },
-    [currentPath]
+    [currentPath, searchParams]
   );
 
   // Tablet: collapsed rail
@@ -55,7 +65,7 @@ export function Sidebar() {
         <nav className="flex-1 space-y-1 overflow-y-auto px-2 py-2">
           {navConfig.sections.flatMap((section) =>
             section.items.map((item) => (
-              <RailNavItem key={item.id} item={item} active={isActive(item.path)} />
+              <RailNavItem key={item.id} item={item} active={isActive(item)} />
             ))
           )}
         </nav>
@@ -63,7 +73,7 @@ export function Sidebar() {
         {/* Footer items */}
         <div className="space-y-1 border-t border-ink-border px-2 py-2">
           {sidebarFooterItems.map((item) => (
-            <RailNavItem key={item.id} item={item} active={isActive(item.path)} />
+            <RailNavItem key={item.id} item={item} active={isActive(item)} />
           ))}
         </div>
       </aside>
@@ -81,43 +91,45 @@ export function Sidebar() {
           </span>
         </div>
 
-        {/* Scrollable nav area */}
-        <nav className="flex-1 overflow-y-auto px-3 py-2">
-          {/* Favorites section */}
-          {favoriteItems.length > 0 && (
-            <div className="mb-4">
-              <SectionHeader label="Favorites" />
-              <div className="space-y-0.5">
-                {favoriteItems.map((item) => (
-                  <FullNavItem
-                    key={item.id}
-                    item={item}
-                    active={isActive(item.path)}
-                    isFavorite
-                    onToggleFavorite={toggleFavorite}
-                  />
-                ))}
+        {/* Scrollable nav area — uses justify-between when few items to fill vertical space */}
+        <nav className="flex flex-1 flex-col overflow-y-auto px-3 py-2">
+          <div className="flex-1 flex flex-col justify-start gap-4">
+            {/* Favorites section */}
+            {favoriteItems.length > 0 && (
+              <div>
+                <SectionHeader label="Favorites" />
+                <div className="space-y-0.5">
+                  {favoriteItems.map((item) => (
+                    <FullNavItem
+                      key={item.id}
+                      item={item}
+                      active={isActive(item)}
+                      isFavorite
+                      onToggleFavorite={toggleFavorite}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Nav sections */}
-          {navConfig.sections.map((section) => (
-            <div key={section.id} className="mb-4">
-              <SectionHeader label={section.label} />
-              <div className="space-y-0.5">
-                {section.items.map((item) => (
-                  <FullNavItem
-                    key={item.id}
-                    item={item}
-                    active={isActive(item.path)}
-                    isFavorite={isFavorite(item.id)}
-                    onToggleFavorite={toggleFavorite}
-                  />
-                ))}
+            {/* Nav sections */}
+            {navConfig.sections.map((section) => (
+              <div key={section.id}>
+                <SectionHeader label={section.label} />
+                <div className="space-y-0.5">
+                  {section.items.map((item) => (
+                    <FullNavItem
+                      key={item.id}
+                      item={item}
+                      active={isActive(item)}
+                      isFavorite={isFavorite(item.id)}
+                      onToggleFavorite={toggleFavorite}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </nav>
 
         {/* Footer */}
@@ -126,7 +138,7 @@ export function Sidebar() {
             <FullNavItem
               key={item.id}
               item={item}
-              active={isActive(item.path)}
+              active={isActive(item)}
               isFavorite={isFavorite(item.id)}
               onToggleFavorite={toggleFavorite}
             />
@@ -163,6 +175,7 @@ function FullNavItem({ item, active, isFavorite: pinned, onToggleFavorite }: Ful
   return (
     <Link
       to={item.path}
+      search={item.search as never}
       className={`group relative flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition-colors ${
         active
           ? 'bg-ink-raised text-ink-primary'
@@ -216,6 +229,7 @@ function RailNavItem({ item, active }: RailNavItemProps) {
   return (
     <Link
       to={item.path}
+      search={item.search as never}
       className={`group relative flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${
         active
           ? 'bg-ink-raised text-accent-copper'

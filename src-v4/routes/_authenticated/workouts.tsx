@@ -10,11 +10,12 @@
  * - WorkoutPageContext to pass onEdit/onDelete/onCreateNew to child routes
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { z } from 'zod';
 import { Filter, Plus } from 'lucide-react';
+import { motion, useMotionValueEvent, useScroll } from 'motion/react';
 
 import { TabToggle } from '@/components/ui/TabToggle';
 import { useIsMobile } from '@/hooks/useBreakpoint';
@@ -38,6 +39,7 @@ const workoutSearchSchema = z.object({
   dateFrom: z.string().optional().catch(undefined),
   dateTo: z.string().optional().catch(undefined),
   calendarMode: z.enum(['monthly', 'weekly']).catch('monthly'),
+  action: z.enum(['new']).optional().catch(undefined),
 });
 
 export type WorkoutSearch = z.infer<typeof workoutSearchSchema>;
@@ -70,6 +72,14 @@ function WorkoutsLayout() {
   // Filter popover state
   const [filterOpen, setFilterOpen] = useState(false);
 
+  // FAB scroll-hide: hide when scrolling down, show when scrolling up
+  const [fabVisible, setFabVisible] = useState(true);
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    setFabVisible(latest < prev || latest < 50);
+  });
+
   // Delete dialog state
   const [deletingWorkout, setDeletingWorkout] = useState<Workout | null>(null);
 
@@ -77,6 +87,14 @@ function WorkoutsLayout() {
     setEditingWorkout(null);
     setSlideOverOpen(true);
   }, []);
+
+  // Auto-open slide-over when navigated with ?action=new, then clear the param
+  useEffect(() => {
+    if (search.action === 'new') {
+      handleCreateNew();
+      void navigate({ search: (prev) => ({ ...prev, action: undefined }), replace: true });
+    }
+  }, [search.action, handleCreateNew, navigate]);
 
   const handleEdit = useCallback((workout: Workout) => {
     setEditingWorkout(workout);
@@ -195,17 +213,23 @@ function WorkoutsLayout() {
         <Outlet />
       </div>
 
-      {/* FAB */}
-      <button
+      {/* FAB — 44px, scroll-hide, entrance animation */}
+      <motion.button
         type="button"
         onClick={handleCreateNew}
-        className={`fixed z-30 w-14 h-14 bg-accent-copper hover:bg-accent-copper-hover text-ink-deep rounded-full shadow-glow-copper flex items-center justify-center transition-colors ${
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{
+          scale: fabVisible ? 1 : 0,
+          opacity: fabVisible ? 1 : 0,
+        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+        className={`fixed z-30 w-11 h-11 bg-accent-copper hover:bg-accent-copper-hover text-ink-deep rounded-full shadow-glow-copper flex items-center justify-center transition-colors ${
           isMobile ? 'bottom-20 right-4' : 'bottom-6 right-6'
         }`}
         aria-label="Log new workout"
       >
-        <Plus size={24} />
-      </button>
+        <Plus size={20} />
+      </motion.button>
 
       {/* Slide-over */}
       <WorkoutSlideOver

@@ -33,7 +33,14 @@ const trainingSection: NavSection = {
   items: [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/', zone: 'personal' },
     { id: 'workouts', label: 'Workouts', icon: Dumbbell, path: '/workouts', zone: 'personal' },
-    { id: 'calendar', label: 'Calendar', icon: Calendar, path: '/calendar', zone: 'personal' },
+    {
+      id: 'calendar',
+      label: 'Calendar',
+      icon: Calendar,
+      path: '/workouts',
+      zone: 'personal',
+      search: { view: 'calendar' },
+    },
   ],
 };
 

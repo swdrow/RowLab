@@ -29,7 +29,10 @@ export function RecentWorkouts({ workouts, totalCount, className = '' }: RecentW
           icon={Dumbbell}
           title="No workouts yet"
           description="Log your first workout to start tracking your progress."
-          action={{ label: 'Log a Workout', to: '/workouts/new' }}
+          action={{
+            label: 'Log a Workout',
+            onClick: () => navigate({ to: '/workouts', search: { action: 'new' } as never }),
+          }}
           size="sm"
         />
       </section>

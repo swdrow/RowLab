@@ -186,32 +186,29 @@ export function DashboardEmptyState() {
         variants={itemVariants}
         className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto"
       >
-        {/* TODO(phase-47): Create /workouts/new route */}
         <Button
           variant="primary"
           size="lg"
           className="w-full sm:w-auto"
-          onClick={() => navigate({ to: '/workouts/new' as '/' })}
+          onClick={() => navigate({ to: '/workouts', search: { action: 'new' } as never })}
         >
           Log a Workout
         </Button>
 
-        {/* TODO(phase-47): Create /settings/integrations route */}
         <Button
           variant="secondary"
           size="lg"
           className="w-full sm:w-auto"
-          onClick={() => navigate({ to: '/settings/integrations' as '/' })}
+          onClick={() => navigate({ to: '/settings' })}
         >
           Connect Concept2
         </Button>
 
-        {/* TODO(phase-47): Create /settings/teams route */}
         <Button
           variant="ghost"
           size="lg"
           className="w-full sm:w-auto"
-          onClick={() => navigate({ to: '/settings/teams' as '/' })}
+          onClick={() => navigate({ to: '/create-team' })}
         >
           Join a Team
         </Button>

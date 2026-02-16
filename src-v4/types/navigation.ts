@@ -9,6 +9,7 @@ export interface NavItem {
   label: string;
   icon: LucideIcon;
   path: string;
+  search?: Record<string, string>;
   badge?: number;
   zone: 'personal' | 'team' | 'coach';
 }

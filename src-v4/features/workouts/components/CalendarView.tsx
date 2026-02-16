@@ -19,6 +19,7 @@ import {
 import { ChevronLeft, ChevronRight, Grid3X3, BarChart3 } from 'lucide-react';
 
 import { TabToggle } from '@/components/ui/TabToggle';
+import { useAuth } from '@/features/auth/useAuth';
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type { WorkoutFilters, WorkoutsData } from '../types';
@@ -42,6 +43,7 @@ interface CalendarViewProps {
 /* ------------------------------------------------------------------ */
 
 export function CalendarView({ filters, calendarMode }: CalendarViewProps) {
+  const { isAuthenticated } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [monthlyDisplayMode, setMonthlyDisplayMode] = useState<'grid' | 'heatmap'>('grid');
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
@@ -88,6 +90,7 @@ export function CalendarView({ filters, calendarMode }: CalendarViewProps) {
       return res.data.data as WorkoutsData;
     },
     staleTime: 60_000,
+    enabled: isAuthenticated,
   });
 
   const workouts: Workout[] = data?.items ?? [];
