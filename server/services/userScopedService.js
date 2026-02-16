@@ -747,35 +747,7 @@ export async function getUserPRs(userId) {
     }
   }
 
-  // 1. Query ErgTest records (rower only, from athlete records)
-  if (athleteIds.length > 0) {
-    const ergTests = await prisma.ergTest.findMany({
-      where: { athleteId: { in: athleteIds } },
-      select: {
-        testType: true,
-        testDate: true,
-        timeSeconds: true,
-        watts: true,
-      },
-      orderBy: { testDate: 'desc' },
-    });
-
-    for (const test of ergTests) {
-      const tt = test.testType;
-      if (!byMachine.rower[tt]) {
-        byMachine.rower[tt] = [];
-      }
-      const timeTenths = Math.round(Number(test.timeSeconds) * 10);
-      const watts = test.watts || wattsFromPace(timeTenths, 'rower');
-      byMachine.rower[tt].push({
-        time: timeTenths,
-        date: test.testDate.toISOString(),
-        watts,
-      });
-    }
-  }
-
-  // 2. Query Workout records for erg-type workouts with exact standard distances
+  // 1. Query Workout records for erg-type workouts with exact standard distances
   // Include both RowErg/SkiErg standard distances AND BikeErg distances (2x)
   const allStandardMeters = [
     ...new Set([...Object.values(DISTANCE_METERS), ...Object.values(BIKERG_DISTANCE_METERS)]),
@@ -810,6 +782,10 @@ export async function getUserPRs(userId) {
     bikergMetersToLabel[meters] = label;
   }
 
+  // Build a set of non-rower workout fingerprints (date+time) so we can
+  // exclude ErgTest records that were incorrectly created from BikeErg workouts
+  const nonRowerFingerprints = new Set();
+
   for (const w of ergWorkouts) {
     const mt = w.machineType || 'rower';
     // BikeErg uses doubled distances for PR benchmarks
@@ -836,6 +812,47 @@ export async function getUserPRs(userId) {
       date: w.date.toISOString(),
       watts,
     });
+
+    // Track non-rower workouts so we can filter out bad ErgTest records
+    if (mt !== 'rower') {
+      nonRowerFingerprints.add(`${timeTenths}-${w.date.toISOString().slice(0, 10)}`);
+    }
+  }
+
+  // 2. Query ErgTest records (rower/skierg only — ErgTest has no machineType field)
+  // Filter out entries that match BikeErg workouts (created before machineType filtering was added)
+  if (athleteIds.length > 0) {
+    const ergTests = await prisma.ergTest.findMany({
+      where: { athleteId: { in: athleteIds } },
+      select: {
+        testType: true,
+        testDate: true,
+        timeSeconds: true,
+        watts: true,
+      },
+      orderBy: { testDate: 'desc' },
+    });
+
+    for (const test of ergTests) {
+      const tt = test.testType;
+      if (!byMachine.rower[tt]) {
+        byMachine.rower[tt] = [];
+      }
+      const timeTenths = Math.round(Number(test.timeSeconds) * 10);
+
+      // Skip ErgTest records that match a non-rower workout (e.g., BikeErg)
+      const fingerprint = `${timeTenths}-${test.testDate.toISOString().slice(0, 10)}`;
+      if (nonRowerFingerprints.has(fingerprint)) {
+        continue;
+      }
+
+      const watts = test.watts || wattsFromPace(timeTenths, 'rower');
+      byMachine.rower[tt].push({
+        time: timeTenths,
+        date: test.testDate.toISOString(),
+        watts,
+      });
+    }
   }
 
   // 3. Build final byMachine structure with PR records
