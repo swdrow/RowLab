@@ -6,6 +6,18 @@ import { mapSourceForApi } from '../middleware/rfc7807.js';
 // ============================================
 const STANDARD_DISTANCES = ['500m', '1k', '2k', '5k', '6k', '10k', 'hm', 'fm'];
 
+// BikeErg benchmark distances are 2x RowErg distances (a 2k row = 4k bike)
+const BIKERG_DISTANCE_METERS = {
+  '500m': 1000,
+  '1k': 2000,
+  '2k': 4000,
+  '5k': 10000,
+  '6k': 12000,
+  '10k': 20000,
+  hm: 42195,
+  fm: 84390,
+};
+
 // ============================================
 // Helpers
 // ============================================
@@ -764,12 +776,16 @@ export async function getUserPRs(userId) {
   }
 
   // 2. Query Workout records for erg-type workouts with exact standard distances
+  // Include both RowErg/SkiErg standard distances AND BikeErg distances (2x)
+  const allStandardMeters = [
+    ...new Set([...Object.values(DISTANCE_METERS), ...Object.values(BIKERG_DISTANCE_METERS)]),
+  ];
   const ergWorkouts = await prisma.workout.findMany({
     where: {
       AND: [
         baseWhere,
         { type: 'erg' },
-        { distanceM: { in: Object.values(DISTANCE_METERS) } },
+        { distanceM: { in: allStandardMeters } },
         { durationSeconds: { not: null } },
       ],
     },
@@ -784,17 +800,21 @@ export async function getUserPRs(userId) {
     orderBy: { date: 'desc' },
   });
 
-  // Reverse lookup: meters -> testType label
+  // Reverse lookup: meters -> testType label (machine-specific)
   const metersToLabel = {};
   for (const [label, meters] of Object.entries(DISTANCE_METERS)) {
     metersToLabel[meters] = label;
   }
+  const bikergMetersToLabel = {};
+  for (const [label, meters] of Object.entries(BIKERG_DISTANCE_METERS)) {
+    bikergMetersToLabel[meters] = label;
+  }
 
   for (const w of ergWorkouts) {
-    const label = metersToLabel[w.distanceM];
-    if (!label) continue;
-
     const mt = w.machineType || 'rower';
+    // BikeErg uses doubled distances for PR benchmarks
+    const label = mt === 'bikerg' ? bikergMetersToLabel[w.distanceM] : metersToLabel[w.distanceM];
+    if (!label) continue;
     if (!byMachine[mt]) {
       byMachine[mt] = {};
       for (const dist of STANDARD_DISTANCES) {

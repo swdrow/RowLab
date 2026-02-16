@@ -17,7 +17,7 @@ import type { MachineType } from './MachineTabs';
 /** Standard C2 distance order, matching backend STANDARD_DISTANCES */
 const DISTANCE_ORDER = ['500m', '1k', '2k', '5k', '6k', '10k', 'hm', 'fm'] as const;
 
-/** Human-readable distance labels */
+/** Human-readable distance labels (RowErg/SkiErg) */
 const DISTANCE_LABELS: Record<string, string> = {
   '500m': '500m',
   '1k': '1,000m',
@@ -25,6 +25,18 @@ const DISTANCE_LABELS: Record<string, string> = {
   '5k': '5,000m',
   '6k': '6,000m',
   '10k': '10,000m',
+  hm: 'Half Marathon',
+  fm: 'Full Marathon',
+};
+
+/** BikeErg distances are 2x RowErg (a 2k row = 4k bike) */
+const BIKERG_DISTANCE_LABELS: Record<string, string> = {
+  '500m': '1,000m',
+  '1k': '2,000m',
+  '2k': '4,000m',
+  '5k': '10,000m',
+  '6k': '12,000m',
+  '10k': '20,000m',
   hm: 'Half Marathon',
   fm: 'Full Marathon',
 };
@@ -105,7 +117,11 @@ export function PRTable({ records, machineType }: PRTableProps) {
                     {hasPR && (
                       <div className="w-0.5 h-5 rounded-full bg-accent-copper" aria-hidden="true" />
                     )}
-                    <span className={hasPR ? 'font-medium' : ''}>{DISTANCE_LABELS[dist]}</span>
+                    <span className={hasPR ? 'font-medium' : ''}>
+                      {machineType === 'bikerg'
+                        ? BIKERG_DISTANCE_LABELS[dist]
+                        : DISTANCE_LABELS[dist]}
+                    </span>
                     {recent && (
                       <span className="text-[9px] font-semibold uppercase tracking-wider text-accent-copper bg-accent-copper/10 px-1.5 py-0.5 rounded">
                         New
@@ -138,7 +154,7 @@ export function PRTable({ records, machineType }: PRTableProps) {
 // Pace calculation helpers
 // ---------------------------------------------------------------------------
 
-/** Map distance labels to meters */
+/** Map distance labels to meters (RowErg/SkiErg) */
 const DISTANCE_METERS: Record<string, number> = {
   '500m': 500,
   '1k': 1000,
@@ -150,6 +166,18 @@ const DISTANCE_METERS: Record<string, number> = {
   fm: 42195,
 };
 
+/** BikeErg benchmark distances (2x RowErg) */
+const BIKERG_DISTANCE_METERS: Record<string, number> = {
+  '500m': 1000,
+  '1k': 2000,
+  '2k': 4000,
+  '5k': 10000,
+  '6k': 12000,
+  '10k': 20000,
+  hm: 42195,
+  fm: 84390,
+};
+
 /**
  * Compute pace display from best time (tenths of seconds) and distance.
  * For rower/skierg: pace per 500m. For bikerg: pace per 1000m.
@@ -159,7 +187,9 @@ function computePaceDisplay(
   distLabel: string,
   machineType: MachineType
 ): string {
-  const meters = DISTANCE_METERS[distLabel];
+  // BikeErg benchmarks use doubled distances
+  const metersMap = machineType === 'bikerg' ? BIKERG_DISTANCE_METERS : DISTANCE_METERS;
+  const meters = metersMap[distLabel];
   if (!meters || timeTenths <= 0) return DASH;
 
   const paceDistance = machineType === 'bikerg' ? 1000 : 500;
