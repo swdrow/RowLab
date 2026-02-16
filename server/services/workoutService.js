@@ -9,6 +9,8 @@ export async function createWorkout(teamId, data) {
       teamId,
       athleteId: data.athleteId,
       source: data.source || 'manual',
+      type: data.type || 'erg',
+      machineType: data.machineType || null,
       c2LogbookId: data.c2LogbookId || null,
       date: new Date(data.date),
       distanceM: data.distanceM || null,
