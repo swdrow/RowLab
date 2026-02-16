@@ -782,9 +782,10 @@ export async function getUserPRs(userId) {
     bikergMetersToLabel[meters] = label;
   }
 
-  // Build a set of non-rower workout fingerprints (date+time) so we can
-  // exclude ErgTest records that were incorrectly created from BikeErg workouts
-  const nonRowerFingerprints = new Set();
+  // Build a set of non-rower workout keys (date + distanceM) so we can
+  // exclude ErgTest records that were created from BikeErg/SkiErg workouts.
+  // Uses date+distance rather than time fingerprints for robustness.
+  const nonRowerDayDistance = new Set();
 
   for (const w of ergWorkouts) {
     const mt = w.machineType || 'rower';
@@ -813,14 +814,16 @@ export async function getUserPRs(userId) {
       watts,
     });
 
-    // Track non-rower workouts so we can filter out bad ErgTest records
+    // Track non-rower workouts by date + distance for ErgTest filtering
     if (mt !== 'rower') {
-      nonRowerFingerprints.add(`${timeTenths}-${w.date.toISOString().slice(0, 10)}`);
+      nonRowerDayDistance.add(`${w.date.toISOString().slice(0, 10)}-${w.distanceM}`);
     }
   }
 
   // 2. Query ErgTest records (rower/skierg only — ErgTest has no machineType field)
-  // Filter out entries that match BikeErg workouts (created before machineType filtering was added)
+  // ErgTests were historically created from ALL erg workouts including BikeErg,
+  // so we need to cross-reference each ErgTest against its source Workout to
+  // exclude non-rower entries.
   if (athleteIds.length > 0) {
     const ergTests = await prisma.ergTest.findMany({
       where: { athleteId: { in: athleteIds } },
@@ -829,9 +832,31 @@ export async function getUserPRs(userId) {
         testDate: true,
         timeSeconds: true,
         watts: true,
+        distanceM: true,
+        notes: true,
       },
       orderBy: { testDate: 'desc' },
     });
+
+    // Also query ALL non-rower erg workouts (any distance) to build exclusion set
+    const nonRowerWorkouts = await prisma.workout.findMany({
+      where: {
+        AND: [
+          baseWhere,
+          { type: 'erg' },
+          { machineType: { not: 'rower' } },
+          { machineType: { not: null } },
+        ],
+      },
+      select: { distanceM: true, date: true, durationSeconds: true },
+    });
+
+    // Build exclusion set: date + distance of all non-rower workouts
+    for (const w of nonRowerWorkouts) {
+      if (w.distanceM && w.date) {
+        nonRowerDayDistance.add(`${w.date.toISOString().slice(0, 10)}-${w.distanceM}`);
+      }
+    }
 
     for (const test of ergTests) {
       const tt = test.testType;
@@ -840,10 +865,14 @@ export async function getUserPRs(userId) {
       }
       const timeTenths = Math.round(Number(test.timeSeconds) * 10);
 
-      // Skip ErgTest records that match a non-rower workout (e.g., BikeErg)
-      const fingerprint = `${timeTenths}-${test.testDate.toISOString().slice(0, 10)}`;
-      if (nonRowerFingerprints.has(fingerprint)) {
-        continue;
+      // Skip ErgTest records where a non-rower workout exists on the same day
+      // at the same distance (these were incorrectly auto-created from BikeErg workouts)
+      const distM = test.distanceM || DISTANCE_METERS[tt];
+      if (distM) {
+        const key = `${test.testDate.toISOString().slice(0, 10)}-${distM}`;
+        if (nonRowerDayDistance.has(key)) {
+          continue;
+        }
       }
 
       const watts = test.watts || wattsFromPace(timeTenths, 'rower');
