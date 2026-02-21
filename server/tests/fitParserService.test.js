@@ -19,7 +19,7 @@ vi.mock('../utils/logger.js', () => ({
 }));
 
 // Import the module
-const { validateFitFile, toRowLabWorkout } = await import('../services/fitParserService.js');
+const { validateFitFile, toOarbitWorkout } = await import('../services/fitParserService.js');
 
 describe('FitParserService', () => {
   beforeEach(() => {
@@ -90,8 +90,8 @@ describe('FitParserService', () => {
     });
   });
 
-  describe('toRowLabWorkout', () => {
-    it('should convert parsed FIT data to RowLab workout format', () => {
+  describe('toOarbitWorkout', () => {
+    it('should convert parsed FIT data to oarbit workout format', () => {
       const parsedData = {
         type: 'row',
         date: '2024-01-15T10:00:00Z',
@@ -111,7 +111,7 @@ describe('FitParserService', () => {
         laps: [],
       };
 
-      const result = toRowLabWorkout(parsedData, 'user123', 'team456', 'athlete789');
+      const result = toOarbitWorkout(parsedData, 'user123', 'team456', 'athlete789');
 
       expect(result.userId).toBe('user123');
       expect(result.teamId).toBe('team456');
@@ -141,7 +141,7 @@ describe('FitParserService', () => {
         sport: 'indoor_rowing',
       };
 
-      const result = toRowLabWorkout(parsedData, 'user123', 'team456');
+      const result = toOarbitWorkout(parsedData, 'user123', 'team456');
 
       expect(result.athleteId).toBeNull();
     });
@@ -155,7 +155,7 @@ describe('FitParserService', () => {
         sport: 'rowing',
       };
 
-      const result = toRowLabWorkout(parsedData, 'user123', 'team456');
+      const result = toOarbitWorkout(parsedData, 'user123', 'team456');
 
       expect(result.duration).toBe(1801);
       expect(result.distance).toBe(6000);
@@ -170,7 +170,7 @@ describe('FitParserService', () => {
         // All other fields missing
       };
 
-      const result = toRowLabWorkout(parsedData, 'user123', 'team456');
+      const result = toOarbitWorkout(parsedData, 'user123', 'team456');
 
       expect(result.calories).toBeNull();
       expect(result.avgHeartRate).toBeNull();
@@ -191,7 +191,7 @@ describe('FitParserService', () => {
         sport: 'cycling',
       };
 
-      const result = toRowLabWorkout(parsedData, 'user123', 'team456');
+      const result = toOarbitWorkout(parsedData, 'user123', 'team456');
 
       expect(result.avgStrokeRate).toBe(90);
     });
@@ -210,7 +210,7 @@ describe('FitParserService', () => {
         ],
       };
 
-      const result = toRowLabWorkout(parsedData, 'user123', 'team456');
+      const result = toOarbitWorkout(parsedData, 'user123', 'team456');
 
       expect(result.metadata.lapCount).toBe(3);
     });
@@ -225,7 +225,7 @@ describe('FitParserService', () => {
         sport: 'rowing',
       };
 
-      const result = toRowLabWorkout(parsedData, 'user123', 'team456');
+      const result = toOarbitWorkout(parsedData, 'user123', 'team456');
 
       expect(result.splitTime).toBe(150.0);
     });

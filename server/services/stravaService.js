@@ -263,7 +263,7 @@ export async function fetchActivity(userId, activityId) {
 
 /**
  * Create an activity on Strava
- * @param {string} userId - RowLab user ID
+ * @param {string} userId - oarbit user ID
  * @param {object} activity - Activity data to upload
  * @returns {Promise<object>} Created Strava activity
  */
@@ -371,7 +371,7 @@ function buildActivityName(workout) {
  * Build description with workout details
  */
 function buildActivityDescription(workout) {
-  const lines = ['Synced from Concept2 Logbook via RowLab'];
+  const lines = ['Synced from Concept2 Logbook via oarbit'];
   const time = workout.time ? workout.time / 10 : workout.durationSeconds;
   const distance = workout.distance || workout.distanceM;
 
@@ -463,7 +463,7 @@ export async function isDuplicateWorkout({ userId, date, distanceM, stravaActivi
 
 /**
  * Sync a single Strava activity as a workout (used by webhook handler)
- * @param {string} userId - RowLab user ID
+ * @param {string} userId - oarbit user ID
  * @param {number|string} activityId - Strava activity ID
  * @returns {Promise<{synced: boolean, reason: string, workoutId?: string}>}
  */
@@ -695,7 +695,7 @@ export async function updateC2SyncConfig(userId, config) {
 
 /**
  * Sync Concept2 workouts to Strava
- * @param {string} userId - RowLab user ID
+ * @param {string} userId - oarbit user ID
  * @param {object} options - Sync options
  * @returns {Promise<object>} Sync results
  */

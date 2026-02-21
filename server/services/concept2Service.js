@@ -841,7 +841,7 @@ export async function handleWebhook(payload) {
 
 /**
  * Connect an athlete to Concept2
- * @param {string} athleteId - RowLab athlete ID
+ * @param {string} athleteId - oarbit athlete ID
  * @param {string} code - OAuth authorization code
  * @returns {Promise<object>} - Connection result
  */

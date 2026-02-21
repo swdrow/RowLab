@@ -1,4 +1,4 @@
-// Prisma schema for RowLab
+// Prisma schema for oarbit
 // SQLite database with migration path to PostgreSQL
 
 generator client {

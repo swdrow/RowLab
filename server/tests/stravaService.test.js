@@ -9,7 +9,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 // Set up env vars before any imports
 process.env.STRAVA_CLIENT_ID = 'test_strava_client_id';
 process.env.STRAVA_CLIENT_SECRET = 'test_strava_secret';
-process.env.STRAVA_REDIRECT_URI = 'https://rowlab.net/strava/callback';
+process.env.STRAVA_REDIRECT_URI = 'https://oarbit.net/strava/callback';
 
 // Create hoisted mocks
 const mockLogger = vi.hoisted(() => ({

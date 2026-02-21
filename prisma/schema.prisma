@@ -1,4 +1,4 @@
-// Prisma schema for RowLab v2.0
+// Prisma schema for oarbit v2.0
 // PostgreSQL with multi-tenant team isolation
 
 generator client {
@@ -365,7 +365,7 @@ model StravaAuth {
   refreshToken    String    @db.Text // OAuth refresh token (encrypted)
   tokenExpiresAt  DateTime
   lastSyncedAt    DateTime?
-  syncEnabled     Boolean   @default(true) // Auto-sync from Strava to RowLab
+  syncEnabled     Boolean   @default(true) // Auto-sync from Strava to oarbit
   scope           String? // OAuth scopes granted
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt

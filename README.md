@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/images/logo.svg" alt="RowLab Logo" width="100" height="100">
+  <img src="public/images/logo.svg" alt="oarbit Logo" width="100" height="100">
 </p>
 
-<h1 align="center">RowLab</h1>
+<h1 align="center">oarbit</h1>
 
 <p align="center">
   <strong>Data-Driven Lineup Optimization for Competitive Rowing</strong>
@@ -30,7 +30,7 @@
 
 ## Overview
 
-**RowLab** transforms how rowing coaches build boat lineups and analyze team performance. Stop relying on spreadsheets, gut feelings, and institutional knowledge that walks out the door. Start making data-driven decisions with AI-powered recommendations, statistical seat racing analysis, and comprehensive performance tracking.
+**oarbit** transforms how rowing coaches build boat lineups and analyze team performance. Stop relying on spreadsheets, gut feelings, and institutional knowledge that walks out the door. Start making data-driven decisions with AI-powered recommendations, statistical seat racing analysis, and comprehensive performance tracking.
 
 ### The Problem
 
@@ -44,7 +44,7 @@ Rowing coaches face constant challenges:
 
 ### The Solution
 
-RowLab is the only platform that combines:
+oarbit is the only platform that combines:
 
 - **Modern drag-and-drop lineup builder** with real-time collaboration
 - **AI-powered optimization** using genetic algorithms (unique in market)
@@ -490,7 +490,7 @@ RowLab/
 
 ### Design System: Canvas
 
-RowLab uses the **Canvas design system** — a warm, precision-focused aesthetic:
+oarbit uses the **Canvas design system** — a warm, precision-focused aesthetic:
 
 - **Warm copper & warm dark** - Premium visual identity inspired by athletic instruments
 - **Glass cards** - Subtle backdrop blur with chamfered panel styling
@@ -503,7 +503,7 @@ Design tokens are defined in `src/theme/` and evolved through v2.1-v3.0.
 
 ### Writing Tests
 
-RowLab uses Vitest and Testing Library. Place tests adjacent to source files:
+oarbit uses Vitest and Testing Library. Place tests adjacent to source files:
 
 ```
 src/
@@ -565,7 +565,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed gu
 
 ## Roadmap
 
-RowLab is actively developed across milestone releases. Here's where we are and where we're headed.
+oarbit is actively developed across milestone releases. Here's where we are and where we're headed.
 
 ### v1.0 — Full UX Redesign ✅
 
@@ -642,7 +642,7 @@ Current phase: 48 of 53 completed. Next: Team Experience (Phase 49).
 
 ### Feature Comparison
 
-| Feature | RowLab | RegattaCentral | CrewLAB | iCrew |
+| Feature | oarbit | RegattaCentral | CrewLAB | iCrew |
 |---------|--------|----------------|---------|-------|
 | Modern UI | ✅ | ❌ | ⚠️ | ❌ |
 | AI Lineup Optimization | ✅ | ❌ | ❌ | ❌ |
@@ -691,12 +691,12 @@ Comprehensive documentation is available in the `/docs` directory:
 
 ## License
 
-RowLab is open source software licensed under the [MIT License](LICENSE).
+oarbit is open source software licensed under the [MIT License](LICENSE).
 
 ```
 MIT License
 
-Copyright (c) 2026 RowLab Contributors
+Copyright (c) 2026 oarbit Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -721,7 +721,7 @@ SOFTWARE.
 
 ## Acknowledgments
 
-RowLab is built with excellent open source tools and inspired by great products:
+oarbit is built with excellent open source tools and inspired by great products:
 
 - **[Concept2](https://www.concept2.com/)** - For providing the erg data API
 - **[Ollama](https://ollama.ai/)** - For local LLM inference
@@ -731,13 +731,13 @@ RowLab is built with excellent open source tools and inspired by great products:
 - **[Raycast](https://www.raycast.com/)** - Command palette and UI patterns
 - **[Cal.com](https://cal.com/)** - Open source SaaS reference
 
-Special thanks to all [contributors](https://github.com/swdrow/RowLab/graphs/contributors) who help make RowLab better.
+Special thanks to all [contributors](https://github.com/swdrow/RowLab/graphs/contributors) who help make oarbit better.
 
 ---
 
 ## Target Audience
 
-RowLab is designed for competitive rowing programs:
+oarbit is designed for competitive rowing programs:
 
 - **Collegiate Programs** - 250+ NCAA/ACRA programs nationally
 - **Club Teams** - 2,000+ competitive club programs
@@ -745,9 +745,9 @@ RowLab is designed for competitive rowing programs:
 - **Masters** - Competitive adult rowing clubs
 - **National Teams** - Elite-level training programs
 
-### Why Coaches Choose RowLab
+### Why Coaches Choose oarbit
 
-| Traditional Approach | RowLab |
+| Traditional Approach | oarbit |
 |---------------------|--------|
 | Spreadsheets and paper | Modern drag-and-drop interface |
 | Gut-feel decisions | Data-driven AI recommendations |
@@ -759,7 +759,7 @@ RowLab is designed for competitive rowing programs:
 ---
 
 <p align="center">
-  <strong>RowLab</strong> — Built for coaches who demand precision
+  <strong>oarbit</strong> — Built for coaches who demand precision
 </p>
 
 <p align="center">
@@ -769,5 +769,5 @@ RowLab is designed for competitive rowing programs:
 </p>
 
 <p align="center">
-  <sub>Made with ❤️ by the RowLab community</sub>
+  <sub>Made with ❤️ by the oarbit community</sub>
 </p>

@@ -9,7 +9,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 // Set up env vars before any imports
 process.env.CONCEPT2_CLIENT_ID = 'test_client_id';
 process.env.CONCEPT2_CLIENT_SECRET = 'test_client_secret';
-process.env.CONCEPT2_REDIRECT_URI = 'https://rowlab.net/concept2/callback';
+process.env.CONCEPT2_REDIRECT_URI = 'https://oarbit.net/concept2/callback';
 process.env.CONCEPT2_API_URL = 'https://log-dev.concept2.com';
 
 // Create hoisted mock for logger - this is the modern approach for ESM
@@ -67,7 +67,7 @@ describe('Concept2Service', () => {
       const url = generateAuthUrl('state');
 
       // Redirect URI should be encoded
-      expect(url).toContain('redirect_uri=https%3A%2F%2Frowlab.net%2Fconcept2%2Fcallback');
+      expect(url).toContain('redirect_uri=https%3A%2F%2Foarbit.net%2Fconcept2%2Fcallback');
     });
   });
 

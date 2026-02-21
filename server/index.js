@@ -374,7 +374,7 @@ initializeRaceDaySocket(io);
 
 // Start server
 httpServer.listen(PORT, async () => {
-  logger.info('RowLab Server Started', {
+  logger.info('oarbit Server Started', {
     environment: NODE_ENV,
     port: PORT,
     url: `http://localhost:${PORT}`,
@@ -407,7 +407,7 @@ httpServer.listen(PORT, async () => {
   // ASCII banner for visibility
   console.log(`
 ╔══════════════════════════════════════════════╗
-║           RowLab Server Started              ║
+║           oarbit Server Started              ║
 ╠══════════════════════════════════════════════╣
 ║  Environment: ${NODE_ENV.padEnd(30)}║
 ║  Port:        ${PORT.toString().padEnd(30)}║

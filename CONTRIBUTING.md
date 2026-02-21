@@ -1,6 +1,6 @@
-# Contributing to RowLab
+# Contributing to oarbit
 
-Thank you for your interest in contributing to RowLab! We welcome contributions from the community and are grateful for your support in making RowLab better for athletes and coaches worldwide.
+Thank you for your interest in contributing to oarbit! We welcome contributions from the community and are grateful for your support in making oarbit better for athletes and coaches worldwide.
 
 ## Table of Contents
 
@@ -35,12 +35,12 @@ Before you begin:
 
 ### Reporting Bugs
 
-If you find a bug in RowLab, please help us fix it by submitting a detailed bug report.
+If you find a bug in oarbit, please help us fix it by submitting a detailed bug report.
 
 **Before submitting a bug report:**
 
 - Check the [existing issues](https://github.com/swdrow/RowLab/issues) to ensure the bug hasn't been reported already
-- Verify you're using the latest version of RowLab
+- Verify you're using the latest version of oarbit
 - Collect information about your environment (OS, Node version, browser version)
 
 **How to submit a bug report:**
@@ -62,7 +62,7 @@ We love hearing ideas for new features and improvements!
 **Before suggesting a feature:**
 
 - Check [existing issues](https://github.com/swdrow/RowLab/issues) and the [roadmap](.planning/ROADMAP.md) to see if it's already planned
-- Consider whether the feature aligns with RowLab's core mission of data-driven rowing for athletes and coaches
+- Consider whether the feature aligns with oarbit's core mission of data-driven rowing for athletes and coaches
 
 **How to suggest a feature:**
 
@@ -192,7 +192,7 @@ npm start            # Run production server
 
 ## Coding Standards
 
-RowLab follows strict coding standards to maintain code quality and consistency.
+oarbit follows strict coding standards to maintain code quality and consistency.
 
 ### TypeScript
 
@@ -278,7 +278,7 @@ export function AthleteCard({ athlete, onSelect }: AthleteCardProps) {
 
 ### Design System
 
-RowLab (v4.0) uses Tailwind CSS v4 with a custom "Precision Instrument" design system:
+oarbit (v4.0) uses Tailwind CSS v4 with a custom "Precision Instrument" design system:
 
 - Use existing components from `src/components/ui/` where possible
 - Follow the design tokens and CSS variables in `.claude/design-standard.md`
@@ -387,7 +387,7 @@ npm run test:ui       # Visual test UI
 
 ### Submitting the PR
 
-1. Go to the [RowLab repository](https://github.com/swdrow/RowLab) on GitHub
+1. Go to the [oarbit repository](https://github.com/swdrow/RowLab) on GitHub
 2. Click "New Pull Request"
 3. Select your fork and branch
 4. Fill out the PR template completely:
@@ -420,7 +420,7 @@ Before submitting, ensure:
 
 ## Commit Message Guidelines
 
-RowLab uses [Conventional Commits](https://www.conventionalcommits.org/) for clear, semantic commit history.
+oarbit uses [Conventional Commits](https://www.conventionalcommits.org/) for clear, semantic commit history.
 
 ### Format
 
@@ -509,12 +509,12 @@ All contributors will be:
 
 - Listed in the project's contributors list
 - Acknowledged in release notes for significant contributions
-- Welcomed as part of the RowLab community
+- Welcomed as part of the oarbit community
 
 ### License
 
-By contributing to RowLab, you agree that your contributions will be licensed under the MIT License. See [LICENSE](LICENSE) for details.
+By contributing to oarbit, you agree that your contributions will be licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-**Thank you for contributing to RowLab!** Your efforts help coaches and athletes achieve better results through data-driven decisions.
+**Thank you for contributing to oarbit!** Your efforts help coaches and athletes achieve better results through data-driven decisions.

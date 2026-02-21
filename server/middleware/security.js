@@ -1,5 +1,5 @@
 /**
- * Security Middleware for RowLab API
+ * Security Middleware for oarbit API
  *
  * Provides:
  * - Helmet for security headers
@@ -45,8 +45,8 @@ export const corsOptions = cors({
   origin:
     process.env.NODE_ENV === 'production'
       ? [
-          'https://rowlab.net',
-          'https://www.rowlab.net',
+          'https://oarbit.net',
+          'https://www.oarbit.net',
           'http://100.86.4.57:3001',
           'http://10.0.0.17:3001',
         ]

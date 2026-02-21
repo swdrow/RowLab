@@ -8,7 +8,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { authenticateToken } from '../middleware/auth.js';
 import { prisma } from '../db/connection.js';
-import { parseFitFile, validateFitFile, toRowLabWorkout } from '../services/fitParserService.js';
+import { parseFitFile, validateFitFile, toOarbitWorkout } from '../services/fitParserService.js';
 import logger from '../utils/logger.js';
 
 const router = Router();
@@ -94,8 +94,8 @@ router.post('/import', authenticateToken, upload.array('files', 10), async (req,
         // Parse the FIT file
         const parsedData = await parseFitFile(file.buffer);
 
-        // Convert to RowLab workout format
-        const workoutData = toRowLabWorkout(parsedData, userId, teamId, athleteId);
+        // Convert to oarbit workout format
+        const workoutData = toOarbitWorkout(parsedData, userId, teamId, athleteId);
 
         // Check for duplicate (same date, type, duration within 5 seconds)
         const existingWorkout = await prisma.workout.findFirst({

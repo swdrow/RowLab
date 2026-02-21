@@ -18,7 +18,7 @@ export default defineConfig({
   server: {
     port: 3001,
     host: '0.0.0.0',
-    allowedHosts: ['rowlab.net'],
+    allowedHosts: ['oarbit.net'],
     proxy: {
       '/api': {
         target: 'http://localhost:3002',

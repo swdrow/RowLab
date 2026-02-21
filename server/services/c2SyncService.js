@@ -334,7 +334,7 @@ export async function syncSingleResult(userId, resultId) {
  * @param {string} accessToken - Valid C2 access token
  * @param {string} c2UserId - C2 user ID
  * @param {number} resultId - C2 result ID
- * @param {string} athleteId - RowLab athlete ID
+ * @param {string} athleteId - oarbit athlete ID
  * @param {string} teamId - Team ID
  * @param {string} [userId] - User ID for user-scoped ownership
  */
