@@ -1,81 +1,71 @@
-/**
- * Dashboard skeleton loading state.
- * Mirrors the final dashboard layout: hero, stats grid, workouts list, PR cards.
- * Uses shimmer animation only — NEVER spinners.
- */
-
-import { Skeleton, SkeletonGroup, SkeletonCard } from '@/components/ui/Skeleton';
-
-function SkeletonStatCard() {
-  return (
-    <div className="bg-void-raised rounded-xl p-4" aria-hidden="true">
-      <Skeleton height="0.75rem" width="60%" rounded="sm" className="mb-3" />
-      <Skeleton height="1.75rem" width="40%" rounded="sm" className="mb-2" />
-      <Skeleton height="0.625rem" width="80%" rounded="sm" />
-    </div>
-  );
-}
-
-function SkeletonWorkoutRow() {
-  return (
-    <div className="flex items-center gap-4 bg-void-raised rounded-xl p-4" aria-hidden="true">
-      <Skeleton height="2.5rem" width="2.5rem" rounded="lg" />
-      <div className="flex-1 space-y-2">
-        <Skeleton height="0.875rem" width="50%" rounded="sm" />
-        <Skeleton height="0.625rem" width="30%" rounded="sm" />
-      </div>
-      <Skeleton height="1rem" width="4rem" rounded="sm" />
-    </div>
-  );
-}
-
-function SkeletonSectionHeader() {
-  return (
-    <div className="flex items-center justify-between mb-3" aria-hidden="true">
-      <Skeleton height="1.25rem" width="8rem" rounded="sm" />
-      <Skeleton height="0.875rem" width="4rem" rounded="sm" />
-    </div>
-  );
-}
+import { Skeleton } from '@/components/ui/Skeleton';
+import { Card } from '@/components/ui/Card';
 
 export function DashboardSkeleton() {
   return (
-    <SkeletonGroup className="max-w-6xl mx-auto p-4 md:p-6 pb-20 gap-6">
-      {/* Hero area: greeting + subtitle */}
-      <div className="space-y-2">
-        <Skeleton height="1.75rem" width="12.5rem" rounded="sm" />
-        <Skeleton height="1.25rem" width="7.5rem" rounded="sm" />
-      </div>
+    <div className="mx-auto max-w-[1100px] px-4 sm:px-8 pb-20 md:pb-6 pt-6">
+      {/* CompactHero skeleton */}
+      <Card padding="md" className="border-t-2 border-t-edge-default">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <Skeleton className="h-6 w-48" />
+          <div className="flex gap-3">
+            <Skeleton className="h-10 w-20" />
+            <Skeleton className="h-10 w-20" />
+            <Skeleton className="h-10 w-20" />
+          </div>
+        </div>
+      </Card>
 
-      {/* Stats grid: 4 stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <SkeletonStatCard />
-        <SkeletonStatCard />
-        <SkeletonStatCard />
-        <SkeletonStatCard />
-      </div>
+      {/* Two-column skeleton */}
+      <div className="mt-6 flex flex-col lg:flex-row gap-6">
+        {/* Feed skeleton */}
+        <div className="w-full lg:w-[65%] space-y-4">
+          {/* Filter tabs skeleton */}
+          <div className="flex gap-3 mb-4 border-b border-edge-default pb-2">
+            <Skeleton className="h-4 w-10" />
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-4 w-10" />
+          </div>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} padding="md">
+              <div className="flex items-center gap-2.5 mb-3">
+                <Skeleton className="h-8 w-8" rounded="full" />
+                <div className="space-y-1">
+                  <Skeleton className="h-3.5 w-24" />
+                  <Skeleton className="h-2.5 w-16" />
+                </div>
+              </div>
+              <Skeleton className="h-3 w-16 mb-3" />
+              <div className="grid grid-cols-4 gap-3">
+                <Skeleton className="h-8" />
+                <Skeleton className="h-8" />
+                <Skeleton className="h-8" />
+                <Skeleton className="h-8" />
+              </div>
+            </Card>
+          ))}
+        </div>
 
-      {/* Recent workouts section */}
-      <div>
-        <SkeletonSectionHeader />
-        <div className="space-y-3">
-          <SkeletonWorkoutRow />
-          <SkeletonWorkoutRow />
-          <SkeletonWorkoutRow />
-          <SkeletonWorkoutRow />
-          <SkeletonWorkoutRow />
+        {/* Sidebar skeleton */}
+        <div className="w-full lg:w-[35%] space-y-4">
+          <Card padding="md">
+            <div className="flex flex-col items-center">
+              <Skeleton className="h-16 w-16 mb-3" rounded="full" />
+              <Skeleton className="h-4 w-32 mb-1" />
+              <Skeleton className="h-3 w-20 mb-3" />
+              <Skeleton className="h-3 w-40" />
+            </div>
+          </Card>
+          <Card padding="md">
+            <Skeleton className="h-4 w-24 mb-3" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+            </div>
+          </Card>
         </div>
       </div>
-
-      {/* PR section */}
-      <div>
-        <SkeletonSectionHeader />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-      </div>
-    </SkeletonGroup>
+    </div>
   );
 }

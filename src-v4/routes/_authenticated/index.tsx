@@ -15,6 +15,7 @@ import {
   recentWorkoutsQueryOptions,
   prsQueryOptions,
 } from '@/features/dashboard/api';
+import { socialFeedOptions, followStatsOptions } from '@/features/feed/api';
 import { useDashboardData } from '@/features/dashboard/hooks/useDashboardData';
 import { DashboardSkeleton } from '@/features/dashboard/components/DashboardSkeleton';
 import { DashboardEmptyState } from '@/features/dashboard/components/DashboardEmptyState';
@@ -33,6 +34,8 @@ export const Route = createFileRoute('/_authenticated/')({
       queryClient.ensureQueryData(statsQueryOptions()),
       queryClient.ensureQueryData(recentWorkoutsQueryOptions()),
       queryClient.ensureQueryData(prsQueryOptions()),
+      queryClient.prefetchInfiniteQuery(socialFeedOptions({ filter: 'all' })),
+      queryClient.ensureQueryData(followStatsOptions()),
     ]);
     return {};
   },

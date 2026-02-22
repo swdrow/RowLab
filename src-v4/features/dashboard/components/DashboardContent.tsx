@@ -1,13 +1,10 @@
 /**
- * Dashboard layout orchestrator — Strava-like personal dashboard.
+ * Dashboard layout — Compact Hero + Social Feed + Sidebar.
  *
  * Layout:
- *   Desktop: ProfileCard → InsightsBar → [Feed (2/3) | Sidebar (1/3)]
- *   Mobile:  ProfileCard → InsightsBar → Feed → Sidebar sections
- *
- * Sections: Profile → Insights → Activity Feed + Stats/PRs/Team
+ *   Desktop: CompactHero (full) → [SocialFeed (65%) | Sidebar (35%)]
+ *   Mobile:  CompactHero → SocialFeed → Sidebar sections
  */
-
 import { motion } from 'motion/react';
 import {
   dramaticContainerVariants,
@@ -17,12 +14,14 @@ import {
   SPRING_SMOOTH,
 } from '@/lib/animations';
 import { SectionDivider } from '@/components/ui/SectionDivider';
-import { ProfileCard } from './ProfileCard';
-import { InsightsBar } from './InsightsBar';
-import { RecentWorkouts } from './RecentWorkouts';
-import { QuickStatsGrid } from './QuickStatsGrid';
+import { useAuth } from '@/features/auth/useAuth';
+import { CompactHero } from './CompactHero';
+import { MiniProfileCard } from './MiniProfileCard';
+import { ThisWeekStats } from './ThisWeekStats';
+import { StreakDisplay } from './StreakDisplay';
 import { PRHighlights } from './PRHighlights';
 import { TeamContext } from './TeamContext';
+import { SocialFeed } from '@/features/feed/components/SocialFeed';
 import type { DashboardData, TeamContextData } from '../types';
 
 interface DashboardContentProps {
@@ -33,53 +32,56 @@ interface DashboardContentProps {
 }
 
 export function DashboardContent({ data, userName, avatar, teamContext }: DashboardContentProps) {
-  return (
-    <div className="mx-auto max-w-6xl p-4 md:p-6 pb-20 md:pb-6">
-      <motion.div variants={dramaticContainerVariants} initial="hidden" animate="visible">
-        {/* Profile card — full width hero */}
-        <motion.div variants={dramaticItemVariants}>
-          <ProfileCard
-            userName={userName}
-            avatar={avatar}
-            teamName={teamContext?.teamName}
-            stats={data.stats}
-          />
-        </motion.div>
+  const { user } = useAuth();
 
-        {/* Insights bar */}
-        <motion.div variants={dramaticItemVariants} className="mt-4">
-          <InsightsBar stats={data.stats} prs={data.prs.records} />
+  return (
+    <div className="mx-auto max-w-[1100px] px-4 sm:px-8 pb-20 md:pb-6 pt-6">
+      <motion.div variants={dramaticContainerVariants} initial="hidden" animate="visible">
+        {/* Compact Hero — full width */}
+        <motion.div variants={dramaticItemVariants}>
+          <CompactHero userName={userName} stats={data.stats} />
         </motion.div>
 
         {/* Two-column layout: Feed + Sidebar */}
-        <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main feed column (2/3) */}
+        <div className="mt-6 flex flex-col lg:flex-row gap-6">
+          {/* Main feed column (~65%) */}
           <motion.div
-            className="lg:col-span-2"
+            className="w-full lg:w-[65%] min-w-0"
             variants={listContainerVariants}
             initial="hidden"
             animate="visible"
           >
             <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-              <RecentWorkouts
-                workouts={data.workouts.items}
-                totalCount={data.workouts.totalCount}
-              />
+              <SocialFeed />
             </motion.div>
           </motion.div>
 
-          {/* Sidebar column (1/3) */}
+          {/* Sidebar column (~35%) */}
           <motion.div
-            className="lg:col-span-1 space-y-6"
+            className="w-full lg:w-[35%] space-y-4 lg:sticky lg:top-[80px] lg:self-start"
             variants={listContainerVariants}
             initial="hidden"
             animate="visible"
           >
             <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-              <QuickStatsGrid stats={data.stats} />
+              <MiniProfileCard
+                userName={userName}
+                username={user?.username ?? undefined}
+                avatar={avatar}
+              />
             </motion.div>
 
-            <SectionDivider spacing="my-2" />
+            <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
+              <ThisWeekStats stats={data.stats} />
+            </motion.div>
+
+            {data.stats.streak.current > 0 && (
+              <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
+                <StreakDisplay streak={data.stats.streak} />
+              </motion.div>
+            )}
+
+            <SectionDivider spacing="my-1" />
 
             <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
               <PRHighlights records={data.prs.records} />
@@ -87,7 +89,7 @@ export function DashboardContent({ data, userName, avatar, teamContext }: Dashbo
 
             {teamContext && (
               <>
-                <SectionDivider spacing="my-2" />
+                <SectionDivider spacing="my-1" />
                 <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
                   <TeamContext teamContext={teamContext} />
                 </motion.div>
