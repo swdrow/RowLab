@@ -270,7 +270,7 @@ Look for issues labeled:
 
 - **Full Plan**: [docs/plans/2026-01-19-comprehensive-improvement-plan.md](docs/plans/2026-01-19-comprehensive-improvement-plan.md)
 - **API Docs**: [docs/api/README.md](docs/api/README.md)
-- **Design System**: [.claude/design-standard.md](.claude/design-standard.md)
+- **Design System**: [docs/plans/2026-02-21-oarbit-rebrand-design.md](docs/plans/2026-02-21-oarbit-rebrand-design.md)
 - **CodeRabbit Review**: [docs/CODERABBIT_REVIEW.md](docs/CODERABBIT_REVIEW.md)
 
 ---

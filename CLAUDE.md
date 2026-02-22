@@ -104,13 +104,14 @@ This is a one-person project. For multi-user features:
 
 ### Design System Compliance
 
-Before any UI work, read `.claude/design-standard.md`. Key rules:
+Before any UI work, read the oarbit design spec: `docs/plans/2026-02-21-oarbit-rebrand-design.md`. Quick reference: `.claude/design-standard.md`. Key rules:
 
-- Use CSS variable-backed tokens, never hardcoded hex in components
-- Animations: use SPRING_CONFIG/SPRING_FAST/SPRING_GENTLE from `src/v2/lib/animations.ts`
+- All colors oklch — never hex, never standard Tailwind colors
+- Void-surface panels with shadow-card — NO glass morphism, NO backdrop-filter on cards
+- Typography: Space Grotesk (display), Inter (body), Space Mono (data)
+- Four accents with defined roles: teal (interactive), sand (warm emphasis), coral (alerts), ivory (light)
 - Loading states: skeleton loaders with shimmer, NEVER spinners
-- Banned: `bg-gray-900`, `border-gray-700`, `shadow-lg`, `rounded-full` on buttons, standard 3-col grids
-- Required: glass cards, gradient borders, text gradients per design standard
+- Banned: `bg-gray-*`, pill buttons, staggered animations, animated counters, gradient borders, generic icon libraries
 
 ### Documentation as You Go
 

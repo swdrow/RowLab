@@ -29,7 +29,7 @@ Before you begin:
 - Familiarize yourself with [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [TanStack Router](https://tanstack.com/router/latest), and [Express.js](https://expressjs.com/)
 - Read through the [README](README.md) to understand the project's purpose and architecture
 - Check the [existing issues](https://github.com/swdrow/RowLab/issues) to see if your contribution is already being discussed
-- For v4.0 work, familiarize yourself with our design system in `.claude/design-standard.md`
+- For v4.0 work, familiarize yourself with the oarbit design system in `docs/plans/2026-02-21-oarbit-rebrand-design.md`
 
 ## How to Contribute
 
@@ -281,9 +281,9 @@ export function AthleteCard({ athlete, onSelect }: AthleteCardProps) {
 oarbit (v4.0) uses Tailwind CSS v4 with a custom "Precision Instrument" design system:
 
 - Use existing components from `src/components/ui/` where possible
-- Follow the design tokens and CSS variables in `.claude/design-standard.md`
-- Maintain the dark theme aesthetic with glass card components
-- Use port/starboard color semantics (red/green) for rowing context
+- Follow the design tokens and CSS variables defined in `docs/plans/2026-02-21-oarbit-rebrand-design.md`
+- Use opaque void-surface panels with shadow-card — NO glass morphism
+- Use oarbit four-accent system: teal, sand, coral, ivory
 - All animations use spring physics via `src/v2/lib/animations.ts`
 - Use skeleton loaders for loading states, never spinners
 
