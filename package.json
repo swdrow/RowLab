@@ -16,6 +16,7 @@
     "stop": "./scripts/stop-dev.sh",
     "db:migrate": "npx prisma migrate dev",
     "db:seed": "node --env-file=.env prisma/seed.js",
+    "seed:social": "node --env-file=.env prisma/seed-social.js",
     "db:reset": "npx prisma migrate reset --force && npm run db:seed",
     "db:studio": "npx prisma studio",
     "test": "vitest",
