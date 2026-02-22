@@ -3,10 +3,36 @@
  * Uses useInfiniteQuery for cursor-based pagination.
  * IntersectionObserver triggers next page fetch.
  */
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, forwardRef, type SVGProps } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Dumbbell } from 'lucide-react';
 import { socialFeedOptions } from '../api';
+
+/** Custom rowing icon — replaces generic icon library per design spec. */
+const RowingIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement> & { size?: number }>(
+  ({ size = 24, className, ...props }, ref) => (
+    <svg
+      ref={ref}
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+      {...props}
+    >
+      {/* Oar blade */}
+      <path d="M4 18 L20 6" />
+      <path d="M17 4 L21 8 L19 9 L16 6 Z" />
+      {/* Water line */}
+      <path d="M2 20 Q6 18 10 20 Q14 22 18 20 L22 20" />
+    </svg>
+  )
+);
 import { SocialFeedCard } from './SocialFeedCard';
 import { FeedSkeleton, FeedCardSkeleton } from './FeedSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -78,7 +104,7 @@ function FeedContent({ filter }: { filter: FeedFilter }) {
   if (allItems.length === 0) {
     return (
       <EmptyState
-        icon={Dumbbell}
+        icon={RowingIcon as any}
         title="No workouts yet"
         description={
           filter === 'following'

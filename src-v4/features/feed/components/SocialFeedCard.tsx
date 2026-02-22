@@ -94,7 +94,7 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
         {/* Header: avatar + name + time */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-void-overlay flex items-center justify-center text-xs font-medium text-text-dim">
+            <div className="h-8 w-8 rounded-full bg-void-raised flex items-center justify-center text-xs font-medium text-text-dim">
               {item.user.avatarUrl ? (
                 <img
                   src={item.user.avatarUrl}
@@ -134,7 +134,7 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
           <StatField label="Distance" value={formatDistance(item.distanceM)} />
           <StatField label="Time" value={formatDuration(item.durationSeconds)} />
           <StatField label="Pace" value={formatPace(item.avgPace)} />
-          {item.strokeRate && <StatField label="Rate" value={`${item.strokeRate} s/m`} />}
+          {item.strokeRate && <StatField label="Rate" value={`${item.strokeRate} spm`} />}
         </div>
 
         {/* Actions: like + view detail */}

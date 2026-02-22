@@ -26,7 +26,7 @@ export function MiniProfileCard({ userName, username, avatar }: MiniProfileCardP
   return (
     <Card padding="md">
       <div className="flex flex-col items-center text-center">
-        <div className="mb-3 h-16 w-16 rounded-full bg-void-overlay flex items-center justify-center text-lg font-medium text-text-dim overflow-hidden">
+        <div className="mb-3 h-16 w-16 rounded-full bg-void-raised flex items-center justify-center text-lg font-medium text-text-dim overflow-hidden">
           {avatar ? (
             <img src={avatar} alt="" className="h-16 w-16 rounded-full object-cover" />
           ) : (

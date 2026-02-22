@@ -1,6 +1,6 @@
 /**
- * CompactHero — full-width greeting + inline week stats + streak badge.
- * Space Grotesk greeting, Space Mono stat pills.
+ * CompactHero — data-first week summary banner.
+ * Leads with metrics, not a greeting. Space Mono stat pills.
  */
 import { Card } from '@/components/ui/Card';
 import type { StatsData } from '../types';
@@ -8,13 +8,6 @@ import type { StatsData } from '../types';
 interface CompactHeroProps {
   userName: string;
   stats: StatsData;
-}
-
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 17) return 'Good afternoon';
-  return 'Good evening';
 }
 
 function formatDistance(meters: number): string {
@@ -29,17 +22,16 @@ function formatDuration(seconds: number): string {
   return `${m}m`;
 }
 
-export function CompactHero({ userName, stats }: CompactHeroProps) {
-  const firstName = userName.split(' ')[0];
+export function CompactHero({ stats }: CompactHeroProps) {
   const { range, streak, allTime } = stats;
 
   return (
     <Card padding="none" className="border-t-2 border-t-accent-teal overflow-hidden">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 sm:p-5">
-        {/* Greeting */}
+        {/* Data-first: week label + streak */}
         <div className="flex items-center gap-3">
           <h1 className="font-display text-lg sm:text-xl font-semibold text-text-bright">
-            {getGreeting()}, {firstName}
+            This Week
           </h1>
           {streak.current > 0 && (
             <span className="inline-flex items-center gap-1 rounded-md bg-accent-coral/10 px-2.5 py-0.5 text-xs font-mono font-bold text-accent-coral">
@@ -61,7 +53,7 @@ export function CompactHero({ userName, stats }: CompactHeroProps) {
 
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 rounded-md bg-void-deep/50 px-3 py-1.5">
+    <div className="flex flex-col items-center gap-0.5 rounded-md bg-void-raised px-3 py-1.5">
       <span className="text-[10px] font-medium uppercase tracking-widest text-text-faint">
         {label}
       </span>
