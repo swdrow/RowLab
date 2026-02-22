@@ -9,6 +9,7 @@ import profileRouter from './profile.js';
 import achievementsRouter from './achievements.js';
 import teamRoutes from '../teams.js';
 import analyticsRouter from './analytics.js';
+import feedRouter from './feed.js';
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.use('/prs', prsRouter);
 router.use('/dashboard', dashboardRouter);
 router.use('/teams', teamRoutes);
 router.use('/analytics', analyticsRouter);
+router.use('/feed', feedRouter);
 
 // Health check
 router.get('/ping', (req, res) => {
