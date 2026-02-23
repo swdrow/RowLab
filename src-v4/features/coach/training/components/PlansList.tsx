@@ -194,7 +194,7 @@ function PlanCard({
       className={`w-full text-left rounded-xl p-4 transition-all ${
         isSelected
           ? 'bg-void-raised border border-accent-teal/30 shadow-sm'
-          : 'bg-void-raised/60 border border-white/[0.04] hover:bg-void-raised hover:border-white/[0.08]'
+          : 'bg-void-raised/60 border border-edge-default/40 hover:bg-void-raised hover:border-edge-default'
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -279,7 +279,7 @@ function CreatePlanForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
           onChange={(e) => setName(e.target.value)}
           required
           autoFocus
-          className="w-full rounded-lg border border-white/[0.06] bg-void-deep/50 px-3 py-2 text-sm text-text-bright placeholder:text-text-faint transition-colors focus:border-accent-teal/50 focus:outline-none"
+          className="w-full rounded-lg border border-edge-default bg-void-deep/50 px-3 py-2 text-sm text-text-bright placeholder:text-text-faint transition-colors focus:border-accent-teal/50 focus:outline-none"
         />
 
         <textarea
@@ -287,14 +287,14 @@ function CreatePlanForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={2}
-          className="w-full rounded-lg border border-white/[0.06] bg-void-deep/50 px-3 py-2 text-sm text-text-bright placeholder:text-text-faint transition-colors focus:border-accent-teal/50 focus:outline-none resize-none"
+          className="w-full rounded-lg border border-edge-default bg-void-deep/50 px-3 py-2 text-sm text-text-bright placeholder:text-text-faint transition-colors focus:border-accent-teal/50 focus:outline-none resize-none"
         />
 
         <div className="flex items-center gap-3">
           <select
             value={phase}
             onChange={(e) => setPhase(e.target.value as TrainingPhase | '')}
-            className="rounded-lg border border-white/[0.06] bg-void-deep/50 px-3 py-2 text-sm text-text-bright transition-colors focus:border-accent-teal/50 focus:outline-none"
+            className="rounded-lg border border-edge-default bg-void-deep/50 px-3 py-2 text-sm text-text-bright transition-colors focus:border-accent-teal/50 focus:outline-none"
           >
             <option value="">No phase</option>
             {PHASES.map((p) => (

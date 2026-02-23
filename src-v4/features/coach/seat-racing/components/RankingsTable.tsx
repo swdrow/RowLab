@@ -2,9 +2,9 @@
  * Rankings table showing athletes ranked by ELO with leaderboard aesthetics.
  *
  * Top 3 athletes get medal treatment:
- *   #1 Gold -- amber-400 accent with trophy icon
- *   #2 Silver -- text-secondary accent
- *   #3 Bronze -- accent accent
+ *   #1 Gold -- data-warning with trophy icon
+ *   #2 Silver -- text-dim accent
+ *   #3 Bronze -- accent-sand
  *
  * Features: panel-styled headers, staggered list animation, sparkline ELO
  * trends, confidence badges, side badges. Skeleton loading state.

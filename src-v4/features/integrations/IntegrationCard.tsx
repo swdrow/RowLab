@@ -118,7 +118,7 @@ export function IntegrationCard({
           <button
             onClick={onConnect}
             disabled={connectLoading}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-teal text-void-deep font-medium hover:bg-accent-teal-hover hover:shadow-glow-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-teal text-void-deep font-medium hover:bg-accent-teal-hover hover:shadow-focus transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {connectLoading ? <ButtonSkeleton width="w-16" /> : connectLabel}
           </button>

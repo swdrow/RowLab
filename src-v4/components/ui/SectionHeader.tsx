@@ -2,7 +2,7 @@
  * Section header — oarbit design system.
  *
  * Typography-driven. text-h2 (18px semibold) title, text-primary.
- * Optional description (text-small, text-secondary).
+ * Optional description (text-small, text-dim).
  * Optional right-aligned action slot.
  * No icon container, no background, no border.
  * Bottom margin space-4 (16px) to section content.

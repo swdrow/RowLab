@@ -243,7 +243,7 @@ export function CommandPalette() {
                   placeholder={
                     isCommandMode ? 'Type a command...' : 'Search pages, commands, or athletes...'
                   }
-                  className="h-12 w-full bg-transparent text-sm text-text-bright placeholder-text-tertiary outline-none"
+                  className="h-12 w-full bg-transparent text-sm text-text-bright placeholder-text-faint outline-none"
                 />
                 {search.length > 0 && (
                   <button

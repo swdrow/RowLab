@@ -122,9 +122,7 @@ export function TrainingPage({ teamId, readOnly }: TrainingPageProps) {
           </h1>
           {readOnly && <ReadOnlyBadge />}
         </div>
-        <p className="mt-1 text-sm text-text-dim">
-          Plan, schedule, and track training sessions
-        </p>
+        <p className="mt-1 text-sm text-text-dim">Plan, schedule, and track training sessions</p>
       </div>
 
       {/* Tabs */}
@@ -217,7 +215,7 @@ function CalendarTab({
             <select
               value={selectedPlanId}
               onChange={(e) => onSelectPlan(e.target.value)}
-              className="rounded-lg border border-white/[0.06] bg-void-raised px-3 py-2 text-sm text-text-bright transition-colors focus:border-accent-teal/50 focus:outline-none"
+              className="rounded-lg border border-edge-default bg-void-raised px-3 py-2 text-sm text-text-bright transition-colors focus:border-accent-teal/50 focus:outline-none"
             >
               <option value="">All Plans</option>
               {activePlans.map((plan) => (

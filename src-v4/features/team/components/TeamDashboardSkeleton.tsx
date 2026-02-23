@@ -54,7 +54,10 @@ function SkeletonActivityRow() {
 
 function SkeletonAnnouncementCard() {
   return (
-    <div className="space-y-2 border-b border-surface-inset/40 pb-3 last:border-0" aria-hidden="true">
+    <div
+      className="space-y-2 border-b border-edge-default/40 pb-3 last:border-0"
+      aria-hidden="true"
+    >
       <Skeleton height="0.875rem" width="80%" rounded="sm" />
       <Skeleton height="0.625rem" width="100%" rounded="sm" />
       <Skeleton height="0.5rem" width="40%" rounded="sm" />

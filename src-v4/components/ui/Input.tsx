@@ -4,7 +4,7 @@
  * bg-void-deep, border-edge-default.
  * Focus: border-strong + accent ring.
  * Error: data-poor border + ring.
- * Label above input (text-caption, medium weight, text-secondary).
+ * Label above input (text-caption, medium weight, text-dim).
  * Includes textarea variant.
  *
  * React 19: ref is a regular prop (no forwardRef needed).

@@ -135,7 +135,7 @@ export function DraggableAthleteCard({
         ${isDragging ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}
         ${
           isSelected
-            ? 'bg-accent-teal/10 border border-accent-teal ring-1 ring-accent/30 shadow-glow-accent'
+            ? 'bg-accent-teal/10 border border-accent-teal ring-1 ring-accent-teal/30 shadow-focus'
             : compact
               ? 'bg-transparent border-0'
               : 'panel border border-edge-default/50 shadow-md hover:-translate-y-0.5 hover:shadow-lg hover:border-edge-hover'

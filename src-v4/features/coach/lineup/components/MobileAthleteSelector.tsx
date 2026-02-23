@@ -127,7 +127,7 @@ export function MobileAthleteSelector({
         className="
           fixed bottom-0 left-0 right-0 z-50
           bg-void-surface rounded-t-2xl
-          shadow-[0_-4px_24px_rgba(0,0,0,0.4)]
+          shadow-lg
           flex flex-col
           max-h-[80vh]
           animate-[slideUp_0.25s_ease-out]

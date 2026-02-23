@@ -163,10 +163,10 @@ export function ComplianceDashboard({ teamId: _teamId }: ComplianceDashboardProp
       </p>
 
       {/* Athlete table */}
-      <div className="overflow-x-auto rounded-xl border border-white/[0.06] bg-void-raised">
+      <div className="overflow-x-auto rounded-xl border border-edge-default bg-void-raised">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/[0.06]">
+            <tr className="border-b border-edge-default">
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-faint">
                 Athlete
               </th>

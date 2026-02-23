@@ -282,7 +282,7 @@ function AnnouncementCompose({ teamId }: { teamId: string }) {
     return (
       <button
         onClick={() => setIsExpanded(true)}
-        className="flex w-full items-center gap-3 rounded-xl border border-dashed border-surface-inset/60 p-4 text-left transition-colors hover:border-accent-teal/40 hover:bg-void-deep/30"
+        className="flex w-full items-center gap-3 rounded-xl border border-dashed border-edge-default/60 p-4 text-left transition-colors hover:border-accent-teal/40 hover:bg-void-deep/30"
       >
         <Megaphone size={18} className="text-text-faint" />
         <span className="text-sm text-text-faint">Post an announcement...</span>
@@ -394,7 +394,7 @@ function AnnouncementCard({ announcement }: { announcement: Announcement }) {
   });
 
   return (
-    <div className="border-b border-surface-inset/40 pb-3 last:border-0 last:pb-0">
+    <div className="border-b border-edge-default/40 pb-3 last:border-0 last:pb-0">
       <p className="text-sm font-medium text-text-bright">{announcement.title}</p>
       <p className="mt-1 line-clamp-2 text-xs text-text-dim">{announcement.content}</p>
       <p className="mt-1.5 text-xs text-text-faint">

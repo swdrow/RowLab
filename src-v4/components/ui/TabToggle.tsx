@@ -4,7 +4,7 @@
  * Container: bg-void-deep, radius-md (6px), space-1 (4px) padding.
  * Active indicator: bg-void-raised behind active tab, animated via layoutId.
  * Active text: text-primary, weight medium.
- * Inactive text: text-secondary. Inactive hover: text-primary.
+ * Inactive text: text-dim. Inactive hover: text-bright.
  * Animation: spring-standard via motion layoutId.
  * Every TabGroup instance MUST have a unique layoutId prop.
  */

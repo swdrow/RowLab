@@ -193,14 +193,14 @@ function WorkoutForm({
   );
 
   const inputClass =
-    'w-full rounded-lg border border-white/[0.06] bg-void-deep/50 px-3 py-2 text-sm text-text-bright placeholder:text-text-faint transition-colors focus:border-accent-teal/50 focus:outline-none';
+    'w-full rounded-lg border border-edge-default bg-void-deep/50 px-3 py-2 text-sm text-text-bright placeholder:text-text-faint transition-colors focus:border-accent-teal/50 focus:outline-none';
 
   const labelClass = 'block text-xs font-semibold uppercase tracking-wider text-text-faint mb-1';
 
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-void-surface shadow-2xl">
+    <div className="rounded-xl border border-edge-default bg-void-surface shadow-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
+      <div className="flex items-center justify-between border-b border-edge-default px-5 py-4">
         <h2 className="text-base font-semibold text-text-bright">New Workout</h2>
         <button
           type="button"
@@ -294,7 +294,7 @@ function WorkoutForm({
                 className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
                   intensity === i.value
                     ? 'bg-accent-teal text-void-deep shadow-sm'
-                    : 'bg-void-raised text-text-dim hover:text-text-bright hover:bg-void-overlay border border-white/[0.06]'
+                    : 'bg-void-raised text-text-dim hover:text-text-bright hover:bg-void-overlay border border-edge-default'
                 }`}
               >
                 {i.label}

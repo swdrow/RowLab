@@ -224,7 +224,7 @@ function WorkoutsLayout() {
           opacity: fabVisible ? 1 : 0,
         }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        className={`fixed z-30 w-11 h-11 bg-accent-teal hover:bg-accent-teal-hover text-void-deep rounded-full shadow-glow-accent flex items-center justify-center transition-colors ${
+        className={`fixed z-30 w-11 h-11 bg-accent-teal hover:bg-accent-teal-hover text-void-deep rounded-full shadow-focus flex items-center justify-center transition-colors ${
           isMobile ? 'bottom-20 right-4' : 'bottom-6 right-6'
         }`}
         aria-label="Log new workout"

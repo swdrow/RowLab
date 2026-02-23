@@ -124,7 +124,7 @@ export function LoginForm({ redirectTo, onEmailChange }: LoginFormProps) {
           type="button"
           onClick={handleDevLogin}
           disabled={devLoading}
-          className="mt-3 w-full rounded-lg border border-edge-subtle px-4 py-2.5 text-sm text-text-dim transition-colors hover:bg-surface-raised hover:text-text-secondary disabled:opacity-50"
+          className="mt-3 w-full rounded-lg border border-edge-default px-4 py-2.5 text-sm text-text-dim transition-colors hover:bg-void-raised hover:text-text-default disabled:opacity-50"
         >
           {devLoading ? 'Signing in...' : 'Dev Login (admin)'}
         </button>

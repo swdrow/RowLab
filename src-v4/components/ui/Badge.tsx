@@ -41,11 +41,11 @@ const variantStyles: Record<BadgeVariant, string> = {
   'status-warning': 'bg-data-warning-subtle text-data-warning',
   'status-poor': 'bg-data-poor-subtle text-data-poor',
   machine: 'bg-void-deep text-text-dim',
-  highlight: 'bg-accent-coral-muted/20 text-accent-coral',
+  highlight: 'bg-accent-coral/20 text-accent-coral',
   neutral: 'bg-void-deep text-text-faint',
-  filled: 'bg-accent-teal text-accent-teal-on',
-  outlined: 'bg-transparent text-accent-teal border border-accent-teal-muted',
-  subtle: 'bg-accent-teal-muted/20 text-accent-teal',
+  filled: 'bg-accent-teal text-void-deep',
+  outlined: 'bg-transparent text-accent-teal border border-accent-teal/40',
+  subtle: 'bg-accent-teal/20 text-accent-teal',
 };
 
 export function Badge({ children, variant = 'neutral', icon, className = '' }: BadgeProps) {

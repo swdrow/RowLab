@@ -133,7 +133,7 @@ export function MemberCard({ member }: MemberCardProps) {
       </div>
 
       {/* Activity summary */}
-      <div className="mt-3 flex items-center justify-between border-t border-surface-inset/40 pt-3">
+      <div className="mt-3 flex items-center justify-between border-t border-edge-default/40 pt-3">
         <span className="text-xs text-text-dim">{activityText}</span>
         <span className="text-xs text-text-faint">Last: {lastWorkout}</span>
       </div>

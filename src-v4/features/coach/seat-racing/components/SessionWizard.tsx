@@ -362,7 +362,7 @@ function Step1SessionInfo({ form }: { form: ReturnType<typeof useForm<SessionFor
                 px-3 py-1.5 rounded-lg text-sm font-medium transition-all
                 ${
                   selectedClass === bc
-                    ? 'bg-accent-teal text-void-deep shadow-glow-accent'
+                    ? 'bg-accent-teal text-void-deep shadow-focus'
                     : 'bg-void-raised text-text-dim border border-edge-default hover:border-edge-hover'
                 }
               `.trim()}
@@ -385,7 +385,7 @@ function Step1SessionInfo({ form }: { form: ReturnType<typeof useForm<SessionFor
                 px-3 py-1.5 rounded-lg text-sm font-medium transition-all
                 ${
                   selectedConditions === c.value
-                    ? 'bg-accent-teal text-void-deep shadow-glow-accent'
+                    ? 'bg-accent-teal text-void-deep shadow-focus'
                     : 'bg-void-raised text-text-dim border border-edge-default hover:border-edge-hover'
                 }
               `.trim()}
@@ -471,7 +471,7 @@ function Step3Boats({
                 w-12 h-10 rounded-lg text-sm font-medium transition-all
                 ${
                   boatCount === n
-                    ? 'bg-accent-teal text-void-deep shadow-glow-accent'
+                    ? 'bg-accent-teal text-void-deep shadow-focus'
                     : 'bg-void-raised text-text-dim border border-edge-default hover:border-edge-hover'
                 }
               `.trim()}
@@ -494,7 +494,7 @@ function Step3Boats({
                 w-12 h-10 rounded-lg text-sm font-medium transition-all
                 ${
                   seatsPerBoat === n
-                    ? 'bg-accent-teal text-void-deep shadow-glow-accent'
+                    ? 'bg-accent-teal text-void-deep shadow-focus'
                     : 'bg-void-raised text-text-dim border border-edge-default hover:border-edge-hover'
                 }
               `.trim()}

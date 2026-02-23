@@ -1,9 +1,9 @@
 /**
  * Empty state — oarbit design system.
  *
- * Compact, domain-specific. Icon 32px in text-tertiary.
+ * Compact, domain-specific. Icon 32px in text-faint.
  * Title: text-h3 (15px semibold), text-primary.
- * Description: text-body (14px), text-secondary, max-width 280px.
+ * Description: text-body (14px), text-dim, max-width 280px.
  * Action: secondary button (not primary).
  * No oversized illustrations, no patronizing copy, no animated elements.
  */

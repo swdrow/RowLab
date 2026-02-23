@@ -25,9 +25,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: [
-    'bg-accent-teal text-accent-teal-on',
+    'bg-accent-teal text-void-deep',
     'hover:bg-accent-teal-hover',
-    'active:bg-accent-teal-active active:scale-[0.98]',
+    'active:bg-accent-teal-hover active:scale-[0.98]',
   ].join(' '),
   secondary: [
     'bg-transparent text-text-dim',

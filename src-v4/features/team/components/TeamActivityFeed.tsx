@@ -133,7 +133,7 @@ export function TeamActivityFeed({ teamId, compact }: TeamActivityFeedProps) {
             {group.label === 'Today' && (
               <span className="h-1.5 w-1.5 rounded-full bg-data-good animate-pulse" title="Live" />
             )}
-            <div className="flex-1 border-t border-surface-inset/30" />
+            <div className="flex-1 border-t border-edge-default/30" />
           </div>
           <motion.div
             variants={listContainerVariants}
