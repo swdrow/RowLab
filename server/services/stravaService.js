@@ -8,6 +8,7 @@
 import crypto from 'crypto';
 import { prisma } from '../db/connection.js';
 import { encrypt, decrypt } from '../utils/encryption.js';
+import { createSignedOAuthState } from '../utils/oauthState.js';
 
 // Strava API endpoints
 const STRAVA_API_URL = 'https://www.strava.com/api/v3';
@@ -37,8 +38,8 @@ export function generateAuthUrl(userId) {
     throw new Error('STRAVA_CLIENT_ID not configured');
   }
 
-  // State includes user ID for callback verification
-  const state = Buffer.from(JSON.stringify({ userId, timestamp: Date.now() })).toString('base64');
+  // State is HMAC-signed to prevent CSRF via forged state parameters
+  const state = createSignedOAuthState({ userId });
 
   const params = new URLSearchParams({
     client_id: clientId,

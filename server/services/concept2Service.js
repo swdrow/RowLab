@@ -11,6 +11,7 @@ import crypto from 'crypto';
 import { prisma } from '../db/connection.js';
 import { bulkCreateWorkouts } from './workoutService.js';
 import { encrypt, decrypt, isEncrypted } from '../utils/encryption.js';
+import { createSignedOAuthState } from '../utils/oauthState.js';
 
 // Configuration from environment (supports dev/prod switching)
 const getConfig = () => ({
@@ -51,11 +52,8 @@ export function generateAuthUrl(state) {
  * Generate OAuth authorization URL (with athlete context)
  */
 export function getAuthorizationUrl(athleteId, redirectUri) {
-  const state = crypto.randomBytes(16).toString('hex');
-
-  // Store state temporarily (in production, use Redis or DB)
-  // For now, encode athleteId in state
-  const stateData = Buffer.from(JSON.stringify({ athleteId, nonce: state })).toString('base64url');
+  // HMAC-signed state with athleteId for CSRF protection
+  const stateData = createSignedOAuthState({ athleteId });
 
   const config = getConfig();
   const params = new URLSearchParams({

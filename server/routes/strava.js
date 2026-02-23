@@ -8,6 +8,7 @@
 import { Router } from 'express';
 import { authenticateToken as authenticate, optionalAuth } from '../middleware/auth.js';
 import stravaService from '../services/stravaService.js';
+import { verifyOAuthState } from '../utils/oauthState.js';
 import { prisma } from '../db/connection.js';
 
 const router = Router();
@@ -130,8 +131,17 @@ router.get('/callback', async (req, res) => {
       return sendPopupResponse(false, { error: 'Missing required parameters' });
     }
 
-    // Decode state to get user ID
-    const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
+    // Verify HMAC-signed state to prevent CSRF via forged state parameters
+    let stateData;
+    try {
+      stateData = verifyOAuthState(state);
+    } catch (err) {
+      console.warn('Strava OAuth: state verification failed:', err.message);
+      return res.status(403).json({
+        success: false,
+        error: { code: 'INVALID_STATE', message: 'OAuth state verification failed' },
+      });
+    }
     const { userId } = stateData;
 
     if (!userId) {
