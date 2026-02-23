@@ -12,6 +12,7 @@
 import { useRef } from 'react';
 import { motion } from 'motion/react';
 import { IconCamera, IconWaves, IconDumbbell, IconClock, IconFlame } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 
 import { slideUp } from '@/lib/animations';
 import { formatNumber } from '@/lib/format';
@@ -75,8 +76,9 @@ export function ProfileHero({ profile, stats }: ProfileHeroProps) {
           className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors cursor-pointer"
           aria-label="Upload banner image"
         >
-          <Camera
-            width={24} height={24}
+          <IconCamera
+            width={24}
+            height={24}
             className="text-white opacity-0 group-hover:opacity-80 transition-opacity"
           />
         </button>
@@ -101,7 +103,7 @@ export function ProfileHero({ profile, stats }: ProfileHeroProps) {
               className="w-24 h-24 rounded-full object-cover border-4 border-void-deep"
             />
           ) : (
-            <AvatarInitials name={profile.name} width={96} height={96} />
+            <AvatarInitials name={profile.name} size={96} />
           )}
 
           {/* Avatar upload overlay */}
@@ -111,8 +113,9 @@ export function ProfileHero({ profile, stats }: ProfileHeroProps) {
             className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 group-hover/avatar:bg-black/30 transition-colors cursor-pointer"
             aria-label="Upload avatar"
           >
-            <Camera
-              width={16} height={16}
+            <IconCamera
+              width={16}
+              height={16}
               className="text-white opacity-0 group-hover/avatar:opacity-80 transition-opacity"
             />
           </button>
@@ -193,7 +196,7 @@ function HeadlineStat({
   label,
   value,
 }: {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: IconComponent;
   label: string;
   value: string;
 }) {

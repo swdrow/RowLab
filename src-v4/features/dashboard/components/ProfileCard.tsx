@@ -53,7 +53,7 @@ function MiniStat({
 }) {
   return (
     <div className="flex items-center gap-1.5">
-      <Icon size={14} className={accent ? 'text-accent-teal' : 'text-text-faint'} />
+      <Icon width={14} height={14} className={accent ? 'text-accent-teal' : 'text-text-faint'} />
       <div className="flex flex-col">
         <span className="text-[10px] uppercase tracking-wider text-text-faint leading-none">
           {label}
