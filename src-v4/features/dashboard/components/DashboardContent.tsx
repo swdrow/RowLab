@@ -14,7 +14,6 @@ import {
   SPRING_SMOOTH,
 } from '@/lib/animations';
 import { SectionDivider } from '@/components/ui/SectionDivider';
-import { useAuth } from '@/features/auth/useAuth';
 import { CompactHero } from './CompactHero';
 import { MiniProfileCard } from './MiniProfileCard';
 import { ThisWeekStats } from './ThisWeekStats';
@@ -27,13 +26,18 @@ import type { DashboardData, TeamContextData } from '../types';
 interface DashboardContentProps {
   data: DashboardData;
   userName: string;
+  username?: string;
   avatar?: string | null;
   teamContext: TeamContextData | null;
 }
 
-export function DashboardContent({ data, userName, avatar, teamContext }: DashboardContentProps) {
-  const { user } = useAuth();
-
+export function DashboardContent({
+  data,
+  userName,
+  username,
+  avatar,
+  teamContext,
+}: DashboardContentProps) {
   return (
     <div className="mx-auto max-w-[1100px] px-4 sm:px-8 pb-20 md:pb-6 pt-6">
       <motion.div variants={dramaticContainerVariants} initial="hidden" animate="visible">
@@ -64,11 +68,7 @@ export function DashboardContent({ data, userName, avatar, teamContext }: Dashbo
             animate="visible"
           >
             <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-              <MiniProfileCard
-                userName={userName}
-                username={user?.username ?? undefined}
-                avatar={avatar}
-              />
+              <MiniProfileCard userName={userName} username={username} avatar={avatar} />
             </motion.div>
 
             <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>

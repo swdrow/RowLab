@@ -2,8 +2,10 @@
  * SocialFeedCard — single workout in the social feed.
  * Machine type: colored dot + uppercase tag in Space Mono.
  * Stats row: Space Mono 400. Like button with count.
+ *
+ * Wrapped in React.memo — skips re-render when `item` reference is stable.
  */
-import { useState } from 'react';
+import { memo, useState, useMemo, useCallback } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Card } from '@/components/ui/Card';
 import { toggleLike } from '../api';
@@ -61,7 +63,7 @@ interface SocialFeedCardProps {
   item: FeedItem;
 }
 
-export function SocialFeedCard({ item }: SocialFeedCardProps) {
+export const SocialFeedCard = memo(function SocialFeedCard({ item }: SocialFeedCardProps) {
   const [liked, setLiked] = useState(item.isLiked);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const [liking, setLiking] = useState(false);
@@ -70,7 +72,22 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
   const machineColor = MACHINE_COLORS[machineType] || MACHINE_COLORS.rower;
   const dotColor = MACHINE_DOT_COLORS[machineType] || MACHINE_DOT_COLORS.rower;
 
-  const handleLike = async () => {
+  // Memoize formatted strings — only recalculate when underlying data changes
+  const timeString = useMemo(() => timeAgo(item.date), [item.date]);
+  const distStr = useMemo(() => formatDistance(item.distanceM), [item.distanceM]);
+  const durStr = useMemo(() => formatDuration(item.durationSeconds), [item.durationSeconds]);
+  const paceStr = useMemo(() => formatPace(item.avgPace), [item.avgPace]);
+  const initials = useMemo(
+    () =>
+      item.user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2),
+    [item.user.name]
+  );
+
+  const handleLike = useCallback(async () => {
     if (liking) return;
     setLiking(true);
     const prevLiked = liked;
@@ -87,7 +104,7 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
     } finally {
       setLiking(false);
     }
-  };
+  }, [liked, liking, likeCount, item.id]);
 
   return (
     <Card padding="none" className="overflow-hidden">
@@ -103,11 +120,7 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
                   className="h-8 w-8 rounded-full object-cover"
                 />
               ) : (
-                item.user.name
-                  .split(' ')
-                  .map((n) => n[0])
-                  .join('')
-                  .slice(0, 2)
+                initials
               )}
             </div>
             <div className="flex flex-col">
@@ -117,7 +130,7 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
               )}
             </div>
           </div>
-          <span className="text-xs text-text-faint">{timeAgo(item.date)}</span>
+          <span className="text-xs text-text-faint">{timeString}</span>
         </div>
 
         {/* Machine type tag */}
@@ -132,9 +145,9 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
 
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-          <StatField label="Distance" value={formatDistance(item.distanceM)} />
-          <StatField label="Time" value={formatDuration(item.durationSeconds)} />
-          <StatField label="Pace" value={formatPace(item.avgPace)} />
+          <StatField label="Distance" value={distStr} />
+          <StatField label="Time" value={durStr} />
+          <StatField label="Pace" value={paceStr} />
           {item.strokeRate && <StatField label="Rate" value={`${item.strokeRate} spm`} />}
         </div>
 
@@ -170,9 +183,9 @@ export function SocialFeedCard({ item }: SocialFeedCardProps) {
       </div>
     </Card>
   );
-}
+});
 
-function StatField({ label, value }: { label: string; value: string }) {
+const StatField = memo(function StatField({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col">
       <span className="text-[10px] font-medium uppercase tracking-widest text-text-faint">
@@ -181,4 +194,4 @@ function StatField({ label, value }: { label: string; value: string }) {
       <span className="font-mono text-sm text-text-default">{value}</span>
     </div>
   );
-}
+});

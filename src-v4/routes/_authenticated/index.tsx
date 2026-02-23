@@ -6,7 +6,7 @@
  * Suspense boundary shows skeleton while queries resolve.
  * State detection: empty state for zero-data users, full content otherwise.
  */
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useAuth } from '@/features/auth/useAuth';
 import { queryClient } from '@/lib/queryClient';
@@ -58,14 +58,15 @@ function DashboardInner() {
     return <DashboardEmptyState />;
   }
 
-  // Derive team context from auth state
+  // Memoize team context — avoids new object reference on every render
   // TODO(phase-45): Replace with real team context API when /me/team-context ships
-  const teamContext = deriveTeamContext(activeTeamId, teams);
+  const teamContext = useMemo(() => deriveTeamContext(activeTeamId, teams), [activeTeamId, teams]);
 
   return (
     <DashboardContent
       data={data}
       userName={user?.name ?? 'Athlete'}
+      username={user?.username ?? undefined}
       avatar={user?.avatarUrl}
       teamContext={teamContext}
     />

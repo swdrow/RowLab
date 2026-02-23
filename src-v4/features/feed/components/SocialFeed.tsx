@@ -3,9 +3,13 @@
  * Uses useInfiniteQuery for cursor-based pagination.
  * IntersectionObserver triggers next page fetch.
  */
-import { useRef, useEffect, useState, forwardRef, type SVGProps } from 'react';
+import { useRef, useEffect, useState, useMemo, forwardRef, type SVGProps } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { socialFeedOptions } from '../api';
+import { SocialFeedCard } from './SocialFeedCard';
+import { FeedSkeleton, FeedCardSkeleton } from './FeedSkeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
+import type { FeedFilter } from '../types';
 
 /** Custom rowing icon — replaces generic icon library per design spec. */
 const RowingIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement> & { size?: number }>(
@@ -33,10 +37,6 @@ const RowingIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement> & { size?: 
     </svg>
   )
 );
-import { SocialFeedCard } from './SocialFeedCard';
-import { FeedSkeleton, FeedCardSkeleton } from './FeedSkeleton';
-import { EmptyState } from '@/components/ui/EmptyState';
-import type { FeedFilter } from '../types';
 
 const FILTER_TABS: { value: FeedFilter; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -76,15 +76,20 @@ function FeedContent({ filter }: { filter: FeedFilter }) {
     socialFeedOptions({ filter })
   );
 
-  // IntersectionObserver for infinite scroll
+  // Stable IntersectionObserver — use refs for volatile state to avoid teardown/rebuild
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const hasNextPageRef = useRef(hasNextPage);
+  const isFetchingRef = useRef(isFetchingNextPage);
+  hasNextPageRef.current = hasNextPage;
+  isFetchingRef.current = isFetchingNextPage;
+
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        if (entries[0].isIntersecting && hasNextPageRef.current && !isFetchingRef.current) {
           fetchNextPage();
         }
       },
@@ -93,13 +98,14 @@ function FeedContent({ filter }: { filter: FeedFilter }) {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [fetchNextPage]);
+
+  // Memoize flattened items — prevents new array reference on every render
+  const allItems = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
 
   if (isLoading) {
     return <FeedSkeleton />;
   }
-
-  const allItems = data?.pages.flatMap((p) => p.items) ?? [];
 
   if (allItems.length === 0) {
     return (
