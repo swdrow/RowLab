@@ -79,14 +79,19 @@ interface ValueCardProps {
 }
 
 function ValueCard({ label, value, colorClass, format }: ValueCardProps) {
-  const display = value != null ? (format ? format(value) : value.toFixed(1)) : '--';
+  const isNull = value == null;
+  const display = isNull ? '\u2014' : format ? format(value) : value.toFixed(1);
 
   return (
     <div className="rounded-xl border border-edge-default bg-void-raised px-4 py-3">
       <p className="text-[10px] uppercase tracking-wider text-text-faint font-medium mb-1">
         {label}
       </p>
-      <p className={`text-lg font-mono font-semibold ${colorClass}`}>{display}</p>
+      <p
+        className={`text-lg font-mono tabular-nums font-semibold ${isNull ? 'text-text-faint' : colorClass}`}
+      >
+        {display}
+      </p>
     </div>
   );
 }
