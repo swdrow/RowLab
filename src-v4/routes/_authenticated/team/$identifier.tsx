@@ -11,11 +11,20 @@ import { teamByIdentifierOptions } from '@/features/team/api';
 
 export const Route = createFileRoute('/_authenticated/team/$identifier')({
   beforeLoad: ({ context }) => {
+    // Defense-in-depth: parent _authenticated route blocks when !isInitialized,
+    // but guard here too to prevent team API calls without auth tokens.
+    if (!context.auth?.isInitialized) {
+      throw new Promise<void>(() => {});
+    }
     if (!context.auth?.isAuthenticated) {
       throw redirect({ to: '/login' });
     }
   },
-  loader: async ({ params }) => {
+  loader: async ({ params, context }) => {
+    // Only fetch team data if auth is confirmed (prevents 401 on deep links)
+    if (!context.auth?.isAuthenticated) {
+      return { team: null };
+    }
     const team = await queryClient.ensureQueryData(teamByIdentifierOptions(params.identifier));
     return { team };
   },
