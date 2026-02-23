@@ -671,6 +671,20 @@
   background: linear-gradient(270deg, oklch(0.68 0.1 75 / 0.35), transparent 80%);
 }
 
+/* Warm rule draw-in animation */
+.warm-rule-animated {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition:
+    transform 300ms ease-out,
+    opacity 300ms ease-out;
+  opacity: 0;
+}
+.warm-rule-animated.warm-rule-visible {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
 /* --- Fancy Section Header --- */
 .section-header-fancy {
   display: flex;
@@ -837,6 +851,12 @@ html {
   .nebula-1,
   .nebula-2 {
     opacity: 0.5;
+  }
+
+  .warm-rule-animated {
+    transform: scaleX(1);
+    opacity: 1;
+    transition: none;
   }
 }
 
