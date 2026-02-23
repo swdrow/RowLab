@@ -5,19 +5,19 @@
  * Each event type has its own icon, color scheme, and descriptive verb.
  */
 import {
-  UserPlus,
-  UserMinus,
-  Shield,
-  Megaphone,
-  Sparkles,
-  Settings,
-  Link2,
-  Dumbbell,
-  Trophy,
-  Medal,
-  CheckCircle,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+  IconUserPlus,
+  IconUserMinus,
+  IconShield,
+  IconMegaphone,
+  IconSparkles,
+  IconSettings,
+  IconLink,
+  IconDumbbell,
+  IconTrophy,
+  IconMedal,
+  IconCheckCircle,
+} from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import type { ActivityEvent, ActivityEventType } from '../types';
 
 interface ActivityItemProps {
@@ -25,7 +25,7 @@ interface ActivityItemProps {
 }
 
 interface EventConfig {
-  icon: LucideIcon;
+  icon: IconComponent;
   /** Tailwind text color for the icon */
   iconColor: string;
   /** Tailwind bg color for the icon circle */
@@ -38,21 +38,21 @@ interface EventConfig {
 
 const EVENT_CONFIG: Record<ActivityEventType, EventConfig> = {
   member_joined: {
-    icon: UserPlus,
+    icon: IconUserPlus,
     iconColor: 'text-data-good',
     iconBg: 'bg-data-good/10',
     borderColor: 'border-l-data-good/60',
     verb: () => ' joined the team',
   },
   member_left: {
-    icon: UserMinus,
+    icon: IconUserMinus,
     iconColor: 'text-data-poor',
     iconBg: 'bg-data-poor/10',
     borderColor: 'border-l-data-poor/60',
     verb: () => ' left the team',
   },
   role_changed: {
-    icon: Shield,
+    icon: IconShield,
     iconColor: 'text-data-warning',
     iconBg: 'bg-data-warning/10',
     borderColor: 'border-l-data-warning/60',
@@ -63,7 +63,7 @@ const EVENT_CONFIG: Record<ActivityEventType, EventConfig> = {
     },
   },
   announcement: {
-    icon: Megaphone,
+    icon: IconMegaphone,
     iconColor: 'text-accent-teal',
     iconBg: 'bg-accent-teal/10',
     borderColor: 'border-l-accent-teal/60',
@@ -73,28 +73,28 @@ const EVENT_CONFIG: Record<ActivityEventType, EventConfig> = {
     },
   },
   team_created: {
-    icon: Sparkles,
+    icon: IconSparkles,
     iconColor: 'text-data-good',
     iconBg: 'bg-data-good/10',
     borderColor: 'border-l-data-good/60',
     verb: () => ' created the team',
   },
   team_updated: {
-    icon: Settings,
+    icon: IconSettings,
     iconColor: 'text-text-dim',
     iconBg: 'bg-void-deep',
     borderColor: 'border-l-text-dim/40',
     verb: () => ' updated team settings',
   },
   invite_generated: {
-    icon: Link2,
+    icon: IconLink,
     iconColor: 'text-accent-teal',
     iconBg: 'bg-accent-teal/10',
     borderColor: 'border-l-accent-teal/60',
     verb: () => ' generated an invite link',
   },
   workout: {
-    icon: Dumbbell,
+    icon: IconDumbbell,
     iconColor: 'text-data-good',
     iconBg: 'bg-data-good/10',
     borderColor: 'border-l-data-good/60',
@@ -108,21 +108,21 @@ const EVENT_CONFIG: Record<ActivityEventType, EventConfig> = {
     },
   },
   pr: {
-    icon: Trophy,
+    icon: IconTrophy,
     iconColor: 'text-data-warning',
     iconBg: 'bg-data-warning/10',
     borderColor: 'border-l-data-warning/60',
     verb: () => ' set a new personal record',
   },
   session_completed: {
-    icon: CheckCircle,
+    icon: IconCheckCircle,
     iconColor: 'text-data-good',
     iconBg: 'bg-data-good/10',
     borderColor: 'border-l-data-good/60',
     verb: () => ' completed a training session',
   },
   achievement_unlocked: {
-    icon: Medal,
+    icon: IconMedal,
     iconColor: 'text-data-warning',
     iconBg: 'bg-data-warning/10',
     borderColor: 'border-l-data-warning/60',
@@ -131,7 +131,7 @@ const EVENT_CONFIG: Record<ActivityEventType, EventConfig> = {
 };
 
 const FALLBACK_CONFIG: EventConfig = {
-  icon: Settings,
+  icon: IconSettings,
   iconColor: 'text-text-faint',
   iconBg: 'bg-void-deep',
   borderColor: 'border-l-edge-default',
@@ -212,7 +212,7 @@ export function ActivityItem({ event }: ActivityItemProps) {
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${config.iconBg}`}
         >
-          <Icon size={16} className={config.iconColor} />
+          <Icon width={16} height={16} className={config.iconColor} />
         </div>
       )}
 
@@ -225,7 +225,11 @@ export function ActivityItem({ event }: ActivityItemProps) {
           </>
         ) : (
           <>
-            <Icon size={14} className={`inline-block align-text-bottom mr-1 ${config.iconColor}`} />
+            <Icon
+              width={14}
+              height={14}
+              className={`inline-block align-text-bottom mr-1 ${config.iconColor}`}
+            />
             {event.title || verb.trim()}
           </>
         )}

@@ -5,7 +5,7 @@
  * Blur or Enter saves; Escape cancels. Shows pencil icon on hover.
  */
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Pencil } from 'lucide-react';
+import { IconPencil } from '@/components/icons';
 
 interface InlineEditProps {
   value: string;
@@ -123,7 +123,7 @@ export function InlineEdit({
     >
       <Tag className={isEmpty ? 'text-text-faint italic' : ''}>{displayValue}</Tag>
       <Pencil
-        size={Tag === 'h1' ? 14 : 12}
+        width={Tag === 'h1' ? 14 : 12} height={Tag === 'h1' ? 14 : 12}
         className="text-text-faint opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
       />
     </button>

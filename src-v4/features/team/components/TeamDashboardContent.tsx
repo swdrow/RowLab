@@ -7,7 +7,7 @@
  */
 import { Suspense } from 'react';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
-import { LayoutDashboard, Users, Activity } from 'lucide-react';
+import { IconLayout, IconUsers, IconActivity } from '@/components/icons';
 import { TabToggle } from '@/components/ui/TabToggle';
 import { TeamOverview } from './TeamOverview';
 import { TeamRoster } from './TeamRoster';
@@ -19,9 +19,9 @@ const parentRoute = getRouteApi('/_authenticated/team/$identifier');
 const dashboardRoute = getRouteApi('/_authenticated/team/$identifier/dashboard');
 
 const TABS = [
-  { id: 'overview' as const, label: 'Overview', icon: LayoutDashboard },
-  { id: 'roster' as const, label: 'Roster', icon: Users },
-  { id: 'activity' as const, label: 'Activity', icon: Activity },
+  { id: 'overview' as const, label: 'Overview', icon: IconLayout },
+  { id: 'roster' as const, label: 'Roster', icon: IconUsers },
+  { id: 'activity' as const, label: 'Activity', icon: IconActivity },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -56,7 +56,7 @@ export function TeamDashboardContent() {
           tabs={TABS.map((t) => ({
             id: t.id,
             label: t.label,
-            icon: <t.icon size={16} />,
+            icon: <t.icon width={16} height={16} />,
           }))}
           activeTab={activeTab}
           onTabChange={(id) => handleTabChange(id as TabId)}

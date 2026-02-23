@@ -10,7 +10,7 @@
 import { useState, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { LogIn, Link2 } from 'lucide-react';
+import { IconLogIn, IconLink } from '@/components/icons';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -79,7 +79,7 @@ export function JoinTeamFlow({ onJoined }: JoinTeamFlowProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex items-center gap-2 text-sm font-medium text-text-default">
-        <Link2 size={14} className="text-text-faint" />
+        <IconLink width={14} height={14} className="text-text-faint" />
         Join with invite code
       </div>
 
@@ -97,7 +97,7 @@ export function JoinTeamFlow({ onJoined }: JoinTeamFlowProps) {
           />
         </div>
         <Button type="submit" size="md" loading={joinMutation.isPending} disabled={!code.trim()}>
-          <LogIn size={16} />
+          <IconLogIn width={16} height={16} />
           Join
         </Button>
       </div>

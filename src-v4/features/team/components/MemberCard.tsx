@@ -5,7 +5,7 @@
  * Role badges: Owner=copper with crown, Admin=copper, Coach=blue, Athlete=subtle.
  * Last-active indicator: green dot if active in last 24h.
  */
-import { Crown, Shield } from 'lucide-react';
+import { IconCrown, IconShield } from '@/components/icons';
 import { Card } from '@/components/ui/Card';
 import { formatRelativeDate } from '@/lib/format';
 import { ROLE_DISPLAY } from '../types';
@@ -124,7 +124,7 @@ export function MemberCard({ member }: MemberCardProps) {
           <div className="flex items-center gap-2">
             <h4 className="truncate text-sm font-semibold text-text-bright">{member.name}</h4>
             <span className={`inline-flex shrink-0 items-center gap-1 ${badgeConfig.classes}`}>
-              {BadgeIcon && <BadgeIcon size={11} />}
+              {BadgeIcon && <BadgeIcon width={11} height={11} />}
               {roleLabel}
             </span>
           </div>

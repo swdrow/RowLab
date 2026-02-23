@@ -5,7 +5,7 @@
  * // TODO(phase-53): Wire to account deletion endpoint
  */
 import { useState, useCallback } from 'react';
-import { Settings, Mail, Lock, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { IconSettings, IconMail, IconLock, IconAlertTriangle, IconCheckCircle, IconXCircle } from '@/components/icons';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -99,13 +99,13 @@ function PasswordChangeForm() {
       {/* Status feedback */}
       {status === 'success' && (
         <div className="flex items-center gap-2 text-sm text-data-good">
-          <CheckCircle2 className="w-4 h-4" />
+          <IconCheckCircle className="w-4 h-4" />
           Password changed successfully
         </div>
       )}
       {status === 'error' && errorMessage && (
         <div className="flex items-center gap-2 text-sm text-accent-coral">
-          <XCircle className="w-4 h-4" />
+          <IconXCircle className="w-4 h-4" />
           {errorMessage}
         </div>
       )}
@@ -141,13 +141,13 @@ export function AccountSection() {
       <SectionHeader
         title="Account"
         description="Manage your account credentials and data"
-        icon={<Settings className="w-4 h-4" />}
+        icon={<IconSettings className="w-4 h-4" />}
       />
 
       {/* Email Display */}
       <Card>
         <div className="flex items-center gap-2 mb-3">
-          <Mail className="w-4 h-4 text-accent-teal" />
+          <IconMail className="w-4 h-4 text-accent-teal" />
           <h3 className="text-sm font-semibold text-text-bright">Email Address</h3>
         </div>
         <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ export function AccountSection() {
             "
           />
           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-data-good/10 text-data-good">
-            <CheckCircle2 className="w-3 h-3" />
+            <IconCheckCircle className="w-3 h-3" />
             Verified
           </span>
         </div>
@@ -171,7 +171,7 @@ export function AccountSection() {
       {/* Password Change */}
       <Card>
         <div className="flex items-center gap-2 mb-4">
-          <Lock className="w-4 h-4 text-accent-teal" />
+          <IconLock className="w-4 h-4 text-accent-teal" />
           <h3 className="text-sm font-semibold text-text-bright">Change Password</h3>
         </div>
         <PasswordChangeForm />
@@ -180,7 +180,7 @@ export function AccountSection() {
       {/* Danger Zone */}
       <Card className="border border-accent-coral/30">
         <div className="flex items-center gap-2 mb-3">
-          <AlertTriangle className="w-4 h-4 text-accent-coral" />
+          <IconAlertTriangle className="w-4 h-4 text-accent-coral" />
           <h3 className="text-sm font-semibold text-accent-coral">Danger Zone</h3>
         </div>
         <p className="text-sm text-text-dim mb-4">

@@ -7,7 +7,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import { Activity, Clock, Flame, Waves } from 'lucide-react';
+import { IconActivity, IconClock, IconFlame, IconWaves } from '@/components/icons';
 
 import { profileStatsQueryOptions, profileTrendsQueryOptions } from '../api';
 import { TrendChart } from './TrendChart';
@@ -105,7 +105,7 @@ function OverviewStat({ icon: Icon, label, value, footnote, sparklineData }: Ove
             className="w-9 h-9 rounded-lg bg-void-deep flex items-center justify-center"
             aria-hidden="true"
           >
-            <Icon size={18} className="text-accent-teal" />
+            <Icon width={18} height={18} className="text-accent-teal" />
           </div>
           {sparklineData && sparklineData.length >= 2 && (
             <Sparkline
@@ -197,21 +197,21 @@ export function OverviewTab({ profile }: OverviewTabProps) {
         transition={SPRING_SMOOTH}
       >
         <OverviewStat
-          icon={Waves}
+          icon={IconWaves}
           label="Total Meters"
           value={formatNumber(stats?.allTime.totalMeters ?? 0)}
           footnote="Lifetime"
           sparklineData={sparklines.meters}
         />
         <OverviewStat
-          icon={Activity}
+          icon={IconActivity}
           label="Total Workouts"
           value={formatNumber(stats?.allTime.workoutCount ?? 0)}
           footnote="Lifetime"
           sparklineData={sparklines.workouts}
         />
         <OverviewStat
-          icon={Clock}
+          icon={IconClock}
           label="Training Hours"
           value={formatNumber(totalHours)}
           footnote={
@@ -222,7 +222,7 @@ export function OverviewTab({ profile }: OverviewTabProps) {
           sparklineData={sparklines.hours}
         />
         <OverviewStat
-          icon={Flame}
+          icon={IconFlame}
           label="Day Streak"
           value={String(stats?.streak.current ?? 0)}
           footnote={`Longest: ${stats?.streak.longest ?? 0} days`}
@@ -280,7 +280,7 @@ export function OverviewTab({ profile }: OverviewTabProps) {
           transition={SPRING_SMOOTH}
         >
           <div className="w-8 h-8 rounded-lg bg-accent-teal/10 flex items-center justify-center">
-            <Waves size={16} className="text-accent-teal" />
+            <IconWaves width={16} height={16} className="text-accent-teal" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-text-bright">Concept2 Logbook</p>

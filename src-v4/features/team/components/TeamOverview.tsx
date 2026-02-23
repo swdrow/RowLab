@@ -11,17 +11,17 @@ import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import {
-  Users,
-  Dumbbell,
-  Calendar,
-  Gauge,
-  ClipboardList,
-  Ship,
-  Megaphone,
-  Pin,
-  Send,
-  TrendingUp,
-} from 'lucide-react';
+  IconUsers,
+  IconDumbbell,
+  IconCalendar,
+  IconGauge,
+  IconClipboardList,
+  IconShip,
+  IconMegaphone,
+  IconPin,
+  IconSend,
+  IconTrendingUp,
+} from '@/components/icons';
 import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { formatNumber } from '@/lib/format';
 import { useIsDesktop } from '@/hooks/useBreakpoint';
@@ -144,25 +144,25 @@ function StatsPanel({
 }) {
   const stats = [
     {
-      icon: Gauge,
+      icon: IconGauge,
       label: 'Total Meters',
       value: formatNumber(overview.totalMeters),
       iconColor: 'text-accent-teal',
     },
     {
-      icon: Users,
+      icon: IconUsers,
       label: 'Members',
       value: String(memberCount),
       iconColor: 'text-accent-teal-primary',
     },
     {
-      icon: TrendingUp,
+      icon: IconTrendingUp,
       label: 'Active Members',
       value: String(overview.activeMembers),
       iconColor: 'text-data-good',
     },
     {
-      icon: Dumbbell,
+      icon: IconDumbbell,
       label: 'Workouts This Week',
       value: String(overview.workoutsThisWeek),
       iconColor: 'text-accent-teal-primary',
@@ -181,7 +181,7 @@ function StatsPanel({
             <Card key={stat.label} padding="sm" variant="interactive">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-void-deep">
-                  <Icon size={16} className={stat.iconColor} />
+                  <Icon width={16} height={16} className={stat.iconColor} />
                 </div>
                 <div className="min-w-0">
                   <p className="text-xl font-bold tabular-nums text-text-bright">{stat.value}</p>
@@ -205,19 +205,19 @@ function CoachTools({ teamIdentifier }: { teamIdentifier: string }) {
 
   const tools = [
     {
-      icon: ClipboardList,
+      icon: IconClipboardList,
       label: 'Lineup Builder',
       desc: 'Build and manage race lineups',
       route: `/team/${teamIdentifier}/coach/lineup-builder`,
     },
     {
-      icon: Ship,
+      icon: IconShip,
       label: 'Fleet',
       desc: 'Manage boats and equipment',
       route: `/team/${teamIdentifier}/coach/fleet`,
     },
     {
-      icon: Calendar,
+      icon: IconCalendar,
       label: 'Practice Schedule',
       desc: 'Plan and schedule practices',
       route: `/team/${teamIdentifier}/coach/schedule`,
@@ -239,7 +239,7 @@ function CoachTools({ teamIdentifier }: { teamIdentifier: string }) {
               className="flex w-full items-center gap-3 rounded-lg p-2.5 text-left transition-colors hover:bg-void-deep/50"
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-void-deep">
-                <Icon size={16} className="text-accent-teal" />
+                <Icon width={16} height={16} className="text-accent-teal" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-text-bright">{tool.label}</p>
@@ -284,7 +284,7 @@ function AnnouncementCompose({ teamId }: { teamId: string }) {
         onClick={() => setIsExpanded(true)}
         className="flex w-full items-center gap-3 rounded-xl border border-dashed border-edge-default/60 p-4 text-left transition-colors hover:border-accent-teal/40 hover:bg-void-deep/30"
       >
-        <Megaphone size={18} className="text-text-faint" />
+        <IconMegaphone width={18} height={18} className="text-text-faint" />
         <span className="text-sm text-text-faint">Post an announcement...</span>
       </button>
     );
@@ -294,7 +294,7 @@ function AnnouncementCompose({ teamId }: { teamId: string }) {
     <Card padding="md" as="section">
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="flex items-center gap-2">
-          <Megaphone size={18} className="text-accent-teal" />
+          <IconMegaphone width={18} height={18} className="text-accent-teal" />
           <h3 className="text-sm font-medium text-text-bright">New Announcement</h3>
         </div>
         <input
@@ -325,7 +325,7 @@ function AnnouncementCompose({ teamId }: { teamId: string }) {
             disabled={!title.trim() || !content.trim() || createMutation.isPending}
             className="flex items-center gap-1.5 rounded-lg bg-accent-teal px-3 py-1.5 text-sm font-medium text-void-deep transition-colors hover:bg-accent-teal/90 disabled:opacity-50"
           >
-            <Send size={14} />
+            <IconSend width={14} height={14} />
             Post
           </button>
         </div>
@@ -361,7 +361,7 @@ function AnnouncementsSidebar({
       {pinned.length > 0 && (
         <Card padding="md" as="section">
           <h3 className="mb-3 flex items-center gap-1.5 text-sm font-medium uppercase tracking-wider text-accent-sand">
-            <Pin size={14} />
+            <IconPin width={14} height={14} />
             Pinned
           </h3>
           <div className="space-y-3">
@@ -415,7 +415,7 @@ function UpcomingEventsPlaceholder() {
         Upcoming Team Events
       </h3>
       <div className="flex items-center gap-3 rounded-lg bg-void-deep/30 p-4">
-        <Calendar size={20} className="text-text-faint" />
+        <IconCalendar width={20} height={20} className="text-text-faint" />
         <div>
           <p className="text-sm text-text-dim">No upcoming events scheduled.</p>
           <p className="text-xs text-text-faint">

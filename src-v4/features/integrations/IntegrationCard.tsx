@@ -8,7 +8,7 @@
  * - Error/disconnect: data-poor tokens
  * - Loading states: skeleton shimmer (no animate-spin)
  */
-import { CheckCircle2 } from 'lucide-react';
+import { IconCheckCircle } from '@/components/icons';
 import type { IntegrationCardProps } from './types';
 
 /**
@@ -73,7 +73,7 @@ export function IntegrationCard({
           {connected ? (
             <div className="mt-1 space-y-1">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className={`w-4 h-4 ${accentColor} shrink-0`} />
+                <IconCheckCircle className={`w-4 h-4 ${accentColor} shrink-0`} />
                 <span className={`text-sm ${accentColor} truncate`}>
                   Connected{username ? ` as ${username}` : ''}
                 </span>

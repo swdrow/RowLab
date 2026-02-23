@@ -10,7 +10,7 @@
  */
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Shield, Users, Crown, UserMinus, ChevronUp, ChevronDown } from 'lucide-react';
+import { IconShield, IconUsers, IconCrown, IconUserMinus, IconChevronUp, IconChevronDown } from '@/components/icons';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/features/auth/useAuth';
 import { teamRosterOptions } from '../../api';
@@ -129,7 +129,7 @@ export function MembersSection({ team }: MembersSectionProps) {
                       className="flex h-7 w-7 items-center justify-center rounded-md text-text-faint hover:text-data-good hover:bg-data-good/10 transition-colors disabled:opacity-50"
                       title={memberIsCoach ? 'Promote to Admin' : 'Promote to Coach'}
                     >
-                      <ChevronUp size={14} />
+                      <IconChevronUp width={14} height={14} />
                     </button>
                   )}
                   {!amAdmin && isCoachOrAbove(myRole) && member.role === 'ATHLETE' && (
@@ -140,7 +140,7 @@ export function MembersSection({ team }: MembersSectionProps) {
                       className="flex h-7 w-7 items-center justify-center rounded-md text-text-faint hover:text-data-good hover:bg-data-good/10 transition-colors disabled:opacity-50"
                       title="Promote to Coach"
                     >
-                      <ChevronUp size={14} />
+                      <IconChevronUp width={14} height={14} />
                     </button>
                   )}
 
@@ -153,7 +153,7 @@ export function MembersSection({ team }: MembersSectionProps) {
                       className="flex h-7 w-7 items-center justify-center rounded-md text-text-faint hover:text-text-dim hover:bg-void-overlay transition-colors disabled:opacity-50"
                       title="Demote to Coach"
                     >
-                      <ChevronDown size={14} />
+                      <IconChevronDown width={14} height={14} />
                     </button>
                   )}
                   {amAdmin && memberIsCoach && (
@@ -164,7 +164,7 @@ export function MembersSection({ team }: MembersSectionProps) {
                       className="flex h-7 w-7 items-center justify-center rounded-md text-text-faint hover:text-text-dim hover:bg-void-overlay transition-colors disabled:opacity-50"
                       title="Demote to Athlete"
                     >
-                      <ChevronDown size={14} />
+                      <IconChevronDown width={14} height={14} />
                     </button>
                   )}
 
@@ -176,7 +176,7 @@ export function MembersSection({ team }: MembersSectionProps) {
                       className="flex h-7 w-7 items-center justify-center rounded-md text-text-faint hover:text-data-poor hover:bg-data-poor/10 transition-colors"
                       title="Remove member"
                     >
-                      <UserMinus size={14} />
+                      <IconUserMinus width={14} height={14} />
                     </button>
                   )}
                 </div>
@@ -234,7 +234,7 @@ function RoleBadge({ role }: { role: string }) {
     <span
       className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${color}`}
     >
-      <Icon size={10} />
+      <Icon width={10} height={10} />
       {ROLE_DISPLAY[role] ?? role}
     </span>
   );

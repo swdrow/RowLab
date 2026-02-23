@@ -5,14 +5,15 @@
  * unread indicator (copper left border), and dismiss button on hover.
  */
 import { useState } from 'react';
-import { X, Info, Mail, Users, Bell } from 'lucide-react';
+import { IconX, IconInfo, IconMail, IconUsers, IconBell } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import { formatDistanceToNow } from 'date-fns';
 import type { Notification } from './api';
 
-const typeIcons: Record<string, typeof Info> = {
-  system: Info,
-  invite: Mail,
-  team: Users,
+const typeIcons: Record<string, IconComponent> = {
+  system: IconInfo,
+  invite: IconMail,
+  team: IconUsers,
 };
 
 interface NotificationItemProps {
@@ -30,7 +31,7 @@ export function NotificationItem({
 }: NotificationItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   const isUnread = !notification.readAt;
-  const Icon = typeIcons[notification.type] ?? Bell;
+  const Icon = typeIcons[notification.type] ?? IconBell;
   const targetUrl = notification.metadata?.targetUrl as string | undefined;
 
   const relativeTime = formatDistanceToNow(new Date(notification.createdAt), {
@@ -71,7 +72,7 @@ export function NotificationItem({
           isUnread ? 'bg-accent-teal/10 text-accent-teal' : 'bg-void-raised text-text-faint'
         }`}
       >
-        <Icon size={14} />
+        <Icon width={14} height={14} />
       </div>
 
       {/* Content */}
@@ -99,7 +100,7 @@ export function NotificationItem({
           className="absolute right-2 top-2 rounded p-1 text-text-faint transition-colors hover:bg-void-raised hover:text-text-bright"
           aria-label="Dismiss notification"
         >
-          <X size={12} />
+          <IconX width={12} height={12} />
         </button>
       )}
     </div>

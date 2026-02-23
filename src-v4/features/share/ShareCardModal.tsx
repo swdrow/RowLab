@@ -5,7 +5,7 @@
 
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Download, Copy, Share2, Check, Loader2, Square, Smartphone } from 'lucide-react';
+import { IconX, IconDownload, IconCopy, IconShare, IconCheck, IconLoader, IconSquare, IconSmartphone } from '@/components/icons';
 import { Dialog } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -78,7 +78,7 @@ function FormatToggle({
             : 'bg-void-deep text-text-dim hover:bg-void-overlay'
         }`}
       >
-        <Square size={12} />
+        <IconSquare width={12} height={12} />
         1:1
       </button>
       <button
@@ -90,7 +90,7 @@ function FormatToggle({
             : 'bg-void-deep text-text-dim hover:bg-void-overlay'
         }`}
       >
-        <Smartphone size={12} />
+        <IconSmartphone width={12} height={12} />
         9:16
       </button>
     </div>
@@ -141,16 +141,16 @@ function ResultActions({ card, onClose }: { card: ShareCard; onClose: () => void
       {/* Action buttons */}
       <div className="flex items-center gap-2">
         <Button variant="primary" onClick={handleDownload} className="flex-1">
-          <Download size={14} />
+          <IconDownload width={14} height={14} />
           Download
         </Button>
         <Button variant="secondary" onClick={handleCopyLink} className="flex-1">
-          {copied ? <Check size={14} /> : <Copy size={14} />}
+          {copied ? <IconCheck width={14} height={14} /> : <IconCopy width={14} height={14} />}
           {copied ? 'Copied!' : 'Copy Link'}
         </Button>
         {typeof navigator.share === 'function' && (
           <Button variant="ghost" onClick={handleNativeShare}>
-            <Share2 size={14} />
+            <IconShare width={14} height={14} />
           </Button>
         )}
       </div>
@@ -203,7 +203,7 @@ export function ShareCardModal({ workoutId, workoutLabel, open, onClose }: Share
               className="p-1.5 rounded-md hover:bg-void-overlay transition-colors"
               aria-label="Close"
             >
-              <X size={16} className="text-text-faint" />
+              <IconX width={16} height={16} className="text-text-faint" />
             </button>
           </div>
 
@@ -295,12 +295,12 @@ export function ShareCardModal({ workoutId, workoutLabel, open, onClose }: Share
                 >
                   {isPending ? (
                     <>
-                      <Loader2 size={14} className="animate-spin" />
+                      <IconLoader width={14} height={14} className="animate-spin" />
                       Generating...
                     </>
                   ) : (
                     <>
-                      <Share2 size={14} />
+                      <IconShare width={14} height={14} />
                       Generate Share Card
                     </>
                   )}

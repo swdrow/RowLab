@@ -10,7 +10,7 @@
  * Last admin cannot leave without assigning another admin first.
  */
 import { useState, useCallback } from 'react';
-import { LogOut, Trash2, AlertTriangle } from 'lucide-react';
+import { IconLogOut, IconTrash, IconAlertTriangle } from '@/components/icons';
 import { Button } from '@/components/ui/Button';
 import { useLeaveTeam, useDeleteTeam } from '../../hooks/useTeamMutations';
 import { isAdmin } from '../../types';
@@ -54,7 +54,7 @@ export function DangerZoneSection({ team, isOwner }: DangerZoneSectionProps) {
       {/* Leave team */}
       <div className="flex flex-col gap-3">
         <div className="flex items-start gap-3">
-          <LogOut size={18} className="text-data-poor mt-0.5 shrink-0" />
+          <IconLogOut width={18} height={18} className="text-data-poor mt-0.5 shrink-0" />
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-text-bright">Leave team</h3>
             <p className="text-xs text-text-dim mt-0.5">
@@ -66,7 +66,7 @@ export function DangerZoneSection({ team, isOwner }: DangerZoneSectionProps) {
 
         {isLastAdmin && (
           <div className="flex items-center gap-2 rounded-lg bg-accent-teal/10 border border-accent-teal/20 px-3 py-2">
-            <AlertTriangle size={14} className="text-accent-teal shrink-0" />
+            <IconAlertTriangle width={14} height={14} className="text-accent-teal shrink-0" />
             <span className="text-xs text-accent-teal">
               You are the only admin. Promote another member to admin before leaving.
             </span>
@@ -81,7 +81,7 @@ export function DangerZoneSection({ team, isOwner }: DangerZoneSectionProps) {
             onClick={() => setShowLeaveConfirm(true)}
             className="self-start"
           >
-            <LogOut size={14} />
+            <IconLogOut width={14} height={14} />
             Leave team
           </Button>
         ) : (
@@ -114,7 +114,7 @@ export function DangerZoneSection({ team, isOwner }: DangerZoneSectionProps) {
       {isOwner && (
         <div className="flex flex-col gap-3 pt-4 border-t border-data-poor/10">
           <div className="flex items-start gap-3">
-            <Trash2 size={18} className="text-data-poor mt-0.5 shrink-0" />
+            <IconTrash width={18} height={18} className="text-data-poor mt-0.5 shrink-0" />
             <div className="flex-1">
               <h3 className="text-sm font-semibold text-text-bright">Delete team</h3>
               <p className="text-xs text-text-dim mt-0.5">
@@ -131,7 +131,7 @@ export function DangerZoneSection({ team, isOwner }: DangerZoneSectionProps) {
               onClick={() => setShowDeleteConfirm(true)}
               className="self-start !text-data-poor !border-data-poor/30 hover:!bg-data-poor/10"
             >
-              <Trash2 size={14} />
+              <IconTrash width={14} height={14} />
               Delete team
             </Button>
           ) : (

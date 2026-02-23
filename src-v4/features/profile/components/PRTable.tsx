@@ -5,7 +5,7 @@
  * Recent PRs (last 30 days) highlighted with copper accent background and border.
  */
 
-import { Trophy } from 'lucide-react';
+import { IconTrophy } from '@/components/icons';
 import { motion } from 'motion/react';
 
 import { formatErgTime, formatPace, formatRelativeDate, formatNumber } from '@/lib/format';
@@ -67,7 +67,7 @@ export function PRTable({ records, machineType }: PRTableProps) {
   if (!hasAnyPRs) {
     return (
       <EmptyState
-        icon={Trophy}
+        icon={IconTrophy}
         title="No records yet"
         description={`Complete some ${machineType === 'rower' ? 'RowErg' : machineType === 'skierg' ? 'SkiErg' : 'BikeErg'} workouts at standard distances to see your PRs here.`}
         size="sm"

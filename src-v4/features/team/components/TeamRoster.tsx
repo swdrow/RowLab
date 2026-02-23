@@ -7,7 +7,7 @@
  */
 import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Search } from 'lucide-react';
+import { IconSearch } from '@/components/icons';
 import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { useTeamMembers } from '../hooks/useTeamMembers';
 import { MemberCard } from './MemberCard';
@@ -47,7 +47,7 @@ export function TeamRoster({ teamId }: TeamRosterProps) {
       {/* Search */}
       <div className="relative">
         <Search
-          size={16}
+          width={16} height={16}
           className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-faint"
         />
         <input
@@ -68,7 +68,7 @@ export function TeamRoster({ teamId }: TeamRosterProps) {
       {/* Grid */}
       {filteredAndSorted.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-xl bg-void-deep/30 py-12 text-center">
-          <Search size={24} className="text-text-faint" />
+          <IconSearch width={24} height={24} className="text-text-faint" />
           <p className="text-sm text-text-dim">No members found.</p>
         </div>
       ) : (

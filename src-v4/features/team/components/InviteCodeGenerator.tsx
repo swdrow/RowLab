@@ -10,7 +10,7 @@
  */
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Copy, Check, Link2, Trash2, Shield, Users } from 'lucide-react';
+import { IconCopy, IconCheck, IconLink, IconTrash, IconShield, IconUsers } from '@/components/icons';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
 import { useGenerateInviteCode, useRevokeInviteCode } from '../hooks/useTeamMutations';
@@ -125,7 +125,7 @@ export function InviteCodeGenerator({ teamId, compact = false }: InviteCodeGener
                   : 'border-edge-default bg-void-raised text-text-dim hover:bg-void-overlay'
               }`}
             >
-              <Shield size={14} />
+              <IconShield width={14} height={14} />
               Coach
             </button>
             <button
@@ -137,7 +137,7 @@ export function InviteCodeGenerator({ teamId, compact = false }: InviteCodeGener
                   : 'border-edge-default bg-void-raised text-text-dim hover:bg-void-overlay'
               }`}
             >
-              <Users size={14} />
+              <IconUsers width={14} height={14} />
               Athlete
             </button>
           </div>
@@ -193,7 +193,7 @@ export function InviteCodeGenerator({ teamId, compact = false }: InviteCodeGener
           onClick={handleGenerate}
           loading={generateMutation.isPending}
         >
-          <Link2 size={16} />
+          <IconLink width={16} height={16} />
           Generate invite link
         </Button>
       </div>
@@ -226,9 +226,9 @@ export function InviteCodeGenerator({ teamId, compact = false }: InviteCodeGener
               title="Copy link"
             >
               {copiedId === generatedCode.id ? (
-                <Check size={14} className="text-data-good" />
+                <IconCheck width={14} height={14} className="text-data-good" />
               ) : (
-                <Copy size={14} />
+                <IconCopy width={14} height={14} />
               )}
             </button>
           </div>
@@ -312,9 +312,9 @@ function InviteCodeRow({
           title="Copy invite link"
         >
           {copiedId === code.id ? (
-            <Check size={13} className="text-data-good" />
+            <IconCheck width={13} height={13} className="text-data-good" />
           ) : (
-            <Copy size={13} />
+            <IconCopy width={13} height={13} />
           )}
         </button>
         <button
@@ -324,7 +324,7 @@ function InviteCodeRow({
           className="flex h-7 w-7 items-center justify-center rounded-md text-text-faint hover:text-data-poor hover:bg-data-poor/10 transition-colors disabled:opacity-50"
           title="Revoke code"
         >
-          <Trash2 size={13} />
+          <IconTrash width={13} height={13} />
         </button>
       </div>
     </div>

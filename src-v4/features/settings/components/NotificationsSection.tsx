@@ -5,7 +5,7 @@
  */
 import { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Bell, Mail, Smartphone } from 'lucide-react';
+import { IconBell, IconMail, IconSmartphone } from '@/components/icons';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
 import { settingsQueryOptions, useUpdateSettings, type NotificationPrefs } from '../api';
@@ -112,13 +112,13 @@ export function NotificationsSection() {
       <SectionHeader
         title="Notifications"
         description="Control how and when oarbit contacts you"
-        icon={<Bell className="w-4 h-4" />}
+        icon={<IconBell className="w-4 h-4" />}
       />
 
       {/* Email Notifications */}
       <Card>
         <div className="flex items-center gap-2 mb-4">
-          <Mail className="w-4 h-4 text-accent-teal" />
+          <IconMail className="w-4 h-4 text-accent-teal" />
           <h3 className="text-sm font-semibold text-text-bright">Email Notifications</h3>
         </div>
         <div className="divide-y divide-edge-default/50">
@@ -156,7 +156,7 @@ export function NotificationsSection() {
       {/* Push Notifications */}
       <Card>
         <div className="flex items-center gap-2 mb-4">
-          <Smartphone className="w-4 h-4 text-accent-teal" />
+          <IconSmartphone className="w-4 h-4 text-accent-teal" />
           <h3 className="text-sm font-semibold text-text-bright">Push Notifications</h3>
         </div>
         <div className="divide-y divide-edge-default/50">

@@ -7,7 +7,7 @@ import { useState, useMemo } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import { Users, Search, User } from 'lucide-react';
+import { IconUsers, IconSearch, IconUser } from '@/components/icons';
 import { api } from '@/lib/api';
 import { useAuth } from '@/features/auth/useAuth';
 import { Card } from '@/components/ui/Card';
@@ -98,7 +98,7 @@ function AthletesPage() {
         {/* Header */}
         <motion.div variants={listItemVariants} transition={SPRING_SMOOTH} className="mb-6">
           <div className="flex items-center gap-2 mb-1">
-            <Users className="h-5 w-5 text-text-faint" />
+            <IconUsers className="h-5 w-5 text-text-faint" />
             <p className="text-xs font-medium uppercase tracking-wider text-text-faint">Team</p>
           </div>
           <h1 className="text-2xl font-bold text-heading-gradient tracking-tight">
@@ -118,7 +118,7 @@ function AthletesPage() {
           className="flex flex-col sm:flex-row gap-3 mb-5"
         >
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-faint" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-faint" />
             <input
               type="text"
               placeholder="Search athletes..."
@@ -152,7 +152,7 @@ function AthletesPage() {
         {filtered.length === 0 ? (
           <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
             <EmptyState
-              icon={Users}
+              icon={IconUsers}
               title={search || sideFilter !== 'all' ? 'No matching athletes' : 'No athletes yet'}
               description={
                 search || sideFilter !== 'all'
@@ -176,7 +176,7 @@ function AthletesPage() {
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-void-overlay transition-colors"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-void-raised shrink-0">
-                  <User className="h-4 w-4 text-text-faint" />
+                  <IconUser className="h-4 w-4 text-text-faint" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-text-bright truncate">{athlete.name}</p>

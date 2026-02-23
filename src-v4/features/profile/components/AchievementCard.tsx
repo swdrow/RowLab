@@ -10,8 +10,8 @@
  * - Common: no extra styling
  */
 
-import { Trophy, Target, Flame, Hash, Sparkles } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { IconTrophy, IconTarget, IconFlame, IconHash, IconSparkles } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import { motion } from 'motion/react';
 
 import { Card } from '@/components/ui/Card';
@@ -20,11 +20,11 @@ import { listItemVariants } from '@/lib/animations';
 import type { Achievement } from '../types';
 
 /** Category icon mapping */
-const CATEGORY_ICONS: Record<Achievement['category'], LucideIcon> = {
-  distance: Target,
-  consistency: Flame,
-  count: Hash,
-  variety: Sparkles,
+const CATEGORY_ICONS: Record<Achievement['category'], IconComponent> = {
+  distance: IconTarget,
+  consistency: IconFlame,
+  count: IconHash,
+  variety: IconSparkles,
 };
 
 /** Rarity color mapping using design tokens */
@@ -68,7 +68,7 @@ export function AchievementCard({ achievement, compact = false }: AchievementCar
   const { name, description, category, rarity, target, progress, unlocked, unlockedAt } =
     achievement;
 
-  const Icon = CATEGORY_ICONS[category] ?? Trophy;
+  const Icon = CATEGORY_ICONS[category] ?? IconTrophy;
   const rarityStyle = RARITY_COLORS[rarity];
   const progressPercent = target > 0 ? Math.min((progress / target) * 100, 100) : 0;
 
@@ -93,7 +93,11 @@ export function AchievementCard({ achievement, compact = false }: AchievementCar
           <div
             className={`flex-shrink-0 flex items-center justify-center rounded-lg ${rarityStyle.bg} ${compact ? 'h-9 w-9' : 'h-11 w-11'}`}
           >
-            <Icon size={compact ? 16 : 20} className={rarityStyle.text} />
+            <Icon
+              width={compact ? 16 : 20}
+              height={compact ? 16 : 20}
+              className={rarityStyle.text}
+            />
           </div>
 
           {/* Content */}
@@ -107,7 +111,9 @@ export function AchievementCard({ achievement, compact = false }: AchievementCar
               <span
                 className={`flex-shrink-0 text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${rarityStyle.text} ${rarityStyle.bg} ${rarityStyle.border}`}
               >
-                {isLegendary && <Sparkles size={8} className="inline-block mr-0.5 -mt-px" />}
+                {isLegendary && (
+                  <IconSparkles width={8} height={8} className="inline-block mr-0.5 -mt-px" />
+                )}
                 {rarity}
               </span>
             </div>
@@ -149,7 +155,11 @@ export function AchievementCard({ achievement, compact = false }: AchievementCar
           <div
             className={`flex-shrink-0 flex items-center justify-center rounded-lg bg-void-deep ${compact ? 'h-9 w-9' : 'h-11 w-11'}`}
           >
-            <Icon size={compact ? 16 : 20} className="text-text-faint" />
+            <Icon
+              width={compact ? 16 : 20}
+              height={compact ? 16 : 20}
+              className="text-text-faint"
+            />
           </div>
 
           {/* Content */}

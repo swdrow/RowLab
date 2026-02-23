@@ -11,7 +11,7 @@
  */
 import { useRef } from 'react';
 import { motion } from 'motion/react';
-import { Camera, Waves, Dumbbell, Clock, Flame } from 'lucide-react';
+import { IconCamera, IconWaves, IconDumbbell, IconClock, IconFlame } from '@/components/icons';
 
 import { slideUp } from '@/lib/animations';
 import { formatNumber } from '@/lib/format';
@@ -76,7 +76,7 @@ export function ProfileHero({ profile, stats }: ProfileHeroProps) {
           aria-label="Upload banner image"
         >
           <Camera
-            size={24}
+            width={24} height={24}
             className="text-white opacity-0 group-hover:opacity-80 transition-opacity"
           />
         </button>
@@ -101,7 +101,7 @@ export function ProfileHero({ profile, stats }: ProfileHeroProps) {
               className="w-24 h-24 rounded-full object-cover border-4 border-void-deep"
             />
           ) : (
-            <AvatarInitials name={profile.name} size={96} />
+            <AvatarInitials name={profile.name} width={96} height={96} />
           )}
 
           {/* Avatar upload overlay */}
@@ -112,7 +112,7 @@ export function ProfileHero({ profile, stats }: ProfileHeroProps) {
             aria-label="Upload avatar"
           >
             <Camera
-              size={16}
+              width={16} height={16}
               className="text-white opacity-0 group-hover/avatar:opacity-80 transition-opacity"
             />
           </button>
@@ -151,17 +151,17 @@ export function ProfileHero({ profile, stats }: ProfileHeroProps) {
         {/* Headline stats */}
         <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
           <HeadlineStat
-            icon={Waves}
+            icon={IconWaves}
             label="Total Meters"
             value={formatNumber(stats.allTime.totalMeters)}
           />
           <HeadlineStat
-            icon={Dumbbell}
+            icon={IconDumbbell}
             label="Workouts"
             value={formatNumber(stats.allTime.workoutCount)}
           />
-          <HeadlineStat icon={Clock} label="Hours" value={formatNumber(totalHours)} />
-          <HeadlineStat icon={Flame} label="Day Streak" value={String(stats.streak.current)} />
+          <HeadlineStat icon={IconClock} label="Hours" value={formatNumber(totalHours)} />
+          <HeadlineStat icon={IconFlame} label="Day Streak" value={String(stats.streak.current)} />
         </div>
 
         {/* Team badges */}
@@ -200,7 +200,7 @@ function HeadlineStat({
   return (
     <div className="panel rounded-xl p-3 flex items-center gap-3">
       <div className="w-9 h-9 rounded-lg bg-void-deep flex items-center justify-center shrink-0">
-        <Icon size={16} className="text-accent-teal" />
+        <Icon width={16} height={16} className="text-accent-teal" />
       </div>
       <div className="min-w-0">
         <div className="text-text-bright text-base font-semibold truncate">{value}</div>

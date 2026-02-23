@@ -8,16 +8,16 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import {
-  Activity,
-  Waves,
-  Mountain,
-  Bike,
-  Footprints,
-  Dumbbell,
-  Heart,
-  ChevronRight,
-  type LucideIcon,
-} from 'lucide-react';
+  IconActivity,
+  IconWaves,
+  IconMountain,
+  IconBike,
+  IconFootprints,
+  IconDumbbell,
+  IconHeart,
+  IconChevronRight,
+} from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
@@ -46,18 +46,18 @@ function recentWorkoutsOptions() {
 /* Icon lookup                                                         */
 /* ------------------------------------------------------------------ */
 
-const ICON_MAP: Record<string, LucideIcon> = {
-  Waves,
-  Mountain,
-  Bike,
-  Footprints,
-  Dumbbell,
-  Heart,
-  Activity,
+const ICON_MAP: Record<string, IconComponent> = {
+  Waves: IconWaves,
+  Mountain: IconMountain,
+  Bike: IconBike,
+  Footprints: IconFootprints,
+  Dumbbell: IconDumbbell,
+  Heart: IconHeart,
+  Activity: IconActivity,
 };
 
-function resolveSportIcon(sport: SportType): LucideIcon {
-  return ICON_MAP[SPORT_CONFIG[sport].icon] ?? Activity;
+function resolveSportIcon(sport: SportType): IconComponent {
+  return ICON_MAP[SPORT_CONFIG[sport].icon] ?? IconActivity;
 }
 
 /* ------------------------------------------------------------------ */
@@ -91,7 +91,7 @@ function TrainingLogSkeleton() {
 function EmptyState() {
   return (
     <div className="panel rounded-xl p-8 text-center">
-      <Activity size={32} className="text-text-faint mx-auto mb-3" />
+      <IconActivity width={32} height={32} className="text-text-faint mx-auto mb-3" />
       <p className="text-sm font-medium text-text-dim">No workouts yet</p>
       <p className="text-xs text-text-faint mt-1">Log your first workout to see it here.</p>
     </div>
@@ -136,7 +136,7 @@ function CompactRow({
     >
       {/* Sport icon */}
       <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-void-deep">
-        <Icon size={16} className={`text-${config.color}`} />
+        <Icon width={16} height={16} className={`text-${config.color}`} />
       </div>
 
       {/* Sport + date */}
@@ -159,8 +159,9 @@ function CompactRow({
       </div>
 
       {/* Chevron */}
-      <ChevronRight
-        size={14}
+      <IconChevronRight
+        width={14}
+        height={14}
         className="text-text-faint shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
       />
     </motion.button>
@@ -201,7 +202,7 @@ export function TrainingLogTab() {
           className="text-sm font-medium text-accent-teal hover:text-accent-teal/80 transition-colors inline-flex items-center gap-1"
         >
           View all workouts
-          <ChevronRight size={14} />
+          <IconChevronRight width={14} height={14} />
         </button>
       </motion.div>
     </motion.div>

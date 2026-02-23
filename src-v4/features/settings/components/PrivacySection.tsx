@@ -4,7 +4,7 @@
  */
 import { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Shield, Eye, Trophy } from 'lucide-react';
+import { IconShield, IconEye, IconTrophy } from '@/components/icons';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
 import { settingsQueryOptions, useUpdateSettings, type PrivacyPrefs } from '../api';
@@ -141,13 +141,13 @@ export function PrivacySection() {
       <SectionHeader
         title="Privacy"
         description="Control who can see your training data"
-        icon={<Shield className="w-4 h-4" />}
+        icon={<IconShield className="w-4 h-4" />}
       />
 
       {/* Profile Visibility */}
       <Card>
         <div className="flex items-center gap-2 mb-4">
-          <Eye className="w-4 h-4 text-accent-teal" />
+          <IconEye className="w-4 h-4 text-accent-teal" />
           <h3 className="text-sm font-semibold text-text-bright">Profile Visibility</h3>
         </div>
         <div className="space-y-2" role="radiogroup" aria-label="Profile visibility">
@@ -178,7 +178,7 @@ export function PrivacySection() {
       {/* Workout Visibility */}
       <Card>
         <div className="flex items-center gap-2 mb-4">
-          <Eye className="w-4 h-4 text-accent-teal" />
+          <IconEye className="w-4 h-4 text-accent-teal" />
           <h3 className="text-sm font-semibold text-text-bright">Workout Visibility</h3>
         </div>
         <div className="space-y-2" role="radiogroup" aria-label="Workout visibility">
@@ -209,7 +209,7 @@ export function PrivacySection() {
       {/* Leaderboard Toggle */}
       <Card>
         <div className="flex items-center gap-2 mb-3">
-          <Trophy className="w-4 h-4 text-accent-teal" />
+          <IconTrophy className="w-4 h-4 text-accent-teal" />
           <h3 className="text-sm font-semibold text-text-bright">Leaderboards</h3>
         </div>
         <ToggleSwitch

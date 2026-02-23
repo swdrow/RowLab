@@ -10,7 +10,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { IconCheckCircle, IconXCircle } from '@/components/icons';
 import { slugCheckOptions } from '../api';
 
 interface SlugInputProps {
@@ -85,10 +85,10 @@ export function SlugInput({ teamId, currentSlug, value, onChange, disabled }: Sl
             <div className="h-4 w-4 rounded bg-edge-default/50 animate-pulse" />
           )}
           {!isFetching && showIndicator && isAvailable && (
-            <CheckCircle size={16} className="text-data-good" />
+            <IconCheckCircle width={16} height={16} className="text-data-good" />
           )}
           {!isFetching && showIndicator && !isAvailable && !isCurrentSlug && data && (
-            <XCircle size={16} className="text-data-poor" />
+            <IconXCircle width={16} height={16} className="text-data-poor" />
           )}
         </div>
       </div>

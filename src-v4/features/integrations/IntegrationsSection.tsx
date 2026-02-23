@@ -9,7 +9,7 @@
 import { useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { BarChart3, Activity, Watch } from 'lucide-react';
+import { IconBarChart, IconActivity, IconWatch } from '@/components/icons';
 import { queryKeys } from '@/lib/queryKeys';
 import { IntegrationCard } from './IntegrationCard';
 import {
@@ -133,7 +133,7 @@ export function IntegrationsSection() {
       <div className="space-y-4">
         {/* Concept2 Logbook */}
         <IntegrationCard
-          icon={<BarChart3 className="w-6 h-6 text-accent-teal" />}
+          icon={<IconBarChart className="w-6 h-6 text-accent-teal" />}
           iconBg="bg-accent-teal/20"
           title="Concept2 Logbook"
           description="Import erg workouts automatically from your C2 logbook"
@@ -154,7 +154,7 @@ export function IntegrationsSection() {
 
         {/* Strava Activities -- Brand color exception: #FC4C02 per Strava brand guidelines */}
         <IntegrationCard
-          icon={<Activity className="w-6 h-6 text-[#FC4C02]" />}
+          icon={<IconActivity className="w-6 h-6 text-[#FC4C02]" />}
           iconBg="bg-[#FC4C02]/20"
           title="Strava"
           description="Sync rowing and cross-training activities from Strava"
@@ -172,7 +172,7 @@ export function IntegrationsSection() {
 
         {/* Garmin -- FIT import only (no API approval yet) */}
         <IntegrationCard
-          icon={<Watch className="w-6 h-6 text-data-good" />}
+          icon={<IconWatch className="w-6 h-6 text-data-good" />}
           iconBg="bg-data-good/20"
           title="Garmin"
           description="Import workouts from .FIT files exported from Garmin Connect"

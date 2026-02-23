@@ -3,21 +3,21 @@
  * Active tab uses accent styling; inactive tabs are muted.
  */
 
-import { Waves, Mountain, Bike } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { IconWaves, IconMountain, IconBike } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 
 export type MachineType = 'rower' | 'skierg' | 'bikerg';
 
 interface MachineOption {
   id: MachineType;
   label: string;
-  icon: LucideIcon;
+  icon: IconComponent;
 }
 
 const MACHINES: MachineOption[] = [
-  { id: 'rower', label: 'RowErg', icon: Waves },
-  { id: 'skierg', label: 'SkiErg', icon: Mountain },
-  { id: 'bikerg', label: 'BikeErg', icon: Bike },
+  { id: 'rower', label: 'RowErg', icon: IconWaves },
+  { id: 'skierg', label: 'SkiErg', icon: IconMountain },
+  { id: 'bikerg', label: 'BikeErg', icon: IconBike },
 ];
 
 interface MachineTabsProps {
@@ -46,7 +46,7 @@ export function MachineTabs({ activeMachine, onMachineChange }: MachineTabsProps
               }
             `}
           >
-            <Icon size={14} />
+            <Icon width={14} height={14} />
             {label}
           </button>
         );

@@ -8,7 +8,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Save } from 'lucide-react';
+import { IconSave } from '@/components/icons';
 import { Button } from '@/components/ui/Button';
 import { useUpdateTeamSettings } from '../../hooks/useTeamMutations';
 import { SlugInput } from '../SlugInput';
@@ -173,7 +173,7 @@ export function GeneralSection({ team, canEdit }: GeneralSectionProps) {
           disabled={!isDirty}
           loading={updateMutation.isPending}
         >
-          <Save size={16} />
+          <IconSave width={16} height={16} />
           Save changes
         </Button>
       </div>

@@ -111,7 +111,7 @@ function FeedContent({ filter }: { filter: FeedFilter }) {
   if (allItems.length === 0) {
     return (
       <EmptyState
-        icon={RowingIcon as unknown as import('lucide-react').LucideIcon}
+        icon={RowingIcon as unknown as import('@/types/icons').IconComponent}
         title="No workouts yet"
         description={
           filter === 'following'

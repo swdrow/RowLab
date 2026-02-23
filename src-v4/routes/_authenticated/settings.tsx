@@ -6,7 +6,16 @@
 import { useState, useCallback, useEffect } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { User, Bell, Plug, Activity, Shield, Settings, Save, Check } from 'lucide-react';
+import {
+  IconUser,
+  IconBell,
+  IconPlug,
+  IconActivity,
+  IconShield,
+  IconSettings,
+  IconSave,
+  IconCheck,
+} from '@/components/icons';
 import { IntegrationsSection } from '@/features/integrations';
 import { useAnalyticsSettings, useUpdateAnalyticsSettings } from '@/features/analytics/api';
 import { ProfileSection } from '@/features/settings/components/ProfileSection';
@@ -27,12 +36,12 @@ export const Route = createFileRoute('/_authenticated/settings')({
 /* ------------------------------------------------------------------ */
 
 const SETTINGS_SECTIONS = [
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'integrations', label: 'Integrations', icon: Plug },
-  { id: 'analytics', label: 'Analytics', icon: Activity },
-  { id: 'privacy', label: 'Privacy', icon: Shield },
-  { id: 'account', label: 'Account', icon: Settings },
+  { id: 'profile', label: 'Profile', icon: IconUser },
+  { id: 'notifications', label: 'Notifications', icon: IconBell },
+  { id: 'integrations', label: 'Integrations', icon: IconPlug },
+  { id: 'analytics', label: 'Analytics', icon: IconActivity },
+  { id: 'privacy', label: 'Privacy', icon: IconShield },
+  { id: 'account', label: 'Account', icon: IconSettings },
 ] as const;
 
 type SectionId = (typeof SETTINGS_SECTIONS)[number]['id'];
@@ -102,7 +111,7 @@ function AnalyticsSettingsSection() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-1">
-        <Activity className="w-4 h-4 text-accent-teal" />
+        <IconActivity className="w-4 h-4 text-accent-teal" />
         <h2 className="text-lg font-semibold text-text-bright">Analytics Thresholds</h2>
       </div>
       <p className="text-sm text-text-dim mb-4">
@@ -186,12 +195,12 @@ function AnalyticsSettingsSection() {
           >
             {saved ? (
               <>
-                <Check className="w-4 h-4" />
+                <IconCheck className="w-4 h-4" />
                 Saved
               </>
             ) : (
               <>
-                <Save className="w-4 h-4" />
+                <IconSave className="w-4 h-4" />
                 {updateMutation.isPending ? 'Saving...' : 'Save Thresholds'}
               </>
             )}

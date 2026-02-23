@@ -16,7 +16,7 @@ import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { IconArrowLeft, IconArrowRight } from '@/components/icons';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -364,7 +364,7 @@ function Step1TeamInfo({
         </button>
         <Button type="submit" size="md">
           Next
-          <ArrowRight size={16} />
+          <IconArrowRight width={16} height={16} />
         </Button>
       </div>
     </form>
@@ -448,7 +448,7 @@ function Step2Configure({
 
       <div className="flex items-center justify-between pt-2">
         <Button variant="ghost" size="md" onClick={onBack} disabled={isCreating}>
-          <ArrowLeft size={16} />
+          <IconArrowLeft width={16} height={16} />
           Back
         </Button>
         <Button size="md" onClick={onCreate} loading={isCreating}>

@@ -3,7 +3,7 @@
  * Uses existing profile API hooks for optimistic PATCH mutations.
  */
 import { useState, useRef, useCallback } from 'react';
-import { User, Camera, Check } from 'lucide-react';
+import { IconUser, IconCamera, IconCheck } from '@/components/icons';
 import { useQuery } from '@tanstack/react-query';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
@@ -89,7 +89,7 @@ export function ProfileSection() {
       <SectionHeader
         title="Profile"
         description="Manage your public-facing profile information"
-        icon={<User className="w-4 h-4" />}
+        icon={<IconUser className="w-4 h-4" />}
       />
 
       {/* Avatar */}
@@ -104,7 +104,7 @@ export function ProfileSection() {
               />
             ) : (
               <div className="w-20 h-20 rounded-full bg-void-deep border-2 border-edge-default flex items-center justify-center">
-                <User className="w-8 h-8 text-text-faint" />
+                <IconUser className="w-8 h-8 text-text-faint" />
               </div>
             )}
             <button
@@ -113,7 +113,7 @@ export function ProfileSection() {
               className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-accent-teal text-void-deep flex items-center justify-center hover:bg-accent-teal/90 transition-colors cursor-pointer"
               aria-label="Change avatar"
             >
-              <Camera className="w-3.5 h-3.5" />
+              <IconCamera className="w-3.5 h-3.5" />
             </button>
           </div>
           <div>
@@ -163,7 +163,7 @@ export function ProfileSection() {
           >
             {nameSaved ? (
               <>
-                <Check className="w-3.5 h-3.5" />
+                <IconCheck className="w-3.5 h-3.5" />
                 Saved
               </>
             ) : (
@@ -202,7 +202,7 @@ export function ProfileSection() {
           >
             {bioSaved ? (
               <>
-                <Check className="w-3.5 h-3.5" />
+                <IconCheck className="w-3.5 h-3.5" />
                 Saved
               </>
             ) : (

@@ -11,7 +11,7 @@
  * Reads team data from parent layout route loader via getRouteApi.
  */
 import { getRouteApi } from '@tanstack/react-router';
-import { Settings } from 'lucide-react';
+import { IconSettings } from '@/components/icons';
 import { isAdmin, isCoachOrAbove } from '../types';
 import type { TeamDetail } from '../types';
 import { GeneralSection } from './settings/GeneralSection';
@@ -32,7 +32,7 @@ export function TeamSettingsPage() {
       {/* Page header */}
       <div className="mb-8 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-void-deep">
-          <Settings size={20} className="text-text-faint" />
+          <IconSettings width={20} height={20} className="text-text-faint" />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-text-bright">Team Settings</h1>

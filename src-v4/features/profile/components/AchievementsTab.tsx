@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import { Trophy } from 'lucide-react';
+import { IconTrophy } from '@/components/icons';
 
 import { profileAchievementsQueryOptions } from '../api';
 import { AchievementCard } from './AchievementCard';
@@ -37,7 +37,7 @@ export function AchievementsTab() {
   if (achievements.length === 0) {
     return (
       <EmptyState
-        icon={Trophy}
+        icon={IconTrophy}
         title="No achievements yet"
         description="Start training to unlock achievements and build your trophy case."
         className="py-16"
@@ -63,7 +63,7 @@ export function AchievementsTab() {
       <Card padding="sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Trophy size={18} className="text-accent-teal" />
+            <IconTrophy width={18} height={18} className="text-accent-teal" />
             <span className="text-text-bright font-semibold">
               {summary.unlocked} / {summary.total}
             </span>
