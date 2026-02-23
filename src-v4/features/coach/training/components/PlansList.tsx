@@ -193,7 +193,7 @@ function PlanCard({
       onClick={() => onSelect(plan.id)}
       className={`w-full text-left rounded-xl p-4 transition-all ${
         isSelected
-          ? 'bg-void-raised border border-accent-teal/30 shadow-sm'
+          ? 'bg-void-raised border border-accent-sand/30 shadow-sm'
           : 'bg-void-raised/60 border border-edge-default/40 hover:bg-void-raised hover:border-edge-default'
       }`}
     >
@@ -228,7 +228,7 @@ function PlanCard({
         </div>
         <ChevronRight
           className={`h-4 w-4 shrink-0 text-text-faint transition-transform ${
-            isSelected ? 'rotate-90 text-accent-teal' : ''
+            isSelected ? 'rotate-90 text-accent-sand' : ''
           }`}
         />
       </div>

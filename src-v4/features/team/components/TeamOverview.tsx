@@ -73,7 +73,7 @@ export function TeamOverview({ team }: TeamOverviewProps) {
           {isCoach && <AnnouncementCompose teamId={team.id} />}
           {!isCoach && <UpcomingEventsPlaceholder />}
           <SectionDivider className="my-4" />
-          <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-text-faint">
+          <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-accent-sand">
             Recent Activity
           </h3>
           <TeamActivityFeed teamId={team.id} compact />
@@ -122,7 +122,7 @@ export function TeamOverview({ team }: TeamOverviewProps) {
       <SectionDivider className="my-2" />
 
       <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-        <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-text-faint">
+        <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-accent-sand">
           Recent Activity
         </h3>
         <TeamActivityFeed teamId={team.id} compact />
@@ -171,7 +171,7 @@ function StatsPanel({
 
   return (
     <section>
-      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-text-faint">
+      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-accent-sand">
         Team Stats
       </h3>
       <div className="grid grid-cols-2 gap-3">
@@ -226,7 +226,7 @@ function CoachTools({ teamIdentifier }: { teamIdentifier: string }) {
 
   return (
     <Card padding="md" as="section">
-      <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-text-faint">
+      <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-accent-sand">
         Coach Tools
       </h3>
       <div className="space-y-2">
@@ -348,7 +348,7 @@ function AnnouncementsSidebar({
   if (pinned.length === 0 && recent.length === 0) {
     return (
       <Card padding="md" as="section">
-        <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-text-faint">
+        <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-accent-sand">
           Announcements
         </h3>
         <p className="text-sm text-text-faint">No announcements yet.</p>
@@ -360,7 +360,7 @@ function AnnouncementsSidebar({
     <div className="space-y-4">
       {pinned.length > 0 && (
         <Card padding="md" as="section">
-          <h3 className="mb-3 flex items-center gap-1.5 text-sm font-medium uppercase tracking-wider text-text-faint">
+          <h3 className="mb-3 flex items-center gap-1.5 text-sm font-medium uppercase tracking-wider text-accent-sand">
             <Pin size={14} />
             Pinned
           </h3>
@@ -373,7 +373,7 @@ function AnnouncementsSidebar({
       )}
       {recent.length > 0 && (
         <Card padding="md" as="section">
-          <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-text-faint">
+          <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-accent-sand">
             Recent
           </h3>
           <div className="space-y-3">
@@ -411,7 +411,7 @@ function AnnouncementCard({ announcement }: { announcement: Announcement }) {
 function UpcomingEventsPlaceholder() {
   return (
     <Card padding="md" as="section">
-      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-text-faint">
+      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-accent-sand">
         Upcoming Team Events
       </h3>
       <div className="flex items-center gap-3 rounded-lg bg-void-deep/30 p-4">

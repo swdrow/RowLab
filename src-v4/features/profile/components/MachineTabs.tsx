@@ -41,7 +41,7 @@ export function MachineTabs({ activeMachine, onMachineChange }: MachineTabsProps
               border transition-colors duration-150
               ${
                 isActive
-                  ? 'bg-accent-teal/20 text-accent-teal border-accent-teal/30'
+                  ? 'bg-accent-sand/15 text-accent-sand border-accent-sand/30'
                   : 'text-text-dim hover:text-text-bright bg-void-deep/30 border-transparent hover:border-edge-default/30'
               }
             `}

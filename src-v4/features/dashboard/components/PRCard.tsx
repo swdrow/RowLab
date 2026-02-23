@@ -70,7 +70,7 @@ export function PRCard({ record, isRecent = false, className = '' }: PRCardProps
               <div className="flex items-center gap-1.5">
                 <ImprovementIndicator improvement={record.improvement} />
                 {isRecent && (
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-accent-teal bg-accent-teal/10 px-1.5 py-0.5 rounded-md">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-accent-sand bg-accent-sand/10 px-1.5 py-0.5 rounded-md">
                     New
                   </span>
                 )}

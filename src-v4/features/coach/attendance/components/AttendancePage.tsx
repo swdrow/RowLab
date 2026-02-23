@@ -243,7 +243,7 @@ function DailyTab({ teamId, date, setDate, readOnly }: DailyTabProps) {
           </button>
         </div>
 
-        <span className="text-sm text-text-dim">{formatLongDate(date)}</span>
+        <span className="text-sm text-accent-sand">{formatLongDate(date)}</span>
       </div>
 
       {/* Stats console + bulk action */}

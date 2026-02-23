@@ -19,7 +19,7 @@ export function SectionDivider({ variant = 'rule', className = '' }: SectionDivi
     return (
       <div role="separator" aria-hidden="true" className={`relative h-px my-8 ${className}`}>
         <div className="absolute inset-x-0 top-0 h-px bg-edge-default" />
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 w-6 h-px bg-accent-teal" />
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 w-6 h-px bg-accent-sand" />
       </div>
     );
   }

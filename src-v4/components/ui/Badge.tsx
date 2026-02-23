@@ -23,6 +23,7 @@ type BadgeVariant =
   | 'status-poor'
   | 'machine'
   | 'highlight'
+  | 'warm'
   | 'neutral'
   | 'filled'
   | 'outlined'
@@ -42,6 +43,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   'status-poor': 'bg-data-poor-subtle text-data-poor',
   machine: 'bg-void-deep text-text-dim',
   highlight: 'bg-accent-coral/20 text-accent-coral',
+  warm: 'bg-accent-sand/15 text-accent-sand border border-accent-sand/30',
   neutral: 'bg-void-deep text-text-faint',
   filled: 'bg-accent-teal text-void-deep',
   outlined: 'bg-transparent text-accent-teal border border-accent-teal/40',

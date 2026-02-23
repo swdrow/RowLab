@@ -139,7 +139,7 @@ export function WorkoutCard({ workout, className = '' }: WorkoutCardProps) {
                 <span className="text-sm font-medium text-text-bright truncate">{label}</span>
               )}
             </div>
-            <span className="text-xs text-text-faint shrink-0">
+            <span className="text-xs text-accent-sand shrink-0">
               {formatRelativeDate(workout.date)}
             </span>
           </div>

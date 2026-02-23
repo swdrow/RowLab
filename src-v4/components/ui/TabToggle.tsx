@@ -74,7 +74,7 @@ export function TabToggle({
             {isActive && (
               <motion.div
                 layoutId={layoutId}
-                className="absolute inset-0 bg-void-raised rounded-[var(--radius-sm)] shadow-sm"
+                className="absolute inset-0 bg-void-raised rounded-[var(--radius-sm)] shadow-sm border-b-2 border-accent-sand"
                 transition={SPRING_STANDARD}
               />
             )}

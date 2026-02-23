@@ -154,7 +154,7 @@ function StatCardShell({
         </div>
 
         {/* Label */}
-        <span className="text-xs uppercase tracking-wider text-text-faint font-medium">
+        <span className="text-xs uppercase tracking-wider text-accent-sand font-medium">
           {label}
         </span>
 

@@ -60,7 +60,7 @@ export function TeamRoster({ teamId }: TeamRosterProps) {
       </div>
 
       {/* Member count */}
-      <p className="text-xs text-text-faint">
+      <p className="text-xs text-accent-sand">
         {filteredAndSorted.length} member{filteredAndSorted.length !== 1 ? 's' : ''}
         {search && ` matching "${search}"`}
       </p>

@@ -24,7 +24,7 @@ export function SectionHeader({ title, description, action, className = '' }: Se
     <div className={`flex items-start sm:items-center justify-between gap-3 mb-4 ${className}`}>
       <div className="min-w-0">
         <h2 className="text-lg font-semibold text-text-bright leading-[1.3]">{title}</h2>
-        {description && <p className="text-[0.8125rem] text-text-dim mt-1">{description}</p>}
+        {description && <p className="text-[0.8125rem] text-accent-sand mt-1">{description}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>

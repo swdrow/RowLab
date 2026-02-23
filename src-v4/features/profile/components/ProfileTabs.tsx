@@ -33,7 +33,7 @@ export function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps) {
               onClick={() => onTabChange(tab.id)}
               className={`whitespace-nowrap py-3 text-sm font-medium border-b-2 transition-colors ${
                 isActive
-                  ? 'border-accent-teal text-text-bright'
+                  ? 'border-accent-sand text-text-bright'
                   : 'border-transparent text-text-dim hover:text-text-bright'
               }`}
             >
