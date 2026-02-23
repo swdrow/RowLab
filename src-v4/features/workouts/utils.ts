@@ -239,12 +239,13 @@ export function parseIntervalPattern(
   let pattern: string;
   const count = workBlocks.length;
 
-  if (distConsistent && workDistances[0] > 0) {
-    const dist = workDistances[0];
-    pattern = `${count} x ${formatIntervalDist(dist)}`;
-  } else if (timeConsistent && workTimes[0] > 0) {
-    const time = workTimes[0];
-    pattern = `${count} x ${formatIntervalTime(time)}`;
+  const firstWorkDist = workDistances[0];
+  const firstWorkTime = workTimes[0];
+
+  if (distConsistent && firstWorkDist !== undefined && firstWorkDist > 0) {
+    pattern = `${count} x ${formatIntervalDist(firstWorkDist)}`;
+  } else if (timeConsistent && firstWorkTime !== undefined && firstWorkTime > 0) {
+    pattern = `${count} x ${formatIntervalTime(firstWorkTime)}`;
   } else {
     return none;
   }
@@ -252,8 +253,9 @@ export function parseIntervalPattern(
   // Add rest notation if rest blocks exist and are consistent
   if (restBlocks.length > 0) {
     const restTimes = restBlocks.map((b) => b.timeSeconds);
-    if (isConsistent(restTimes) && restTimes[0] > 0) {
-      pattern += ` / ${formatIntervalTime(restTimes[0])}r`;
+    const firstRestTime = restTimes[0];
+    if (isConsistent(restTimes) && firstRestTime !== undefined && firstRestTime > 0) {
+      pattern += ` / ${formatIntervalTime(firstRestTime)}r`;
     }
   }
 
@@ -278,17 +280,20 @@ function buildPatternFromSplitsDirectly(
   const distConsistent = distances.length === count && isConsistent(distances);
   const timeConsistent = times.length === count && isConsistent(times);
 
+  const firstTime = times[0];
+  const firstDist = distances[0];
+
   let pattern: string;
-  if (preferTime && timeConsistent && times[0] > 0) {
+  if (preferTime && timeConsistent && firstTime !== undefined && firstTime > 0) {
     // FixedTimeInterval: always show time-based pattern
-    pattern = `${count} x ${formatIntervalTime(times[0])}`;
-  } else if (!preferTime && distConsistent && distances[0] > 0) {
+    pattern = `${count} x ${formatIntervalTime(firstTime)}`;
+  } else if (!preferTime && distConsistent && firstDist !== undefined && firstDist > 0) {
     // FixedDistanceInterval or default: show distance-based pattern
-    pattern = `${count} x ${formatIntervalDist(distances[0])}`;
-  } else if (timeConsistent && times[0] > 0) {
-    pattern = `${count} x ${formatIntervalTime(times[0])}`;
-  } else if (distConsistent && distances[0] > 0) {
-    pattern = `${count} x ${formatIntervalDist(distances[0])}`;
+    pattern = `${count} x ${formatIntervalDist(firstDist)}`;
+  } else if (timeConsistent && firstTime !== undefined && firstTime > 0) {
+    pattern = `${count} x ${formatIntervalTime(firstTime)}`;
+  } else if (distConsistent && firstDist !== undefined && firstDist > 0) {
+    pattern = `${count} x ${formatIntervalDist(firstDist)}`;
   } else if (count >= 2) {
     // Variable intervals — just show count
     pattern = `${count} intervals`;
@@ -316,13 +321,17 @@ function finishBlock(block: { type: 'work' | 'rest'; splits: WorkoutSplit[] }): 
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+  if (sorted.length % 2) {
+    return sorted[mid] ?? 0;
+  }
+  return ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2;
 }
 
 /** Values are "consistent" if all are within 15% of the first value */
 function isConsistent(values: number[]): boolean {
   if (values.length < 2) return false;
   const base = values[0];
+  if (base === undefined) return false;
   if (base === 0) return values.every((v) => v === 0);
   return values.every((v) => Math.abs(v - base) / base < 0.15);
 }
@@ -385,6 +394,10 @@ export function detectWorkoutSessions(workouts: Workout[]): Workout[] {
 
     while (i < sorted.length) {
       const current = sorted[i];
+      if (!current) {
+        i++;
+        continue;
+      }
 
       // Skip non-erg, no-distance, or already-interval workouts
       if (
@@ -402,6 +415,7 @@ export function detectWorkoutSessions(workouts: Workout[]): Workout[] {
 
       while (j < sorted.length) {
         const next = sorted[j];
+        if (!next) break;
 
         if (next.machineType !== current.machineType) break;
         if (next.distanceM !== current.distanceM) break;
@@ -410,6 +424,7 @@ export function detectWorkoutSessions(workouts: Workout[]): Workout[] {
 
         // Check time gap between end of previous piece and start of next
         const prev = group[group.length - 1];
+        if (!prev) break;
         const prevEnd = new Date(prev.date).getTime() + (prev.durationSeconds || 0) * 1000;
         const nextStart = new Date(next.date).getTime();
         const gapSeconds = (nextStart - prevEnd) / 1000;
@@ -421,11 +436,14 @@ export function detectWorkoutSessions(workouts: Workout[]): Workout[] {
       }
 
       if (group.length >= 2) {
-        const synthetic = createSessionWorkout(group);
+        const synthetic = createSessionWorkout(group as [Workout, ...Workout[]]);
         for (const g of group) mergedIds.add(g.id);
         // Position = index of first piece in the original day list
-        const pos = dayWorkouts.indexOf(group[0]);
-        sessions.push({ position: pos, workout: synthetic });
+        const firstInGroup = group[0];
+        if (firstInGroup) {
+          const pos = dayWorkouts.indexOf(firstInGroup);
+          sessions.push({ position: pos, workout: synthetic });
+        }
         i = j;
       } else {
         i++;
@@ -465,7 +483,7 @@ export function detectWorkoutSessions(workouts: Workout[]): Workout[] {
   return result;
 }
 
-function createSessionWorkout(pieces: Workout[]): Workout {
+function createSessionWorkout(pieces: [Workout, ...Workout[]]): Workout {
   const first = pieces[0];
   const totalDistance = pieces.reduce((s, w) => s + (w.distanceM || 0), 0);
   const totalDuration = pieces.reduce((s, w) => s + (w.durationSeconds || 0), 0);
@@ -498,8 +516,11 @@ function createSessionWorkout(pieces: Workout[]): Workout {
   // Infer rest between pieces from timestamps
   const rests: number[] = [];
   for (let k = 0; k < pieces.length - 1; k++) {
-    const endTime = new Date(pieces[k].date).getTime() + (pieces[k].durationSeconds || 0) * 1000;
-    const nextStart = new Date(pieces[k + 1].date).getTime();
+    const piece = pieces[k];
+    const nextPiece = pieces[k + 1];
+    if (!piece || !nextPiece) continue;
+    const endTime = new Date(piece.date).getTime() + (piece.durationSeconds || 0) * 1000;
+    const nextStart = new Date(nextPiece.date).getTime();
     rests.push(Math.max(0, Math.round((nextStart - endTime) / 1000)));
   }
 
