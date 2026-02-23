@@ -53,14 +53,14 @@ function DashboardInner() {
   const { user, activeTeamId, teams } = useAuth();
   const data = useDashboardData();
 
+  // Memoize team context BEFORE any conditional returns (React hooks rule)
+  // TODO(phase-45): Replace with real team context API when /me/team-context ships
+  const teamContext = useMemo(() => deriveTeamContext(activeTeamId, teams), [activeTeamId, teams]);
+
   // Zero-data users see the empty state with onboarding CTAs
   if (!data.hasData) {
     return <DashboardEmptyState />;
   }
-
-  // Memoize team context — avoids new object reference on every render
-  // TODO(phase-45): Replace with real team context API when /me/team-context ships
-  const teamContext = useMemo(() => deriveTeamContext(activeTeamId, teams), [activeTeamId, teams]);
 
   return (
     <DashboardContent
