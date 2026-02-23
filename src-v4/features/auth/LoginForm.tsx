@@ -11,10 +11,11 @@ import { useNavigate } from '@tanstack/react-router';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from './useAuth';
+import { setAccessToken } from '@/lib/api';
 import { isAxiosError } from 'axios';
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().min(1, 'Email or username is required'),
   password: z.string().min(1, 'Password is required'),
 });
 
@@ -26,7 +27,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ redirectTo, onEmailChange }: LoginFormProps) {
-  const { login } = useAuth();
+  const { login, refreshAuth } = useAuth();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -46,7 +47,6 @@ export function LoginForm({ redirectTo, onEmailChange }: LoginFormProps) {
     setServerError(null);
     try {
       await login(data.email, data.password);
-      // Navigate to redirect target or home
       await navigate({ to: redirectTo || '/' });
     } catch (error: unknown) {
       if (isAxiosError(error)) {
@@ -61,6 +61,31 @@ export function LoginForm({ redirectTo, onEmailChange }: LoginFormProps) {
     }
   };
 
+  // Dev-login state kept as unconditional hook (React rules),
+  // but the button JSX and handler are gated behind import.meta.env.DEV
+  // so Vite tree-shakes the entire dev-login block from production bundles.
+  const [devLoading, setDevLoading] = useState(false);
+
+  const handleDevLogin = async () => {
+    setServerError(null);
+    setDevLoading(true);
+    try {
+      const { devLogin: devLoginApi } = await import('./api');
+      const data = await devLoginApi();
+      setAccessToken(data.accessToken);
+      await refreshAuth();
+      await navigate({ to: redirectTo || '/' });
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        setServerError(error.response?.data?.error?.message || 'Dev login unavailable');
+      } else {
+        setServerError('Dev login failed');
+      }
+    } finally {
+      setDevLoading(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
       {serverError && (
@@ -70,10 +95,10 @@ export function LoginForm({ redirectTo, onEmailChange }: LoginFormProps) {
       )}
 
       <Input
-        label="Email"
-        type="email"
+        label="Email or username"
+        type="text"
         autoComplete="email"
-        placeholder="you@example.com"
+        placeholder="you@example.com or username"
         error={errors.email?.message}
         {...register('email', {
           onChange: (e) => onEmailChange?.(e.target.value),
@@ -92,6 +117,18 @@ export function LoginForm({ redirectTo, onEmailChange }: LoginFormProps) {
       <Button type="submit" loading={isSubmitting} className="mt-1 w-full" size="lg">
         Sign in
       </Button>
+
+      {/* Dev login — gated behind import.meta.env.DEV so Vite tree-shakes it from production */}
+      {import.meta.env.DEV && (
+        <button
+          type="button"
+          onClick={handleDevLogin}
+          disabled={devLoading}
+          className="mt-3 w-full rounded-lg border border-edge-subtle px-4 py-2.5 text-sm text-text-dim transition-colors hover:bg-surface-raised hover:text-text-secondary disabled:opacity-50"
+        >
+          {devLoading ? 'Signing in...' : 'Dev Login (admin)'}
+        </button>
+      )}
     </form>
   );
 }
