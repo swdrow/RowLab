@@ -14,10 +14,10 @@
  */
 import { useRef, useState, useEffect } from 'react';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { ArrowLeftRight } from 'lucide-react';
 import { DraggableAthleteCard } from './DraggableAthleteCard';
 import type { AthleteInfo } from './DraggableAthleteCard';
 import type { Side } from '../types';
+import { IconArrowLeftRight } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -154,7 +154,7 @@ export function SeatSlot({
       {/* Swap icon overlay (occupied + drag hovering) */}
       {isOver && !isEmpty && (
         <div className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-accent-teal/15 text-accent-teal">
-          <ArrowLeftRight size={12} />
+          <IconArrowLeftRight width={12} height={12} />
         </div>
       )}
 

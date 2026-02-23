@@ -5,12 +5,12 @@
  * Clickable to open detail/edit view.
  */
 
-import { Calendar, MapPin, FileText } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { motion } from 'motion/react';
 import { listItemVariants } from '@/lib/animations';
 import { Card } from '@/components/ui/Card';
 import type { RecruitVisit, VisitStatus } from '../types';
+import { IconCalendar, IconFileText, IconMapPin } from '@/components/icons';
 
 interface VisitCardProps {
   visit: RecruitVisit;
@@ -56,13 +56,13 @@ export function VisitCard({ visit, onClick }: VisitCardProps) {
           {/* Meta row */}
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-dim">
             <span className="inline-flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+              <IconCalendar className="h-3.5 w-3.5" aria-hidden="true" />
               {formattedDate}
               {visit.startTime && ` at ${visit.startTime}`}
             </span>
             {visit.recruitSchool && (
               <span className="inline-flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+                <IconMapPin className="h-3.5 w-3.5" aria-hidden="true" />
                 {visit.recruitSchool}
               </span>
             )}
@@ -71,7 +71,7 @@ export function VisitCard({ visit, onClick }: VisitCardProps) {
           {/* Notes preview */}
           {visit.notes && (
             <div className="mt-2 flex items-start gap-1.5 text-xs text-text-faint">
-              <FileText className="h-3.5 w-3.5 mt-0.5 shrink-0" aria-hidden="true" />
+              <IconFileText className="h-3.5 w-3.5 mt-0.5 shrink-0" aria-hidden="true" />
               <p className="line-clamp-2">{visit.notes}</p>
             </div>
           )}

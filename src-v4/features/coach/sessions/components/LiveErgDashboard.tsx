@@ -6,9 +6,9 @@
  * Athletes with data sort first, then alphabetical.
  */
 import { useMemo } from 'react';
-import { Activity, Heart, Gauge, Waves, Ruler } from 'lucide-react';
 import { formatPace } from '@/lib/format';
 import type { ErgData } from '../hooks/useSocket';
+import { IconActivity, IconGauge, IconHeart, IconRuler, IconWaves } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -66,20 +66,20 @@ function ErgCard({ data, targetPace }: ErgCardProps) {
       {/* Secondary metrics grid */}
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className="flex items-center gap-1.5 text-text-dim">
-          <Gauge size={12} className="text-text-faint flex-shrink-0" />
+          <IconGauge width={12} height={12} className="text-text-faint flex-shrink-0" />
           <span className="font-mono">{data.currentWatts}w</span>
         </div>
         <div className="flex items-center gap-1.5 text-text-dim">
-          <Waves size={12} className="text-text-faint flex-shrink-0" />
+          <IconWaves width={12} height={12} className="text-text-faint flex-shrink-0" />
           <span className="font-mono">{data.strokeRate}spm</span>
         </div>
         <div className="flex items-center gap-1.5 text-text-dim">
-          <Ruler size={12} className="text-text-faint flex-shrink-0" />
+          <IconRuler width={12} height={12} className="text-text-faint flex-shrink-0" />
           <span className="font-mono">{data.distance.toLocaleString()}m</span>
         </div>
         {data.heartRate != null && (
           <div className="flex items-center gap-1.5 text-text-dim">
-            <Heart size={12} className="text-data-poor flex-shrink-0" />
+            <IconHeart width={12} height={12} className="text-data-poor flex-shrink-0" />
             <span className="font-mono">{data.heartRate}bpm</span>
           </div>
         )}
@@ -141,7 +141,7 @@ export function LiveErgDashboard({
 
           {/* Athlete count */}
           <span className="text-xs text-text-dim">
-            <Activity size={12} className="inline mr-1" />
+            <IconActivity width={12} height={12} className="inline mr-1" />
             {sorted.length} {sorted.length === 1 ? 'athlete' : 'athletes'}
           </span>
         </div>
@@ -174,7 +174,7 @@ export function LiveErgDashboard({
       {/* Erg cards grid or empty state */}
       {sorted.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-text-faint">
-          <Activity size={32} className="mb-3 opacity-40" />
+          <IconActivity width={32} height={32} className="mb-3 opacity-40" />
           <p className="text-sm">Waiting for athletes to connect...</p>
           {sessionCode && (
             <p className="text-xs mt-1">

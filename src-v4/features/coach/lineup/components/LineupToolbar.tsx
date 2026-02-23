@@ -5,7 +5,8 @@
  * Responsive: icons-only on mobile, icons + labels on desktop.
  * Read-only mode hides mutation buttons (only Load remains visible).
  */
-import { Save, FolderOpen, Trash2, Undo2, Redo2 } from 'lucide-react';
+import { IconFolderOpen, IconRedo, IconSave, IconTrash, IconUndo } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -62,14 +63,14 @@ export function LineupToolbar({
         {!readOnly && (
           <>
             <ToolbarButton
-              icon={Undo2}
+              icon={IconUndo}
               label="Undo"
               onClick={onUndo}
               disabled={!canUndo}
               shortcut="Ctrl+Z"
             />
             <ToolbarButton
-              icon={Redo2}
+              icon={IconRedo}
               label="Redo"
               onClick={onRedo}
               disabled={!canRedo}
@@ -81,13 +82,13 @@ export function LineupToolbar({
         )}
 
         {/* Load (always visible) */}
-        <ToolbarButton icon={FolderOpen} label="Load" onClick={onLoad} />
+        <ToolbarButton icon={IconFolderOpen} label="Load" onClick={onLoad} />
 
         {/* Save + Clear (hidden in readOnly) */}
         {!readOnly && (
           <>
-            <ToolbarButton icon={Save} label="Save" onClick={onSave} shortcut="Ctrl+S" accent />
-            <ToolbarButton icon={Trash2} label="Clear" onClick={onClear} />
+            <ToolbarButton icon={IconSave} label="Save" onClick={onSave} shortcut="Ctrl+S" accent />
+            <ToolbarButton icon={IconTrash} label="Clear" onClick={onClear} />
           </>
         )}
       </div>
@@ -100,7 +101,7 @@ export function LineupToolbar({
 // ---------------------------------------------------------------------------
 
 interface ToolbarButtonProps {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: IconComponent;
   label: string;
   onClick: () => void;
   disabled?: boolean;
@@ -134,7 +135,7 @@ function ToolbarButton({
         }
       `.trim()}
     >
-      <Icon size={15} className="flex-shrink-0" />
+      <Icon width={15} height={15} className="flex-shrink-0" />
       <span className="hidden md:inline">{label}</span>
     </button>
   );

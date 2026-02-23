@@ -6,9 +6,9 @@
  * Hidden when readOnly.
  */
 import { useState, useRef, useEffect } from 'react';
-import { Plus } from 'lucide-react';
 import type { BoatClass } from '../types';
 import { BOAT_SEAT_COUNTS, BOAT_HAS_COXSWAIN } from '../types';
+import { IconPlus } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -94,7 +94,7 @@ export function AddBoatButton({ onAdd, readOnly = false }: AddBoatButtonProps) {
           transition-all duration-150
         "
       >
-        <Plus size={16} />
+        <IconPlus width={16} height={16} />
         <span>Add Boat</span>
       </button>
 

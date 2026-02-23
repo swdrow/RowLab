@@ -7,7 +7,6 @@
  */
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Calendar as CalendarIcon, Shield, ClipboardList, Plus } from 'lucide-react';
 import { ReadOnlyBadge } from '@/components/ui/ReadOnlyBadge';
 import { Button } from '@/components/ui/Button';
 import { plansOptions } from '../api';
@@ -15,6 +14,8 @@ import CalendarView from './CalendarView';
 import { ComplianceDashboard } from './ComplianceDashboard';
 import { PlansList } from './PlansList';
 import { WorkoutFormModal } from './WorkoutFormModal';
+import { IconCalendar, IconClipboardList, IconPlus, IconShield } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -27,10 +28,10 @@ interface TrainingPageProps {
   readOnly: boolean;
 }
 
-const TABS: { key: Tab; label: string; icon: typeof CalendarIcon }[] = [
-  { key: 'calendar', label: 'Calendar', icon: CalendarIcon },
-  { key: 'compliance', label: 'Compliance', icon: Shield },
-  { key: 'plans', label: 'Plans', icon: ClipboardList },
+const TABS: { key: Tab; label: string; icon: IconComponent }[] = [
+  { key: 'calendar', label: 'Calendar', icon: IconCalendar },
+  { key: 'compliance', label: 'Compliance', icon: IconShield },
+  { key: 'plans', label: 'Plans', icon: IconClipboardList },
 ];
 
 // ---------------------------------------------------------------------------
@@ -229,7 +230,7 @@ function CalendarTab({
 
         {!readOnly && (
           <Button variant="primary" size="sm" onClick={onAddWorkout}>
-            <Plus className="h-4 w-4" />
+            <IconPlus className="h-4 w-4" />
             Add Workout
             <kbd className="ml-1.5 hidden rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px] sm:inline-block">
               N

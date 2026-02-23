@@ -11,13 +11,13 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import {
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle,
-  Calendar,
-  Users,
-  ClipboardList,
-} from 'lucide-react';
+  IconChevronLeft,
+  IconChevronRight,
+  IconCheckCircle,
+  IconCalendar,
+  IconUsers,
+  IconClipboardList,
+} from '@/components/icons';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
 import { formatLongDate } from '@/lib/format';
@@ -75,7 +75,7 @@ export function AttendancePage({ teamId, readOnly }: AttendancePageProps) {
         <SectionHeader
           title="Attendance"
           description="Track daily practice attendance"
-          icon={<ClipboardList className="h-4 w-4" />}
+          icon={<IconClipboardList className="h-4 w-4" />}
         />
       </div>
 
@@ -93,9 +93,9 @@ export function AttendancePage({ teamId, readOnly }: AttendancePageProps) {
           >
             <span className="flex items-center justify-center gap-2">
               {tab === 'daily' ? (
-                <Calendar className="h-4 w-4" />
+                <IconCalendar className="h-4 w-4" />
               ) : (
-                <ClipboardList className="h-4 w-4" />
+                <IconClipboardList className="h-4 w-4" />
               )}
               {tab === 'daily' ? 'Daily' : 'Summary'}
             </span>
@@ -224,7 +224,7 @@ function DailyTab({ teamId, date, setDate, readOnly }: DailyTabProps) {
             className="rounded-lg bg-void-raised p-2 text-text-dim transition-colors hover:bg-void-deep hover:text-text-bright"
             aria-label="Previous day"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <IconChevronLeft className="h-5 w-5" />
           </button>
 
           <input
@@ -239,7 +239,7 @@ function DailyTab({ teamId, date, setDate, readOnly }: DailyTabProps) {
             className="rounded-lg bg-void-raised p-2 text-text-dim transition-colors hover:bg-void-deep hover:text-text-bright"
             aria-label="Next day"
           >
-            <ChevronRight className="h-5 w-5" />
+            <IconChevronRight className="h-5 w-5" />
           </button>
         </div>
 
@@ -273,7 +273,7 @@ function DailyTab({ teamId, date, setDate, readOnly }: DailyTabProps) {
             disabled={bulkMutation.isPending}
             className="inline-flex items-center gap-2 rounded-lg bg-data-excellent/20 px-4 py-2 text-sm font-medium text-data-excellent transition-colors hover:bg-data-excellent/30 disabled:opacity-50"
           >
-            <CheckCircle className="h-4 w-4" />
+            <IconCheckCircle className="h-4 w-4" />
             Mark All Present
           </button>
         )}
@@ -282,7 +282,7 @@ function DailyTab({ teamId, date, setDate, readOnly }: DailyTabProps) {
       {/* Roster */}
       {athletes.length === 0 ? (
         <div className="py-12 text-center">
-          <Users className="mx-auto mb-3 h-10 w-10 text-text-faint/50" />
+          <IconUsers className="mx-auto mb-3 h-10 w-10 text-text-faint/50" />
           <p className="text-sm font-medium text-text-faint">No athletes in roster</p>
           <p className="mt-1 text-xs text-text-faint/70">
             Invite athletes to your team to track attendance
@@ -467,7 +467,7 @@ function SummaryTab({ teamId }: SummaryTabProps) {
         <AttendanceSkeleton rows={4} />
       ) : summary.length === 0 ? (
         <div className="py-12 text-center">
-          <ClipboardList className="mx-auto mb-3 h-10 w-10 text-text-faint/50" />
+          <IconClipboardList className="mx-auto mb-3 h-10 w-10 text-text-faint/50" />
           <p className="text-sm font-medium text-text-faint">No attendance data for this period</p>
         </div>
       ) : (

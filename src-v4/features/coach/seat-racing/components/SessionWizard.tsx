@@ -16,17 +16,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { motion, AnimatePresence } from 'motion/react';
-import {
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Check,
-  Calendar,
-  Users,
-  Ship,
-  Armchair,
-  Timer,
-} from 'lucide-react';
 
 import { SPRING_SMOOTH, SPRING_GENTLE } from '@/lib/animations';
 import { Card } from '@/components/ui/Card';
@@ -34,6 +23,17 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useCreateSession } from '../api';
 import type { Conditions } from '../types';
+import {
+  IconArmchair,
+  IconCalendar,
+  IconCheck,
+  IconChevronLeft,
+  IconChevronRight,
+  IconShip,
+  IconTimer,
+  IconUsers,
+  IconX,
+} from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -59,11 +59,11 @@ interface SessionFormData {
 // ---------------------------------------------------------------------------
 
 const STEPS = [
-  { label: 'Session Info', icon: Calendar },
-  { label: 'Athletes', icon: Users },
-  { label: 'Boats', icon: Ship },
-  { label: 'Assignments', icon: Armchair },
-  { label: 'Times', icon: Timer },
+  { label: 'Session Info', icon: IconCalendar },
+  { label: 'Athletes', icon: IconUsers },
+  { label: 'Boats', icon: IconShip },
+  { label: 'Assignments', icon: IconArmchair },
+  { label: 'Times', icon: IconTimer },
 ] as const;
 
 const BOAT_CLASSES = ['8+', '4+', '4-', '4x', '2-', '2x', '1x'] as const;
@@ -216,7 +216,7 @@ export function SessionWizard({ isOpen, onClose, onSuccess, teamId }: SessionWiz
                     className="p-1.5 rounded-md hover:bg-void-overlay transition-colors"
                     aria-label="Close"
                   >
-                    <X size={18} className="text-text-faint" />
+                    <IconX width={18} height={18} className="text-text-faint" />
                   </button>
                 </div>
 
@@ -237,7 +237,7 @@ export function SessionWizard({ isOpen, onClose, onSuccess, teamId }: SessionWiz
                             ${!isActive && !isDone ? 'text-text-faint' : ''}
                           `.trim()}
                           >
-                            <StepIcon size={13} />
+                            <StepIcon width={13} height={13} />
                             <span className="hidden sm:inline">{s.label}</span>
                           </div>
                           {idx < STEPS.length - 1 && (
@@ -299,7 +299,7 @@ export function SessionWizard({ isOpen, onClose, onSuccess, teamId }: SessionWiz
                         onClick={goBack}
                         disabled={createSession.isPending}
                       >
-                        <ChevronLeft size={16} />
+                        <IconChevronLeft width={16} height={16} />
                         Back
                       </Button>
                     )}
@@ -315,13 +315,13 @@ export function SessionWizard({ isOpen, onClose, onSuccess, teamId }: SessionWiz
                     </Button>
                     {isLastStep ? (
                       <Button size="sm" onClick={handleCreate} loading={createSession.isPending}>
-                        <Check size={16} />
+                        <IconCheck width={16} height={16} />
                         Create Session
                       </Button>
                     ) : (
                       <Button size="sm" onClick={goNext}>
                         Next
-                        <ChevronRight size={16} />
+                        <IconChevronRight width={16} height={16} />
                       </Button>
                     )}
                   </div>
@@ -420,7 +420,7 @@ function Step2Athletes({
       </p>
 
       <div className="rounded-lg border border-edge-default/50 p-6 text-center">
-        <Users size={32} className="mx-auto text-text-faint mb-3" />
+        <IconUsers width={32} height={32} className="mx-auto text-text-faint mb-3" />
         <p className="text-sm text-text-dim">Athlete selection will load from your team roster.</p>
         <p className="text-xs text-text-faint mt-1">
           {selected.length > 0

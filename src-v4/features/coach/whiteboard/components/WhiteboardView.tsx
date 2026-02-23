@@ -4,12 +4,12 @@
  * Shows the date, author, and markdown-rendered content.
  * Provides Edit button for coaches, empty state when no whiteboard exists.
  */
-import { ClipboardList, Pencil } from 'lucide-react';
 import MDEditor from '@uiw/react-md-editor';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { formatLongDate } from '@/lib/format';
 import type { WhiteboardEntry } from '../types';
+import { IconClipboardList, IconPencil } from '@/components/icons';
 
 interface WhiteboardViewProps {
   whiteboard: WhiteboardEntry | null;
@@ -22,11 +22,11 @@ export function WhiteboardView({ whiteboard, canEdit, onEdit }: WhiteboardViewPr
   if (!whiteboard) {
     return (
       <Card className="text-center">
-        <ClipboardList className="mx-auto mb-4 h-12 w-12 text-text-faint" />
+        <IconClipboardList className="mx-auto mb-4 h-12 w-12 text-text-faint" />
         <p className="text-sm text-text-faint mb-5">No whiteboard posted yet.</p>
         {canEdit && (
           <Button variant="primary" onClick={onEdit}>
-            <Pencil className="h-4 w-4" />
+            <IconPencil className="h-4 w-4" />
             Create Today&apos;s Whiteboard
           </Button>
         )}
@@ -46,7 +46,7 @@ export function WhiteboardView({ whiteboard, canEdit, onEdit }: WhiteboardViewPr
         </div>
         {canEdit && (
           <Button variant="secondary" size="sm" onClick={onEdit}>
-            <Pencil className="h-3.5 w-3.5" />
+            <IconPencil className="h-3.5 w-3.5" />
             Edit
           </Button>
         )}

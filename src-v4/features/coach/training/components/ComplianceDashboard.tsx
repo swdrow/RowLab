@@ -6,7 +6,6 @@
  */
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Shield, AlertTriangle, Users, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { complianceReportOptions, weeklyComplianceOptions } from '../api';
 
@@ -14,6 +13,8 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { fadeIn } from '@/lib/animations';
+import { IconAlertTriangle, IconClock, IconShield, IconUsers } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -242,7 +243,7 @@ function StatCard({
   alert,
   highlight,
 }: {
-  icon: typeof Users;
+  icon: IconComponent;
   label: string;
   value: string;
   alert?: boolean;

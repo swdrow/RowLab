@@ -8,13 +8,13 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import { ClipboardList, ShieldAlert } from 'lucide-react';
 import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { useAuth } from '@/features/auth/useAuth';
 import { whiteboardOptions, useSaveWhiteboard } from '../api';
 import { WhiteboardView } from './WhiteboardView';
 import { WhiteboardEditor } from './WhiteboardEditor';
+import { IconClipboardList, IconShieldAlert } from '@/components/icons';
 
 export function WhiteboardPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -53,11 +53,11 @@ export function WhiteboardPage() {
           <SectionHeader
             title="Whiteboard"
             description="Team Notes"
-            icon={<ClipboardList className="h-4 w-4" />}
+            icon={<IconClipboardList className="h-4 w-4" />}
             action={
               readOnly ? (
                 <span className="inline-flex items-center gap-1.5 rounded-lg bg-void-deep px-3 py-1.5 text-xs text-text-faint border border-edge-default">
-                  <ShieldAlert className="h-3.5 w-3.5" />
+                  <IconShieldAlert className="h-3.5 w-3.5" />
                   Read Only
                 </span>
               ) : undefined

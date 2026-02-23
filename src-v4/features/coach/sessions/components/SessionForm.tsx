@@ -11,10 +11,10 @@ import { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Trash2, ChevronRight, ChevronLeft } from 'lucide-react';
 
 import type { TrainingSession, SessionType, PieceSegment } from '../types';
 import { SESSION_TYPE_CONFIG } from '../types';
+import { IconChevronLeft, IconChevronRight, IconPlus, IconTrash } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Schema
@@ -279,7 +279,7 @@ export function SessionForm({ session, onSubmit, onCancel, isSubmitting }: Sessi
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent-teal text-void-deep text-sm font-medium hover:bg-accent-teal-hover transition-colors"
             >
               Next: Pieces
-              <ChevronRight size={16} />
+              <IconChevronRight width={16} height={16} />
             </button>
           </div>
         </div>
@@ -315,7 +315,7 @@ export function SessionForm({ session, onSubmit, onCancel, isSubmitting }: Sessi
                       onClick={() => remove(index)}
                       className="p-1 text-text-faint hover:text-data-poor transition-colors"
                     >
-                      <Trash2 size={14} />
+                      <IconTrash width={14} height={14} />
                     </button>
                   </div>
 
@@ -386,7 +386,7 @@ export function SessionForm({ session, onSubmit, onCancel, isSubmitting }: Sessi
               onClick={() => addPiece('WARMUP')}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-text-dim hover:text-text-bright hover:bg-void-overlay border border-edge-default transition-colors"
             >
-              <Plus size={12} />
+              <IconPlus width={12} height={12} />
               Warmup
             </button>
             <button
@@ -394,7 +394,7 @@ export function SessionForm({ session, onSubmit, onCancel, isSubmitting }: Sessi
               onClick={() => addPiece('MAIN')}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-accent-teal hover:text-accent-teal-hover hover:bg-accent-teal/10 border border-accent-teal/30 transition-colors"
             >
-              <Plus size={12} />
+              <IconPlus width={12} height={12} />
               Main
             </button>
             <button
@@ -402,7 +402,7 @@ export function SessionForm({ session, onSubmit, onCancel, isSubmitting }: Sessi
               onClick={() => addPiece('COOLDOWN')}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-text-dim hover:text-text-bright hover:bg-void-overlay border border-edge-default transition-colors"
             >
-              <Plus size={12} />
+              <IconPlus width={12} height={12} />
               Cooldown
             </button>
           </div>
@@ -414,7 +414,7 @@ export function SessionForm({ session, onSubmit, onCancel, isSubmitting }: Sessi
               onClick={() => setStep('metadata')}
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-text-dim hover:text-text-default hover:bg-void-overlay transition-colors"
             >
-              <ChevronLeft size={16} />
+              <IconChevronLeft width={16} height={16} />
               Back
             </button>
             <button

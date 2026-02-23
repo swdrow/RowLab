@@ -8,7 +8,6 @@
  */
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Anchor, Plus, Pencil, Trash2, SailboatIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { Card } from '@/components/ui/Card';
@@ -49,6 +48,7 @@ import {
 import { FleetSkeleton } from './FleetSkeleton';
 import { ShellForm } from './ShellForm';
 import { OarSetForm } from './OarSetForm';
+import { IconAnchor, IconPencil, IconPlus, IconSailboat, IconTrash } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -242,14 +242,14 @@ function ShellsTable({
                         className="p-1.5 rounded-lg text-text-faint hover:text-text-bright hover:bg-void-overlay transition-colors"
                         aria-label={`Edit ${shell.name}`}
                       >
-                        <Pencil size={14} />
+                        <IconPencil width={14} height={14} />
                       </button>
                       <button
                         onClick={() => onDelete(shell.id)}
                         className="p-1.5 rounded-lg text-text-faint hover:text-accent-coral hover:bg-accent-coral/10 transition-colors"
                         aria-label={`Delete ${shell.name}`}
                       >
-                        <Trash2 size={14} />
+                        <IconTrash width={14} height={14} />
                       </button>
                     </div>
                   )}
@@ -348,14 +348,14 @@ function OarSetsTable({
                         className="p-1.5 rounded-lg text-text-faint hover:text-text-bright hover:bg-void-overlay transition-colors"
                         aria-label={`Edit ${oarSet.name}`}
                       >
-                        <Pencil size={14} />
+                        <IconPencil width={14} height={14} />
                       </button>
                       <button
                         onClick={() => onDelete(oarSet.id)}
                         className="p-1.5 rounded-lg text-text-faint hover:text-accent-coral hover:bg-accent-coral/10 transition-colors"
                         aria-label={`Delete ${oarSet.name}`}
                       >
-                        <Trash2 size={14} />
+                        <IconTrash width={14} height={14} />
                       </button>
                     </div>
                   )}
@@ -474,13 +474,13 @@ export function FleetPage({ teamId, readOnly }: FleetPageProps) {
       <SectionHeader
         title="Fleet Management"
         description="Manage your team's shells and oar sets"
-        icon={<SailboatIcon className="h-4 w-4" />}
+        icon={<IconSailboat className="h-4 w-4" />}
         action={
           <div className="flex items-center gap-3">
             {readOnly && <ReadOnlyBadge />}
             {!readOnly && (
               <Button size="sm" onClick={activeTab === 'shells' ? handleAddShell : handleAddOarSet}>
-                <Plus size={16} />
+                <IconPlus width={16} height={16} />
                 {activeTab === 'shells' ? 'Add Shell' : 'Add Oar Set'}
               </Button>
             )}

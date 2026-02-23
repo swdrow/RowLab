@@ -7,12 +7,11 @@
  */
 
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, MapPin } from 'lucide-react';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { ClipboardList } from 'lucide-react';
 import { formatRelativeDate } from '@/lib/format';
 import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import type { SeatRaceSession, Conditions } from '../types';
+import { IconCalendar, IconClipboardList, IconMapPin } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -113,7 +112,7 @@ export function SessionList({ sessions, isLoading, selectedId, onSelect }: Sessi
               {/* Top row: date + boat class */}
               <div className="flex items-start justify-between mb-1.5">
                 <div className="flex items-center gap-2">
-                  <Calendar size={14} className="text-text-faint shrink-0" />
+                  <IconCalendar width={14} height={14} className="text-text-faint shrink-0" />
                   <span className="text-sm font-medium text-text-bright">
                     {formatRelativeDate(session.date)}
                   </span>
@@ -126,7 +125,7 @@ export function SessionList({ sessions, isLoading, selectedId, onSelect }: Sessi
               {/* Location */}
               {session.location && (
                 <div className="flex items-center gap-2 text-xs text-text-dim mb-1.5 ml-5">
-                  <MapPin size={12} className="shrink-0" />
+                  <IconMapPin width={12} height={12} className="shrink-0" />
                   {session.location}
                 </div>
               )}

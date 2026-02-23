@@ -5,9 +5,9 @@
  * Save and Cancel buttons control the flow.
  */
 import { useState } from 'react';
-import { Bold, Italic, List, Heading2, Save, X } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { IconBold, IconHeading, IconItalic, IconList, IconSave, IconX } from '@/components/icons';
 
 interface WhiteboardEditorProps {
   initialContent: string;
@@ -57,22 +57,22 @@ export function WhiteboardEditor({
 
   const toolbarActions = [
     {
-      icon: Bold,
+      icon: IconBold,
       label: 'Bold',
       action: (ta: HTMLTextAreaElement) => insertMarkdown(ta, '**', '**', setContent),
     },
     {
-      icon: Italic,
+      icon: IconItalic,
       label: 'Italic',
       action: (ta: HTMLTextAreaElement) => insertMarkdown(ta, '_', '_', setContent),
     },
     {
-      icon: Heading2,
+      icon: IconHeading,
       label: 'Heading',
       action: (ta: HTMLTextAreaElement) => insertMarkdown(ta, '## ', '', setContent),
     },
     {
-      icon: List,
+      icon: IconList,
       label: 'List',
       action: (ta: HTMLTextAreaElement) => insertMarkdown(ta, '- ', '', setContent),
     },
@@ -130,7 +130,7 @@ export function WhiteboardEditor({
       {/* Actions */}
       <div className="flex justify-end gap-3 px-6 py-4 border-t border-edge-default">
         <Button variant="ghost" onClick={onCancel} disabled={isSaving}>
-          <X className="h-4 w-4" />
+          <IconX className="h-4 w-4" />
           Cancel
         </Button>
         <Button
@@ -139,7 +139,7 @@ export function WhiteboardEditor({
           disabled={isSaving || !content.trim()}
           loading={isSaving}
         >
-          <Save className="h-4 w-4" />
+          <IconSave className="h-4 w-4" />
           Save Whiteboard
         </Button>
       </div>

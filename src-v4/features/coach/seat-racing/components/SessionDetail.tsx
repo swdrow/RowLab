@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Trash2, MapPin } from 'lucide-react';
 
 import { SPRING_GENTLE } from '@/lib/animations';
 import { useIsMobile } from '@/hooks/useBreakpoint';
@@ -18,6 +17,7 @@ import { Button } from '@/components/ui/Button';
 import { formatLongDate } from '@/lib/format';
 import { sessionDetailOptions, useDeleteSession } from '../api';
 import type { Conditions, Side } from '../types';
+import { IconMapPin, IconTrash, IconX } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -245,7 +245,7 @@ function PanelContent({
             {/* Location */}
             {session.location && (
               <div className="flex items-center gap-2 mt-2 text-sm text-text-dim">
-                <MapPin size={14} className="shrink-0" />
+                <IconMapPin width={14} height={14} className="shrink-0" />
                 {session.location}
               </div>
             )}
@@ -262,7 +262,7 @@ function PanelContent({
             className="p-1.5 rounded-md hover:bg-void-overlay transition-colors ml-3"
             aria-label="Close"
           >
-            <X size={18} className="text-text-faint" />
+            <IconX width={18} height={18} className="text-text-faint" />
           </button>
         </div>
 
@@ -296,7 +296,7 @@ function PanelContent({
                 onClick={onConfirmDelete}
                 className="flex items-center gap-1.5 text-xs text-text-faint hover:text-data-poor transition-colors"
               >
-                <Trash2 size={13} />
+                <IconTrash width={13} height={13} />
                 Delete Session
               </button>
             )}
@@ -428,7 +428,7 @@ function SlideOverHeader({ title, onClose }: { title: string; onClose: () => voi
         className="p-1.5 rounded-md hover:bg-void-overlay transition-colors"
         aria-label="Close"
       >
-        <X size={18} className="text-text-faint" />
+        <IconX width={18} height={18} className="text-text-faint" />
       </button>
     </div>
   );

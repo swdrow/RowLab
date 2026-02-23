@@ -10,10 +10,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'motion/react';
-import { X } from 'lucide-react';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { IconX } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Schema
@@ -128,7 +128,7 @@ export function SaveLineupDialog({
                   className="p-1.5 rounded-lg text-text-faint hover:text-text-bright hover:bg-void-overlay transition-colors"
                   aria-label="Close"
                 >
-                  <X size={18} />
+                  <IconX width={18} height={18} />
                 </button>
               </div>
 

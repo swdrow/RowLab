@@ -8,12 +8,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { ChevronLeft, Square, Radio } from 'lucide-react';
 
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { sessionDetailOptions, useEndSession } from '../api';
 import { LiveErgDashboard } from './LiveErgDashboard';
 import { useSocket } from '../hooks/useSocket';
+import { IconChevronLeft, IconRadio, IconSquare } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Skeleton
@@ -105,7 +105,7 @@ export function LiveSessionPage({ sessionId }: LiveSessionPageProps) {
           onClick={() => void navigate({ to: '/training/sessions' })}
           className="flex items-center gap-1 text-sm text-text-dim hover:text-text-bright transition-colors mb-4"
         >
-          <ChevronLeft size={16} />
+          <IconChevronLeft width={16} height={16} />
           Back to Sessions
         </button>
         <p className="text-text-dim text-sm">Session not found.</p>
@@ -122,7 +122,7 @@ export function LiveSessionPage({ sessionId }: LiveSessionPageProps) {
           onClick={handleBack}
           className="flex items-center gap-1 text-sm text-text-dim hover:text-text-bright transition-colors mb-4"
         >
-          <ChevronLeft size={16} />
+          <IconChevronLeft width={16} height={16} />
           Back to Session
         </button>
         <div className="bg-data-warning/10 border border-data-warning/20 rounded-lg p-6">
@@ -136,7 +136,7 @@ export function LiveSessionPage({ sessionId }: LiveSessionPageProps) {
             onClick={handleBack}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-edge-default text-sm text-text-dim hover:text-text-bright hover:bg-void-overlay transition-colors"
           >
-            <ChevronLeft size={14} />
+            <IconChevronLeft width={14} height={14} />
             View Session Details
           </button>
         </div>
@@ -162,7 +162,7 @@ export function LiveSessionPage({ sessionId }: LiveSessionPageProps) {
                 className="text-text-dim hover:text-text-bright transition-colors flex-shrink-0"
                 aria-label="Back to session"
               >
-                <ChevronLeft size={20} />
+                <IconChevronLeft width={20} height={20} />
               </button>
 
               {/* Pulsing LIVE indicator */}
@@ -195,7 +195,7 @@ export function LiveSessionPage({ sessionId }: LiveSessionPageProps) {
                   : 'bg-data-poor/15 text-data-poor border border-data-poor/30 hover:bg-data-poor/25'
               } disabled:opacity-50`}
             >
-              <Square size={14} />
+              <IconSquare width={14} height={14} />
               {confirmEnd ? 'Confirm End Session' : 'End Session'}
             </button>
           </div>
@@ -218,7 +218,7 @@ export function LiveSessionPage({ sessionId }: LiveSessionPageProps) {
       <div className="border-t border-edge-default/30 px-4 lg:px-6 py-2 bg-void-deep/20">
         <div className="max-w-5xl mx-auto flex items-center justify-between text-[10px] font-mono text-text-faint uppercase tracking-wider">
           <span className="flex items-center gap-2">
-            <Radio size={10} />
+            <IconRadio width={10} height={10} />
             {session.name}
           </span>
           <span>{isConnected ? 'CONNECTED' : 'RECONNECTING...'}</span>

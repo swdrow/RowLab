@@ -7,13 +7,13 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { RefreshCw } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { ratingsOptions, useRecalculate } from '../api';
 import type { Side } from '../types';
 import { EloChart } from './EloChart';
 import { RankingsTable } from './RankingsTable';
+import { IconRefresh } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -98,7 +98,7 @@ export function RankingsView({ teamId }: RankingsViewProps) {
             loading={isRecalculating}
             onClick={() => recalculate()}
           >
-            <RefreshCw size={14} />
+            <IconRefresh width={14} height={14} />
             Recalculate
           </Button>
         </div>

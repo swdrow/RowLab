@@ -12,11 +12,12 @@
 
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Medal } from 'lucide-react';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Sparkline } from '@/components/ui/Sparkline';
 import { listContainerVariants, listItemVariants } from '@/lib/animations';
+import { IconMedal, IconTrophy } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import {
   getConfidenceLevel,
   getRatingTextClass,
@@ -40,25 +41,25 @@ interface RankingsTableProps {
 
 const MEDAL_CONFIG: Record<
   number,
-  { bgClass: string; borderClass: string; textClass: string; icon: typeof Trophy }
+  { bgClass: string; borderClass: string; textClass: string; icon: IconComponent }
 > = {
   1: {
     bgClass: 'bg-data-warning/5',
     borderClass: 'border-l-2 border-data-warning',
     textClass: 'text-data-warning',
-    icon: Trophy,
+    icon: IconTrophy,
   },
   2: {
     bgClass: 'bg-text-dim/5',
     borderClass: 'border-l-2 border-text-dim',
     textClass: 'text-text-dim',
-    icon: Medal,
+    icon: IconMedal,
   },
   3: {
     bgClass: 'bg-accent-teal/5',
     borderClass: 'border-l-2 border-accent-teal',
     textClass: 'text-accent-teal',
-    icon: Medal,
+    icon: IconMedal,
   },
 };
 
@@ -102,7 +103,7 @@ function RankDisplay({ rank }: { rank: number }) {
     const Icon = medal.icon;
     return (
       <div className="flex items-center gap-1.5">
-        <Icon size={14} className={medal.textClass} />
+        <Icon width={14} height={14} className={medal.textClass} />
         <span className={`text-2xl font-bold tabular-nums ${medal.textClass}`}>{rank}</span>
       </div>
     );
@@ -174,7 +175,7 @@ export function RankingsTable({ ratings, isLoading = false, onAthleteClick }: Ra
   if (ratings.length === 0) {
     return (
       <EmptyState
-        icon={Trophy}
+        icon={IconTrophy}
         title="No Rankings Yet"
         description="Create a seat racing session to generate athlete rankings."
         className="py-12"

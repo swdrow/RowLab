@@ -6,7 +6,6 @@
  */
 import { useState, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ClipboardList, Plus, FileText, ChevronRight, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { plansOptions, createPlan, trainingKeys } from '../api';
 import type { TrainingPlan, TrainingPhase, CreateTrainingPlanInput } from '../types';
@@ -15,6 +14,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { slideUp, listContainerVariants, listItemVariants } from '@/lib/animations';
+import { IconChevronRight, IconClipboardList, IconFileText, IconLayers, IconPlus } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Phase badge colors
@@ -85,12 +85,12 @@ export function PlansList({ teamId: _teamId, readOnly, onSelectPlan }: PlansList
       {/* Quick stats */}
       <div className="flex items-center gap-4">
         <span className="flex items-center gap-1.5 text-xs text-text-dim">
-          <Layers className="h-3.5 w-3.5" />
+          <IconLayers className="h-3.5 w-3.5" />
           <span className="font-mono font-semibold text-text-bright">{activePlans.length}</span>
           active plans
         </span>
         <span className="flex items-center gap-1.5 text-xs text-text-dim">
-          <FileText className="h-3.5 w-3.5" />
+          <IconFileText className="h-3.5 w-3.5" />
           <span className="font-mono font-semibold text-text-bright">{templates.length}</span>
           templates
         </span>
@@ -99,7 +99,7 @@ export function PlansList({ teamId: _teamId, readOnly, onSelectPlan }: PlansList
       {/* Create button */}
       {!readOnly && (
         <Button variant="primary" size="sm" onClick={() => setShowForm((prev) => !prev)}>
-          <Plus className="h-4 w-4" />
+          <IconPlus className="h-4 w-4" />
           {showForm ? 'Cancel' : 'New Plan'}
         </Button>
       )}
@@ -226,7 +226,7 @@ function PlanCard({
             )}
           </div>
         </div>
-        <ChevronRight
+        <IconChevronRight
           className={`h-4 w-4 shrink-0 text-text-faint transition-transform ${
             isSelected ? 'rotate-90 text-accent-sand' : ''
           }`}
@@ -317,7 +317,7 @@ function CreatePlanForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
 
         <div className="flex items-center gap-2 pt-1">
           <Button type="submit" variant="primary" size="sm" loading={mutation.isPending}>
-            <Plus className="h-3.5 w-3.5" />
+            <IconPlus className="h-3.5 w-3.5" />
             Create Plan
           </Button>
           <Button type="button" variant="ghost" size="sm" onClick={onCancel}>

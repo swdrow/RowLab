@@ -9,7 +9,6 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'motion/react';
-import { UserPlus, GraduationCap, X } from 'lucide-react';
 import { fadeIn, scaleIn, listContainerVariants } from '@/lib/animations';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -22,6 +21,7 @@ import { recruitVisitsOptions, recruitKeys, createVisit, updateVisit, deleteVisi
 import type { RecruitVisit, VisitStatus, CreateVisitInput, UpdateVisitInput } from '../types';
 import { VisitCard } from './VisitCard';
 import { VisitForm } from './VisitForm';
+import { IconGraduationCap, IconUserPlus, IconX } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Filter tabs
@@ -130,7 +130,7 @@ export function RecruitingPage() {
           {readOnly && <ReadOnlyBadge />}
           {!readOnly && (
             <Button size="sm" onClick={() => setModal({ type: 'create' })}>
-              <UserPlus className="h-4 w-4" aria-hidden="true" />
+              <IconUserPlus className="h-4 w-4" aria-hidden="true" />
               New Visit
             </Button>
           )}
@@ -232,7 +232,7 @@ export function RecruitingPage() {
                     className="text-text-faint hover:text-text-bright transition-colors p-1"
                     aria-label="Close detail panel"
                   >
-                    <X className="h-5 w-5" />
+                    <IconX className="h-5 w-5" />
                   </button>
                 </div>
 
@@ -325,7 +325,7 @@ export function RecruitingPage() {
                     className="text-text-faint hover:text-text-bright transition-colors p-1"
                     aria-label="Close form"
                   >
-                    <X className="h-5 w-5" />
+                    <IconX className="h-5 w-5" />
                   </button>
                 </div>
                 <VisitForm

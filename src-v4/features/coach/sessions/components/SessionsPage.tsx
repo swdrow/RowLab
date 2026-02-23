@@ -7,12 +7,12 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { Plus, Play, Calendar, Clock } from 'lucide-react';
 
 import { Card } from '@/components/ui/Card';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { sessionsOptions, activeSessionOptions, useCreateSession } from '../api';
 import { SessionForm, type SessionFormData } from './SessionForm';
+import { IconCalendar, IconClock, IconPlay, IconPlus } from '@/components/icons';
 import {
   SESSION_TYPE_CONFIG,
   SESSION_STATUS_CONFIG,
@@ -85,7 +85,7 @@ function SessionCard({ session, onNavigate }: SessionCardProps) {
           </h3>
           <div className="mt-1 flex items-center gap-3 text-xs text-text-dim">
             <span className="flex items-center gap-1">
-              <Calendar size={12} />
+              <IconCalendar width={12} height={12} />
               {new Date(session.date).toLocaleDateString()}
             </span>
             {session.pieces.length > 0 && (
@@ -95,7 +95,7 @@ function SessionCard({ session, onNavigate }: SessionCardProps) {
             )}
             {session.startTime && (
               <span className="flex items-center gap-1">
-                <Clock size={12} />
+                <IconClock width={12} height={12} />
                 {session.startTime}
               </span>
             )}
@@ -104,7 +104,7 @@ function SessionCard({ session, onNavigate }: SessionCardProps) {
 
         {isActive && (
           <div className="flex items-center gap-1 rounded-md bg-data-excellent/20 px-2.5 py-1 text-xs font-medium text-data-excellent">
-            <Play size={12} />
+            <IconPlay width={12} height={12} />
             Live
           </div>
         )}
@@ -174,7 +174,7 @@ export function SessionsPage() {
           onClick={() => setShowForm(true)}
           className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-accent-teal text-void-deep text-sm font-medium hover:bg-accent-teal-hover transition-colors"
         >
-          <Plus size={16} />
+          <IconPlus width={16} height={16} />
           New Session
         </button>
       </div>
@@ -190,7 +190,7 @@ export function SessionsPage() {
             onClick={() => setShowForm(true)}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent-teal text-void-deep text-sm font-medium hover:bg-accent-teal-hover transition-colors"
           >
-            <Plus size={16} />
+            <IconPlus width={16} height={16} />
             Create your first session
           </button>
         </div>

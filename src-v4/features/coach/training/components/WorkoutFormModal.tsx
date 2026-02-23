@@ -8,13 +8,13 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { addWorkoutToPlan, trainingKeys } from '../api';
 import type { WorkoutType, Intensity, CreatePlannedWorkoutInput } from '../types';
 import { Button } from '@/components/ui/Button';
 import { formatDateForInput } from '@/lib/format';
 import { SPRING_GENTLE } from '@/lib/animations';
+import { IconX } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -208,7 +208,7 @@ function WorkoutForm({
           className="rounded-lg p-1.5 text-text-faint hover:text-text-bright hover:bg-void-overlay transition-colors"
           aria-label="Close"
         >
-          <X className="h-4 w-4" />
+          <IconX className="h-4 w-4" />
         </button>
       </div>
 

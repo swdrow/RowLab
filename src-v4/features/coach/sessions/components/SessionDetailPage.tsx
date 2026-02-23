@@ -8,17 +8,6 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  ChevronLeft,
-  Play,
-  Square,
-  Pencil,
-  Trash2,
-  Calendar,
-  Clock,
-  Copy,
-  Check,
-} from 'lucide-react';
 
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { formatDuration } from '@/lib/format';
@@ -30,6 +19,17 @@ import {
   useDeleteSession,
 } from '../api';
 import { SessionForm, type SessionFormData } from './SessionForm';
+import {
+  IconCalendar,
+  IconCheck,
+  IconChevronLeft,
+  IconClock,
+  IconCopy,
+  IconPencil,
+  IconPlay,
+  IconSquare,
+  IconTrash,
+} from '@/components/icons';
 import {
   SESSION_TYPE_CONFIG,
   SESSION_STATUS_CONFIG,
@@ -148,7 +148,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
           onClick={handleBack}
           className="flex items-center gap-1 text-sm text-text-dim hover:text-text-bright transition-colors mb-4"
         >
-          <ChevronLeft size={16} />
+          <IconChevronLeft width={16} height={16} />
           Back to Sessions
         </button>
         <p className="text-text-dim text-sm">Session not found.</p>
@@ -175,7 +175,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
           onClick={() => setEditing(false)}
           className="flex items-center gap-1 text-sm text-text-dim hover:text-text-bright transition-colors mb-4"
         >
-          <ChevronLeft size={16} />
+          <IconChevronLeft width={16} height={16} />
           Cancel Edit
         </button>
         <h2 className="text-lg font-semibold text-text-bright mb-4">Edit Session</h2>
@@ -197,7 +197,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
         onClick={handleBack}
         className="flex items-center gap-1 text-sm text-text-dim hover:text-text-bright transition-colors mb-4"
       >
-        <ChevronLeft size={16} />
+        <IconChevronLeft width={16} height={16} />
         All Sessions
       </button>
 
@@ -226,7 +226,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
               disabled={startMutation.isPending}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-data-good text-void-deep text-sm font-medium hover:bg-data-good/90 disabled:opacity-50 transition-colors"
             >
-              <Play size={14} />
+              <IconPlay width={14} height={14} />
               Start
             </button>
           )}
@@ -237,7 +237,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
               disabled={endMutation.isPending}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-data-warning text-void-deep text-sm font-medium hover:bg-data-warning/90 disabled:opacity-50 transition-colors"
             >
-              <Square size={14} />
+              <IconSquare width={14} height={14} />
               End
             </button>
           )}
@@ -246,7 +246,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
             onClick={() => setEditing(true)}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-edge-default text-sm font-medium text-text-dim hover:text-text-bright hover:bg-void-overlay transition-colors"
           >
-            <Pencil size={14} />
+            <IconPencil width={14} height={14} />
             Edit
           </button>
           <button
@@ -255,7 +255,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
             disabled={deleteMutation.isPending}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-edge-default text-sm font-medium text-text-dim hover:text-data-poor hover:border-data-poor/30 disabled:opacity-50 transition-colors"
           >
-            <Trash2 size={14} />
+            <IconTrash width={14} height={14} />
           </button>
         </div>
       </div>
@@ -264,7 +264,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
       <div className="bg-void-raised border border-edge-default rounded-lg p-4 mb-6">
         <div className="flex flex-wrap items-center gap-4 text-sm text-text-dim">
           <span className="flex items-center gap-1.5">
-            <Calendar size={14} />
+            <IconCalendar width={14} height={14} />
             {new Date(session.date).toLocaleDateString(undefined, {
               weekday: 'short',
               year: 'numeric',
@@ -274,7 +274,7 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
           </span>
           {session.startTime && (
             <span className="flex items-center gap-1.5">
-              <Clock size={14} />
+              <IconClock width={14} height={14} />
               {session.startTime}
             </span>
           )}
@@ -295,7 +295,11 @@ export function SessionDetailPage({ sessionId }: SessionDetailPageProps) {
               className="p-1 text-text-faint hover:text-text-bright transition-colors"
               title="Copy code"
             >
-              {copied ? <Check size={14} className="text-data-good" /> : <Copy size={14} />}
+              {copied ? (
+                <IconCheck width={14} height={14} className="text-data-good" />
+              ) : (
+                <IconCopy width={14} height={14} />
+              )}
             </button>
           </div>
         )}

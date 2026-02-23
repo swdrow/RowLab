@@ -11,7 +11,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Keyboard, X, Trophy } from 'lucide-react';
 
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -25,6 +24,7 @@ import { RankingsView } from './RankingsView';
 import { SessionList } from './SessionList';
 import { SessionDetail } from './SessionDetail';
 import { SessionWizard } from './SessionWizard';
+import { IconKeyboard, IconPlus, IconTrophy, IconX } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -76,7 +76,7 @@ function ShortcutsHelp({ onClose }: { onClose: () => void }) {
         <Card padding="lg" variant="elevated">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-text-bright flex items-center gap-2">
-              <Keyboard size={16} className="text-text-faint" />
+              <IconKeyboard width={16} height={16} className="text-text-faint" />
               Keyboard Shortcuts
             </h3>
             <button
@@ -85,7 +85,7 @@ function ShortcutsHelp({ onClose }: { onClose: () => void }) {
               className="p-1 rounded hover:bg-void-overlay transition-colors"
               aria-label="Close"
             >
-              <X size={16} className="text-text-faint" />
+              <IconX width={16} height={16} className="text-text-faint" />
             </button>
           </div>
           <div className="space-y-2.5">
@@ -180,13 +180,13 @@ export function SeatRacingPage({ teamId, readOnly }: SeatRacingPageProps) {
       <SectionHeader
         title="Seat Racing"
         description="ELO rankings and race sessions"
-        icon={<Trophy size={18} />}
+        icon={<IconTrophy width={18} height={18} />}
         action={
           <div className="flex items-center gap-3">
             {readOnly && <ReadOnlyBadge />}
             {!readOnly && (
               <Button size="sm" onClick={() => setWizardOpen(true)}>
-                <Plus size={16} />
+                <IconPlus width={16} height={16} />
                 New Session
               </Button>
             )}

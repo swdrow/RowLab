@@ -18,7 +18,6 @@
  */
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Ship } from 'lucide-react';
 
 import { api } from '@/lib/api';
 import { useIsMobile } from '@/hooks/useBreakpoint';
@@ -36,6 +35,7 @@ import { LineupToolbar } from './LineupToolbar';
 import { SaveLineupDialog, type SaveLineupFormData } from './SaveLineupDialog';
 import { AddBoatButton } from './AddBoatButton';
 import { MobileAthleteSelector } from './MobileAthleteSelector';
+import { IconShip } from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Athletes query (team-scoped via auth header)
@@ -300,7 +300,7 @@ export function LineupWorkspace({ teamId, lineupId, readOnly = false }: LineupWo
       <SectionHeader
         title="Lineup Builder"
         description={activeLineupName ?? 'Build and arrange boat lineups'}
-        icon={<Ship size={18} />}
+        icon={<IconShip width={18} height={18} />}
         action={
           <LineupToolbar
             onSave={() => setIsSaveOpen(true)}
