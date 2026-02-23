@@ -31,7 +31,7 @@ export const Route = createFileRoute('/_authenticated/')({
     // Prefetch all dashboard queries in parallel — allSettled so one failure
     // doesn't block the rest. Mock fallbacks in queryFns handle 404s gracefully.
     await Promise.allSettled([
-      queryClient.ensureQueryData(statsQueryOptions()),
+      queryClient.ensureQueryData(statsQueryOptions('7d')),
       queryClient.ensureQueryData(recentWorkoutsQueryOptions()),
       queryClient.ensureQueryData(prsQueryOptions()),
       queryClient.prefetchInfiniteQuery(socialFeedOptions({ filter: 'all' })),

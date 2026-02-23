@@ -11,7 +11,7 @@ import type { DashboardData } from '../types';
 
 export function useDashboardData(): DashboardData {
   const [statsQuery, workoutsQuery, prsQuery] = useSuspenseQueries({
-    queries: [statsQueryOptions(), recentWorkoutsQueryOptions(), prsQueryOptions()],
+    queries: [statsQueryOptions('7d'), recentWorkoutsQueryOptions(), prsQueryOptions()],
   });
 
   return {

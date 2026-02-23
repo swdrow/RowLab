@@ -13,6 +13,7 @@ export interface StatsData {
   };
   range: {
     meters: number;
+    durationSeconds: number;
     workouts: number;
     activeDays: number;
     period: '7d' | '30d' | '90d' | '1y' | 'all';

@@ -23,7 +23,7 @@ function formatDuration(seconds: number): string {
 }
 
 export function CompactHero({ stats }: CompactHeroProps) {
-  const { range, streak, allTime } = stats;
+  const { range, streak } = stats;
 
   return (
     <Card padding="none" className="border-t-2 border-t-accent-teal overflow-hidden">
@@ -43,7 +43,7 @@ export function CompactHero({ stats }: CompactHeroProps) {
         {/* Week stats */}
         <div className="flex items-center gap-3">
           <StatPill label="Distance" value={formatDistance(range.meters)} />
-          <StatPill label="Time" value={formatDuration(allTime.totalDurationSeconds)} />
+          <StatPill label="Time" value={formatDuration(range.durationSeconds)} />
           <StatPill label="Sessions" value={String(range.workouts)} />
         </div>
       </div>
