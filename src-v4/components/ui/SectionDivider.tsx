@@ -25,21 +25,9 @@ export function SectionDivider({ variant = 'rule', className = '' }: SectionDivi
   }
 
   if (variant === 'section') {
-    return (
-      <hr
-        role="separator"
-        aria-hidden="true"
-        className={`border-0 h-px bg-edge-default my-8 ${className}`}
-      />
-    );
+    return <hr aria-hidden="true" className={`border-0 h-px bg-edge-default my-8 ${className}`} />;
   }
 
   // rule (default)
-  return (
-    <hr
-      role="separator"
-      aria-hidden="true"
-      className={`border-0 h-px bg-edge-default ${className}`}
-    />
-  );
+  return <hr aria-hidden="true" className={`border-0 h-px bg-edge-default ${className}`} />;
 }

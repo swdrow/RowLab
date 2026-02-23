@@ -257,7 +257,7 @@ function NewInviteClaimCard({
             <h2 className="text-lg font-semibold text-text-bright">Team invitation</h2>
 
             <p className="text-sm text-text-default">
-              You've been invited to join{' '}
+              You&apos;ve been invited to join{' '}
               <span className="font-semibold text-text-bright">{resolved.teamName}</span> as a{' '}
               <span className="font-semibold text-accent-teal capitalize">
                 {resolved.role.toLowerCase()}
@@ -331,7 +331,7 @@ function LegacyInviteClaimCard({
             <h2 className="text-lg font-semibold text-text-bright">Team invitation</h2>
 
             <p className="text-sm text-text-default">
-              You've been invited to join{' '}
+              You&apos;ve been invited to join{' '}
               <span className="font-semibold text-text-bright">
                 {invitation.team?.name || 'a team'}
               </span>

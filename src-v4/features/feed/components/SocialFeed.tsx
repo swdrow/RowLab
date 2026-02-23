@@ -37,6 +37,7 @@ const RowingIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement> & { size?: 
     </svg>
   )
 );
+RowingIcon.displayName = 'RowingIcon';
 
 const FILTER_TABS: { value: FeedFilter; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -110,7 +111,7 @@ function FeedContent({ filter }: { filter: FeedFilter }) {
   if (allItems.length === 0) {
     return (
       <EmptyState
-        icon={RowingIcon as any}
+        icon={RowingIcon as unknown as import('lucide-react').LucideIcon}
         title="No workouts yet"
         description={
           filter === 'following'

@@ -21,7 +21,7 @@ interface ProfileTabsProps {
 export function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps) {
   return (
     <div className="border-b border-edge-default mt-6">
-      <nav className="flex gap-6 px-4 overflow-x-auto" role="tablist" aria-label="Profile sections">
+      <div className="flex gap-6 px-4 overflow-x-auto" role="tablist" aria-label="Profile sections">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -41,7 +41,7 @@ export function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps) {
             </button>
           );
         })}
-      </nav>
+      </div>
     </div>
   );
 }

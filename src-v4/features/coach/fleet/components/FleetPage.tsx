@@ -88,6 +88,7 @@ function DialogOverlay({
   }, [open]);
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- <dialog> handles Escape natively; onClick is for backdrop dismiss
     <dialog
       ref={dialogRef}
       onClose={onClose}

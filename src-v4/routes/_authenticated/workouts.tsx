@@ -274,9 +274,11 @@ function DeleteConfirmDialog({
   return (
     <>
       {/* Backdrop */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- backdrop overlay dismiss pattern */}
       <div className="fixed inset-0 bg-black/50 z-50" onClick={onCancel} />
       {/* Dialog */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- stopPropagation prevents backdrop dismiss on content click */}
         <div
           className="bg-void-surface border border-edge-default rounded-xl shadow-md p-5 max-w-sm w-full"
           onClick={(e) => e.stopPropagation()}

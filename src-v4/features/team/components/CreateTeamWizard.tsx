@@ -394,9 +394,7 @@ function Step2Configure({
     <div className="flex flex-col gap-5">
       <div>
         <h2 className="text-lg font-semibold text-text-bright">Review & Configure</h2>
-        <p className="mt-1 text-sm text-text-dim">
-          Confirm your team details before creating.
-        </p>
+        <p className="mt-1 text-sm text-text-dim">Confirm your team details before creating.</p>
       </div>
 
       {/* Summary card */}
@@ -498,7 +496,7 @@ function Step3Invite({ team, onFinish }: { team: TeamDetail; onFinish: () => voi
           onClick={onFinish}
           className="text-sm font-medium text-text-dim hover:text-text-bright transition-colors text-center py-1"
         >
-          Skip -- I'll invite later
+          Skip -- I&apos;ll invite later
         </button>
       </div>
     </div>

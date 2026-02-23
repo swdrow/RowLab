@@ -79,6 +79,7 @@ export function Dialog({
   };
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- <dialog> handles Escape natively; onClick is for backdrop dismiss
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
@@ -106,9 +107,7 @@ export function Dialog({
                 <div className="flex items-start justify-between gap-3 mb-4">
                   <div className="flex-1 min-w-0">
                     {title && <h2 className="text-lg font-semibold text-text-bright">{title}</h2>}
-                    {description && (
-                      <p className="text-sm text-text-dim mt-1">{description}</p>
-                    )}
+                    {description && <p className="text-sm text-text-dim mt-1">{description}</p>}
                   </div>
                   {showClose && (
                     <button

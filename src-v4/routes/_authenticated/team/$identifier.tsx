@@ -60,7 +60,7 @@ function TeamNotFound() {
         </div>
         <h2 className="text-xl font-semibold text-text-bright">Team not found</h2>
         <p className="mt-2 text-sm text-text-dim">
-          This team doesn't exist or you don't have access to it.
+          This team doesn&apos;t exist or you don&apos;t have access to it.
         </p>
         <Link
           to="/"

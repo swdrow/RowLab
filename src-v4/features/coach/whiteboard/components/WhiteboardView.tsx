@@ -35,7 +35,7 @@ export function WhiteboardView({ whiteboard, canEdit, onEdit }: WhiteboardViewPr
         {canEdit && (
           <Button variant="primary" onClick={onEdit}>
             <Pencil className="h-4 w-4" />
-            Create Today's Whiteboard
+            Create Today&apos;s Whiteboard
           </Button>
         )}
       </GlassCard>

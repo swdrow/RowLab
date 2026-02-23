@@ -120,7 +120,7 @@ function InviteGatedRegister({ inviteToken }: { inviteToken: string }) {
             <>
               {data.invitation.team && (
                 <div className="mb-4 rounded-lg bg-void-raised/50 border border-edge-default px-3 py-2.5 text-sm text-text-default text-center">
-                  You've been invited to join{' '}
+                  You&apos;ve been invited to join{' '}
                   <span className="font-semibold text-text-bright">
                     {data.invitation.team.name}
                   </span>

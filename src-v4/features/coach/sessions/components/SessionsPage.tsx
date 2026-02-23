@@ -27,7 +27,11 @@ function SessionsSkeleton() {
   return (
     <SkeletonGroup className="space-y-3">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="bg-void-raised border border-edge-default rounded-lg p-4" aria-hidden>
+        <div
+          key={i}
+          className="bg-void-raised border border-edge-default rounded-lg p-4"
+          aria-hidden
+        >
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <Skeleton height="1rem" width="10rem" rounded="sm" />
@@ -200,8 +204,10 @@ export function SessionsPage() {
       {/* Create session dialog */}
       {showForm && (
         <>
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- backdrop overlay dismiss pattern */}
           <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowForm(false)} />
           <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4">
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- stopPropagation prevents backdrop dismiss on content click */}
             <div
               className="bg-void-surface border border-edge-default rounded-xl shadow-md p-5 max-w-lg w-full max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}

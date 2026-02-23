@@ -418,9 +418,7 @@ function Step2Athletes({
 
       <div className="rounded-lg border border-edge-default/50 p-6 text-center">
         <Users size={32} className="mx-auto text-text-faint mb-3" />
-        <p className="text-sm text-text-dim">
-          Athlete selection will load from your team roster.
-        </p>
+        <p className="text-sm text-text-dim">Athlete selection will load from your team roster.</p>
         <p className="text-xs text-text-faint mt-1">
           {selected.length > 0
             ? `${selected.length} athletes selected`
@@ -457,7 +455,9 @@ function Step3Boats({
       </p>
 
       <div>
-        <label className="text-sm font-medium text-text-default block mb-1.5">Number of Boats</label>
+        <label className="text-sm font-medium text-text-default block mb-1.5">
+          Number of Boats
+        </label>
         <div className="flex gap-2">
           {[2, 3, 4].map((n) => (
             <button
@@ -577,8 +577,8 @@ function Step5Times({ boatCount }: { boatCount: number }) {
       </div>
 
       <div className="mt-3 p-3 rounded-lg bg-accent-teal/5 border border-accent-teal/20 text-xs text-text-dim">
-        Tip: You can skip times now and enter them later in the session detail view. Click "Create
-        Session" to save with the current configuration.
+        Tip: You can skip times now and enter them later in the session detail view. Click
+        &quot;Create Session&quot; to save with the current configuration.
       </div>
     </div>
   );

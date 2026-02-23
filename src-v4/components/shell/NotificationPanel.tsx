@@ -102,7 +102,7 @@ export function NotificationPanel({ isOpen, onClose }: NotificationPanelProps) {
                 <div>
                   <p className="text-sm font-medium text-text-dim">No notifications yet</p>
                   <p className="mt-0.5 text-xs text-text-faint">
-                    We'll let you know when something happens
+                    We&apos;ll let you know when something happens
                   </p>
                 </div>
               </div>
