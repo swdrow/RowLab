@@ -21,7 +21,9 @@ import {
   IconPin,
   IconSend,
   IconTrendingUp,
+  IconActivity,
 } from '@/components/icons';
+import { FancySectionHeader } from '@/components/ui/FancySectionHeader';
 import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { formatNumber } from '@/lib/format';
 import { useIsDesktop } from '@/hooks/useBreakpoint';
@@ -73,9 +75,12 @@ export function TeamOverview({ team }: TeamOverviewProps) {
           {isCoach && <AnnouncementCompose teamId={team.id} />}
           {!isCoach && <UpcomingEventsPlaceholder />}
           <SectionDivider className="my-4" />
-          <h3 className="mb-3 text-sm font-display font-medium uppercase tracking-wider text-accent-sand">
-            Recent Activity
-          </h3>
+          <FancySectionHeader
+            label="Recent Activity"
+            icon={IconActivity}
+            accentColor="teal"
+            className="mb-3"
+          />
           <TeamActivityFeed teamId={team.id} compact />
         </motion.div>
 
@@ -122,9 +127,12 @@ export function TeamOverview({ team }: TeamOverviewProps) {
       <SectionDivider className="my-2" />
 
       <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-        <h3 className="mb-3 text-sm font-display font-medium uppercase tracking-wider text-accent-sand">
-          Recent Activity
-        </h3>
+        <FancySectionHeader
+          label="Recent Activity"
+          icon={IconActivity}
+          accentColor="teal"
+          className="mb-3"
+        />
         <TeamActivityFeed teamId={team.id} compact />
       </motion.div>
     </motion.div>
@@ -171,9 +179,7 @@ function StatsPanel({
 
   return (
     <section>
-      <h3 className="mb-3 text-sm font-display font-medium uppercase tracking-wider text-accent-sand">
-        Team Stats
-      </h3>
+      <FancySectionHeader label="Team Stats" icon={IconGauge} accentColor="sand" className="mb-3" />
       <div className="grid grid-cols-2 gap-3">
         {stats.map((stat) => {
           const Icon = stat.icon;
