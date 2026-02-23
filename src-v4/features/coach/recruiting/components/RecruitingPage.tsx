@@ -177,7 +177,7 @@ export function RecruitingPage() {
       ) : filteredVisits.length === 0 ? (
         <div className="py-16">
           <EmptyState
-            icon={GraduationCap}
+            icon={IconGraduationCap}
             title={activeTab === 'all' ? 'No recruit visits yet' : `No ${activeTab} visits`}
             description={
               activeTab === 'all'

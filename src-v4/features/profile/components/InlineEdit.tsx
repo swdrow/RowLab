@@ -122,8 +122,9 @@ export function InlineEdit({
       aria-label={`Edit ${Tag === 'h1' ? 'name' : 'bio'}`}
     >
       <Tag className={isEmpty ? 'text-text-faint italic' : ''}>{displayValue}</Tag>
-      <Pencil
-        width={Tag === 'h1' ? 14 : 12} height={Tag === 'h1' ? 14 : 12}
+      <IconPencil
+        width={Tag === 'h1' ? 14 : 12}
+        height={Tag === 'h1' ? 14 : 12}
         className="text-text-faint opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
       />
     </button>

@@ -510,7 +510,7 @@ export function FleetPage({ teamId, readOnly }: FleetPageProps) {
                 {shells.length === 0 ? (
                   <div className="py-12 px-4">
                     <EmptyState
-                      icon={SailboatIcon}
+                      icon={IconSailboat}
                       title="No shells yet"
                       description="Add your first shell to start tracking your fleet."
                       action={
@@ -536,7 +536,7 @@ export function FleetPage({ teamId, readOnly }: FleetPageProps) {
                 {oarSets.length === 0 ? (
                   <div className="py-12 px-4">
                     <EmptyState
-                      icon={Anchor}
+                      icon={IconAnchor}
                       title="No oar sets yet"
                       description="Add your first oar set to start tracking your equipment."
                       action={

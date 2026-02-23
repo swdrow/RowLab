@@ -14,7 +14,13 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { slideUp, listContainerVariants, listItemVariants } from '@/lib/animations';
-import { IconChevronRight, IconClipboardList, IconFileText, IconLayers, IconPlus } from '@/components/icons';
+import {
+  IconChevronRight,
+  IconClipboardList,
+  IconFileText,
+  IconLayers,
+  IconPlus,
+} from '@/components/icons';
 
 // ---------------------------------------------------------------------------
 // Phase badge colors
@@ -122,7 +128,7 @@ export function PlansList({ teamId: _teamId, readOnly, onSelectPlan }: PlansList
       {/* Plans list */}
       {activePlans.length === 0 && templates.length === 0 ? (
         <EmptyState
-          icon={ClipboardList}
+          icon={IconClipboardList}
           title="No training plans"
           description="Create your first training plan to start scheduling workouts for your team."
           action={

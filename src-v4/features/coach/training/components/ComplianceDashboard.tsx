@@ -112,7 +112,7 @@ export function ComplianceDashboard({ teamId: _teamId }: ComplianceDashboardProp
   if (athleteData.length === 0 && !report) {
     return (
       <EmptyState
-        icon={Shield}
+        icon={IconShield}
         title="No compliance data"
         description="Compliance data will appear once athletes have logged training hours this week."
         size="sm"
@@ -136,16 +136,16 @@ export function ComplianceDashboard({ teamId: _teamId }: ComplianceDashboardProp
     <motion.div {...fadeIn} className="space-y-5">
       {/* Summary stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard icon={Users} label="Athletes" value={String(totalAthletes)} />
-        <StatCard icon={Clock} label="Avg Hours" value={avgHours.toFixed(1)} />
+        <StatCard icon={IconUsers} label="Athletes" value={String(totalAthletes)} />
+        <StatCard icon={IconClock} label="Avg Hours" value={avgHours.toFixed(1)} />
         <StatCard
-          icon={AlertTriangle}
+          icon={IconAlertTriangle}
           label="Over Limit"
           value={String(overLimitCount)}
           alert={overLimitCount > 0}
         />
         <StatCard
-          icon={Shield}
+          icon={IconShield}
           label="Compliance"
           value={`${complianceRate}%`}
           highlight={complianceRate === 100}

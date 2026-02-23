@@ -6,6 +6,7 @@
  * Last-active indicator: green dot if active in last 24h.
  */
 import { IconCrown, IconShield } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import { Card } from '@/components/ui/Card';
 import { formatRelativeDate } from '@/lib/format';
 import { ROLE_DISPLAY } from '../types';
@@ -17,19 +18,19 @@ interface MemberCardProps {
 
 interface RoleBadgeConfig {
   classes: string;
-  icon?: typeof Crown;
+  icon?: IconComponent;
 }
 
 const ROLE_BADGE_CONFIG: Record<string, RoleBadgeConfig> = {
   OWNER: {
     classes:
       'bg-accent-teal/15 text-accent-teal border border-accent-teal/30 font-semibold px-2.5 py-1 rounded-lg text-xs',
-    icon: Crown,
+    icon: IconCrown,
   },
   ADMIN: {
     classes:
       'bg-accent-teal/10 text-accent-teal border border-accent-teal/20 px-2.5 py-1 rounded-lg text-xs',
-    icon: Shield,
+    icon: IconShield,
   },
   COACH: {
     classes:

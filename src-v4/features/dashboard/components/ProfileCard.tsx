@@ -6,6 +6,7 @@
 
 import { motion } from 'motion/react';
 import { IconFlame, IconTrendingUp, IconCalendar, IconAward } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import { Card } from '@/components/ui/Card';
 import { slideUpDramatic } from '@/lib/animations';
 import { formatNumber } from '@/lib/format';
@@ -46,7 +47,7 @@ function MiniStat({
   value,
   accent,
 }: {
-  icon: React.ComponentType<{ size: number; className?: string }>;
+  icon: IconComponent;
   label: string;
   value: string;
   accent?: boolean;

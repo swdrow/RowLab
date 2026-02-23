@@ -323,7 +323,7 @@ export function LineupWorkspace({ teamId, lineupId, readOnly = false }: LineupWo
         <div className="flex-1 overflow-y-auto space-y-3">
           {state.boats.length === 0 ? (
             <EmptyState
-              icon={Ship}
+              icon={IconShip}
               title="No boats yet"
               description="Add a boat to start building your lineup."
               action={
@@ -408,7 +408,7 @@ export function LineupWorkspace({ teamId, lineupId, readOnly = false }: LineupWo
           >
             {state.boats.length === 0 ? (
               <EmptyState
-                icon={Ship}
+                icon={IconShip}
                 title="No boats yet"
                 description="Add a boat to start building your lineup."
                 action={

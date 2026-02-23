@@ -46,8 +46,9 @@ export function TeamRoster({ teamId }: TeamRosterProps) {
     <div className="mt-4 space-y-4">
       {/* Search */}
       <div className="relative">
-        <Search
-          width={16} height={16}
+        <IconSearch
+          width={16}
+          height={16}
           className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-faint"
         />
         <input

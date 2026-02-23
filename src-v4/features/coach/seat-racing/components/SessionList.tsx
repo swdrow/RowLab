@@ -73,7 +73,7 @@ export function SessionList({ sessions, isLoading, selectedId, onSelect }: Sessi
     return (
       <div className="py-12 px-4">
         <EmptyState
-          icon={ClipboardList}
+          icon={IconClipboardList}
           title="No seat races yet"
           description="Create your first seat race session to start ranking athletes."
         />

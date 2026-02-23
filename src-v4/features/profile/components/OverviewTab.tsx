@@ -8,6 +8,7 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { IconActivity, IconClock, IconFlame, IconWaves } from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 
 import { profileStatsQueryOptions, profileTrendsQueryOptions } from '../api';
 import { TrendChart } from './TrendChart';
@@ -89,7 +90,7 @@ function synthesizeStreakSparkline(current: number, count: number = SPARKLINE_PO
 /* ------------------------------------------------------------------ */
 
 interface OverviewStatProps {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: IconComponent;
   label: string;
   value: string;
   footnote?: string;

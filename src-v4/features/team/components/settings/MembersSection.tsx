@@ -10,7 +10,15 @@
  */
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { IconShield, IconUsers, IconCrown, IconUserMinus, IconChevronUp, IconChevronDown } from '@/components/icons';
+import {
+  IconShield,
+  IconUsers,
+  IconCrown,
+  IconUserMinus,
+  IconChevronUp,
+  IconChevronDown,
+} from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/features/auth/useAuth';
 import { teamRosterOptions } from '../../api';
@@ -108,7 +116,9 @@ export function MembersSection({ team }: MembersSectionProps) {
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-text-bright truncate">
                     {member.name}
-                    {isMe && <span className="ml-1 text-xs text-text-faint font-normal">(you)</span>}
+                    {isMe && (
+                      <span className="ml-1 text-xs text-text-faint font-normal">(you)</span>
+                    )}
                   </span>
                   <RoleBadge role={member.role} />
                 </div>
@@ -219,11 +229,11 @@ export function MembersSection({ team }: MembersSectionProps) {
 // Role badge
 // ---------------------------------------------------------------------------
 
-const DEFAULT_ROLE_CONFIG = { icon: Users, color: 'text-text-dim bg-edge-default/50' };
+const DEFAULT_ROLE_CONFIG = { icon: IconUsers, color: 'text-text-dim bg-edge-default/50' };
 
-const ROLE_CONFIG: Record<string, { icon: typeof Crown; color: string }> = {
-  OWNER: { icon: Crown, color: 'text-accent-teal bg-accent-teal/10' },
-  COACH: { icon: Shield, color: 'text-data-info bg-data-info/10' },
+const ROLE_CONFIG: Record<string, { icon: IconComponent; color: string }> = {
+  OWNER: { icon: IconCrown, color: 'text-accent-teal bg-accent-teal/10' },
+  COACH: { icon: IconShield, color: 'text-data-info bg-data-info/10' },
   ATHLETE: DEFAULT_ROLE_CONFIG,
 };
 

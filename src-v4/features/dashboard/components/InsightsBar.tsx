@@ -6,7 +6,14 @@
 
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
-import { IconAlertTriangle, IconTarget, IconTrendingUp, IconFlame, IconZap } from '@/components/icons';
+import {
+  IconAlertTriangle,
+  IconTarget,
+  IconTrendingUp,
+  IconFlame,
+  IconZap,
+} from '@/components/icons';
+import type { IconComponent } from '@/types/icons';
 import { slideUp } from '@/lib/animations';
 import { formatNumber } from '@/lib/format';
 import type { StatsData, PRRecord } from '../types';
@@ -17,7 +24,7 @@ import type { StatsData, PRRecord } from '../types';
 
 interface Insight {
   id: string;
-  icon: React.ComponentType<{ size: number; className?: string }>;
+  icon: IconComponent;
   message: string;
   tone: 'warning' | 'info' | 'success';
 }
