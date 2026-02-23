@@ -3,6 +3,7 @@
  * Leads with metrics, not a greeting. Space Mono stat pills.
  */
 import { Card } from '@/components/ui/Card';
+import { CornerBrackets } from '@/components/ui/CornerBrackets';
 import { formatDistance } from '@/lib/format';
 import type { StatsData } from '../types';
 
@@ -24,28 +25,30 @@ export function CompactHero({ stats }: CompactHeroProps) {
   const { range, streak } = stats;
 
   return (
-    <Card padding="none" className="border-t-2 border-t-accent-teal overflow-hidden">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 sm:p-5">
-        {/* Data-first: week label + streak */}
-        <div className="flex items-center gap-3">
-          <h1 className="font-display text-lg sm:text-xl font-semibold text-text-bright">
-            This Week
-          </h1>
-          {streak.current > 0 && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-accent-coral/10 px-2.5 py-0.5 text-xs font-mono font-bold text-accent-coral">
-              {streak.current}d streak
-            </span>
-          )}
-        </div>
+    <CornerBrackets>
+      <Card padding="none" className="border-t-2 border-t-accent-teal overflow-hidden">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 sm:p-5">
+          {/* Data-first: week label + streak */}
+          <div className="flex items-center gap-3">
+            <h1 className="font-display text-lg sm:text-xl font-semibold text-text-bright">
+              This Week
+            </h1>
+            {streak.current > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-md bg-accent-coral/10 px-2.5 py-0.5 text-xs font-mono font-bold text-accent-coral">
+                {streak.current}d streak
+              </span>
+            )}
+          </div>
 
-        {/* Week stats */}
-        <div className="flex items-center gap-3">
-          <StatPill label="Distance" value={formatDistance(range.meters)} />
-          <StatPill label="Time" value={formatDuration(range.durationSeconds)} />
-          <StatPill label="Sessions" value={String(range.workouts)} />
+          {/* Week stats */}
+          <div className="flex items-center gap-3">
+            <StatPill label="Distance" value={formatDistance(range.meters)} />
+            <StatPill label="Time" value={formatDuration(range.durationSeconds)} />
+            <StatPill label="Sessions" value={String(range.workouts)} />
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </CornerBrackets>
   );
 }
 

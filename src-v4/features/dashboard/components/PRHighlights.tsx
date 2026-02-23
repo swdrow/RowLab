@@ -9,6 +9,7 @@ import { motion } from 'motion/react';
 import { IconTrophy } from '@/components/icons';
 import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { FancySectionHeader } from '@/components/ui/FancySectionHeader';
 import { PRCard } from './PRCard';
 import type { PRRecord } from '../types';
 
@@ -53,9 +54,12 @@ export function PRHighlights({ records, className = '' }: PRHighlightsProps) {
   if (sorted.length === 0) {
     return (
       <section className={className} aria-label="Personal Records">
-        <h2 className="text-lg font-display font-semibold text-text-bright mb-4">
-          Personal Records
-        </h2>
+        <FancySectionHeader
+          label="Personal Records"
+          icon={IconTrophy}
+          accentColor="sand"
+          className="mb-4"
+        />
         <EmptyState
           icon={IconTrophy}
           title="No personal records yet"
@@ -68,7 +72,12 @@ export function PRHighlights({ records, className = '' }: PRHighlightsProps) {
 
   return (
     <section className={className} aria-label="Personal Records">
-      <h2 className="text-lg font-display font-semibold text-text-bright mb-4">Personal Records</h2>
+      <FancySectionHeader
+        label="Personal Records"
+        icon={IconTrophy}
+        accentColor="sand"
+        className="mb-4"
+      />
 
       <motion.div
         initial="hidden"

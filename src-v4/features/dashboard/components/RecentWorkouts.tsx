@@ -9,6 +9,7 @@ import { motion } from 'motion/react';
 import { IconDumbbell } from '@/components/icons';
 import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { FancySectionHeader } from '@/components/ui/FancySectionHeader';
 import { WorkoutCard } from './WorkoutCard';
 import type { Workout } from '../types';
 
@@ -24,9 +25,12 @@ export function RecentWorkouts({ workouts, totalCount, className = '' }: RecentW
   if (workouts.length === 0) {
     return (
       <section className={className} aria-label="Recent Workouts">
-        <h2 className="text-lg font-display font-semibold text-text-bright mb-4">
-          Recent Workouts
-        </h2>
+        <FancySectionHeader
+          label="Recent Workouts"
+          icon={IconDumbbell}
+          accentColor="teal"
+          className="mb-4"
+        />
         <EmptyState
           icon={IconDumbbell}
           title="No workouts yet"
@@ -45,11 +49,16 @@ export function RecentWorkouts({ workouts, totalCount, className = '' }: RecentW
     <section className={className} aria-label="Recent Workouts">
       {/* Header with View All link */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-display font-semibold text-text-bright">Recent Workouts</h2>
+        <FancySectionHeader
+          label="Recent Workouts"
+          icon={IconDumbbell}
+          accentColor="teal"
+          className="flex-1"
+        />
         <button
           type="button"
           onClick={() => navigate({ to: '/workouts' as '/' })}
-          className="text-sm text-accent-teal hover:text-accent-teal-hover transition-colors"
+          className="shrink-0 text-sm text-accent-teal hover:text-accent-teal-hover transition-colors ml-3"
         >
           View all ({totalCount})
         </button>
