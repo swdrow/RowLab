@@ -71,29 +71,25 @@ export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: isDev ? 500 : 100,
   message: {
-    error: 'Too many requests',
-    message: 'Please try again later',
-    retryAfter: '15 minutes',
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many requests, try again later' },
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: () => true, // Disabled in dev -- re-enable for production
 });
 
 /**
  * Auth rate limiter - stricter limits for login attempts (10 in prod, 200 in dev)
  */
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 60 * 1000, // 1 minute
   max: isDev ? 200 : 10,
   message: {
-    error: 'Too many login attempts',
-    message: 'Account temporarily locked. Please try again later.',
-    retryAfter: '15 minutes',
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many login attempts, try again later' },
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: () => true, // Disabled in dev -- re-enable for production
 });
 
 /**

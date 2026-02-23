@@ -17,16 +17,6 @@ import logger from '../utils/logger.js';
 
 const router = express.Router();
 
-// Rate limiting for auth endpoints
-const authLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 1000, // Disabled for dev testing
-  message: {
-    success: false,
-    error: { code: 'RATE_LIMITED', message: 'Too many attempts, try again later' },
-  },
-});
-
 // Validation helpers
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
@@ -49,7 +39,6 @@ const validateRequest = (req, res, next) => {
  */
 router.post(
   '/register',
-  authLimiter,
   [
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
@@ -88,7 +77,6 @@ router.post(
  */
 router.post(
   '/login',
-  authLimiter,
   [
     body('email').trim().notEmpty().withMessage('Email or username is required'),
     body('password').notEmpty(),
@@ -280,7 +268,7 @@ router.post('/dev-login', async (req, res) => {
   // Only allow in development or test environments
   const isDevelopment = process.env.NODE_ENV === 'development';
   const isTest = process.env.NODE_ENV === 'test';
-  
+
   if (!isDevelopment && !isTest) {
     logger.warn('Dev-login attempt rejected in non-development environment', {
       nodeEnv: process.env.NODE_ENV || 'undefined',
@@ -358,6 +346,7 @@ router.post('/dev-login', async (req, res) => {
           username: user.username,
           name: user.name,
           isAdmin: user.isAdmin,
+          avatarUrl: user.avatarUrl ?? null,
         },
         teams: user.memberships.map((m) => ({
           id: m.team.id,
@@ -457,7 +446,6 @@ router.post(
  */
 router.post(
   '/reset-password',
-  authLimiter,
   [
     body('token').notEmpty().withMessage('Reset token is required'),
     body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
