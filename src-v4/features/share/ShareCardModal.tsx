@@ -5,7 +5,15 @@
 
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { IconX, IconDownload, IconCopy, IconShare, IconCheck, IconLoader, IconSquare, IconSmartphone } from '@/components/icons';
+import {
+  IconX,
+  IconDownload,
+  IconCopy,
+  IconShare,
+  IconCheck,
+  IconSquare,
+  IconSmartphone,
+} from '@/components/icons';
 import { Dialog } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -294,10 +302,10 @@ export function ShareCardModal({ workoutId, workoutLabel, open, onClose }: Share
                   className="w-full"
                 >
                   {isPending ? (
-                    <>
-                      <IconLoader width={14} height={14} className="animate-spin" />
+                    <span className="inline-flex items-center gap-2 text-text-dim">
+                      <span className="h-3.5 w-16 rounded bg-surface-raised animate-shimmer inline-block" />
                       Generating...
-                    </>
+                    </span>
                   ) : (
                     <>
                       <IconShare width={14} height={14} />
