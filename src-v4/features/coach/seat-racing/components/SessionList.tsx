@@ -9,7 +9,6 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { formatRelativeDate } from '@/lib/format';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import type { SeatRaceSession, Conditions } from '../types';
 import { IconCalendar, IconClipboardList, IconMapPin } from '@/components/icons';
 
@@ -84,9 +83,9 @@ export function SessionList({ sessions, isLoading, selectedId, onSelect }: Sessi
   return (
     <motion.div
       className="space-y-3"
-      variants={listContainerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <AnimatePresence mode="popLayout">
         {sorted.map((session) => {
@@ -97,8 +96,6 @@ export function SessionList({ sessions, isLoading, selectedId, onSelect }: Sessi
               key={session.id}
               type="button"
               layout
-              variants={listItemVariants}
-              transition={SPRING_SMOOTH}
               onClick={() => onSelect(session.id)}
               className={`
                 w-full text-left p-4 rounded-xl panel transition-all

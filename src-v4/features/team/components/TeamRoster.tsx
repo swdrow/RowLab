@@ -8,7 +8,6 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { IconSearch } from '@/components/icons';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { useTeamMembers } from '../hooks/useTeamMembers';
 import { MemberCard } from './MemberCard';
 
@@ -74,15 +73,13 @@ export function TeamRoster({ teamId }: TeamRosterProps) {
         </div>
       ) : (
         <motion.div
-          variants={listContainerVariants}
-          initial="hidden"
-          animate="visible"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
         >
           {filteredAndSorted.map((member) => (
-            <motion.div key={member.id} variants={listItemVariants} transition={SPRING_SMOOTH}>
-              <MemberCard member={member} />
-            </motion.div>
+            <MemberCard key={member.id} member={member} />
           ))}
         </motion.div>
       )}

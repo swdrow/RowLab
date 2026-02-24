@@ -8,7 +8,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { useAuth } from '@/features/auth/useAuth';
 import { whiteboardOptions, useSaveWhiteboard } from '../api';
@@ -47,9 +46,13 @@ export function WhiteboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl p-4 md:p-6 pb-20 md:pb-6">
-      <motion.div variants={listContainerVariants} initial="hidden" animate="visible">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+      >
         {/* Header */}
-        <motion.div variants={listItemVariants} transition={SPRING_SMOOTH} className="mb-6">
+        <div className="mb-6">
           <SectionHeader
             title="Whiteboard"
             description="Team Notes"
@@ -63,10 +66,10 @@ export function WhiteboardPage() {
               ) : undefined
             }
           />
-        </motion.div>
+        </div>
 
         {/* Content */}
-        <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
+        <div>
           {isEditing ? (
             <WhiteboardEditor
               initialContent={whiteboard?.content ?? ''}
@@ -81,7 +84,7 @@ export function WhiteboardPage() {
               onEdit={() => setIsEditing(true)}
             />
           )}
-        </motion.div>
+        </div>
       </motion.div>
     </div>
   );

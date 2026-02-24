@@ -1,13 +1,12 @@
 /**
  * Recent workouts section with 5-workout list and View All link.
- * Staggered animation on mount. Section-level empty state when no workouts.
+ * Uniform entrance animation on mount. Section-level empty state when no workouts.
  * Ref: DASH-02 (recent workouts).
  */
 
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { IconDumbbell } from '@/components/icons';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { FancySectionHeader } from '@/components/ui/FancySectionHeader';
 import { WorkoutCard } from './WorkoutCard';
@@ -64,17 +63,15 @@ export function RecentWorkouts({ workouts, totalCount, className = '' }: RecentW
         </button>
       </div>
 
-      {/* Workout cards with stagger animation */}
+      {/* Workout cards with uniform entrance animation */}
       <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={listContainerVariants}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
         className="flex flex-col gap-3"
       >
         {workouts.map((workout) => (
-          <motion.div key={workout.id} variants={listItemVariants} transition={SPRING_SMOOTH}>
-            <WorkoutCard workout={workout} />
-          </motion.div>
+          <WorkoutCard key={workout.id} workout={workout} />
         ))}
       </motion.div>
     </section>

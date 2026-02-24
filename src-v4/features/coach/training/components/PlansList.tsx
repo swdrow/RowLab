@@ -13,7 +13,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
-import { slideUp, listContainerVariants, listItemVariants } from '@/lib/animations';
+import { slideUp } from '@/lib/animations';
 import {
   IconChevronRight,
   IconClipboardList,
@@ -137,19 +137,18 @@ export function PlansList({ teamId: _teamId, readOnly, onSelectPlan }: PlansList
         />
       ) : (
         <motion.div
-          variants={listContainerVariants}
-          initial="hidden"
-          animate="visible"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           className="space-y-2"
         >
           {activePlans.map((plan) => (
-            <motion.div key={plan.id} variants={listItemVariants}>
-              <PlanCard
-                plan={plan}
-                isSelected={selectedPlanId === plan.id}
-                onSelect={handleSelect}
-              />
-            </motion.div>
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              isSelected={selectedPlanId === plan.id}
+              onSelect={handleSelect}
+            />
           ))}
 
           {templates.length > 0 && (
@@ -162,13 +161,12 @@ export function PlansList({ teamId: _teamId, readOnly, onSelectPlan }: PlansList
                 <div className="h-px flex-1 bg-gradient-to-l from-transparent via-edge-default/40 to-edge-default/40" />
               </div>
               {templates.map((plan) => (
-                <motion.div key={plan.id} variants={listItemVariants}>
-                  <PlanCard
-                    plan={plan}
-                    isSelected={selectedPlanId === plan.id}
-                    onSelect={handleSelect}
-                  />
-                </motion.div>
+                <PlanCard
+                  key={plan.id}
+                  plan={plan}
+                  isSelected={selectedPlanId === plan.id}
+                  onSelect={handleSelect}
+                />
               ))}
             </>
           )}

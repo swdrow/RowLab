@@ -9,7 +9,7 @@
 
 import { motion } from 'motion/react';
 import { IconTrendingUp, IconAlertTriangle, IconAlertOctagon, IconInfo } from '@/components/icons';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
+import { SPRING_SMOOTH } from '@/lib/animations';
 import type { InsightItem } from '../types';
 
 interface TrainingInsightsProps {
@@ -55,9 +55,7 @@ function InsightBanner({ insight }: { insight: InsightItem }) {
   const Icon = INSIGHT_ICONS[insight.type];
 
   return (
-    <motion.div
-      variants={listItemVariants}
-      transition={SPRING_SMOOTH}
+    <div
       className={`
         flex items-start gap-3 rounded-xl border border-edge-default ${style.border} border-l-2
         ${style.bg} px-4 py-3
@@ -65,7 +63,7 @@ function InsightBanner({ insight }: { insight: InsightItem }) {
     >
       <Icon className={`w-4 h-4 ${style.icon} mt-0.5 shrink-0`} />
       <p className="text-sm text-text-dim leading-relaxed">{insight.message}</p>
-    </motion.div>
+    </div>
   );
 }
 
@@ -129,9 +127,9 @@ export function TrainingInsights({ insights, daysWithData, isReliable }: Trainin
         </motion.div>
       ) : (
         <motion.div
-          variants={listContainerVariants}
-          initial="hidden"
-          animate="visible"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           className="space-y-2"
         >
           {insights.map((insight, i) => (

@@ -11,7 +11,6 @@ import { IconRefresh } from '@/components/icons';
 
 import { useWorkoutFeed } from '../hooks/useWorkoutFeed';
 import { groupWorkoutsByDay, detectWorkoutSessions } from '../utils';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import type { WorkoutFilters, Workout } from '../types';
 import { WorkoutRow } from './WorkoutRow';
 import { WorkoutRowExpanded } from './WorkoutRowExpanded';
@@ -94,13 +93,13 @@ export function WorkoutFeed({ filters, onEdit, onDelete, onCreateNew }: WorkoutF
 
   return (
     <motion.div
-      variants={listContainerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
       className="space-y-1"
     >
       {groups.map((group) => (
-        <motion.div key={group.dateKey} variants={listItemVariants} transition={SPRING_SMOOTH}>
+        <div key={group.dateKey}>
           {/* Date header */}
           <div className="flex items-center gap-3 px-3 pt-4 pb-2">
             <h3 className="text-text-dim text-sm font-display font-medium uppercase tracking-wider shrink-0">
@@ -131,7 +130,7 @@ export function WorkoutFeed({ filters, onEdit, onDelete, onCreateNew }: WorkoutF
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       ))}
 
       {/* Sentinel for infinite scroll */}

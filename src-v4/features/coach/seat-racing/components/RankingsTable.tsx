@@ -15,7 +15,6 @@ import { motion } from 'motion/react';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Sparkline } from '@/components/ui/Sparkline';
-import { listContainerVariants, listItemVariants } from '@/lib/animations';
 import { IconMedal, IconTrophy } from '@/components/icons';
 import type { IconComponent } from '@/types/icons';
 import {
@@ -213,9 +212,9 @@ export function RankingsTable({ ratings, isLoading = false, onAthleteClick }: Ra
         </thead>
         <motion.tbody
           className="divide-y divide-edge-default/20"
-          variants={listContainerVariants}
-          initial="hidden"
-          animate="visible"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
         >
           {sorted.map((rating, index) => {
             const rank = index + 1;
@@ -224,9 +223,8 @@ export function RankingsTable({ ratings, isLoading = false, onAthleteClick }: Ra
             const eloTrend = generateEloTrend(rating.ratingValue, rating.racesCount);
 
             return (
-              <motion.tr
+              <tr
                 key={rating.id}
-                variants={listItemVariants}
                 className={`
                   transition-colors duration-100 cursor-pointer
                   ${
@@ -274,7 +272,7 @@ export function RankingsTable({ ratings, isLoading = false, onAthleteClick }: Ra
                 <td className="px-4 py-3">
                   <ConfidenceBadge score={rating.confidenceScore} />
                 </td>
-              </motion.tr>
+              </tr>
             );
           })}
         </motion.tbody>

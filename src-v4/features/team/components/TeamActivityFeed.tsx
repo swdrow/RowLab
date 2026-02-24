@@ -3,10 +3,9 @@
  *
  * Uses useTeamActivity hook for paginated data.
  * Groups events by date: Today, Yesterday, This Week, Older (with month label).
- * Stagger animation on entrance with motion variants.
+ * Uniform entrance animation on mount.
  */
 import { motion } from 'motion/react';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { Card } from '@/components/ui/Card';
 import { useTeamActivity } from '../hooks/useTeamActivity';
 import { ActivityItem } from './ActivityItem';
@@ -119,13 +118,13 @@ export function TeamActivityFeed({ teamId, compact }: TeamActivityFeedProps) {
 
   return (
     <motion.div
-      variants={listContainerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
       className="space-y-6"
     >
       {grouped.map((group) => (
-        <motion.div key={group.label} variants={listItemVariants} transition={SPRING_SMOOTH}>
+        <div key={group.label}>
           <div className="mb-2 flex items-center gap-3">
             <h4 className="text-xs font-display font-medium uppercase tracking-wider text-accent-ivory">
               {group.label}
@@ -135,19 +134,12 @@ export function TeamActivityFeed({ teamId, compact }: TeamActivityFeedProps) {
             )}
             <div className="flex-1 border-t border-edge-default/30" />
           </div>
-          <motion.div
-            variants={listContainerVariants}
-            initial="hidden"
-            animate="visible"
-            className="space-y-1"
-          >
+          <div className="space-y-1">
             {group.events.map((event) => (
-              <motion.div key={event.id} variants={listItemVariants} transition={SPRING_SMOOTH}>
-                <ActivityItem event={event} />
-              </motion.div>
+              <ActivityItem key={event.id} event={event} />
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       ))}
 
       {/* Load more (full feed only) */}

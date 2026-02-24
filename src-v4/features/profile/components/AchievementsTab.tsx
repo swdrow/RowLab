@@ -14,7 +14,7 @@ import { AchievementCard } from './AchievementCard';
 import { Card } from '@/components/ui/Card';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { slideUp, listContainerVariants } from '@/lib/animations';
+import { slideUp } from '@/lib/animations';
 import type { Achievement } from '../types';
 
 /** Rarity sort order (higher = more prominent) */
@@ -86,9 +86,9 @@ export function AchievementsTab() {
             className="mb-3"
           />
           <motion.div
-            variants={listContainerVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           >
             {unlocked.map((achievement) => (
@@ -103,9 +103,9 @@ export function AchievementsTab() {
         <section>
           <FancySectionHeader label="Locked" icon={IconLock} accentColor="sand" className="mb-3" />
           <motion.div
-            variants={listContainerVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="grid grid-cols-1 sm:grid-cols-2 gap-2"
           >
             {locked.map((achievement) => (

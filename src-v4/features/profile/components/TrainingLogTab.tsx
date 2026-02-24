@@ -25,7 +25,6 @@ import { getSportFromWorkout } from '@/features/workouts/utils';
 import { SPORT_CONFIG, type SportType } from '@/features/workouts/constants';
 import type { Workout } from '@/features/workouts/types';
 import { formatDistance, formatDuration, formatPace, formatRelativeDate } from '@/lib/format';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 
 /* ------------------------------------------------------------------ */
 /* Recent workouts query (simple, no infinite scroll)                   */
@@ -127,12 +126,10 @@ function CompactRow({
   };
 
   return (
-    <motion.button
+    <button
       type="button"
       onClick={handleClick}
       className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg hover:bg-void-overlay transition-colors cursor-pointer group"
-      variants={listItemVariants}
-      transition={SPRING_SMOOTH}
     >
       {/* Sport icon */}
       <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-void-deep">
@@ -164,7 +161,7 @@ function CompactRow({
         height={14}
         className="text-text-faint shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
       />
-    </motion.button>
+    </button>
   );
 }
 
@@ -182,20 +179,16 @@ export function TrainingLogTab() {
   return (
     <motion.div
       className="space-y-1"
-      variants={listContainerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {data.map((workout) => (
         <CompactRow key={workout.id} workout={workout} />
       ))}
 
       {/* View all link */}
-      <motion.div
-        className="pt-3 text-center"
-        variants={listItemVariants}
-        transition={SPRING_SMOOTH}
-      >
+      <div className="pt-3 text-center">
         <button
           type="button"
           onClick={() => void navigate({ to: '/workouts' as string })}
@@ -204,7 +197,7 @@ export function TrainingLogTab() {
           View all workouts
           <IconChevronRight width={14} height={14} />
         </button>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

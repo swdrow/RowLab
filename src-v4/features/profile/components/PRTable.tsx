@@ -9,7 +9,6 @@ import { IconTrophy } from '@/components/icons';
 import { motion } from 'motion/react';
 
 import { formatErgTime, formatPace, formatRelativeDate, formatNumber } from '@/lib/format';
-import { listContainerVariants, listItemVariants } from '@/lib/animations';
 import { EmptyState } from '@/components/ui/EmptyState';
 import type { PRRecord } from '../types';
 import type { MachineType } from './MachineTabs';
@@ -80,9 +79,9 @@ export function PRTable({ records, machineType }: PRTableProps) {
 
   return (
     <motion.div
-      variants={listContainerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
       className="overflow-x-auto"
     >
       <table className="w-full text-sm">
@@ -102,9 +101,8 @@ export function PRTable({ records, machineType }: PRTableProps) {
             const recent = hasPR && isRecent(record?.bestDate ?? null);
 
             return (
-              <motion.tr
+              <tr
                 key={dist}
-                variants={listItemVariants}
                 className={`
                   border-b border-edge-default/20 last:border-b-0
                   hover:bg-void-overlay/50 transition-colors
@@ -141,7 +139,7 @@ export function PRTable({ records, machineType }: PRTableProps) {
                 <td className="text-right py-3 pl-3 pr-3 text-text-faint text-xs">
                   {record?.bestDate ? formatRelativeDate(record.bestDate) : DASH}
                 </td>
-              </motion.tr>
+              </tr>
             );
           })}
         </tbody>

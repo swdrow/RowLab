@@ -7,7 +7,6 @@
 
 import { motion } from 'motion/react';
 import { IconTrophy } from '@/components/icons';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { FancySectionHeader } from '@/components/ui/FancySectionHeader';
 import { PRCard } from './PRCard';
@@ -80,19 +79,17 @@ export function PRHighlights({ records, className = '' }: PRHighlightsProps) {
       />
 
       <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={listContainerVariants}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
         className="grid grid-cols-2 gap-3"
       >
         {sorted.map((record) => (
-          <motion.div
+          <PRCard
             key={`${record.testType}-${record.machineType}`}
-            variants={listItemVariants}
-            transition={SPRING_SMOOTH}
-          >
-            <PRCard record={record} isRecent={isRecentPR(record.bestDate)} />
-          </motion.div>
+            record={record}
+            isRecent={isRecentPR(record.bestDate)}
+          />
         ))}
       </motion.div>
     </section>

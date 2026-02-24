@@ -16,7 +16,6 @@ import { TrendChart } from './TrendChart';
 import { Card } from '@/components/ui/Card';
 import { Sparkline } from '@/components/ui/Sparkline';
 import { formatNumber, formatDuration } from '@/lib/format';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 
 import type { ProfileData } from '../types';
 import type { TrendBucket } from '../types';
@@ -190,9 +189,9 @@ export function OverviewTab({ profile }: OverviewTabProps) {
   return (
     <motion.div
       className="space-y-6"
-      variants={listContainerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {/* Stat cards */}
       <FancySectionHeader
@@ -201,11 +200,7 @@ export function OverviewTab({ profile }: OverviewTabProps) {
         accentColor="sand"
         className="mb-1"
       />
-      <motion.div
-        className="grid grid-cols-2 lg:grid-cols-4 gap-3"
-        variants={listItemVariants}
-        transition={SPRING_SMOOTH}
-      >
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <OverviewStat
           icon={IconWaves}
           label="Total Meters"
@@ -238,14 +233,10 @@ export function OverviewTab({ profile }: OverviewTabProps) {
           footnote={`Longest: ${stats?.streak.longest ?? 0} days`}
           sparklineData={sparklines.streak}
         />
-      </motion.div>
+      </div>
 
       {/* Range toggle */}
-      <motion.div
-        className="flex items-center gap-1"
-        variants={listItemVariants}
-        transition={SPRING_SMOOTH}
-      >
+      <div className="flex items-center gap-1">
         {RANGE_OPTIONS.map((range) => (
           <button
             key={range}
@@ -261,7 +252,7 @@ export function OverviewTab({ profile }: OverviewTabProps) {
             {RANGE_LABELS[range]}
           </button>
         ))}
-      </motion.div>
+      </div>
 
       {/* Trend charts */}
       <FancySectionHeader
@@ -270,31 +261,23 @@ export function OverviewTab({ profile }: OverviewTabProps) {
         accentColor="teal"
         className="mb-1"
       />
-      <motion.div
-        className="grid grid-cols-1 lg:grid-cols-2 gap-4"
-        variants={listItemVariants}
-        transition={SPRING_SMOOTH}
-      >
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <TrendChart data={trends?.buckets ?? []} dataKey="meters" type="area" label="Volume" />
         <TrendChart data={trends?.buckets ?? []} dataKey="workouts" type="area" label="Frequency" />
-      </motion.div>
+      </div>
 
-      <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
+      <div>
         <TrendChart
           data={trends?.buckets ?? []}
           dataKey="meters"
           type="stacked-bar"
           label="Sport Breakdown"
         />
-      </motion.div>
+      </div>
 
       {/* C2 integration status */}
       {profile.integrations.concept2 && (
-        <motion.div
-          className="panel rounded-xl p-4 flex items-center gap-3"
-          variants={listItemVariants}
-          transition={SPRING_SMOOTH}
-        >
+        <div className="panel rounded-xl p-4 flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-accent-teal/10 flex items-center justify-center">
             <IconWaves width={16} height={16} className="text-accent-teal" />
           </div>
@@ -315,7 +298,7 @@ export function OverviewTab({ profile }: OverviewTabProps) {
           >
             {profile.integrations.concept2.connected ? 'Syncing' : 'Disconnected'}
           </span>
-        </motion.div>
+        </div>
       )}
     </motion.div>
   );

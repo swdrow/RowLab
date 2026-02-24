@@ -5,7 +5,6 @@
  */
 
 import { useState, useRef, useEffect, type MouseEvent } from 'react';
-import { motion } from 'motion/react';
 import {
   IconWaves,
   IconMountain,
@@ -25,7 +24,6 @@ import type { IconComponent } from '@/types/icons';
 import { SPORT_CONFIG, SOURCE_CONFIG, type SportType, type SourceType } from '../constants';
 import { getSportFromWorkout, parseIntervalPattern } from '../utils';
 import { formatDistance, formatDuration, formatPace } from '@/lib/format';
-import { listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import type { Workout } from '../types';
 
 /* ------------------------------------------------------------------ */
@@ -211,7 +209,7 @@ export function WorkoutRow({ workout, isExpanded, onToggle, onEdit, onDelete }: 
   const intervalInfo = parseIntervalPattern(workout.splits, workout.workoutType);
 
   return (
-    <motion.div variants={listItemVariants} transition={SPRING_SMOOTH} className="group">
+    <div className="group">
       <div
         role="button"
         tabIndex={0}
@@ -268,7 +266,8 @@ export function WorkoutRow({ workout, isExpanded, onToggle, onEdit, onDelete }: 
           </div>
 
           <IconChevronRight
-            width={14} height={14}
+            width={14}
+            height={14}
             className={`text-text-faint transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}
           />
         </div>
@@ -283,6 +282,6 @@ export function WorkoutRow({ workout, isExpanded, onToggle, onEdit, onDelete }: 
           />
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

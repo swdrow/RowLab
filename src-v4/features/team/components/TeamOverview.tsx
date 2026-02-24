@@ -24,7 +24,6 @@ import {
   IconActivity,
 } from '@/components/icons';
 import { FancySectionHeader } from '@/components/ui/FancySectionHeader';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 import { formatNumber } from '@/lib/format';
 import { useIsDesktop } from '@/hooks/useBreakpoint';
 import { Card } from '@/components/ui/Card';
@@ -50,28 +49,20 @@ export function TeamOverview({ team }: TeamOverviewProps) {
   if (isDesktop) {
     return (
       <motion.div
-        variants={listContainerVariants}
-        initial="hidden"
-        animate="visible"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
         className="mt-4 flex gap-6"
       >
         {/* Left sidebar: stats + tools */}
-        <motion.div
-          variants={listItemVariants}
-          transition={SPRING_SMOOTH}
-          className="w-72 shrink-0 space-y-4"
-        >
+        <div className="w-72 shrink-0 space-y-4">
           <StatsPanel overview={overview} memberCount={team.memberCount} />
           <SectionDivider className="my-4" />
           {isCoach && <CoachTools teamIdentifier={team.slug || team.generatedId} />}
-        </motion.div>
+        </div>
 
         {/* Center: activity feed */}
-        <motion.div
-          variants={listItemVariants}
-          transition={SPRING_SMOOTH}
-          className="min-w-0 flex-1"
-        >
+        <div className="min-w-0 flex-1">
           {isCoach && <AnnouncementCompose teamId={team.id} />}
           {!isCoach && <UpcomingEventsPlaceholder />}
           <SectionDivider className="my-4" />
@@ -82,16 +73,12 @@ export function TeamOverview({ team }: TeamOverviewProps) {
             className="mb-3"
           />
           <TeamActivityFeed teamId={team.id} compact />
-        </motion.div>
+        </div>
 
         {/* Right sidebar: announcements */}
-        <motion.div
-          variants={listItemVariants}
-          transition={SPRING_SMOOTH}
-          className="w-72 shrink-0 space-y-4"
-        >
+        <div className="w-72 shrink-0 space-y-4">
           <AnnouncementsSidebar pinned={pinnedAnnouncements} recent={recentAnnouncements} />
-        </motion.div>
+        </div>
       </motion.div>
     );
   }
@@ -99,34 +86,22 @@ export function TeamOverview({ team }: TeamOverviewProps) {
   // Mobile/tablet: stacked layout
   return (
     <motion.div
-      variants={listContainerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
       className="mt-4 space-y-6"
     >
-      <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-        <StatsPanel overview={overview} memberCount={team.memberCount} />
-      </motion.div>
+      <StatsPanel overview={overview} memberCount={team.memberCount} />
 
-      {isCoach && (
-        <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-          <AnnouncementCompose teamId={team.id} />
-        </motion.div>
-      )}
+      {isCoach && <AnnouncementCompose teamId={team.id} />}
 
-      <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-        <AnnouncementsSidebar pinned={pinnedAnnouncements} recent={recentAnnouncements} />
-      </motion.div>
+      <AnnouncementsSidebar pinned={pinnedAnnouncements} recent={recentAnnouncements} />
 
-      {!isCoach && (
-        <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
-          <UpcomingEventsPlaceholder />
-        </motion.div>
-      )}
+      {!isCoach && <UpcomingEventsPlaceholder />}
 
       <SectionDivider className="my-2" />
 
-      <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
+      <div>
         <FancySectionHeader
           label="Recent Activity"
           icon={IconActivity}
@@ -134,7 +109,7 @@ export function TeamOverview({ team }: TeamOverviewProps) {
           className="mb-3"
         />
         <TeamActivityFeed teamId={team.id} compact />
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

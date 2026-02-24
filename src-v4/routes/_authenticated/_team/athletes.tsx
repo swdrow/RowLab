@@ -13,7 +13,6 @@ import { useAuth } from '@/features/auth/useAuth';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Skeleton, SkeletonGroup } from '@/components/ui/Skeleton';
-import { listContainerVariants, listItemVariants, SPRING_SMOOTH } from '@/lib/animations';
 
 export const Route = createFileRoute('/_authenticated/_team/athletes')({
   component: AthletesPage,
@@ -94,9 +93,13 @@ function AthletesPage() {
 
   return (
     <div className="mx-auto max-w-5xl p-4 md:p-6 pb-20 md:pb-6">
-      <motion.div variants={listContainerVariants} initial="hidden" animate="visible">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+      >
         {/* Header */}
-        <motion.div variants={listItemVariants} transition={SPRING_SMOOTH} className="mb-6">
+        <div className="mb-6">
           <div className="flex items-center gap-2 mb-1">
             <IconUsers className="h-5 w-5 text-text-faint" />
             <p className="text-xs font-medium uppercase tracking-wider text-text-faint">Team</p>
@@ -109,14 +112,10 @@ function AthletesPage() {
               </span>
             )}
           </h1>
-        </motion.div>
+        </div>
 
         {/* Search + Filters */}
-        <motion.div
-          variants={listItemVariants}
-          transition={SPRING_SMOOTH}
-          className="flex flex-col sm:flex-row gap-3 mb-5"
-        >
+        <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <div className="relative flex-1">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-faint" />
             <input
@@ -146,11 +145,11 @@ function AthletesPage() {
               </button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* List */}
         {filtered.length === 0 ? (
-          <motion.div variants={listItemVariants} transition={SPRING_SMOOTH}>
+          <div>
             <EmptyState
               icon={IconUsers}
               title={search || sideFilter !== 'all' ? 'No matching athletes' : 'No athletes yet'}
@@ -160,19 +159,17 @@ function AthletesPage() {
                   : 'Athletes will appear here once they join the team.'
               }
             />
-          </motion.div>
+          </div>
         ) : (
           <motion.div
-            variants={listContainerVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="space-y-1"
           >
             {filtered.map((athlete) => (
-              <motion.div
+              <div
                 key={athlete.id}
-                variants={listItemVariants}
-                transition={SPRING_SMOOTH}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-void-overlay transition-colors"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-void-raised shrink-0">
@@ -207,7 +204,7 @@ function AthletesPage() {
                     {athlete.status}
                   </span>
                 )}
-              </motion.div>
+              </div>
             ))}
           </motion.div>
         )}

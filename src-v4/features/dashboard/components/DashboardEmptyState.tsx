@@ -7,8 +7,6 @@
 
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import type { Variant } from 'motion/react';
-import { SPRING_SMOOTH } from '@/lib/animations';
 import { Button } from '@/components/ui/Button';
 
 /**
@@ -136,56 +134,32 @@ function RowingIllustration() {
   );
 }
 
-/** Stagger container variant */
-const containerVariants: Record<string, Variant> = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-/** Child slide-up variant (no transition key — inherits from container) */
-const itemVariants: Record<string, Variant> = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: SPRING_SMOOTH,
-  },
-};
-
 export function DashboardEmptyState() {
   const navigate = useNavigate();
 
   return (
     <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
       className="flex flex-col items-center justify-center text-center px-4 py-16 md:py-24 max-w-lg mx-auto"
     >
       {/* Illustration */}
-      <motion.div variants={itemVariants} className="mb-8">
+      <div className="mb-8">
         <RowingIllustration />
-      </motion.div>
+      </div>
 
       {/* Welcome copy */}
-      <motion.div variants={itemVariants} className="mb-8 space-y-3">
+      <div className="mb-8 space-y-3">
         <h1 className="text-2xl font-display font-semibold text-text-bright">Welcome to oarbit</h1>
         <p className="text-text-dim text-base leading-relaxed max-w-sm mx-auto">
           Your personal training hub starts here. Log your first workout to see your stats come to
           life.
         </p>
-      </motion.div>
+      </div>
 
       {/* CTAs — 3 actionable buttons */}
-      <motion.div
-        variants={itemVariants}
-        className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto"
-      >
+      <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
         <Button
           variant="primary"
           size="lg"
@@ -212,7 +186,7 @@ export function DashboardEmptyState() {
         >
           Join a Team
         </Button>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

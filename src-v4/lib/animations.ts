@@ -6,7 +6,7 @@
  * Transition presets are ready-to-spread motion component props.
  */
 
-import type { Transition, Variant } from 'motion/react';
+import type { Transition } from 'motion/react';
 import { motion as motionTokens } from '@/design-system';
 
 /* === SPRING CONFIGS (from design system) === */
@@ -87,52 +87,6 @@ export const cardTap = {
   scale: 0.99,
   transition: { type: 'spring', stiffness: 500, damping: 30 } as Transition,
 } as const;
-
-/* === STAGGER HELPERS === */
-
-export function staggerChildren(staggerDelay = 0.05): Transition {
-  return {
-    staggerChildren: staggerDelay,
-  };
-}
-
-/* === VARIANT FACTORIES === */
-
-export const listItemVariants: Record<string, Variant> = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0 },
-};
-
-export const listContainerVariants: Record<string, Variant> = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.04,
-    },
-  },
-};
-
-/** Dramatic stagger for feature sections */
-export const dramaticContainerVariants: Record<string, Variant> = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-export const dramaticItemVariants: Record<string, Variant> = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: SPRING_GENTLE,
-  },
-};
 
 /* === PAGE TRANSITION === */
 

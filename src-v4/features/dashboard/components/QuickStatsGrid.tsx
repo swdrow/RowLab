@@ -1,12 +1,11 @@
 /**
- * Quick stats grid — 4 animated stat cards in responsive layout.
+ * Quick stats grid — 4 stat cards in responsive layout.
  * Displays total meters, workout count, active days, and current streak.
  * Each card includes a synthetic sparkline showing growth trajectory.
  */
 
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
-import type { Variant } from 'motion/react';
 import { IconWaves, IconDumbbell, IconCalendarDays, IconFlame } from '@/components/icons';
 import { StatCard } from './StatCard';
 import type { StatsData } from '../types';
@@ -28,21 +27,6 @@ interface QuickStatsGridProps {
   className?: string;
 }
 
-const containerVariants: Record<string, Variant> = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const itemVariants: Record<string, Variant> = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export function QuickStatsGrid({ stats, className = '' }: QuickStatsGridProps) {
   const { allTime, streak } = stats;
 
@@ -59,50 +43,42 @@ export function QuickStatsGrid({ stats, className = '' }: QuickStatsGridProps) {
   return (
     <motion.div
       className={`grid grid-cols-2 gap-3 ${className}`}
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <motion.div variants={itemVariants}>
-        <StatCard
-          icon={IconWaves}
-          label="Total Meters"
-          value={allTime.totalMeters}
-          formattedValue={formatNumber(allTime.totalMeters)}
-          footnote="All time"
-          sparklineData={sparklines.meters}
-        />
-      </motion.div>
-      <motion.div variants={itemVariants}>
-        <StatCard
-          icon={IconDumbbell}
-          label="Workouts"
-          value={allTime.workoutCount}
-          footnote="All time"
-          sparklineData={sparklines.workouts}
-          sparklineColor="oklch(0.62 0.17 255)"
-        />
-      </motion.div>
-      <motion.div variants={itemVariants}>
-        <StatCard
-          icon={IconCalendarDays}
-          label="Active Days"
-          value={allTime.activeDays}
-          footnote="All time"
-          sparklineData={sparklines.activeDays}
-          sparklineColor="oklch(0.72 0.17 142)"
-        />
-      </motion.div>
-      <motion.div variants={itemVariants}>
-        <StatCard
-          icon={IconFlame}
-          label="Current Streak"
-          value={streak.current}
-          footnote={streak.longest > 0 ? `Best: ${streak.longest} days` : undefined}
-          sparklineData={sparklines.streak}
-          sparklineColor="oklch(0.75 0.14 75)"
-        />
-      </motion.div>
+      <StatCard
+        icon={IconWaves}
+        label="Total Meters"
+        value={allTime.totalMeters}
+        formattedValue={formatNumber(allTime.totalMeters)}
+        footnote="All time"
+        sparklineData={sparklines.meters}
+      />
+      <StatCard
+        icon={IconDumbbell}
+        label="Workouts"
+        value={allTime.workoutCount}
+        footnote="All time"
+        sparklineData={sparklines.workouts}
+        sparklineColor="oklch(0.62 0.17 255)"
+      />
+      <StatCard
+        icon={IconCalendarDays}
+        label="Active Days"
+        value={allTime.activeDays}
+        footnote="All time"
+        sparklineData={sparklines.activeDays}
+        sparklineColor="oklch(0.72 0.17 142)"
+      />
+      <StatCard
+        icon={IconFlame}
+        label="Current Streak"
+        value={streak.current}
+        footnote={streak.longest > 0 ? `Best: ${streak.longest} days` : undefined}
+        sparklineData={sparklines.streak}
+        sparklineColor="oklch(0.75 0.14 75)"
+      />
     </motion.div>
   );
 }

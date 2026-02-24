@@ -12,11 +12,8 @@
 
 import { IconTrophy, IconTarget, IconFlame, IconHash, IconSparkles } from '@/components/icons';
 import type { IconComponent } from '@/types/icons';
-import { motion } from 'motion/react';
-
 import { Card } from '@/components/ui/Card';
 import { formatRelativeDate } from '@/lib/format';
-import { listItemVariants } from '@/lib/animations';
 import type { Achievement } from '../types';
 
 /** Category icon mapping */
@@ -131,7 +128,7 @@ export function AchievementCard({ achievement, compact = false }: AchievementCar
     // Legendary: wrap with animated glow ring overlay
     if (isLegendary) {
       return (
-        <motion.div variants={listItemVariants}>
+        <div>
           <div className="relative rounded-2xl">
             <div
               className="absolute -inset-px rounded-2xl bg-gradient-to-b from-data-warning/30 via-data-warning/10 to-data-warning/0 animate-legendary-glow pointer-events-none"
@@ -139,16 +136,16 @@ export function AchievementCard({ achievement, compact = false }: AchievementCar
             />
             {card}
           </div>
-        </motion.div>
+        </div>
       );
     }
 
-    return <motion.div variants={listItemVariants}>{card}</motion.div>;
+    return <div>{card}</div>;
   }
 
   // Locked variant
   return (
-    <motion.div variants={listItemVariants}>
+    <div>
       <Card padding={compact ? 'sm' : 'md'} className="opacity-60">
         <div className="flex items-start gap-3">
           {/* Dimmed grayscale icon */}
@@ -186,6 +183,6 @@ export function AchievementCard({ achievement, compact = false }: AchievementCar
           </div>
         </div>
       </Card>
-    </motion.div>
+    </div>
   );
 }
