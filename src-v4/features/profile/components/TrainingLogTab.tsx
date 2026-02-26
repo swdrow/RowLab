@@ -19,7 +19,7 @@ import {
 } from '@/components/icons';
 import type { IconComponent } from '@/types/icons';
 
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { getSportFromWorkout } from '@/features/workouts/utils';
 import { SPORT_CONFIG, type SportType } from '@/features/workouts/constants';
@@ -35,8 +35,10 @@ function recentWorkoutsOptions() {
     queryKey: [...queryKeys.workouts.all, 'recent-10'] as const,
     staleTime: 60_000,
     queryFn: async () => {
-      const res = await api.get('/api/u/workouts', { params: { limit: '10' } });
-      return (res.data.data?.items ?? []) as Workout[];
+      const data = await apiClient.get<{ items?: Workout[] }>('/api/u/workouts', {
+        params: { limit: '10' },
+      });
+      return data.items ?? [];
     },
   });
 }

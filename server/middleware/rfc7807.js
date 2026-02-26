@@ -1,36 +1,28 @@
-import http from 'http';
-
 /**
- * Custom API error with RFC 7807 Problem Details fields.
- * Throw this from route handlers for structured error responses.
- */
-export class ApiError extends Error {
-  constructor(status, code, detail, title) {
-    super(detail);
-    this.statusCode = status;
-    this.code = code;
-    this.title = title || null;
-  }
-}
-
-/**
- * Express error middleware that formats errors as RFC 7807 Problem Details JSON.
- * Only used for /api/u/* routes. Existing /api/v1/ errors stay as-is.
+ * Legacy RFC 7807 module.
  *
- * @see https://www.rfc-editor.org/rfc/rfc7807
+ * The rfc7807ErrorHandler is DEPRECATED -- errors now flow through
+ * the global envelopeErrorHandler in server/middleware/envelope.js.
+ *
+ * ApiError is re-exported as a backward-compatible alias for AppError.
+ * Existing `throw new ApiError(status, code, detail)` calls in /api/u/
+ * routes continue to work because AppError is caught by envelopeErrorHandler.
+ *
+ * mapSourceForApi is unrelated to error handling and still in use.
+ */
+
+// Backward-compatible re-export: ApiError -> AppError
+// The ApiError constructor signature was: (status, code, detail, title)
+// AppError constructor signature is: (statusCode, code, message, details)
+// Both share (status, code, message) in positions 1-3, so existing callers work.
+export { AppError as ApiError } from '../utils/errors.js';
+
+/**
+ * @deprecated Use envelopeErrorHandler from server/middleware/envelope.js instead.
  */
 export function rfc7807ErrorHandler(err, req, res, next) {
-  if (res.headersSent) return next(err);
-
-  const status = err.statusCode || err.status || 500;
-
-  res.status(status).json({
-    type: `/errors/${err.code || 'internal-error'}`,
-    title: err.title || http.STATUS_CODES[status],
-    status,
-    detail: err.message || 'An unexpected error occurred',
-    instance: req.originalUrl,
-  });
+  // Pass through to global error handler
+  next(err);
 }
 
 /**

@@ -8,7 +8,7 @@
  * activeTeamId from the auth token), not the v4 /api/u/ namespace.
  */
 import { queryOptions } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type {
   TrainingPlan,
   PlanWorkout,
@@ -59,18 +59,20 @@ async function fetchPlans(filters?: PlanListFilters): Promise<TrainingPlan[]> {
   if (filters?.phase) params.phase = filters.phase;
   if (filters?.limit) params.limit = String(filters.limit);
 
-  const res = await api.get('/api/v1/training-plans', { params });
-  return res.data.data.plans as TrainingPlan[];
+  const data = await apiClient.get<{ plans: TrainingPlan[] }>('/api/v1/training-plans', { params });
+  return data.plans;
 }
 
 async function fetchPlanDetail(planId: string): Promise<TrainingPlan> {
-  const res = await api.get(`/api/v1/training-plans/${planId}`);
-  return res.data.data.plan as TrainingPlan;
+  const data = await apiClient.get<{ plan: TrainingPlan }>(`/api/v1/training-plans/${planId}`);
+  return data.plan;
 }
 
 async function fetchTemplates(): Promise<PeriodizationTemplate[]> {
-  const res = await api.get('/api/v1/training-plans/templates');
-  return res.data.data.templates as PeriodizationTemplate[];
+  const data = await apiClient.get<{ templates: PeriodizationTemplate[] }>(
+    '/api/v1/training-plans/templates'
+  );
+  return data.templates;
 }
 
 async function fetchCalendarEvents(filters: CalendarEventsFilters): Promise<CalendarEvent[]> {
@@ -125,20 +127,26 @@ async function fetchWeeklyCompliance(
   const params: Record<string, string> = { weekStart };
   if (athleteId) params.athleteId = athleteId;
 
-  const res = await api.get('/api/v1/training-plans/compliance/weekly', { params });
-  return res.data.data.entries as WeeklyComplianceEntry[];
+  const data = await apiClient.get<{ entries: WeeklyComplianceEntry[] }>(
+    '/api/v1/training-plans/compliance/weekly',
+    { params }
+  );
+  return data.entries;
 }
 
 async function fetchComplianceReport(weekStart: string): Promise<ComplianceReport> {
-  const res = await api.get('/api/v1/training-plans/compliance/report', {
-    params: { weekStart },
-  });
-  return res.data.data.report as ComplianceReport;
+  const data = await apiClient.get<{ report: ComplianceReport }>(
+    '/api/v1/training-plans/compliance/report',
+    { params: { weekStart } }
+  );
+  return data.report;
 }
 
 async function fetchAthletePlans(athleteId: string): Promise<TrainingPlan[]> {
-  const res = await api.get(`/api/v1/training-plans/athlete/${athleteId}`);
-  return res.data.data.plans as TrainingPlan[];
+  const data = await apiClient.get<{ plans: TrainingPlan[] }>(
+    `/api/v1/training-plans/athlete/${athleteId}`
+  );
+  return data.plans;
 }
 
 async function fetchTrainingLoad(
@@ -149,8 +157,10 @@ async function fetchTrainingLoad(
   const params: Record<string, string> = { startDate, endDate };
   if (athleteId) params.athleteId = athleteId;
 
-  const res = await api.get('/api/v1/training-plans/load', { params });
-  return res.data.data.weeks as TrainingLoadWeek[];
+  const data = await apiClient.get<{ weeks: TrainingLoadWeek[] }>('/api/v1/training-plans/load', {
+    params,
+  });
+  return data.weeks;
 }
 
 // ---------------------------------------------------------------------------
@@ -232,25 +242,30 @@ export function trainingLoadOptions(startDate: string, endDate: string, athleteI
 // ---------------------------------------------------------------------------
 
 export async function createPlan(input: CreateTrainingPlanInput): Promise<TrainingPlan> {
-  const res = await api.post('/api/v1/training-plans', input);
-  return res.data.data.plan as TrainingPlan;
+  const data = await apiClient.post<{ plan: TrainingPlan }>('/api/v1/training-plans', input);
+  return data.plan;
 }
 
 export async function updatePlan(
   planId: string,
   input: UpdateTrainingPlanInput
 ): Promise<TrainingPlan> {
-  const res = await api.put(`/api/v1/training-plans/${planId}`, input);
-  return res.data.data.plan as TrainingPlan;
+  const data = await apiClient.put<{ plan: TrainingPlan }>(
+    `/api/v1/training-plans/${planId}`,
+    input
+  );
+  return data.plan;
 }
 
 export async function deletePlan(planId: string): Promise<void> {
-  await api.delete(`/api/v1/training-plans/${planId}`);
+  await apiClient.delete(`/api/v1/training-plans/${planId}`);
 }
 
 export async function duplicatePlan(planId: string): Promise<TrainingPlan> {
-  const res = await api.post(`/api/v1/training-plans/${planId}/duplicate`);
-  return res.data.data.plan as TrainingPlan;
+  const data = await apiClient.post<{ plan: TrainingPlan }>(
+    `/api/v1/training-plans/${planId}/duplicate`
+  );
+  return data.plan;
 }
 
 export async function createFromTemplate(
@@ -258,20 +273,22 @@ export async function createFromTemplate(
   name?: string,
   startDate?: string
 ): Promise<TrainingPlan> {
-  const res = await api.post('/api/v1/training-plans/from-template', {
-    templateId,
-    name,
-    startDate,
-  });
-  return res.data.data.plan as TrainingPlan;
+  const data = await apiClient.post<{ plan: TrainingPlan }>(
+    '/api/v1/training-plans/from-template',
+    { templateId, name, startDate }
+  );
+  return data.plan;
 }
 
 export async function addWorkoutToPlan(
   planId: string,
   input: CreatePlannedWorkoutInput
 ): Promise<PlanWorkout> {
-  const res = await api.post(`/api/v1/training-plans/${planId}/workouts`, input);
-  return res.data.data.workout as PlanWorkout;
+  const data = await apiClient.post<{ workout: PlanWorkout }>(
+    `/api/v1/training-plans/${planId}/workouts`,
+    input
+  );
+  return data.workout;
 }
 
 export async function updatePlannedWorkout(
@@ -279,20 +296,23 @@ export async function updatePlannedWorkout(
   workoutId: string,
   input: UpdatePlannedWorkoutInput
 ): Promise<PlanWorkout> {
-  const res = await api.put(`/api/v1/training-plans/${planId}/workouts/${workoutId}`, input);
-  return res.data.data.workout as PlanWorkout;
+  const data = await apiClient.put<{ workout: PlanWorkout }>(
+    `/api/v1/training-plans/${planId}/workouts/${workoutId}`,
+    input
+  );
+  return data.workout;
 }
 
 export async function deletePlannedWorkout(planId: string, workoutId: string): Promise<void> {
-  await api.delete(`/api/v1/training-plans/${planId}/workouts/${workoutId}`);
+  await apiClient.delete(`/api/v1/training-plans/${planId}/workouts/${workoutId}`);
 }
 
 export async function assignPlanToAthletes(planId: string, input: AssignPlanInput): Promise<void> {
-  await api.post(`/api/v1/training-plans/${planId}/assign`, input);
+  await apiClient.post(`/api/v1/training-plans/${planId}/assign`, input);
 }
 
 export async function removeAssignment(planId: string, assignmentId: string): Promise<void> {
-  await api.delete(`/api/v1/training-plans/${planId}/assignments/${assignmentId}`);
+  await apiClient.delete(`/api/v1/training-plans/${planId}/assignments/${assignmentId}`);
 }
 
 export async function recordCompletion(
@@ -300,5 +320,5 @@ export async function recordCompletion(
   workoutId: string,
   input: RecordCompletionInput
 ): Promise<void> {
-  await api.post(`/api/v1/training-plans/${planId}/workouts/${workoutId}/complete`, input);
+  await apiClient.post(`/api/v1/training-plans/${planId}/workouts/${workoutId}/complete`, input);
 }

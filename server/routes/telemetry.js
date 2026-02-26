@@ -94,7 +94,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
     if (!athleteId) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'athleteId is required' },
+        error: { code: 'VALIDATION_FAILED', message: 'athleteId is required' },
       });
     }
 
@@ -125,7 +125,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
     if (err.message.includes('required') || err.message.includes('Invalid source')) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: err.message },
+        error: { code: 'VALIDATION_FAILED', message: err.message },
       });
     }
     logger.error('Create telemetry error', { error: err.message });
@@ -149,21 +149,21 @@ router.post('/import', requireRole('OWNER', 'COACH'), async (req, res) => {
     if (!sessionDate) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'sessionDate is required' },
+        error: { code: 'VALIDATION_FAILED', message: 'sessionDate is required' },
       });
     }
 
     if (!source) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'source is required' },
+        error: { code: 'VALIDATION_FAILED', message: 'source is required' },
       });
     }
 
     if (!Array.isArray(entries)) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'entries must be an array' },
+        error: { code: 'VALIDATION_FAILED', message: 'entries must be an array' },
       });
     }
 
@@ -184,7 +184,7 @@ router.post('/import', requireRole('OWNER', 'COACH'), async (req, res) => {
     if (err.message.includes('Invalid source')) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: err.message },
+        error: { code: 'VALIDATION_FAILED', message: err.message },
       });
     }
     logger.error('Import telemetry error', { error: err.message });

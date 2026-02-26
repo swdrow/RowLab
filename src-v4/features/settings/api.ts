@@ -7,7 +7,7 @@
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { useAuth } from '@/features/auth/useAuth';
 
@@ -55,8 +55,8 @@ export function settingsQueryOptions() {
   return queryOptions<UserSettings>({
     queryKey: queryKeys.settings.user(),
     queryFn: async () => {
-      const res = await api.get('/api/v1/settings');
-      return (res.data.data ?? {}) as UserSettings;
+      const data = await apiClient.get<UserSettings | null>('/api/v1/settings');
+      return (data ?? {}) as UserSettings;
     },
     staleTime: 5 * 60_000, // 5 min
   });
@@ -70,10 +70,8 @@ export function useUpdateSettings() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (updates: Partial<UserSettings>) => {
-      const res = await api.patch('/api/v1/settings', updates);
-      return res.data.data as UserSettings;
-    },
+    mutationFn: (updates: Partial<UserSettings>) =>
+      apiClient.patch<UserSettings>('/api/v1/settings', updates),
     onMutate: async (updates) => {
       // Cancel outstanding queries
       await qc.cancelQueries({ queryKey: queryKeys.settings.user() });
@@ -108,19 +106,17 @@ export function useUpdateSettings() {
 
 export function useChangePassword() {
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       currentPassword,
       newPassword,
     }: {
       currentPassword: string;
       newPassword: string;
-    }) => {
-      const res = await api.post('/api/v1/auth/change-password', {
+    }) =>
+      apiClient.post<{ message: string }>('/api/v1/auth/change-password', {
         currentPassword,
         newPassword,
-      });
-      return res.data.data as { message: string };
-    },
+      }),
   });
 }
 
@@ -133,12 +129,10 @@ export function useDeleteAccount() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async ({ password }: { password: string }) => {
-      const res = await api.delete('/api/v1/auth/account', {
+    mutationFn: ({ password }: { password: string }) =>
+      apiClient.delete<{ message: string; deletedAt: string }>('/api/v1/auth/account', {
         data: { password, confirmation: 'DELETE' },
-      });
-      return res.data.data as { message: string; deletedAt: string };
-    },
+      }),
     onSuccess: async () => {
       // Clear auth state and redirect to goodbye page
       try {

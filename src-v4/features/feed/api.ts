@@ -8,7 +8,7 @@
  * via useMutation since they need optimistic update logic.
  */
 import { infiniteQueryOptions, queryOptions, type InfiniteData } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type { FeedData, FeedFilters, FollowStats, ToggleLikeResult, FollowResult } from './types';
 
@@ -31,8 +31,7 @@ export function socialFeedOptions(filters: FeedFilters) {
       if (filters.filter) params.filter = filters.filter;
       if (pageParam) params.cursor = pageParam;
 
-      const res = await api.get('/api/u/feed', { params });
-      return res.data.data as FeedData;
+      return apiClient.get<FeedData>('/api/u/feed', { params });
     },
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -47,10 +46,7 @@ export function socialFeedOptions(filters: FeedFilters) {
 export function followStatsOptions() {
   return queryOptions<FollowStats>({
     queryKey: queryKeys.feed.followStats(),
-    queryFn: async () => {
-      const res = await api.get('/api/u/feed/follow-stats');
-      return res.data.data as FollowStats;
-    },
+    queryFn: () => apiClient.get<FollowStats>('/api/u/feed/follow-stats'),
     staleTime: 60_000,
   });
 }
@@ -59,17 +55,14 @@ export function followStatsOptions() {
 // Mutation helpers (plain functions, used with useMutation in components)
 // ---------------------------------------------------------------------------
 
-export async function toggleLike(workoutId: string): Promise<ToggleLikeResult> {
-  const res = await api.post(`/api/u/feed/${workoutId}/like`);
-  return res.data.data as ToggleLikeResult;
+export function toggleLike(workoutId: string): Promise<ToggleLikeResult> {
+  return apiClient.post<ToggleLikeResult>(`/api/u/feed/${workoutId}/like`);
 }
 
-export async function followUser(userId: string): Promise<FollowResult> {
-  const res = await api.post(`/api/u/feed/follow/${userId}`);
-  return res.data.data as FollowResult;
+export function followUser(userId: string): Promise<FollowResult> {
+  return apiClient.post<FollowResult>(`/api/u/feed/follow/${userId}`);
 }
 
-export async function unfollowUser(userId: string): Promise<FollowResult> {
-  const res = await api.delete(`/api/u/feed/follow/${userId}`);
-  return res.data.data as FollowResult;
+export function unfollowUser(userId: string): Promise<FollowResult> {
+  return apiClient.delete<FollowResult>(`/api/u/feed/follow/${userId}`);
 }

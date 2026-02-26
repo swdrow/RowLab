@@ -168,7 +168,7 @@ router.patch('/team', authenticateToken, teamIsolation, requireRole('OWNER'), as
     if (!visibility || typeof visibility !== 'object') {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'Visibility settings required' },
+        error: { code: 'VALIDATION_FAILED', message: 'Visibility settings required' },
       });
     }
 

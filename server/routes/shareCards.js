@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { generateShareCard, getShareCard, deleteShareCard } from '../services/shareCardService.js';
+import { AppError } from '../utils/errors.js';
 
 const router = express.Router();
 
@@ -19,17 +20,17 @@ function escapeHtml(str) {
  * POST /api/v1/share-cards/generate
  * Generate a new share card
  */
-router.post('/generate', authenticateToken, async (req, res) => {
+router.post('/generate', authenticateToken, async (req, res, next) => {
   try {
     const { workoutId, cardType, format, options, teamId } = req.body;
 
     // Validation
     if (!cardType) {
-      return res.status(400).json({ error: 'cardType is required' });
+      throw new AppError(400, 'VALIDATION_FAILED', 'cardType is required');
     }
 
     if (!format) {
-      return res.status(400).json({ error: 'format is required' });
+      throw new AppError(400, 'VALIDATION_FAILED', 'format is required');
     }
 
     const validCardTypes = [
@@ -44,24 +45,30 @@ router.post('/generate', authenticateToken, async (req, res) => {
     ];
 
     if (!validCardTypes.includes(cardType)) {
-      return res.status(400).json({
-        error: `Invalid cardType. Must be one of: ${validCardTypes.join(', ')}`,
-      });
+      throw new AppError(
+        400,
+        'VALIDATION_FAILED',
+        `Invalid cardType. Must be one of: ${validCardTypes.join(', ')}`
+      );
     }
 
     const validFormats = ['1:1', '9:16'];
     if (!validFormats.includes(format)) {
-      return res.status(400).json({
-        error: `Invalid format. Must be one of: ${validFormats.join(', ')}`,
-      });
+      throw new AppError(
+        400,
+        'VALIDATION_FAILED',
+        `Invalid format. Must be one of: ${validFormats.join(', ')}`
+      );
     }
 
     // For most card types, workoutId is required
     const workoutRequiredTypes = ['erg_summary', 'erg_charts', 'pr_celebration', 'regatta_result'];
     if (workoutRequiredTypes.includes(cardType) && !workoutId) {
-      return res.status(400).json({
-        error: `workoutId is required for ${cardType} card type`,
-      });
+      throw new AppError(
+        400,
+        'VALIDATION_FAILED',
+        `workoutId is required for ${cardType} card type`
+      );
     }
 
     // Generate the card
@@ -74,24 +81,28 @@ router.post('/generate', authenticateToken, async (req, res) => {
       teamId: teamId || null,
     });
 
-    res.status(201).json(result);
+    res.status(201).json({ success: true, data: result });
   } catch (error) {
-    console.error('Share card generation error:', error);
+    // Handle specific errors by converting to AppError
+    if (error instanceof AppError) {
+      return next(error);
+    }
 
-    // Handle specific errors
     if (error.message === 'Workout not found') {
-      return res.status(404).json({ error: error.message });
+      return next(new AppError(404, 'NOT_FOUND', error.message));
     }
 
-    if (error.message.includes('Python service')) {
-      return res.status(503).json({
-        error: 'Share card rendering service unavailable. Please try again later.',
-      });
+    if (error.message?.includes('Python service')) {
+      return next(
+        new AppError(
+          503,
+          'SERVICE_UNAVAILABLE',
+          'Share card rendering service unavailable. Please try again later.'
+        )
+      );
     }
 
-    res.status(500).json({
-      error: error.message || 'Failed to generate share card',
-    });
+    next(new AppError(500, 'SERVER_ERROR', error.message || 'Failed to generate share card'));
   }
 });
 
@@ -99,25 +110,23 @@ router.post('/generate', authenticateToken, async (req, res) => {
  * GET /api/v1/share-cards/:shareId
  * Get share card metadata (public endpoint - no auth)
  */
-router.get('/:shareId', async (req, res) => {
+router.get('/:shareId', async (req, res, next) => {
   try {
     const { shareId } = req.params;
 
     const shareCard = await getShareCard(shareId);
 
-    res.json(shareCard);
+    res.json({ success: true, data: shareCard });
   } catch (error) {
-    console.error('Get share card error:', error);
-
     if (error.message === 'Share card not found') {
-      return res.status(404).json({ error: error.message });
+      return next(new AppError(404, 'NOT_FOUND', error.message));
     }
 
     if (error.message === 'Share card has expired') {
-      return res.status(410).json({ error: error.message }); // 410 Gone
+      return next(new AppError(410, 'NOT_FOUND', error.message));
     }
 
-    res.status(500).json({ error: 'Failed to retrieve share card' });
+    next(new AppError(500, 'SERVER_ERROR', 'Failed to retrieve share card'));
   }
 });
 
@@ -127,6 +136,7 @@ router.get('/:shareId', async (req, res) => {
  *
  * Social crawlers (Facebook, Twitter, Slack, Discord, etc.) don't execute JavaScript,
  * so we need to serve pre-rendered HTML with OG meta tags for link previews.
+ * NOTE: This is a non-JSON endpoint -- returns HTML, not envelope.
  */
 router.get('/og/:shareId', async (req, res) => {
   try {
@@ -186,8 +196,7 @@ router.get('/og/:shareId', async (req, res) => {
     res.setHeader('Content-Type', 'text/html');
     res.send(html);
   } catch (error) {
-    console.error('OG HTML generation error:', error);
-
+    // OG endpoint returns HTML errors (not JSON) for crawlers
     if (error.message === 'Share card not found') {
       return res.status(404).send('<h1>Share card not found</h1>');
     }
@@ -204,25 +213,23 @@ router.get('/og/:shareId', async (req, res) => {
  * DELETE /api/v1/share-cards/:shareId
  * Delete a share card (requires ownership)
  */
-router.delete('/:shareId', authenticateToken, async (req, res) => {
+router.delete('/:shareId', authenticateToken, async (req, res, next) => {
   try {
     const { shareId } = req.params;
 
     const result = await deleteShareCard(shareId, req.user.id);
 
-    res.json(result);
+    res.json({ success: true, data: result });
   } catch (error) {
-    console.error('Delete share card error:', error);
-
     if (error.message === 'Share card not found') {
-      return res.status(404).json({ error: error.message });
+      return next(new AppError(404, 'NOT_FOUND', error.message));
     }
 
-    if (error.message.includes('Unauthorized')) {
-      return res.status(403).json({ error: error.message });
+    if (error.message?.includes('Unauthorized')) {
+      return next(new AppError(403, 'FORBIDDEN', error.message));
     }
 
-    res.status(500).json({ error: 'Failed to delete share card' });
+    next(new AppError(500, 'SERVER_ERROR', 'Failed to delete share card'));
   }
 });
 

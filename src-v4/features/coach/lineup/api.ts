@@ -6,7 +6,7 @@
  * Mutations return React Query useMutation hooks with cache invalidation.
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type { Lineup, SaveLineupInput, UpdateLineupInput, DuplicateLineupInput } from './types';
 
 // ---------------------------------------------------------------------------
@@ -24,12 +24,11 @@ export const lineupKeys = {
 // ---------------------------------------------------------------------------
 
 async function fetchLineups(teamId: string): Promise<Lineup[]> {
-  const res = await api.get('/api/v1/lineups', {
+  const data = await apiClient.get<{ lineups: Lineup[] }>('/api/v1/lineups', {
     params: { includeAssignments: 'true' },
   });
-  const lineups = res.data.data.lineups as Lineup[];
   // Normalize: ensure assignments is always an array (API may return null)
-  return lineups.map((l) => ({
+  return (data.lineups ?? []).map((l) => ({
     ...l,
     assignments: l.assignments || [],
     teamId: l.teamId || teamId,
@@ -37,9 +36,8 @@ async function fetchLineups(teamId: string): Promise<Lineup[]> {
 }
 
 async function fetchLineupDetail(_teamId: string, lineupId: string): Promise<Lineup> {
-  const res = await api.get(`/api/v1/lineups/${lineupId}`);
-  const lineup = res.data.data.lineup as Lineup;
-  return { ...lineup, assignments: lineup.assignments || [] };
+  const data = await apiClient.get<{ lineup: Lineup }>(`/api/v1/lineups/${lineupId}`);
+  return { ...data.lineup, assignments: data.lineup.assignments || [] };
 }
 
 // ---------------------------------------------------------------------------
@@ -47,24 +45,26 @@ async function fetchLineupDetail(_teamId: string, lineupId: string): Promise<Lin
 // ---------------------------------------------------------------------------
 
 async function saveLineup(input: SaveLineupInput): Promise<Lineup> {
-  const res = await api.post('/api/v1/lineups', input);
-  return res.data.data.lineup as Lineup;
+  const data = await apiClient.post<{ lineup: Lineup }>('/api/v1/lineups', input);
+  return data.lineup;
 }
 
 async function updateLineup(input: UpdateLineupInput & { id: string }): Promise<Lineup> {
-  const { id, ...data } = input;
-  const res = await api.patch(`/api/v1/lineups/${id}`, data);
-  return res.data.data.lineup as Lineup;
+  const { id, ...rest } = input;
+  const data = await apiClient.patch<{ lineup: Lineup }>(`/api/v1/lineups/${id}`, rest);
+  return data.lineup;
 }
 
 async function deleteLineup(id: string): Promise<void> {
-  await api.delete(`/api/v1/lineups/${id}`);
+  await apiClient.delete(`/api/v1/lineups/${id}`);
 }
 
 async function duplicateLineup(input: DuplicateLineupInput & { id: string }): Promise<Lineup> {
   const { id, name } = input;
-  const res = await api.post(`/api/v1/lineups/${id}/duplicate`, { name });
-  return res.data.data.lineup as Lineup;
+  const data = await apiClient.post<{ lineup: Lineup }>(`/api/v1/lineups/${id}/duplicate`, {
+    name,
+  });
+  return data.lineup;
 }
 
 // ---------------------------------------------------------------------------

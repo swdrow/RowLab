@@ -5,7 +5,7 @@
  * workoutDetailOptions -- single workout with splits + adjacency
  */
 import { infiniteQueryOptions, queryOptions, type InfiniteData } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type { WorkoutFilters, WorkoutsData, WorkoutDetail } from './types';
 
@@ -31,8 +31,7 @@ export function workoutFeedOptions(filters: WorkoutFilters) {
       if (filters.dateTo) params.dateTo = filters.dateTo;
       if (pageParam) params.cursor = pageParam;
 
-      const res = await api.get('/api/u/workouts', { params });
-      return res.data.data as WorkoutsData;
+      return apiClient.get<WorkoutsData>('/api/u/workouts', { params });
     },
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.cursor,
@@ -48,8 +47,7 @@ export function workoutDetailOptions(workoutId: string) {
   return queryOptions<WorkoutDetail>({
     queryKey: queryKeys.workouts.detail(workoutId),
     queryFn: async () => {
-      const res = await api.get('/api/u/workouts/' + workoutId);
-      return res.data.data as WorkoutDetail;
+      return apiClient.get<WorkoutDetail>('/api/u/workouts/' + workoutId);
     },
     staleTime: 120_000,
     enabled: !!workoutId,

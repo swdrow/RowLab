@@ -36,7 +36,7 @@ const validateRequest = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', details: errors.array() },
+      error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
     });
   }
   next();
@@ -353,7 +353,7 @@ router.patch(
       if (error.message.includes('Invalid slug format')) {
         return res.status(400).json({
           success: false,
-          error: { code: 'VALIDATION_ERROR', message: error.message },
+          error: { code: 'VALIDATION_FAILED', message: error.message },
         });
       }
       logger.error('Update team error', { error: error.message });
@@ -654,7 +654,7 @@ router.get(
       if (error.message.includes('Invalid slug format')) {
         return res.status(400).json({
           success: false,
-          error: { code: 'VALIDATION_ERROR', message: error.message },
+          error: { code: 'VALIDATION_FAILED', message: error.message },
         });
       }
       logger.error('Slug check error', { error: error.message });

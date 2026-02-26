@@ -195,7 +195,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
     if (!name || !type || !date) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'name, type, and date are required' },
+        error: { code: 'VALIDATION_FAILED', message: 'name, type, and date are required' },
       });
     }
 
@@ -205,7 +205,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
       return res.status(400).json({
         success: false,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: 'VALIDATION_FAILED',
           message: `type must be one of: ${validTypes.join(', ')}`,
         },
       });
@@ -309,7 +309,7 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
+            code: 'VALIDATION_FAILED',
             message: `type must be one of: ${validTypes.join(', ')}`,
           },
         });
@@ -323,7 +323,7 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
+            code: 'VALIDATION_FAILED',
             message: `status must be one of: ${validStatuses.join(', ')}`,
           },
         });
@@ -424,7 +424,7 @@ router.post('/join/:code', async (req, res) => {
     if (!code || code.length !== 6) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'Invalid session code format' },
+        error: { code: 'VALIDATION_FAILED', message: 'Invalid session code format' },
       });
     }
 
@@ -514,7 +514,7 @@ router.post('/:sessionId/pieces', requireRole('OWNER', 'COACH'), async (req, res
     if (!name) {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'name is required' },
+        error: { code: 'VALIDATION_FAILED', message: 'name is required' },
       });
     }
 
@@ -678,7 +678,10 @@ router.delete('/pieces/:pieceId', requireRole('OWNER', 'COACH'), async (req, res
 router.get('/:id/live-data', param('id').isString(), async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
+    });
   }
 
   const { id } = req.params;
@@ -694,11 +697,17 @@ router.get('/:id/live-data', param('id').isString(), async (req, res) => {
     });
 
     if (!session) {
-      return res.status(404).json({ error: 'Session not found' });
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Session not found' },
+      });
     }
 
     if (session.status !== 'ACTIVE') {
-      return res.status(400).json({ error: 'Session is not active' });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_FAILED', message: 'Session is not active' },
+      });
     }
 
     // Fetch all athletes on the team with their C2 connections
@@ -780,17 +789,23 @@ router.get('/:id/live-data', param('id').isString(), async (req, res) => {
 
     // Return structured response
     res.json({
-      sessionId: session.id,
-      sessionName: session.name,
-      activePieceId: activePiece?.id,
-      activePieceName: activePiece?.name,
-      athletes: athleteData,
-      startedAt: session.updatedAt.toISOString(),
-      sessionCode: session.sessionCode,
+      success: true,
+      data: {
+        sessionId: session.id,
+        sessionName: session.name,
+        activePieceId: activePiece?.id,
+        activePieceName: activePiece?.name,
+        athletes: athleteData,
+        startedAt: session.updatedAt.toISOString(),
+        sessionCode: session.sessionCode,
+      },
     });
   } catch (error) {
     logger.error('Live data fetch error', { error: error.message });
-    res.status(500).json({ error: 'Failed to fetch live erg data' });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to fetch live erg data' },
+    });
   }
 });
 
@@ -813,7 +828,10 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
+      });
     }
 
     const { id: sessionId } = req.params;
@@ -827,7 +845,10 @@ router.post(
       });
 
       if (!session) {
-        return res.status(404).json({ error: 'Session not found' });
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Session not found' },
+        });
       }
 
       // Determine status based on participation threshold
@@ -858,10 +879,13 @@ router.post(
         },
       });
 
-      res.json(attendance);
+      res.json({ success: true, data: { attendance } });
     } catch (error) {
       logger.error('Error recording attendance:', error);
-      res.status(500).json({ error: 'Failed to record attendance' });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to record attendance' },
+      });
     }
   }
 );
@@ -881,7 +905,10 @@ router.patch(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
+      });
     }
 
     const { id: sessionId, athleteId } = req.params;
@@ -896,7 +923,10 @@ router.patch(
       });
 
       if (!session) {
-        return res.status(404).json({ error: 'Session not found' });
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Session not found' },
+        });
       }
 
       // Check if attendance exists
@@ -907,7 +937,10 @@ router.patch(
       });
 
       if (!existing) {
-        return res.status(404).json({ error: 'Attendance record not found' });
+        return res.status(404).json({
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Attendance record not found' },
+        });
       }
 
       // Update attendance
@@ -923,10 +956,13 @@ router.patch(
         },
       });
 
-      res.json(attendance);
+      res.json({ success: true, data: { attendance } });
     } catch (error) {
       logger.error('Error overriding attendance:', error);
-      res.status(500).json({ error: 'Failed to override attendance' });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to override attendance' },
+      });
     }
   }
 );
@@ -938,7 +974,10 @@ router.patch(
 router.get('/:id/attendance', param('id').isString(), async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
+    });
   }
 
   const { id: sessionId } = req.params;
@@ -959,13 +998,19 @@ router.get('/:id/attendance', param('id').isString(), async (req, res) => {
     });
 
     if (!session) {
-      return res.status(404).json({ error: 'Session not found' });
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Session not found' },
+      });
     }
 
-    res.json(session.attendance);
+    res.json({ success: true, data: { attendance: session.attendance } });
   } catch (error) {
     logger.error('Error fetching attendance:', error);
-    res.status(500).json({ error: 'Failed to fetch attendance' });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to fetch attendance' },
+    });
   }
 });
 

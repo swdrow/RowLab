@@ -7,7 +7,7 @@
  * Uses v1 API namespace (existing backend routes, not unified auth router).
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient, ApiClientError } from '@/lib/api';
 import type { WhiteboardEntry, SaveWhiteboardInput } from './types';
 
 // ---------------------------------------------------------------------------
@@ -25,21 +25,20 @@ export const whiteboardKeys = {
 
 async function fetchLatestWhiteboard(): Promise<WhiteboardEntry | null> {
   try {
-    const res = await api.get('/api/v1/whiteboards/latest');
-    return (res.data.data?.whiteboard as WhiteboardEntry) ?? null;
+    const data = await apiClient.get<{ whiteboard: WhiteboardEntry | null }>(
+      '/api/v1/whiteboards/latest'
+    );
+    return data.whiteboard ?? null;
   } catch (error: unknown) {
     // 404 is expected when no whiteboard exists yet
-    if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as { response?: { status?: number } };
-      if (axiosError.response?.status === 404) return null;
-    }
+    if (error instanceof ApiClientError && error.status === 404) return null;
     throw error;
   }
 }
 
 async function saveWhiteboard(input: SaveWhiteboardInput): Promise<WhiteboardEntry> {
-  const res = await api.post('/api/v1/whiteboards', input);
-  return res.data.data.whiteboard as WhiteboardEntry;
+  const data = await apiClient.post<{ whiteboard: WhiteboardEntry }>('/api/v1/whiteboards', input);
+  return data.whiteboard;
 }
 
 // ---------------------------------------------------------------------------

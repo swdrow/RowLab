@@ -21,7 +21,7 @@ const validateRequest = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', details: errors.array() },
+      error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
     });
   }
   next();

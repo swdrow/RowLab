@@ -4,7 +4,7 @@
  *
  * Backend: /api/v1/notifications/* (built in plan 44-06)
  */
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 
 export interface Notification {
   id: string;
@@ -17,41 +17,30 @@ export interface Notification {
   createdAt: string;
 }
 
-interface NotificationsResponse {
-  success: boolean;
-  data: Notification[];
-}
-
-interface UnreadCountResponse {
-  success: boolean;
-  data: { count: number };
-}
-
 /** GET /api/v1/notifications - list notifications for current user */
 export async function getNotifications(limit = 50, offset = 0): Promise<Notification[]> {
-  const res = await api.get<NotificationsResponse>('/api/v1/notifications', {
+  return apiClient.get<Notification[]>('/api/v1/notifications', {
     params: { limit, offset },
   });
-  return res.data.data;
 }
 
 /** GET /api/v1/notifications/unread-count */
 export async function getUnreadCount(): Promise<number> {
-  const res = await api.get<UnreadCountResponse>('/api/v1/notifications/unread-count');
-  return res.data.data.count;
+  const data = await apiClient.get<{ count: number }>('/api/v1/notifications/unread-count');
+  return data.count;
 }
 
 /** PATCH /api/v1/notifications/:id/read */
 export async function markAsRead(id: string): Promise<void> {
-  await api.patch(`/api/v1/notifications/${id}/read`);
+  await apiClient.patch(`/api/v1/notifications/${id}/read`);
 }
 
 /** PATCH /api/v1/notifications/read-all */
 export async function markAllAsRead(): Promise<void> {
-  await api.patch('/api/v1/notifications/read-all');
+  await apiClient.patch('/api/v1/notifications/read-all');
 }
 
 /** DELETE /api/v1/notifications/:id */
 export async function dismissNotification(id: string): Promise<void> {
-  await api.delete(`/api/v1/notifications/${id}`);
+  await apiClient.delete(`/api/v1/notifications/${id}`);
 }

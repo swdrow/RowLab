@@ -6,7 +6,7 @@
  * namespace under the unified auth router.
  */
 import { infiniteQueryOptions, queryOptions, type InfiniteData } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type {
   TeamDetail,
   TeamOverview,
@@ -39,18 +39,20 @@ export const teamKeys = {
 // ---------------------------------------------------------------------------
 
 export async function fetchTeamByIdentifier(identifier: string): Promise<TeamDetail> {
-  const res = await api.get(`/api/u/teams/by-identifier/${encodeURIComponent(identifier)}`);
-  return res.data.data.team as TeamDetail;
+  const data = await apiClient.get<{ team: TeamDetail }>(
+    `/api/u/teams/by-identifier/${encodeURIComponent(identifier)}`
+  );
+  return data.team;
 }
 
 export async function fetchTeamOverview(teamId: string): Promise<TeamOverview> {
-  const res = await api.get(`/api/u/teams/${teamId}/overview`);
-  return res.data.data.overview as TeamOverview;
+  const data = await apiClient.get<{ overview: TeamOverview }>(`/api/u/teams/${teamId}/overview`);
+  return data.overview;
 }
 
 export async function fetchTeamRoster(teamId: string): Promise<RosterMember[]> {
-  const res = await api.get(`/api/u/teams/${teamId}/roster`);
-  return res.data.data.roster as RosterMember[];
+  const data = await apiClient.get<{ roster: RosterMember[] }>(`/api/u/teams/${teamId}/roster`);
+  return data.roster;
 }
 
 export async function fetchTeamActivity(
@@ -59,26 +61,30 @@ export async function fetchTeamActivity(
 ): Promise<ActivityFeedPage> {
   const params: Record<string, string> = { limit: '20' };
   if (cursor) params.cursor = cursor;
-  const res = await api.get(`/api/u/teams/${teamId}/activity`, { params });
-  return res.data.data as ActivityFeedPage;
+  return apiClient.get<ActivityFeedPage>(`/api/u/teams/${teamId}/activity`, { params });
 }
 
 export async function fetchTeamAnnouncements(teamId: string): Promise<Announcement[]> {
-  const res = await api.get(`/api/u/teams/${teamId}/announcements`);
-  return res.data.data.announcements as Announcement[];
+  const data = await apiClient.get<{ announcements: Announcement[] }>(
+    `/api/u/teams/${teamId}/announcements`
+  );
+  return data.announcements;
 }
 
 export async function fetchInviteCodes(teamId: string): Promise<InviteCode[]> {
-  const res = await api.get(`/api/u/teams/${teamId}/invite-codes`);
-  return res.data.data.inviteCodes as InviteCode[];
+  const data = await apiClient.get<{ inviteCodes: InviteCode[] }>(
+    `/api/u/teams/${teamId}/invite-codes`
+  );
+  return data.inviteCodes;
 }
 
 export async function checkSlugAvailability(
   teamId: string,
   slug: string
 ): Promise<{ available: boolean }> {
-  const res = await api.get(`/api/u/teams/${teamId}/slug-check/${encodeURIComponent(slug)}`);
-  return res.data.data as { available: boolean };
+  return apiClient.get<{ available: boolean }>(
+    `/api/u/teams/${teamId}/slug-check/${encodeURIComponent(slug)}`
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -86,51 +92,58 @@ export async function checkSlugAvailability(
 // ---------------------------------------------------------------------------
 
 export async function createTeam(input: CreateTeamInput): Promise<TeamDetail> {
-  const res = await api.post('/api/u/teams', input);
-  return res.data.data.team as TeamDetail;
+  const data = await apiClient.post<{ team: TeamDetail }>('/api/u/teams', input);
+  return data.team;
 }
 
 export async function joinTeamByCode(
   code: string
 ): Promise<{ team: TeamDetail; role: string; welcomeMessage?: string }> {
-  const res = await api.post(`/api/u/teams/join/${encodeURIComponent(code)}`);
-  return res.data.data as { team: TeamDetail; role: string; welcomeMessage?: string };
+  return apiClient.post<{ team: TeamDetail; role: string; welcomeMessage?: string }>(
+    `/api/u/teams/join/${encodeURIComponent(code)}`
+  );
 }
 
 export async function leaveTeam(teamId: string): Promise<void> {
-  await api.delete(`/api/u/teams/${teamId}/leave`);
+  await apiClient.delete(`/api/u/teams/${teamId}/leave`);
 }
 
 export async function deleteTeam(teamId: string): Promise<void> {
-  await api.delete(`/api/u/teams/${teamId}`);
+  await apiClient.delete(`/api/u/teams/${teamId}`);
 }
 
 export async function createAnnouncement(
   teamId: string,
   input: { title: string; content: string; isPinned?: boolean }
 ): Promise<Announcement> {
-  const res = await api.post(`/api/u/teams/${teamId}/announcements`, input);
-  return res.data.data.announcement as Announcement;
+  const data = await apiClient.post<{ announcement: Announcement }>(
+    `/api/u/teams/${teamId}/announcements`,
+    input
+  );
+  return data.announcement;
 }
 
 export async function generateInviteCode(
   teamId: string,
   input: GenerateInviteCodeInput
 ): Promise<InviteCode> {
-  const res = await api.post(`/api/u/teams/${teamId}/invite-codes`, input);
-  return res.data.data.inviteCode as InviteCode;
+  const data = await apiClient.post<{ inviteCode: InviteCode }>(
+    `/api/u/teams/${teamId}/invite-codes`,
+    input
+  );
+  return data.inviteCode;
 }
 
 export async function revokeInviteCode(teamId: string, codeId: string): Promise<void> {
-  await api.delete(`/api/u/teams/${teamId}/invite-codes/${codeId}`);
+  await apiClient.delete(`/api/u/teams/${teamId}/invite-codes/${codeId}`);
 }
 
 export async function updateTeamSettings(
   teamId: string,
   input: UpdateTeamInput
 ): Promise<TeamDetail> {
-  const res = await api.patch(`/api/u/teams/${teamId}`, input);
-  return res.data.data.team as TeamDetail;
+  const data = await apiClient.patch<{ team: TeamDetail }>(`/api/u/teams/${teamId}`, input);
+  return data.team;
 }
 
 export async function updateMemberRole(
@@ -138,11 +151,11 @@ export async function updateMemberRole(
   userId: string,
   role: string
 ): Promise<void> {
-  await api.patch(`/api/u/teams/${teamId}/members/${userId}`, { role });
+  await apiClient.patch(`/api/u/teams/${teamId}/members/${userId}`, { role });
 }
 
 export async function removeMember(teamId: string, userId: string): Promise<void> {
-  await api.delete(`/api/u/teams/${teamId}/members/${userId}`);
+  await apiClient.delete(`/api/u/teams/${teamId}/members/${userId}`);
 }
 
 // ---------------------------------------------------------------------------

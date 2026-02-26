@@ -66,6 +66,7 @@ import featureFlagRoutes from './routes/featureFlags.js';
 import ogRoutes from './routes/og.js';
 import userScopedRoutes from './routes/u/index.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
+import { envelopeErrorHandler } from './middleware/envelope.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
 import { seedDefaultAchievements } from './services/achievementService.js';
@@ -343,15 +344,8 @@ if (NODE_ENV === 'production') {
 // Error logging middleware
 app.use(errorLogger);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  res.status(statusCode).json({
-    error: statusCode === 500 ? 'Internal server error' : err.message,
-    message: NODE_ENV === 'development' ? err.message : undefined,
-    ...(NODE_ENV === 'development' && { stack: err.stack }),
-  });
-});
+// Global API error handler -- consistent envelope for all routes
+app.use(envelopeErrorHandler);
 
 // Database health check function
 async function checkDatabaseHealth() {

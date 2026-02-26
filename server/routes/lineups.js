@@ -23,10 +23,13 @@ router.get('/', verifyToken, async (req, res) => {
       orderBy: { updatedAt: 'desc' },
     });
 
-    res.json({ lineups });
+    res.json({ success: true, data: { lineups } });
   } catch (err) {
     logger.error('Get lineups error', { error: err.message });
-    res.status(500).json({ error: 'Failed to fetch lineups' });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to fetch lineups' },
+    });
   }
 });
 
@@ -51,13 +54,17 @@ router.get('/:id', verifyToken, async (req, res) => {
     });
 
     if (!lineup) {
-      return res.status(404).json({ error: 'Lineup not found' });
+      return res
+        .status(404)
+        .json({ success: false, error: { code: 'NOT_FOUND', message: 'Lineup not found' } });
     }
 
-    res.json(lineup);
+    res.json({ success: true, data: lineup });
   } catch (err) {
     logger.error('Get lineup error', { error: err.message });
-    res.status(500).json({ error: 'Failed to fetch lineup' });
+    res
+      .status(500)
+      .json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to fetch lineup' } });
   }
 });
 
@@ -70,7 +77,10 @@ router.post('/', verifyToken, async (req, res) => {
     const { name, notes, boats } = req.body;
 
     if (!name) {
-      return res.status(400).json({ error: 'Lineup name required' });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_FAILED', message: 'Lineup name required' },
+      });
     }
 
     // Create lineup with assignments
@@ -80,30 +90,33 @@ router.post('/', verifyToken, async (req, res) => {
         notes: notes || null,
         userId: req.user.id,
         assignments: {
-          create: boats?.flatMap(boat =>
-            boat.seats
-              .filter(seat => seat.athlete)
-              .map(seat => ({
-                athleteId: seat.athlete.id,
-                boatClass: boat.name || boat.boatClass,
-                shellName: boat.shellName || null,
-                seatNumber: seat.seatNumber,
-                side: seat.side,
-                isCoxswain: false,
-              }))
-              .concat(
-                boat.coxswain
-                  ? [{
-                      athleteId: boat.coxswain.id,
-                      boatClass: boat.name || boat.boatClass,
-                      shellName: boat.shellName || null,
-                      seatNumber: 0,
-                      side: 'Cox',
-                      isCoxswain: true,
-                    }]
-                  : []
-              )
-          ) || [],
+          create:
+            boats?.flatMap((boat) =>
+              boat.seats
+                .filter((seat) => seat.athlete)
+                .map((seat) => ({
+                  athleteId: seat.athlete.id,
+                  boatClass: boat.name || boat.boatClass,
+                  shellName: boat.shellName || null,
+                  seatNumber: seat.seatNumber,
+                  side: seat.side,
+                  isCoxswain: false,
+                }))
+                .concat(
+                  boat.coxswain
+                    ? [
+                        {
+                          athleteId: boat.coxswain.id,
+                          boatClass: boat.name || boat.boatClass,
+                          shellName: boat.shellName || null,
+                          seatNumber: 0,
+                          side: 'Cox',
+                          isCoxswain: true,
+                        },
+                      ]
+                    : []
+                )
+            ) || [],
         },
       },
       include: {
@@ -115,10 +128,13 @@ router.post('/', verifyToken, async (req, res) => {
       },
     });
 
-    res.status(201).json({ lineup });
+    res.status(201).json({ success: true, data: { lineup } });
   } catch (err) {
     logger.error('Create lineup error', { error: err.message });
-    res.status(500).json({ error: 'Failed to create lineup' });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to create lineup' },
+    });
   }
 });
 
@@ -140,7 +156,9 @@ router.put('/:id', verifyToken, async (req, res) => {
     });
 
     if (!existing) {
-      return res.status(404).json({ error: 'Lineup not found' });
+      return res
+        .status(404)
+        .json({ success: false, error: { code: 'NOT_FOUND', message: 'Lineup not found' } });
     }
 
     // Delete old assignments and create new ones
@@ -154,30 +172,33 @@ router.put('/:id', verifyToken, async (req, res) => {
         name: name || existing.name,
         notes: notes !== undefined ? notes : existing.notes,
         assignments: {
-          create: boats?.flatMap(boat =>
-            boat.seats
-              .filter(seat => seat.athlete)
-              .map(seat => ({
-                athleteId: seat.athlete.id,
-                boatClass: boat.name || boat.boatClass,
-                shellName: boat.shellName || null,
-                seatNumber: seat.seatNumber,
-                side: seat.side,
-                isCoxswain: false,
-              }))
-              .concat(
-                boat.coxswain
-                  ? [{
-                      athleteId: boat.coxswain.id,
-                      boatClass: boat.name || boat.boatClass,
-                      shellName: boat.shellName || null,
-                      seatNumber: 0,
-                      side: 'Cox',
-                      isCoxswain: true,
-                    }]
-                  : []
-              )
-          ) || [],
+          create:
+            boats?.flatMap((boat) =>
+              boat.seats
+                .filter((seat) => seat.athlete)
+                .map((seat) => ({
+                  athleteId: seat.athlete.id,
+                  boatClass: boat.name || boat.boatClass,
+                  shellName: boat.shellName || null,
+                  seatNumber: seat.seatNumber,
+                  side: seat.side,
+                  isCoxswain: false,
+                }))
+                .concat(
+                  boat.coxswain
+                    ? [
+                        {
+                          athleteId: boat.coxswain.id,
+                          boatClass: boat.name || boat.boatClass,
+                          shellName: boat.shellName || null,
+                          seatNumber: 0,
+                          side: 'Cox',
+                          isCoxswain: true,
+                        },
+                      ]
+                    : []
+                )
+            ) || [],
         },
       },
       include: {
@@ -189,10 +210,13 @@ router.put('/:id', verifyToken, async (req, res) => {
       },
     });
 
-    res.json({ lineup });
+    res.json({ success: true, data: { lineup } });
   } catch (err) {
     logger.error('Update lineup error', { error: err.message });
-    res.status(500).json({ error: 'Failed to update lineup' });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to update lineup' },
+    });
   }
 });
 
@@ -213,17 +237,22 @@ router.delete('/:id', verifyToken, async (req, res) => {
     });
 
     if (!existing) {
-      return res.status(404).json({ error: 'Lineup not found' });
+      return res
+        .status(404)
+        .json({ success: false, error: { code: 'NOT_FOUND', message: 'Lineup not found' } });
     }
 
     await prisma.lineup.delete({
       where: { id: lineupId },
     });
 
-    res.json({ message: 'Lineup deleted' });
+    res.json({ success: true, data: { message: 'Lineup deleted' } });
   } catch (err) {
     logger.error('Delete lineup error', { error: err.message });
-    res.status(500).json({ error: 'Failed to delete lineup' });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to delete lineup' },
+    });
   }
 });
 

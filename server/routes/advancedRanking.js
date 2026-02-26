@@ -233,7 +233,7 @@ router.post('/matrix-planner/validate', async (req, res) => {
     logger.error('Schedule validation error', { error: error.message });
     res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', message: error.message },
+      error: { code: 'VALIDATION_FAILED', message: error.message },
     });
   }
 });

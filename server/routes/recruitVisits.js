@@ -226,7 +226,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
       return res.status(400).json({
         success: false,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: 'VALIDATION_FAILED',
           message: 'recruitName, date, startTime, and endTime are required',
         },
       });
@@ -238,7 +238,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
       return res.status(400).json({
         success: false,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: 'VALIDATION_FAILED',
           message: `scheduleType must be one of: ${validScheduleTypes.join(', ')}`,
         },
       });
@@ -257,7 +257,7 @@ router.post('/', requireRole('OWNER', 'COACH'), async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
+            code: 'VALIDATION_FAILED',
             message: 'Host athlete not found or does not belong to your team',
           },
         });
@@ -350,7 +350,7 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
+            code: 'VALIDATION_FAILED',
             message: `scheduleType must be one of: ${validScheduleTypes.join(', ')}`,
           },
         });
@@ -364,7 +364,7 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
+            code: 'VALIDATION_FAILED',
             message: `status must be one of: ${validStatuses.join(', ')}`,
           },
         });
@@ -384,7 +384,7 @@ router.patch('/:id', requireRole('OWNER', 'COACH'), async (req, res) => {
         return res.status(400).json({
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
+            code: 'VALIDATION_FAILED',
             message: 'Host athlete not found or does not belong to your team',
           },
         });

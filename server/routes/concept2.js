@@ -45,7 +45,7 @@ const validateRequest = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', details: errors.array() },
+      error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
     });
   }
   next();
@@ -397,7 +397,10 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     if (webhookSecret) {
       if (!signature) {
         logger.warn('Webhook missing signature header');
-        return res.status(401).json({ error: 'Missing signature' });
+        return res.status(401).json({
+          success: false,
+          error: { code: 'AUTH_REQUIRED', message: 'Missing signature' },
+        });
       }
 
       // Get raw body for signature verification
@@ -405,7 +408,10 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
 
       if (!verifyHmacSignature(rawBody, signature, webhookSecret)) {
         logger.warn('Webhook signature verification failed');
-        return res.status(401).json({ error: 'Invalid signature' });
+        return res.status(401).json({
+          success: false,
+          error: { code: 'AUTH_REQUIRED', message: 'Invalid signature' },
+        });
       }
     } else {
       logger.warn('CONCEPT2_WEBHOOK_SECRET not configured - skipping signature verification');
@@ -423,7 +429,10 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
 
       if (Math.abs(now - eventTime) > fiveMinutes) {
         logger.error('Webhook timestamp too old/future', { timestamp });
-        return res.status(401).json({ error: 'Request expired' });
+        return res.status(401).json({
+          success: false,
+          error: { code: 'AUTH_REQUIRED', message: 'Request expired' },
+        });
       }
     }
 
@@ -432,16 +441,16 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     const result = await handleWebhook(payload);
 
     if (result.success) {
-      res.status(200).json({ received: true });
+      res.status(200).json({ success: true, data: { received: true } });
     } else {
       logger.error('Webhook processing failed', { error: result.error });
-      res.status(200).json({ received: true, warning: result.error });
+      res.status(200).json({ success: true, data: { received: true, warning: result.error } });
     }
   } catch (error) {
     logger.error('Webhook handler error:', { error: error.message, stack: error.stack });
     // Always return 200 to prevent retries for processing errors
     // (signature errors return 401 above)
-    res.status(200).json({ received: true, error: error.message });
+    res.status(200).json({ success: true, data: { received: true, warning: error.message } });
   }
 });
 
@@ -523,7 +532,7 @@ router.post('/historical-import', authenticateToken, teamIsolation, async (req, 
       return res.status(400).json({
         success: false,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: 'VALIDATION_FAILED',
           message: 'Must provide either resultIds or date range (fromDate + toDate)',
         },
       });
@@ -631,7 +640,7 @@ router.put(
         return res.status(400).json({
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
+            code: 'VALIDATION_FAILED',
             message: 'workoutId and athleteId are required',
           },
         });

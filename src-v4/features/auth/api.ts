@@ -2,8 +2,7 @@
  * Auth API functions.
  * All calls use the shared axios instance with auth interceptor.
  */
-import { api } from '@/lib/api';
-import type { ApiResponse } from '@/types/api';
+import { apiClient } from '@/lib/api';
 
 // --- Request types ---
 
@@ -83,51 +82,39 @@ export interface SwitchTeamResponse {
 // --- API functions ---
 
 export async function loginWithCredentials(data: LoginRequest) {
-  const res = await api.post<ApiResponse<LoginResponse>>('/api/v1/auth/login', data);
-  return res.data.data;
+  return apiClient.post<LoginResponse>('/api/v1/auth/login', data);
 }
 
 export async function register(data: RegisterRequest) {
-  const res = await api.post<ApiResponse<{ user: AuthUser }>>('/api/v1/auth/register', data);
-  return res.data.data;
+  return apiClient.post<{ user: AuthUser }>('/api/v1/auth/register', data);
 }
 
 export async function refreshSession() {
-  const res = await api.post<ApiResponse<RefreshResponse>>('/api/v1/auth/refresh', null, {
+  return apiClient.post<RefreshResponse>('/api/v1/auth/refresh', null, {
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
   });
-  return res.data.data;
 }
 
 export async function logout() {
-  const res = await api.post<ApiResponse<{ message: string }>>('/api/v1/auth/logout');
-  return res.data.data;
+  return apiClient.post<{ message: string }>('/api/v1/auth/logout');
 }
 
 export async function getMe() {
-  const res = await api.get<ApiResponse<MeResponse>>('/api/v1/auth/me');
-  return res.data.data;
+  return apiClient.get<MeResponse>('/api/v1/auth/me');
 }
 
 export async function switchTeam(data: SwitchTeamRequest) {
-  const res = await api.post<ApiResponse<SwitchTeamResponse>>('/api/v1/auth/switch-team', data);
-  return res.data.data;
+  return apiClient.post<SwitchTeamResponse>('/api/v1/auth/switch-team', data);
 }
 
 export async function forgotPassword(data: ForgotPasswordRequest) {
-  const res = await api.post<ApiResponse<{ message: string }>>(
-    '/api/v1/auth/forgot-password',
-    data
-  );
-  return res.data;
+  return apiClient.post<{ message: string }>('/api/v1/auth/forgot-password', data);
 }
 
 export async function resetPassword(data: ResetPasswordRequest) {
-  const res = await api.post<ApiResponse<{ message: string }>>('/api/v1/auth/reset-password', data);
-  return res.data;
+  return apiClient.post<{ message: string }>('/api/v1/auth/reset-password', data);
 }
 
 export async function devLogin() {
-  const res = await api.post<ApiResponse<LoginResponse>>('/api/v1/auth/dev-login');
-  return res.data.data;
+  return apiClient.post<LoginResponse>('/api/v1/auth/dev-login');
 }

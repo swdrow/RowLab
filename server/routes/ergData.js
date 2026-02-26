@@ -34,10 +34,10 @@ router.get('/', async (req, res) => {
       orderBy: { testDate: 'desc' },
     });
 
-    res.json({ tests });
+    res.json({ success: true, data: { tests } });
   } catch (err) {
     logger.error('Get erg tests error', { error: err.message });
-    res.status(500).json({ error: 'Failed to fetch erg tests' });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to fetch erg tests' } });
   }
 });
 
@@ -61,13 +61,13 @@ router.get('/:id', async (req, res) => {
     });
 
     if (!test) {
-      return res.status(404).json({ error: 'Erg test not found' });
+      return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Erg test not found' } });
     }
 
-    res.json({ test });
+    res.json({ success: true, data: { test } });
   } catch (err) {
     logger.error('Get erg test error', { error: err.message });
-    res.status(500).json({ error: 'Failed to fetch erg test' });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to fetch erg test' } });
   }
 });
 
@@ -80,7 +80,7 @@ router.post('/', verifyToken, async (req, res) => {
     const { athleteId, testDate, testType, result, split, strokeRate, watts, notes } = req.body;
 
     if (!athleteId || !testDate || !testType || !result) {
-      return res.status(400).json({ error: 'Athlete, date, test type, and result are required' });
+      return res.status(400).json({ success: false, error: { code: 'VALIDATION_FAILED', message: 'Athlete, date, test type, and result are required' } });
     }
 
     const test = await prisma.ergTest.create({
@@ -108,7 +108,7 @@ router.post('/', verifyToken, async (req, res) => {
     res.status(201).json({ test });
   } catch (err) {
     logger.error('Create erg test error', { error: err.message });
-    res.status(500).json({ error: 'Failed to create erg test' });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to create erg test' } });
   }
 });
 
@@ -126,7 +126,7 @@ router.put('/:id', verifyToken, async (req, res) => {
     });
 
     if (!existing) {
-      return res.status(404).json({ error: 'Erg test not found' });
+      return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Erg test not found' } });
     }
 
     const test = await prisma.ergTest.update({
@@ -156,10 +156,10 @@ router.put('/:id', verifyToken, async (req, res) => {
       },
     });
 
-    res.json({ test });
+    res.json({ success: true, data: { test } });
   } catch (err) {
     logger.error('Update erg test error', { error: err.message });
-    res.status(500).json({ error: 'Failed to update erg test' });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to update erg test' } });
   }
 });
 
@@ -176,17 +176,17 @@ router.delete('/:id', verifyToken, async (req, res) => {
     });
 
     if (!existing) {
-      return res.status(404).json({ error: 'Erg test not found' });
+      return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Erg test not found' } });
     }
 
     await prisma.ergTest.delete({
       where: { id: testId },
     });
 
-    res.json({ message: 'Erg test deleted' });
+    res.json({ success: true, data: { message: 'Erg test deleted' } });
   } catch (err) {
     logger.error('Delete erg test error', { error: err.message });
-    res.status(500).json({ error: 'Failed to delete erg test' });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to delete erg test' } });
   }
 });
 
@@ -218,10 +218,10 @@ router.get('/athlete/:athleteId/history', async (req, res) => {
       },
     });
 
-    res.json({ tests });
+    res.json({ success: true, data: { tests } });
   } catch (err) {
     logger.error('Get erg history error', { error: err.message });
-    res.status(500).json({ error: 'Failed to fetch erg history' });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to fetch erg history' } });
   }
 });
 

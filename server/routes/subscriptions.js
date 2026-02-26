@@ -6,33 +6,39 @@ import logger from '../utils/logger.js';
 const router = express.Router();
 
 // Webhook needs raw body and no auth - must be BEFORE authenticateToken middleware
-router.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const sig = req.headers['stripe-signature'];
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
 
-    if (!sig) {
-      return res.status(400).json({ error: 'Missing stripe-signature header' });
-    }
-
-    if (!process.env.STRIPE_WEBHOOK_SECRET) {
-      logger.error('STRIPE_WEBHOOK_SECRET not configured');
-      return res.status(500).json({ error: 'Webhook not configured' });
-    }
-
-    try {
-      const result = await stripeService.handleWebhookEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
-      res.json({ received: true, ...result });
-    } catch (error) {
-      logger.error('Webhook error', { error: error.message });
-      res.status(400).json({ error: error.message });
-    }
+  if (!sig) {
+    return res
+      .status(400)
+      .json({
+        success: false,
+        error: { code: 'VALIDATION_FAILED', message: 'Missing stripe-signature header' },
+      });
   }
-);
+
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    logger.error('STRIPE_WEBHOOK_SECRET not configured');
+    return res
+      .status(500)
+      .json({ success: false, error: { code: 'SERVER_ERROR', message: 'Webhook not configured' } });
+  }
+
+  try {
+    const result = await stripeService.handleWebhookEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+    res.json({ success: true, data: { received: true, ...result } });
+  } catch (error) {
+    logger.error('Webhook error', { error: error.message });
+    res
+      .status(400)
+      .json({ success: false, error: { code: 'VALIDATION_FAILED', message: error.message } });
+  }
+});
 
 // All other routes need auth
 router.use(authenticateToken, requireTeam);
@@ -41,10 +47,15 @@ router.use(authenticateToken, requireTeam);
 router.get('/', async (req, res) => {
   try {
     const subscription = await stripeService.getSubscriptionStatus(req.user.activeTeamId);
-    res.json(subscription);
+    res.json({ success: true, data: subscription });
   } catch (error) {
     logger.error('Get subscription error', { error: error.message });
-    res.status(500).json({ error: 'Failed to get subscription status' });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to get subscription status' },
+      });
   }
 });
 
@@ -52,10 +63,15 @@ router.get('/', async (req, res) => {
 router.get('/plans', async (req, res) => {
   try {
     const plans = await stripeService.getAvailablePlans();
-    res.json(plans);
+    res.json({ success: true, data: plans });
   } catch (error) {
     logger.error('Get plans error', { error: error.message });
-    res.status(500).json({ error: 'Failed to get available plans' });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to get available plans' },
+      });
   }
 });
 
@@ -65,7 +81,12 @@ router.post('/checkout', requireRole(['OWNER']), async (req, res) => {
     const { priceId, successUrl, cancelUrl } = req.body;
 
     if (!priceId) {
-      return res.status(400).json({ error: 'priceId is required' });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: { code: 'VALIDATION_FAILED', message: 'priceId is required' },
+        });
     }
 
     const defaultSuccessUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/settings/billing?success=true`;
@@ -78,10 +99,15 @@ router.post('/checkout', requireRole(['OWNER']), async (req, res) => {
       cancelUrl || defaultCancelUrl
     );
 
-    res.json({ url });
+    res.json({ success: true, data: { url } });
   } catch (error) {
     logger.error('Create checkout session error', { error: error.message });
-    res.status(500).json({ error: 'Failed to create checkout session' });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to create checkout session' },
+      });
   }
 });
 
@@ -96,7 +122,12 @@ router.post('/portal', requireRole(['OWNER']), async (req, res) => {
     const subscription = await stripeService.getSubscription(req.user.activeTeamId);
 
     if (!subscription?.stripeCustomerId) {
-      return res.status(400).json({ error: 'No Stripe customer found for this team' });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: { code: 'VALIDATION_FAILED', message: 'No Stripe customer found for this team' },
+        });
     }
 
     const { url } = await stripeService.createPortalSession(
@@ -104,10 +135,15 @@ router.post('/portal', requireRole(['OWNER']), async (req, res) => {
       returnUrl || defaultReturnUrl
     );
 
-    res.json({ url });
+    res.json({ success: true, data: { url } });
   } catch (error) {
     logger.error('Create portal session error', { error: error.message });
-    res.status(500).json({ error: 'Failed to create billing portal session' });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to create billing portal session' },
+      });
   }
 });
 
@@ -116,15 +152,17 @@ router.post('/cancel', requireRole(['OWNER']), async (req, res) => {
   try {
     const { atPeriodEnd = true } = req.body;
 
-    const subscription = await stripeService.cancelSubscription(
-      req.user.activeTeamId,
-      atPeriodEnd
-    );
+    const subscription = await stripeService.cancelSubscription(req.user.activeTeamId, atPeriodEnd);
 
-    res.json(subscription);
+    res.json({ success: true, data: subscription });
   } catch (error) {
     logger.error('Cancel subscription error', { error: error.message });
-    res.status(500).json({ error: 'Failed to cancel subscription' });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to cancel subscription' },
+      });
   }
 });
 
@@ -132,10 +170,15 @@ router.post('/cancel', requireRole(['OWNER']), async (req, res) => {
 router.post('/reactivate', requireRole(['OWNER']), async (req, res) => {
   try {
     const subscription = await stripeService.reactivateSubscription(req.user.activeTeamId);
-    res.json(subscription);
+    res.json({ success: true, data: subscription });
   } catch (error) {
     logger.error('Reactivate subscription error', { error: error.message });
-    res.status(500).json({ error: 'Failed to reactivate subscription' });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Failed to reactivate subscription' },
+      });
   }
 });
 

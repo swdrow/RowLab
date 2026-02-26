@@ -19,7 +19,7 @@ const validateRequest = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', details: errors.array() },
+      error: { code: 'VALIDATION_FAILED', message: 'Validation failed', details: errors.array() },
     });
   }
   next();
@@ -48,9 +48,9 @@ router.get('/running', async (req, res) => {
     });
 
     clearTimeout(timeoutId);
-    res.json({ running: response.ok });
+    res.json({ success: true, data: { running: response.ok } });
   } catch (err) {
-    res.json({ running: false });
+    res.json({ success: true, data: { running: false } });
   }
 });
 
@@ -258,14 +258,14 @@ router.post('/chat', authenticateToken, aiChatLimiter, teamIsolation, async (req
   if (!message || typeof message !== 'string') {
     return res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', message: 'Message string is required' },
+      error: { code: 'VALIDATION_FAILED', message: 'Message string is required' },
     });
   }
 
   if (message.length > 2000) {
     return res.status(400).json({
       success: false,
-      error: { code: 'VALIDATION_ERROR', message: 'Message exceeds 2000 character limit' },
+      error: { code: 'VALIDATION_FAILED', message: 'Message exceeds 2000 character limit' },
     });
   }
 
@@ -349,7 +349,10 @@ router.post('/chat', authenticateToken, aiChatLimiter, teamIsolation, async (req
     if (!ollamaRes.ok) {
       const error = await ollamaRes.text();
       logger.error('Ollama error', { error });
-      return res.status(502).json({ error: 'AI service error', details: error });
+      return res.status(502).json({
+        success: false,
+        error: { code: 'SERVICE_UNAVAILABLE', message: 'AI service error', details: [error] },
+      });
     }
 
     if (stream) {
@@ -389,11 +392,14 @@ router.post('/chat', authenticateToken, aiChatLimiter, teamIsolation, async (req
     } else {
       // Non-streaming response
       const data = await ollamaRes.json();
-      res.json({ response: data.response, done: true });
+      res.json({ success: true, data: { response: data.response, done: true } });
     }
   } catch (err) {
     logger.error('AI chat error', { error: err.message });
-    res.status(500).json({ error: 'Failed to connect to AI service', details: err.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVICE_UNAVAILABLE', message: 'Failed to connect to AI service' },
+    });
   }
 });
 
@@ -402,12 +408,17 @@ router.post('/chat', authenticateToken, aiChatLimiter, teamIsolation, async (req
  */
 router.post('/pull-model', authenticateToken, async (req, res) => {
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required' });
+    return res
+      .status(403)
+      .json({ success: false, error: { code: 'FORBIDDEN', message: 'Admin access required' } });
   }
 
   const { model } = req.body;
   if (!model) {
-    return res.status(400).json({ error: 'Model name required' });
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_FAILED', message: 'Model name required' },
+    });
   }
 
   try {
@@ -418,13 +429,23 @@ router.post('/pull-model', authenticateToken, async (req, res) => {
     });
 
     if (ollamaRes.ok) {
-      res.json({ success: true, message: `Model ${model} pulled successfully` });
+      res.json({ success: true, data: { message: `Model ${model} pulled successfully` } });
     } else {
       const error = await ollamaRes.text();
-      res.status(502).json({ error: 'Failed to pull model', details: error });
+      res.status(502).json({
+        success: false,
+        error: { code: 'SERVICE_UNAVAILABLE', message: 'Failed to pull model', details: [error] },
+      });
     }
   } catch (err) {
-    res.status(500).json({ error: 'Failed to connect to Ollama', details: err.message });
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVICE_UNAVAILABLE',
+        message: 'Failed to connect to Ollama',
+        details: [err.message],
+      },
+    });
   }
 });
 
@@ -444,7 +465,7 @@ router.post(
     if (!model || typeof model !== 'string') {
       return res.status(400).json({
         success: false,
-        error: { code: 'VALIDATION_ERROR', message: 'model string is required' },
+        error: { code: 'VALIDATION_FAILED', message: 'model string is required' },
       });
     }
 
