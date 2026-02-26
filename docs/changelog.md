@@ -9,6 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.10] - 2026-02-26
+
+### Added
+- Phase 63: Real data search in command palette (athletes, workouts, teams)
+- Phase 63: Two-panel command palette with grouped results and preview pane
+- Phase 62: Change password and account deletion flows
+- Phase 62: Notification and privacy preferences wired to database
+- Phase 61: ErrorBoundary and route-level error components
+- Phase 61: Shared ErrorState component with retry support
+- Phase 59: Corner brackets, diamond markers, and warm rules across key pages
+- Phase 59: Fancy section headers on dashboard and profile
+
+### Changed
+- Phase 60: Standardized page transitions, respect prefers-reduced-motion
+- Phase 58: Enforced font-family rules (Space Grotesk, Inter, Space Mono)
+- Phase 57: Migrated GlassCard to void-surface design tokens
+- Phase 57: Eliminated banned CSS patterns (bg-gray-*, gradient borders)
+- Phase 56: Fixed 62 TypeScript errors, configured ESLint for src-v4/
+
+### Fixed
+- Phase 55: React hooks ordering violation
+- Phase 55: Team API response shape mismatches
+- Phase 55: Race conditions in concurrent API calls
+- Phase 54: 2 CRITICAL and 4 HIGH security vulnerabilities
+
+### Removed
+- Phase 58: Replaced lucide-react with design-system-compliant icons
+- Phase 60: Removed banned staggered and counter animations
+
 ### v4.0 (In Progress) - Canvas Design System
 
 **Milestone:** v2.1 Feature Expansion
