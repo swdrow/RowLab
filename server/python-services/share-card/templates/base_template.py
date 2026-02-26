@@ -267,9 +267,9 @@ def draw_horizontal_rule(ctx, x, y, width, color, thickness=2):
     ctx.fill()
 
 
-def draw_rowlab_branding(ctx, width, height, format_key, options):
+def draw_oarbit_branding(ctx, width, height, format_key, options):
     """
-    Draw "Made with RowLab" attribution
+    Draw "Made with oarbit" attribution
 
     Args:
         format_key: '1:1' or '9:16' (determines positioning)
@@ -289,7 +289,7 @@ def draw_rowlab_branding(ctx, width, height, format_key, options):
     # Draw branding text
     draw_text(
         ctx,
-        "Made with RowLab",
+        "Made with oarbit",
         "IBM Plex Sans",
         28,
         x, y,
@@ -391,7 +391,7 @@ def render_test_card(format_key, workout_data=None, options=None):
     draw_grain_texture(ctx, width, height, opacity=0.03)
 
     # Add branding
-    draw_rowlab_branding(ctx, width, height, format_key, options)
+    draw_oarbit_branding(ctx, width, height, format_key, options)
 
     # Convert to PNG bytes
     return surface_to_png_bytes(surface)

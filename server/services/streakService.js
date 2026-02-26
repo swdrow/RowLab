@@ -5,9 +5,9 @@ import logger from '../utils/logger.js';
  * Default grace period settings
  */
 const DEFAULT_GRACE_CONFIG = {
-  attendanceGraceDays: 2,  // Allow 2 misses before breaking streak
-  workoutGraceDays: 3,     // Allow 3 days between workouts
-  prGraceDays: 30,         // 30 days to beat a PR
+  attendanceGraceDays: 2, // Allow 2 misses before breaking streak
+  workoutGraceDays: 3, // Allow 3 days between workouts
+  prGraceDays: 30, // 30 days to beat a PR
 };
 
 /**
@@ -62,7 +62,7 @@ export async function getAttendanceStreak(athleteId, graceDays = 2) {
         streak_end,
         streak_length::INTEGER
       FROM streaks
-      WHERE streak_end >= CURRENT_DATE - INTERVAL '${graceDays} days'
+      WHERE streak_end >= CURRENT_DATE - (${graceDays} * INTERVAL '1 day')
       ORDER BY streak_length DESC
       LIMIT 1
     `;
@@ -169,7 +169,7 @@ export async function getWorkoutStreak(athleteId, graceDays = 3) {
         streak_end,
         streak_length::INTEGER
       FROM streaks
-      WHERE streak_end >= CURRENT_DATE - INTERVAL '${graceDays} days'
+      WHERE streak_end >= CURRENT_DATE - (${graceDays} * INTERVAL '1 day')
       ORDER BY streak_length DESC
       LIMIT 1
     `;
@@ -303,7 +303,7 @@ export async function getStreakSummary(athleteId, teamId) {
   ]);
 
   const streaks = [attendance, workout, pr];
-  const activeCount = streaks.filter(s => s.isActive).length;
+  const activeCount = streaks.filter((s) => s.isActive).length;
 
   return {
     streaks,

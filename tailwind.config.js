@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       // ========================================
-      // ROWLAB Design System
+      // oarbit Design System
       // Deep slate + Blue accent + Water/Dawn tones
       // Evokes: Early morning on the water, technical precision
       // ========================================

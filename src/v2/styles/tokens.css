@@ -257,6 +257,10 @@
 
   /* All tokens already set for dark in :root */
   /* This selector ensures dark is default */
+
+  /* Default text color and background for V2 scope */
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-base);
 }
 
 /* ========================================

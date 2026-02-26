@@ -35,10 +35,10 @@ If applicable, add screenshots to help explain your problem.
 
 Please complete the following information:
 
-- **RowLab Version:** [e.g., 2.0.0]
-- **Node.js Version:** [e.g., 18.17.0]
-- **Database:** [e.g., PostgreSQL 14.5]
-- **Browser:** [e.g., Chrome 120, Safari 17]
+- **RowLab Version:** [e.g., 4.0.0, or commit hash]
+- **Node.js Version:** [e.g., 18.17.0, 20.x]
+- **Database:** [e.g., PostgreSQL 14.5, 16.x]
+- **Browser:** [e.g., Chrome 120, Firefox 121, Safari 17]
 - **OS:** [e.g., macOS 14.0, Ubuntu 22.04, Windows 11]
 - **Deployment:** [e.g., self-hosted, Docker, local development]
 

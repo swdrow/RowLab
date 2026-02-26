@@ -36,8 +36,8 @@ export function SeatRaceActivityCard({ activity }: SeatRaceActivityCardProps) {
     >
       <div className="flex items-start gap-3">
         {/* Icon */}
-        <div className="w-10 h-10 rounded-full bg-violet-400/10 flex items-center justify-center shrink-0">
-          <ArrowsLeftRight className="w-5 h-5 text-violet-400" weight="duotone" />
+        <div className="w-10 h-10 rounded-full bg-chart-2/10 flex items-center justify-center shrink-0">
+          <ArrowsLeftRight className="w-5 h-5 text-chart-2" weight="duotone" />
         </div>
 
         {/* Content */}
@@ -56,7 +56,11 @@ export function SeatRaceActivityCard({ activity }: SeatRaceActivityCardProps) {
               <>
                 <span
                   className={`font-medium ${
-                    isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : 'text-txt-muted'
+                    isPositive
+                      ? 'text-data-excellent'
+                      : isNegative
+                        ? 'text-data-poor'
+                        : 'text-txt-muted'
                   }`}
                 >
                   {isPositive ? '+' : ''}
@@ -84,10 +88,10 @@ export function SeatRaceActivityCard({ activity }: SeatRaceActivityCardProps) {
           <div
             className={`shrink-0 flex items-center gap-1 px-2 py-1 rounded-md ${
               isPositive
-                ? 'bg-green-400/10 text-green-400 border border-green-400/20'
+                ? 'bg-data-excellent/10 text-data-excellent border border-data-excellent/20'
                 : isNegative
-                  ? 'bg-red-400/10 text-red-400 border border-red-400/20'
-                  : 'bg-bg-surface-elevated/30 text-txt-tertiary border border-bdr-default/20'
+                  ? 'bg-data-poor/10 text-data-poor border border-data-poor/20'
+                  : 'bg-surface-elevated/30 text-txt-tertiary border border-bdr-default/20'
             }`}
           >
             {isPositive ? (

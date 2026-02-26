@@ -14,10 +14,10 @@ import {
   getC2Status,
   getMyC2Status,
   disconnectMyC2,
-  parseState,
   handleWebhook,
   connectAthlete,
 } from '../services/concept2Service.js';
+import { createSignedOAuthState, verifyOAuthState } from '../utils/oauthState.js';
 import {
   syncUserWorkouts,
   browseC2Logbook,
@@ -129,7 +129,7 @@ router.get('/callback', async (req, res) => {
             <h1>${success ? 'Connected!' : 'Connection Failed'}</h1>
             <p>${success ? 'You can close this window.' : escapeHtml(data.error) || 'Please try again.'}</p>
           </div>
-          <script>
+          <script nonce="${res.locals.cspNonce}">
             // Send message to opener window
             // Message is base64 encoded to prevent XSS
             if (window.opener) {
@@ -165,8 +165,18 @@ router.get('/callback', async (req, res) => {
       return sendPopupResponse(false, { error: 'Missing required parameters' });
     }
 
-    // Parse state to get userId
-    const { userId } = parseState(state);
+    // Verify HMAC-signed state to prevent CSRF via forged state parameters
+    let stateData;
+    try {
+      stateData = verifyOAuthState(state);
+    } catch (err) {
+      console.warn('Concept2 OAuth: state verification failed:', err.message);
+      return res.status(403).json({
+        success: false,
+        error: { code: 'INVALID_STATE', message: 'OAuth state verification failed' },
+      });
+    }
+    const { userId } = stateData;
 
     if (!userId) {
       return sendPopupResponse(false, { error: 'Invalid state parameter' });
@@ -444,13 +454,8 @@ router.post('/connect', authenticateToken, teamIsolation, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Generate state with user ID and timestamp
-    const state = Buffer.from(
-      JSON.stringify({
-        userId,
-        nonce: Date.now().toString(36),
-      })
-    ).toString('base64url');
+    // Generate HMAC-signed state for CSRF protection
+    const state = createSignedOAuthState({ userId });
 
     const url = generateAuthUrl(state);
 

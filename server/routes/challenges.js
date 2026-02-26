@@ -22,18 +22,24 @@ const createChallengeSchema = z.object({
   endDate: z.string().datetime(),
   metric: z.enum(['meters', 'workouts', 'attendance', 'composite']),
   description: z.string().max(500).optional(),
-  formula: z.object({
-    weights: z.object({
-      meters: z.number().optional(),
-      workouts: z.number().optional(),
-      attendance: z.number().optional(),
-    }).optional(),
-  }).optional(),
-  handicap: z.object({
-    enabled: z.boolean(),
-    type: z.string().optional(),
-    adjustments: z.record(z.number()).optional(),
-  }).optional(),
+  formula: z
+    .object({
+      weights: z
+        .object({
+          meters: z.number().optional(),
+          workouts: z.number().optional(),
+          attendance: z.number().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+  handicap: z
+    .object({
+      enabled: z.boolean(),
+      type: z.string().optional(),
+      adjustments: z.record(z.number()).optional(),
+    })
+    .optional(),
   templateId: z.string().optional(),
   athleteIds: z.array(z.string()).optional(),
 });
@@ -54,29 +60,25 @@ const statusQuerySchema = z.object({
  * GET /api/v1/challenges
  * Get all challenges for team
  */
-router.get(
-  '/',
-  validateQuery(statusQuerySchema),
-  async (req, res) => {
-    try {
-      const { activeTeamId } = req.user;
-      const { status } = req.query;
+router.get('/', validateQuery(statusQuerySchema), async (req, res) => {
+  try {
+    const { activeTeamId } = req.user;
+    const { status } = req.query;
 
-      const challenges = await challengeService.getAllChallenges(activeTeamId, status);
+    const challenges = await challengeService.getAllChallenges(activeTeamId, status);
 
-      res.json({
-        success: true,
-        data: { challenges },
-      });
-    } catch (error) {
-      logger.error('Failed to fetch challenges', { error: error.message });
-      res.status(500).json({
-        success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to fetch challenges' },
-      });
-    }
+    res.json({
+      success: true,
+      data: { challenges },
+    });
+  } catch (error) {
+    logger.error('Failed to fetch challenges', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to fetch challenges' },
+    });
   }
-);
+});
 
 /**
  * GET /api/v1/challenges/active
@@ -116,239 +118,211 @@ router.get('/templates', async (req, res) => {
  * GET /api/v1/challenges/:id
  * Get challenge details
  */
-router.get(
-  '/:id',
-  validateParams(challengeIdSchema),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
+router.get('/:id', validateParams(challengeIdSchema), async (req, res) => {
+  try {
+    const { id } = req.params;
 
-      const challenge = await prisma.challenge.findUnique({
-        where: { id },
-        include: {
-          _count: {
-            select: { participants: true },
-          },
+    const challenge = await prisma.challenge.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { participants: true },
         },
-      });
+      },
+    });
 
-      if (!challenge) {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: 'Challenge not found' },
-        });
-      }
-
-      res.json({
-        success: true,
-        data: { challenge },
-      });
-    } catch (error) {
-      logger.error('Failed to fetch challenge', { error: error.message });
-      res.status(500).json({
+    if (!challenge) {
+      return res.status(404).json({
         success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to fetch challenge' },
+        error: { code: 'NOT_FOUND', message: 'Challenge not found' },
       });
     }
+
+    res.json({
+      success: true,
+      data: { challenge },
+    });
+  } catch (error) {
+    logger.error('Failed to fetch challenge', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to fetch challenge' },
+    });
   }
-);
+});
 
 /**
  * GET /api/v1/challenges/:id/leaderboard
  * Get challenge leaderboard
  */
-router.get(
-  '/:id/leaderboard',
-  validateParams(challengeIdSchema),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
+router.get('/:id/leaderboard', validateParams(challengeIdSchema), async (req, res) => {
+  try {
+    const { id } = req.params;
 
-      const result = await challengeService.getLeaderboard(id);
+    const result = await challengeService.getLeaderboard(id);
 
-      res.json({
-        success: true,
-        data: result,
-      });
-    } catch (error) {
-      if (error.message === 'Challenge not found') {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'NOT_FOUND', message: 'Challenge not found' },
-        });
-      }
-
-      logger.error('Failed to fetch leaderboard', { error: error.message });
-      res.status(500).json({
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    if (error.message === 'Challenge not found') {
+      return res.status(404).json({
         success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to fetch leaderboard' },
+        error: { code: 'NOT_FOUND', message: 'Challenge not found' },
       });
     }
+
+    logger.error('Failed to fetch leaderboard', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to fetch leaderboard' },
+    });
   }
-);
+});
 
 /**
  * POST /api/v1/challenges
  * Create a new challenge (coach/captain only)
  */
-router.post(
-  '/',
-  validateBody(createChallengeSchema),
-  async (req, res) => {
-    try {
-      const { activeTeamId, activeTeamRole } = req.user;
+router.post('/', validateBody(createChallengeSchema), async (req, res) => {
+  try {
+    const { activeTeamId, activeTeamRole } = req.user;
 
-      // Check permission (per CONTEXT.md: coaches and captains)
-      if (!['OWNER', 'COACH'].includes(activeTeamRole)) {
-        // Check if user is a captain
-        const isCaptain = await prisma.athlete.findFirst({
-          where: {
-            userId: req.user.id,
-            teamId: activeTeamId,
-            // Would need a captain field in Athlete model
-          },
+    // Check permission (per CONTEXT.md: coaches and captains)
+    if (!['OWNER', 'ADMIN', 'COACH'].includes(activeTeamRole)) {
+      // Check if user is a captain
+      const isCaptain = await prisma.athlete.findFirst({
+        where: {
+          userId: req.user.id,
+          teamId: activeTeamId,
+          // Would need a captain field in Athlete model
+        },
+      });
+
+      if (!isCaptain) {
+        return res.status(403).json({
+          success: false,
+          error: { code: 'FORBIDDEN', message: 'Only coaches and captains can create challenges' },
         });
-
-        if (!isCaptain) {
-          return res.status(403).json({
-            success: false,
-            error: { code: 'FORBIDDEN', message: 'Only coaches and captains can create challenges' },
-          });
-        }
       }
-
-      const challenge = await challengeService.createChallenge(
-        activeTeamId,
-        req.user.id,
-        req.body
-      );
-
-      res.status(201).json({
-        success: true,
-        data: { challenge },
-      });
-    } catch (error) {
-      logger.error('Failed to create challenge', { error: error.message });
-      res.status(500).json({
-        success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to create challenge' },
-      });
     }
+
+    const challenge = await challengeService.createChallenge(activeTeamId, req.user.id, req.body);
+
+    res.status(201).json({
+      success: true,
+      data: { challenge },
+    });
+  } catch (error) {
+    logger.error('Failed to create challenge', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to create challenge' },
+    });
   }
-);
+});
 
 /**
  * POST /api/v1/challenges/:id/join
  * Join a challenge
  */
-router.post(
-  '/:id/join',
-  validateParams(challengeIdSchema),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { activeTeamId } = req.user;
+router.post('/:id/join', validateParams(challengeIdSchema), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { activeTeamId } = req.user;
 
-      const athlete = await prisma.athlete.findFirst({
-        where: { userId: req.user.id, teamId: activeTeamId },
-      });
+    const athlete = await prisma.athlete.findFirst({
+      where: { userId: req.user.id, teamId: activeTeamId },
+    });
 
-      if (!athlete) {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'ATHLETE_NOT_FOUND', message: 'Athlete profile not found' },
-        });
-      }
-
-      await challengeService.joinChallenge(id, athlete.id);
-
-      res.json({
-        success: true,
-        data: { joined: true },
-      });
-    } catch (error) {
-      if (error.message === 'Already participating') {
-        return res.status(400).json({
-          success: false,
-          error: { code: 'ALREADY_JOINED', message: 'Already participating in this challenge' },
-        });
-      }
-
-      logger.error('Failed to join challenge', { error: error.message });
-      res.status(500).json({
+    if (!athlete) {
+      return res.status(404).json({
         success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to join challenge' },
+        error: { code: 'ATHLETE_NOT_FOUND', message: 'Athlete profile not found' },
       });
     }
+
+    await challengeService.joinChallenge(id, athlete.id);
+
+    res.json({
+      success: true,
+      data: { joined: true },
+    });
+  } catch (error) {
+    if (error.message === 'Already participating') {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'ALREADY_JOINED', message: 'Already participating in this challenge' },
+      });
+    }
+
+    logger.error('Failed to join challenge', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to join challenge' },
+    });
   }
-);
+});
 
 /**
  * POST /api/v1/challenges/:id/leave
  * Leave a challenge
  */
-router.post(
-  '/:id/leave',
-  validateParams(challengeIdSchema),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { activeTeamId } = req.user;
+router.post('/:id/leave', validateParams(challengeIdSchema), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { activeTeamId } = req.user;
 
-      const athlete = await prisma.athlete.findFirst({
-        where: { userId: req.user.id, teamId: activeTeamId },
-      });
+    const athlete = await prisma.athlete.findFirst({
+      where: { userId: req.user.id, teamId: activeTeamId },
+    });
 
-      if (!athlete) {
-        return res.status(404).json({
-          success: false,
-          error: { code: 'ATHLETE_NOT_FOUND', message: 'Athlete profile not found' },
-        });
-      }
-
-      await challengeService.leaveChallenge(id, athlete.id);
-
-      res.json({
-        success: true,
-        data: { left: true },
-      });
-    } catch (error) {
-      logger.error('Failed to leave challenge', { error: error.message });
-      res.status(500).json({
+    if (!athlete) {
+      return res.status(404).json({
         success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to leave challenge' },
+        error: { code: 'ATHLETE_NOT_FOUND', message: 'Athlete profile not found' },
       });
     }
+
+    await challengeService.leaveChallenge(id, athlete.id);
+
+    res.json({
+      success: true,
+      data: { left: true },
+    });
+  } catch (error) {
+    logger.error('Failed to leave challenge', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to leave challenge' },
+    });
   }
-);
+});
 
 /**
  * POST /api/v1/challenges/:id/refresh
  * Manually refresh leaderboard
  */
-router.post(
-  '/:id/refresh',
-  validateParams(challengeIdSchema),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
+router.post('/:id/refresh', validateParams(challengeIdSchema), async (req, res) => {
+  try {
+    const { id } = req.params;
 
-      await challengeService.updateLeaderboard(id);
-      const result = await challengeService.getLeaderboard(id);
+    await challengeService.updateLeaderboard(id);
+    const result = await challengeService.getLeaderboard(id);
 
-      res.json({
-        success: true,
-        data: result,
-      });
-    } catch (error) {
-      logger.error('Failed to refresh leaderboard', { error: error.message });
-      res.status(500).json({
-        success: false,
-        error: { code: 'SERVER_ERROR', message: 'Failed to refresh leaderboard' },
-      });
-    }
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    logger.error('Failed to refresh leaderboard', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to refresh leaderboard' },
+    });
   }
-);
+});
 
 /**
  * DELETE /api/v1/challenges/:id

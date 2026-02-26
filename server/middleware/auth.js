@@ -55,9 +55,25 @@ export async function optionalAuth(req, res, next) {
 }
 
 /**
- * Require specific roles
+ * Role hierarchy for permission checks.
+ * Higher number = more permissions.
+ */
+const ROLE_HIERARCHY = { OWNER: 5, ADMIN: 4, COACH: 3, COXSWAIN: 2, ATHLETE: 1 };
+
+/**
+ * Require specific roles.
+ *
+ * Uses role hierarchy: if a route requires COACH, ADMIN and OWNER
+ * automatically qualify because they outrank COACH.
+ * Accepts individual strings or an array as the first argument.
  */
 export function requireRole(...roles) {
+  // Flatten in case someone passes an array: requireRole(['OWNER', 'COACH'])
+  const flatRoles = roles.flat();
+
+  // Compute the minimum required level from the listed roles
+  const minLevel = Math.min(...flatRoles.map((r) => ROLE_HIERARCHY[r] ?? 999));
+
   return (req, res, next) => {
     if (!req.user.activeTeamRole) {
       return res.status(403).json({
@@ -66,7 +82,10 @@ export function requireRole(...roles) {
       });
     }
 
-    if (!roles.includes(req.user.activeTeamRole)) {
+    const userLevel = ROLE_HIERARCHY[req.user.activeTeamRole] ?? 0;
+
+    // User qualifies if their role level >= minimum required level
+    if (userLevel < minLevel) {
       return res.status(403).json({
         success: false,
         error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },

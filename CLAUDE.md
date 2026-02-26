@@ -1,4 +1,4 @@
-# RowLab
+# oarbit
 
 Rowing lineup management SaaS - React 18 frontend + Express backend + PostgreSQL/Prisma.
 
@@ -104,13 +104,14 @@ This is a one-person project. For multi-user features:
 
 ### Design System Compliance
 
-Before any UI work, read `.claude/design-standard.md`. Key rules:
+Before any UI work, read the oarbit design spec: `docs/plans/2026-02-21-oarbit-rebrand-design.md`. Quick reference: `.claude/design-standard.md`. Key rules:
 
-- Use CSS variable-backed tokens, never hardcoded hex in components
-- Animations: use SPRING_CONFIG/SPRING_FAST/SPRING_GENTLE from `src/v2/lib/animations.ts`
+- All colors oklch — never hex, never standard Tailwind colors
+- Void-surface panels with shadow-card — NO glass morphism, NO backdrop-filter on cards
+- Typography: Space Grotesk (display), Inter (body), Space Mono (data)
+- Four accents with defined roles: teal (interactive), sand (warm emphasis), coral (alerts), ivory (light)
 - Loading states: skeleton loaders with shimmer, NEVER spinners
-- Banned: `bg-gray-900`, `border-gray-700`, `shadow-lg`, `rounded-full` on buttons, standard 3-col grids
-- Required: glass cards, gradient borders, text gradients per design standard
+- Banned: `bg-gray-*`, pill buttons, staggered animations, animated counters, gradient borders, generic icon libraries
 
 ### Documentation as You Go
 
@@ -213,7 +214,69 @@ GSD workflow files in `.planning/`:
 ## Custom Agents
 
 - `code-reviewer` — Reviews changes against design system, integrity rules, accessibility
-- `doc-updater` — Keeps STATE.md and ROADMAP.md in sync with implementation progress
+- `doc-keeper-planning` — Background Haiku agent: keeps STATE.md, ROADMAP.md, REQUIREMENTS.md current
+- `doc-keeper-public` — Background Sonnet agent: keeps README, changelog, technical docs, and versioning current
+- `doc-updater` — ~~DEPRECATED~~ Superseded by doc-keeper system
+
+## Doc-Keeper — Automatic Background Documentation
+
+Doc-Keeper keeps all documentation current by spawning background agents at checkpoint moments. Two tiers with different models handle different doc scopes.
+
+**Design:** `docs/plans/2026-02-26-doc-keeper-design.md`
+
+### When to Spawn
+
+**After every git commit or GSD plan completion — Tier 1 only (Haiku):**
+
+Spawn via Task tool:
+- `subagent_type: "general-purpose"`
+- `model: "haiku"`
+- `run_in_background: true`
+- `name: "doc-keeper-planning"`
+- Prompt: Tell it to read `.claude/agents/doc-keeper-planning.md` for instructions, then provide:
+  - Trigger: `commit` or `plan-complete`
+  - Git diff summary (short description of what changed)
+  - Files modified (list)
+  - Current phase number
+  - Current version from package.json
+
+**After phase completion, verification, or branch finishing — Both tiers:**
+
+Spawn Tier 1 (Haiku) as above, PLUS Tier 2-3 (Sonnet):
+- `subagent_type: "general-purpose"`
+- `model: "sonnet"`
+- `run_in_background: true`
+- `name: "doc-keeper-public"`
+- Prompt: Tell it to read `.claude/agents/doc-keeper-public.md` for instructions, then provide:
+  - Trigger: `phase-complete`, `verification-pass`, or `branch-finishing`
+  - Git diff summary
+  - Files modified
+  - Current phase number
+  - Current version from package.json
+  - Version bump needed: `patch`, `minor`, or `major`
+  - Changelog since last bump: git log --oneline output since last version tag
+
+**After milestone completion — Tier 2-3 only (Sonnet):**
+
+Spawn the Sonnet agent with `milestone-complete` trigger and `major` version bump.
+
+**Before session end (when /session-log runs) — Both tiers:**
+
+Spawn both agents with `session-end` trigger as a final documentation sweep.
+
+### Model Selection
+
+| Tier | Model | Speed | Scope |
+|------|-------|-------|-------|
+| Tier 1 | Haiku | ~3-5s | STATE.md, ROADMAP.md, REQUIREMENTS.md, TODO audit |
+| Tier 2-3 | Sonnet | ~10-20s | README.md, changelog, package.json version, technical docs |
+
+### Rules
+
+- Both agents run in background — never block development work
+- Both agents are documentation-only — they never modify source code
+- If an agent reports warnings (e.g., bare TODOs), address them before the next commit
+- The Sonnet agent will suggest git tags — confirm and run them manually when ready
 
 ---
 

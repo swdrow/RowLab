@@ -2,7 +2,7 @@
  * FIT File Parser Service
  *
  * Parses Garmin, Polar, Suunto, and other FIT format files
- * and converts them to RowLab workout format.
+ * and converts them to oarbit workout format.
  */
 
 import FitParser from 'fit-file-parser';
@@ -130,7 +130,7 @@ function extractWorkoutData(fitData) {
 }
 
 /**
- * Map FIT sport type to RowLab workout type
+ * Map FIT sport type to oarbit workout type
  */
 function mapSportToWorkoutType(sport, subSport) {
   // Sport codes from FIT SDK
@@ -234,9 +234,9 @@ export function validateFitFile(buffer) {
 }
 
 /**
- * Convert parsed workout to RowLab workout format for database
+ * Convert parsed workout to oarbit workout format for database
  */
-export function toRowLabWorkout(parsedData, userId, teamId, athleteId = null) {
+export function toOarbitWorkout(parsedData, userId, teamId, athleteId = null) {
   return {
     userId,
     teamId,
@@ -267,5 +267,5 @@ export function toRowLabWorkout(parsedData, userId, teamId, athleteId = null) {
 export default {
   parseFitFile,
   validateFitFile,
-  toRowLabWorkout,
+  toOarbitWorkout,
 };

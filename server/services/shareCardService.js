@@ -543,7 +543,7 @@ function generateMetadata(cardType, workoutData, athleteName) {
     default:
       return {
         title: 'Rowing Performance',
-        description: 'RowLab workout share',
+        description: 'oarbit workout share',
       };
   }
 }

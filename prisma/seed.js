@@ -20,7 +20,7 @@ async function main() {
 
   // Upsert admin user - always ensure password is correct
   const existingAdmin = await prisma.user.findFirst({
-    where: { OR: [{ username: 'swd' }, { email: 'swd@rowlab.net' }, { isAdmin: true }] }
+    where: { OR: [{ username: 'swd' }, { email: 'swd@oarbit.net' }, { isAdmin: true }] }
   });
 
   let user;
@@ -29,7 +29,7 @@ async function main() {
     user = await prisma.user.update({
       where: { id: existingAdmin.id },
       data: {
-        email: 'swd@rowlab.net',
+        email: 'swd@oarbit.net',
         username: 'swd',
         passwordHash: hashedPassword,
         isAdmin: true
@@ -48,7 +48,7 @@ async function main() {
   } else {
     user = await prisma.user.create({
       data: {
-        email: 'swd@rowlab.net',
+        email: 'swd@oarbit.net',
         username: 'swd',
         name: 'Admin',
         passwordHash: hashedPassword,

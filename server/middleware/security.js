@@ -1,5 +1,5 @@
 /**
- * Security Middleware for RowLab API
+ * Security Middleware for oarbit API
  *
  * Provides:
  * - Helmet for security headers
@@ -14,15 +14,23 @@ import cors from 'cors';
 
 /**
  * Helmet configuration for security headers
+ *
+ * CSP uses per-request nonces for scriptSrc instead of 'unsafe-inline'.
+ * The nonce is generated in server/index.js middleware (res.locals.cspNonce)
+ * and must be set BEFORE this middleware runs.
+ *
+ * In development, CSP is report-only to avoid breaking Vite HMR scripts.
+ * In production, CSP is enforced.
  */
 export const securityHeaders = helmet({
   contentSecurityPolicy: {
+    reportOnly: process.env.NODE_ENV !== 'production',
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
       fontSrc: ["'self'", 'fonts.gstatic.com'],
       imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.cspNonce}'`],
       connectSrc: [
         "'self'",
         'http://localhost:*',
@@ -45,8 +53,8 @@ export const corsOptions = cors({
   origin:
     process.env.NODE_ENV === 'production'
       ? [
-          'https://rowlab.net',
-          'https://www.rowlab.net',
+          'https://oarbit.net',
+          'https://www.oarbit.net',
           'http://100.86.4.57:3001',
           'http://10.0.0.17:3001',
         ]
@@ -57,7 +65,7 @@ export const corsOptions = cors({
           'http://100.86.4.57:3001',
         ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
   maxAge: 86400, // 24 hours
 });
@@ -71,40 +79,25 @@ export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: isDev ? 500 : 100,
   message: {
-    error: 'Too many requests',
-    message: 'Please try again later',
-    retryAfter: '15 minutes',
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many requests, try again later' },
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => {
-    // Skip rate limiting for static assets and dev-login
-    return (
-      req.path.startsWith('/assets') ||
-      req.path.endsWith('.js') ||
-      req.path.endsWith('.css') ||
-      req.path.includes('/dev-login')
-    );
-  },
 });
 
 /**
  * Auth rate limiter - stricter limits for login attempts (10 in prod, 200 in dev)
  */
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 60 * 1000, // 1 minute
   max: isDev ? 200 : 10,
   message: {
-    error: 'Too many login attempts',
-    message: 'Account temporarily locked. Please try again later.',
-    retryAfter: '15 minutes',
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many login attempts, try again later' },
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => {
-    // Dev-login is localhost-only and already IP-gated, skip rate limiting
-    return req.path === '/dev-login';
-  },
 });
 
 /**

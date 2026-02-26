@@ -137,16 +137,16 @@ router.get('/og/:shareId', async (req, res) => {
     const card = shareCard; // getShareCard returns the raw Prisma record
 
     // Construct URLs
-    const baseUrl = process.env.BASE_URL || 'https://rowlab.net';
+    const baseUrl = process.env.BASE_URL || 'https://oarbit.net';
     const ogImageUrl = card.url.startsWith('http') ? card.url : `${baseUrl}${card.url}`;
     const ogUrl = `${baseUrl}/share/${card.id}`;
     const ogTitle = escapeHtml(
       card.metadata?.athleteName
-        ? `${card.metadata.athleteName} - ${card.metadata.workoutTitle || 'Workout'} | RowLab`
-        : 'Workout Share Card | RowLab'
+        ? `${card.metadata.athleteName} - ${card.metadata.workoutTitle || 'Workout'} | oarbit`
+        : 'Workout Share Card | oarbit'
     );
     const ogDescription = escapeHtml(
-      card.metadata?.description || `Check out this ${card.cardType.replace(/_/g, ' ')} from RowLab`
+      card.metadata?.description || `Check out this ${card.cardType.replace(/_/g, ' ')} from oarbit`
     );
     const ogImageHeight = card.format === '1:1' ? '2160' : '3840';
 

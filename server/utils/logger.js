@@ -1,5 +1,5 @@
 /**
- * Winston Logger Configuration for RowLab
+ * Winston Logger Configuration for oarbit
  *
  * Provides structured logging with:
  * - Console output for development
@@ -30,7 +30,7 @@ const logger = winston.createLogger({
     errors({ stack: true }),
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' })
   ),
-  defaultMeta: { service: 'rowlab-api' },
+  defaultMeta: { service: 'oarbit-api' },
   transports: [],
 });
 

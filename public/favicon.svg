@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Orbital ring: tilted ellipse with gap for visual interest -->
+  <ellipse cx="256" cy="256" rx="190" ry="75" transform="rotate(-30 256 256)"
+    fill="none" stroke="#3bb8c4" stroke-width="28" stroke-linecap="round"
+    stroke-dasharray="680 120"/>
+  <!-- Satellite dot on the orbit path -->
+  <circle cx="390" cy="168" r="32" fill="#3bb8c4"/>
+</svg>

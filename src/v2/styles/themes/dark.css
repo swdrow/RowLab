@@ -11,15 +11,15 @@
  * Interactive: Blue accent (#3b82f6)
  */
 
-.v2[data-theme="dark"] {
+.v2[data-theme='dark'] {
   /* ========================================
      BACKGROUND TOKENS
      Warm stone-based backgrounds
      ======================================== */
-  --color-bg-base: var(--palette-stone-950);           /* #0F0F0F warm near-black */
-  --color-bg-surface: var(--palette-stone-900);        /* #171717 */
+  --color-bg-base: var(--palette-stone-950); /* #0F0F0F warm near-black */
+  --color-bg-surface: var(--palette-stone-900); /* #171717 */
   --color-bg-surface-elevated: var(--palette-stone-800); /* #1F1F1F */
-  --color-bg-overlay: rgba(15, 15, 15, 0.8);           /* Warm overlay */
+  --color-bg-overlay: rgba(15, 15, 15, 0.8); /* Warm overlay */
   --color-bg-hover: var(--palette-stone-800);
   --color-bg-active: var(--palette-stone-700);
 
@@ -27,8 +27,8 @@
      TEXT TOKENS
      Warm off-white and stone grays
      ======================================== */
-  --color-text-primary: var(--palette-stone-100);      /* #F5F5F4 warm off-white */
-  --color-text-secondary: var(--palette-stone-400);    /* #A8A29E warm gray */
+  --color-text-primary: var(--palette-stone-100); /* #F5F5F4 warm off-white */
+  --color-text-secondary: var(--palette-stone-400); /* #A8A29E warm gray */
   --color-text-tertiary: var(--palette-stone-500);
   --color-text-muted: var(--palette-stone-600);
   --color-text-inverse: var(--palette-stone-950);
@@ -38,7 +38,7 @@
      BORDER TOKENS
      Warm dark borders
      ======================================== */
-  --color-border-default: var(--palette-stone-700);    /* #292524 warm dark */
+  --color-border-default: var(--palette-stone-700); /* #292524 warm dark */
   --color-border-subtle: var(--palette-stone-800);
   --color-border-strong: var(--palette-stone-600);
   --color-border-brand: var(--palette-brand-blue);
@@ -98,4 +98,8 @@
   --shadow-md: 0 4px 6px -1px rgba(15, 15, 15, 0.4);
   --shadow-lg: 0 10px 15px -3px rgba(15, 15, 15, 0.5);
   --shadow-xl: 0 20px 25px -5px rgba(15, 15, 15, 0.6);
+
+  /* Default text color and background for dark theme */
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-base);
 }

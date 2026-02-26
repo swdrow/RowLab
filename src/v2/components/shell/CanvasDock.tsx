@@ -108,10 +108,15 @@ export function useZone(): ZoneConfig {
   if (
     pathname.startsWith('/app/erg-tests') ||
     pathname.startsWith('/app/workouts') ||
-    pathname.startsWith('/app/coach/seat-racing')
+    pathname.startsWith('/app/coach/seat-racing/advanced-rankings') ||
+    pathname.startsWith('/app/coach/seat-racing/matrix-planner')
   )
     return ZONE_ANALYSIS;
-  if (pathname.startsWith('/app/regattas') || pathname.startsWith('/app/rankings'))
+  if (
+    pathname.startsWith('/app/regattas') ||
+    pathname.startsWith('/app/rankings') ||
+    pathname.startsWith('/app/coach/seat-racing')
+  )
     return ZONE_RACING;
   if (
     pathname.startsWith('/app/training') ||

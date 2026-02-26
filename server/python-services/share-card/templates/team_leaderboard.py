@@ -11,7 +11,7 @@ Layout:
 
 from templates.base_template import (
     setup_canvas, draw_text, draw_gradient_rect, draw_rounded_rect,
-    draw_grain_texture, draw_rowlab_branding, surface_to_png_bytes,
+    draw_grain_texture, draw_oarbit_branding, surface_to_png_bytes,
     DARK_BG, GOLD, COPPER, ROSE, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED, SLATE
 )
 import cairocffi as cairo
@@ -223,7 +223,7 @@ def render_team_leaderboard(format_key, workout_data, options):
     draw_grain_texture(ctx, width, height, opacity=0.03)
 
     # Branding
-    draw_rowlab_branding(ctx, width, height, format_key, options)
+    draw_oarbit_branding(ctx, width, height, format_key, options)
 
     return surface_to_png_bytes(surface)
 

@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/images/logo.svg" alt="RowLab Logo" width="100" height="100">
+  <img src="public/images/logo.svg" alt="oarbit Logo" width="100" height="100">
 </p>
 
-<h1 align="center">RowLab</h1>
+<h1 align="center">oarbit</h1>
 
 <p align="center">
   <strong>Data-Driven Lineup Optimization for Competitive Rowing</strong>
@@ -19,19 +19,18 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-3.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-5.0.11-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
   <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node">
-  <img src="https://img.shields.io/badge/react-18-61dafb.svg" alt="React">
+  <img src="https://img.shields.io/badge/react-19-61dafb.svg" alt="React">
   <img src="https://img.shields.io/badge/build-passing-success.svg" alt="Build">
-  <img src="https://img.shields.io/badge/coverage-70%25-yellow.svg" alt="Coverage">
 </p>
 
 ---
 
 ## Overview
 
-**RowLab** transforms how rowing coaches build boat lineups and analyze team performance. Stop relying on spreadsheets, gut feelings, and institutional knowledge that walks out the door. Start making data-driven decisions with AI-powered recommendations, statistical seat racing analysis, and comprehensive performance tracking.
+**oarbit** transforms how rowing coaches build boat lineups and analyze team performance. Stop relying on spreadsheets, gut feelings, and institutional knowledge that walks out the door. Start making data-driven decisions with AI-powered recommendations, statistical seat racing analysis, and comprehensive performance tracking.
 
 ### The Problem
 
@@ -45,7 +44,7 @@ Rowing coaches face constant challenges:
 
 ### The Solution
 
-RowLab is the only platform that combines:
+oarbit is the only platform that combines:
 
 - **Modern drag-and-drop lineup builder** with real-time collaboration
 - **AI-powered optimization** using genetic algorithms (unique in market)
@@ -56,30 +55,6 @@ RowLab is the only platform that combines:
 
 ---
 
-## Screenshots
-
-<details>
-<summary><b>🎨 View Screenshots</b> (click to expand)</summary>
-
-### Lineup Builder
-![Lineup Builder](docs/images/lineup-builder.png)
-*Drag-and-drop interface for creating optimal boat lineups*
-
-### Performance Dashboard
-![Dashboard](docs/images/dashboard.png)
-*Track erg scores, seat racing results, and training metrics*
-
-### Race Day View
-![Race Day](docs/images/race-day.png)
-*Live timing, countdown timers, and standings calculation*
-
-### Training Plans
-![Training Plans](docs/images/training-plans.png)
-*Plan builder with periodization templates and load tracking*
-
-</details>
-
----
 
 ## Features
 
@@ -303,7 +278,7 @@ See [docs/self-hosted-setup.md](docs/self-hosted-setup.md) for detailed deployme
 
 - **Concept2 API** - OAuth integration for logbook sync
 - **Strava API** - Activity sync and workout uploads
-- **Ollama** - Local LLM for AI recommendations
+- **Ollama** - Local LLM for AI recommendations (optional)
 - **Stripe** - Subscription billing (planned)
 
 ---
@@ -513,22 +488,22 @@ RowLab/
 └── README.md                 # This file
 ```
 
-### Design System: Precision Instrument
+### Design System: Canvas
 
-RowLab uses a custom design system inspired by Linear and Raycast:
+oarbit uses the **Canvas design system** — a warm, precision-focused aesthetic:
 
-- **Void-deep backgrounds** (`#08080A`) - Focused, distraction-free interfaces
-- **Blade blue accent** (`#0070F3`) - Primary actions and highlights
+- **Warm copper & warm dark** - Premium visual identity inspired by athletic instruments
+- **Glass cards** - Subtle backdrop blur with chamfered panel styling
 - **Port/Starboard semantics** - Red (port) and green (starboard) following maritime conventions
-- **Glass morphism** - Subtle backdrop blur with transparency
-- **Spotlight hover effects** - Interactive feedback on buttons and cards
+- **Gradient borders & text gradients** - Refined visual hierarchy
 - **High contrast text** - WCAG 2.1 AA compliant
+- **Mobile responsive** - Layouts adapt from 375px to 1440px
 
-Design tokens are defined in `src/theme/precisionInstrument.js`.
+Design tokens are defined in `src/theme/` and evolved through v2.1-v3.0.
 
 ### Writing Tests
 
-RowLab uses Vitest and Testing Library. Place tests adjacent to source files:
+oarbit uses Vitest and Testing Library. Place tests adjacent to source files:
 
 ```
 src/
@@ -570,70 +545,27 @@ Run tests with `npm run test`.
 
 ## Contributing
 
-We welcome contributions from the community! Whether you're fixing bugs, adding features, improving documentation, or reporting issues, your help makes RowLab better.
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on:
 
-### Ways to Contribute
+- Reporting bugs and suggesting features
+- Contributing code
+- Code style, testing, and validation
+- Commit message conventions
+- Pull request process
 
-- **🐛 Bug Reports** - Found a bug? [Open an issue](https://github.com/swdrow/RowLab/issues/new) with reproduction steps
-- **💡 Feature Requests** - Have an idea? [Start a discussion](https://github.com/swdrow/RowLab/discussions/new)
-- **🔧 Code Contributions** - Submit a pull request following our guidelines
-- **📖 Documentation** - Improve docs, add examples, fix typos
-- **🧪 Testing** - Write tests to improve coverage
-- **🎨 Design** - Suggest UI/UX improvements
+**Quick path:**
+1. Fork and create a feature branch: `git checkout -b feature/your-feature-name`
+2. Make your changes and validate: `npm run validate`
+3. Commit with clear messages: `git commit -m "type(scope): description"`
+4. Push and open a pull request
 
-### Getting Started
-
-1. **Fork the repository** on GitHub
-2. **Clone your fork** locally
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/RowLab.git
-   cd RowLab
-   ```
-3. **Create a branch** for your changes
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-4. **Make your changes** following our code style
-5. **Run tests** to ensure everything works
-   ```bash
-   npm run validate
-   ```
-6. **Commit your changes** with clear messages
-   ```bash
-   git commit -m "Add: description of your feature"
-   ```
-7. **Push to your fork**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-8. **Open a Pull Request** on GitHub
-
-### Contribution Guidelines
-
-- **Code Quality**: Run `npm run validate` before submitting
-- **Tests**: Add tests for new features
-- **Documentation**: Update docs for API changes
-- **Commit Messages**: Use clear, descriptive messages
-  - `Add:` for new features
-  - `Fix:` for bug fixes
-  - `Update:` for improvements
-  - `Docs:` for documentation
-- **Issue References**: Link to related issues in PR description
-
-### Good First Issues
-
-Look for issues labeled:
-- [`good first issue`](https://github.com/swdrow/RowLab/labels/good%20first%20issue) - Beginner friendly
-- [`help wanted`](https://github.com/swdrow/RowLab/labels/help%20wanted) - Community input needed
-- [`documentation`](https://github.com/swdrow/RowLab/labels/documentation) - Docs improvements
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+**Good places to start:** Look for issues labeled [`good first issue`](https://github.com/swdrow/RowLab/labels/good%20first%20issue) or [`help wanted`](https://github.com/swdrow/RowLab/labels/help%20wanted).
 
 ---
 
 ## Roadmap
 
-RowLab is actively developed across milestone releases. Here's where we are and where we're headed.
+oarbit is actively developed across milestone releases. Here's where we are and where we're headed.
 
 ### v1.0 — Full UX Redesign ✅
 
@@ -661,77 +593,85 @@ Complete V1-to-V2 feature migration with "Precision Instrument" design philosoph
 
 ### v2.1 — Feature Expansion ✅
 
-Feature toggles, gamification, design overhaul, and lineup improvements.
+Feature toggles, gamification, warm color design system, and lineup improvements.
 
 - [x] Feature toggles and recruit visit management
 - [x] Gamification (achievements, PRs, team challenges, streaks)
 - [x] Lineup and boat configuration improvements (rigging, templates, comparison)
-- [x] Complete design overhaul (warm color system, superseded by Canvas)
-- [x] Warm color design system and landing page (superseded by Canvas)
+- [x] Warm color design system and landing page
 
-### v3.0 — App Redesign ✅
+### v3.0 — Canvas Design & Mobile ✅
 
-Complete frontend redesign with Canvas design system, mobile responsiveness, and performance optimization.
+Complete frontend redesign with Canvas design system, mobile responsiveness, and clean-up.
 
 **Key deliverables:**
-- **Canvas Design System** — Bespoke design language with chamfered panels, ruled headers, log-tape layouts
-- **Mobile-First Responsive** — All 25 pages responsive from 375px to 1440px
-- **State Management Migration** — TanStack Query v5 for all server state
-- **Performance** — Route-based code splitting, <200KB initial bundle, Web Vitals optimized
-- **Dead Code Cleanup** — V1/V2 legacy code removed, 208 files deleted, 5.7% bundle reduction
+- **Canvas Design System** — Warm copper aesthetic with glass cards, chamfered panels, gradient borders
+- **Mobile-First Responsive** — All pages responsive from 375px to 1440px
+- **State Management Migration** — TanStack Query v5 for server state
+- **Performance Optimization** — Dead code cleanup, bundle optimization, Web Vitals
+- **V1 Code Removal** — 208 files deleted, 5.7% bundle reduction
 
-14 phases delivered:
-- Foundation & Design System (Phase 24)
-- State Management Migration (Phase 25)
-- Route & Navigation Cleanup (Phase 26)
-- Dashboard Rebuild (Phase 27)
-- Athletes Feature Migration (Phase 28)
-- Lineup Builder Migration (Phase 29)
-- Erg Data Migration (Phase 30)
-- Seat Racing Migration (Phase 31)
-- Training & Attendance Migration (Phase 32)
-- Regattas & Rankings Migration (Phase 33)
-- Gamification & Activity Feed (Phase 34)
-- Canvas Promotion + Mobile (Phase 35)
-- Dead Code Cleanup (Phase 36)
-- Tech Debt Closure (Phase 36.1)
+14 phases completed (Phase 24–36.1).
 
-### v3.1 — Integrations, Analytics & Social Sharing (Planned)
+### v3.1 — Integrations & Analytics ✅
 
-Connect to Concept2 Logbook, Strava, and Garmin. Build performance analytics, fitness intelligence, and share card generation.
+Concept2 Logbook sync, Strava integration, share cards, and performance analytics.
 
-- [ ] Concept2 Workout Sync (Phase 37)
-- [ ] Share Card Platform (Phase 38)
-- [ ] Strava Integration & Cross-Platform Sync (Phase 39)
-- [ ] Performance Analytics Engine (Phase 40)
-- [ ] Fitness Intelligence & Training Load (Phase 41)
-- [ ] Garmin Connect & On-Water Data (Phase 42)
+- [x] Concept2 Workout Sync (Phase 37)
+- [x] Share Card Platform (Phase 38)
+- [x] Strava Integration & Cross-Platform Sync (Phase 39)
+- [x] Performance Analytics Engine (Phase 40)
+- [x] Fitness Intelligence & Training Load (Phase 41)
+- [x] Garmin Connect & On-Water Data (Phase 42)
 
-### v2.2 — Advanced Analytics (Planned)
+### v4.0 — Identity & Experience Restructure ✅
 
-Telemetry, AI optimization, predictive modeling, and mobile coxswain experience.
+Clean-slate frontend (React 19 + TanStack Router + Tailwind v4) with athlete-first architecture. 52 of 53 phases shipped; Phase 53 shelved. Superseded by v5.0 focused remediation.
 
-- [ ] Telemetry import (Empower, Peach, NK SpeedCoach) with force curve visualization
-- [ ] AI lineup optimizer v2 with constraint configuration and explanation system
-- [ ] Predictive analytics (2k predictions, injury risk, progress projections)
-- [ ] Coxswain mobile view with offline support and piece timer
+- [x] Athlete-first personal training log (standalone, team optional)
+- [x] React 19 + TanStack Router with file-based routing
+- [x] Tailwind v4 with oklch color space design tokens
+- [x] Team lifecycle — create, join, switch, and manage teams
+- [x] Personal dashboard, workout tracking, personal records
+- [x] Coach tools migration — lineups, seat racing, fleet, training plans
+- [x] OAuth integrations — Concept2 and Strava sync
+
+### v5.0 — Audit Remediation & Spec Compliance 🚧 In Progress
+
+Targeted fixes from a 24-agent audit swarm. No new features — fix, polish, and harden what exists to meet the full oarbit design spec.
+
+- [x] Phase 54: Security hardening (2 CRITICAL, 4 HIGH vulnerabilities patched)
+- [x] Phase 55: Critical bug fixes (React hooks, API shape mismatches, race conditions)
+- [x] Phase 56: Build and code quality (62 TypeScript errors fixed, ESLint configured)
+- [x] Phase 57: Design surfaces and colors (GlassCard migrated, banned CSS eliminated)
+- [x] Phase 58: Typography, icons, and assets (Space Grotesk enforced, lucide-react removed)
+- [x] Phase 59: Signature design identity (corner brackets, diamond markers, warm rules)
+- [x] Phase 60: Animation and motion compliance (banned patterns removed, reduced-motion)
+- [x] Phase 61: Error handling and resilience (ErrorBoundary, route error components)
+- [x] Phase 62: Settings and auth gaps (notification/privacy prefs wired, password change, account deletion)
+- [x] Phase 63: Navigation and search (phantom routes removed, real data Cmd+K search)
+- [ ] Phase 64: Backend API consistency
+- [ ] Phase 65: Notifications and social pipeline
+- [ ] Phase 66: Calendar unification
+- [ ] Phase 67: Concept2 data and export
+- [ ] Phase 68: Coach tools completion
+- [ ] Phase 69: Final verification sweep
 
 ### Feature Comparison
 
-| Feature | RowLab | RegattaCentral | CrewLAB | iCrew |
+| Feature | oarbit | RegattaCentral | CrewLAB | iCrew |
 |---------|--------|----------------|---------|-------|
 | Modern UI | ✅ | ❌ | ⚠️ | ❌ |
 | AI Lineup Optimization | ✅ | ❌ | ❌ | ❌ |
 | Seat Racing Analytics | ✅ | ❌ | ⚠️ | ❌ |
 | Real-Time Collaboration | ✅ | ❌ | ❌ | ❌ |
 | Concept2 Integration | ✅ | ❌ | ❌ | ❌ |
+| Strava Integration | ✅ | ❌ | ❌ | ❌ |
 | Training Plans + NCAA | ✅ | ❌ | ❌ | ❌ |
 | Gamification | ✅ | ❌ | ❌ | ❌ |
 | Telemetry Import | 🚧 Planned | ❌ | ✅ | ❌ |
-| Coxswain Mobile | 🚧 Planned | ❌ | ⚠️ | ❌ |
+| Mobile Responsive | ✅ | ❌ | ❌ | ❌ |
 | Self-Hosted | ✅ | ❌ | ❌ | ❌ |
-
-**RowLab is the only platform with AI-powered lineup optimization, Bradley-Terry seat racing analytics, and modern real-time collaboration.**
 
 ---
 
@@ -746,7 +686,7 @@ Comprehensive documentation is available in the `/docs` directory:
 | [Component Guide](docs/components/README.md) | React component documentation and usage |
 | [Services Guide](docs/services/README.md) | Backend service layer documentation |
 | [Self-Hosted Setup](docs/self-hosted-setup.md) | Production deployment instructions |
-| Design System | Precision Instrument aesthetic (see Design System section below) |
+| [Design System](src/theme/) | Canvas design tokens and styling (see Design System section) |
 
 ---
 
@@ -768,12 +708,12 @@ Comprehensive documentation is available in the `/docs` directory:
 
 ## License
 
-RowLab is open source software licensed under the [MIT License](LICENSE).
+oarbit is open source software licensed under the [MIT License](LICENSE).
 
 ```
 MIT License
 
-Copyright (c) 2026 RowLab Contributors
+Copyright (c) 2026 oarbit Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -798,7 +738,7 @@ SOFTWARE.
 
 ## Acknowledgments
 
-RowLab is built with excellent open source tools and inspired by great products:
+oarbit is built with excellent open source tools and inspired by great products:
 
 - **[Concept2](https://www.concept2.com/)** - For providing the erg data API
 - **[Ollama](https://ollama.ai/)** - For local LLM inference
@@ -808,13 +748,13 @@ RowLab is built with excellent open source tools and inspired by great products:
 - **[Raycast](https://www.raycast.com/)** - Command palette and UI patterns
 - **[Cal.com](https://cal.com/)** - Open source SaaS reference
 
-Special thanks to all [contributors](https://github.com/swdrow/RowLab/graphs/contributors) who help make RowLab better.
+Special thanks to all [contributors](https://github.com/swdrow/RowLab/graphs/contributors) who help make oarbit better.
 
 ---
 
 ## Target Audience
 
-RowLab is designed for competitive rowing programs:
+oarbit is designed for competitive rowing programs:
 
 - **Collegiate Programs** - 250+ NCAA/ACRA programs nationally
 - **Club Teams** - 2,000+ competitive club programs
@@ -822,9 +762,9 @@ RowLab is designed for competitive rowing programs:
 - **Masters** - Competitive adult rowing clubs
 - **National Teams** - Elite-level training programs
 
-### Why Coaches Choose RowLab
+### Why Coaches Choose oarbit
 
-| Traditional Approach | RowLab |
+| Traditional Approach | oarbit |
 |---------------------|--------|
 | Spreadsheets and paper | Modern drag-and-drop interface |
 | Gut-feel decisions | Data-driven AI recommendations |
@@ -836,7 +776,7 @@ RowLab is designed for competitive rowing programs:
 ---
 
 <p align="center">
-  <strong>RowLab</strong> — Built for coaches who demand precision
+  <strong>oarbit</strong> — Built for coaches who demand precision
 </p>
 
 <p align="center">
@@ -846,5 +786,5 @@ RowLab is designed for competitive rowing programs:
 </p>
 
 <p align="center">
-  <sub>Made with ❤️ by the RowLab community</sub>
+  <sub>Made with ❤️ by the oarbit community</sub>
 </p>

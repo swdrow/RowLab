@@ -18,7 +18,7 @@ Describe the problem this feature would solve. For example:
 - What workflow is currently difficult or impossible?
 - What gap exists in current functionality?
 
-**Example:** "As a rowing coach, I'm frustrated when [situation] because [reason], which makes it hard to [goal]."
+**Example:** "As a [coach/athlete], I'm frustrated when [situation] because [reason], which makes it hard to [goal]."
 
 ## Proposed Solution
 
@@ -47,9 +47,9 @@ Describe specific scenarios where this feature would be valuable:
 
 Who would benefit from this feature and how?
 
-- **Coaches:** [How would coaches benefit?]
-- **Athletes:** [How would athletes benefit?]
-- **Teams:** [How would teams benefit?]
+- **Athletes:** [How would individual athletes benefit?]
+- **Coaches:** [How would coaches managing teams benefit?]
+- **Teams:** [How would team collaboration improve?]
 
 ## Design Mockups
 

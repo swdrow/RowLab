@@ -47,7 +47,7 @@ export async function loginUser({ email, password }) {
     // Regular email login (case-insensitive)
     user = await prisma.user.findFirst({
       where: {
-        email: { equals: normalizedInput, mode: 'insensitive' }
+        email: { equals: normalizedInput, mode: 'insensitive' },
       },
       include: {
         memberships: {
@@ -59,7 +59,7 @@ export async function loginUser({ email, password }) {
     // Username login (for admin accounts, case-insensitive)
     user = await prisma.user.findFirst({
       where: {
-        username: { equals: normalizedInput, mode: 'insensitive' }
+        username: { equals: normalizedInput, mode: 'insensitive' },
       },
       include: {
         memberships: {
@@ -73,6 +73,9 @@ export async function loginUser({ email, password }) {
     throw new Error('Invalid credentials');
   }
 
+  if (user.status === 'deleted') {
+    throw new Error('Account has been deleted');
+  }
   if (user.status !== 'active') {
     throw new Error('Account is suspended');
   }
@@ -82,10 +85,32 @@ export async function loginUser({ email, password }) {
     throw new Error('Invalid credentials');
   }
 
-  // Get first team as default active team
-  const firstMembership = user.memberships[0];
-  const activeTeamId = firstMembership?.teamId || null;
-  const activeTeamRole = firstMembership?.role || null;
+  // Determine active team: honor persisted preference if user is still a member
+  let activeTeamId = null;
+  let activeTeamRole = null;
+
+  if (user.activeTeamId) {
+    const persistedMembership = user.memberships.find((m) => m.teamId === user.activeTeamId);
+    if (persistedMembership) {
+      activeTeamId = persistedMembership.teamId;
+      activeTeamRole = persistedMembership.role;
+    }
+  }
+
+  // Fall back to first membership if no persisted preference or no longer a member
+  if (!activeTeamId) {
+    const firstMembership = user.memberships[0];
+    activeTeamId = firstMembership?.teamId || null;
+    activeTeamRole = firstMembership?.role || null;
+  }
+
+  // Persist the active team preference
+  if (activeTeamId) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { activeTeamId },
+    });
+  }
 
   // Generate tokens
   const accessToken = generateAccessToken(user, activeTeamId, activeTeamRole);
@@ -98,6 +123,7 @@ export async function loginUser({ email, password }) {
       username: user.username,
       name: user.name,
       isAdmin: user.isAdmin,
+      avatarUrl: user.avatarUrl ?? null,
     },
     teams: user.memberships.map((m) => ({
       id: m.team.id,
@@ -129,11 +155,13 @@ export async function switchTeam(userId, newTeamId) {
     throw new Error('Not a member of this team');
   }
 
-  const accessToken = generateAccessToken(
-    membership.user,
-    membership.teamId,
-    membership.role
-  );
+  // Persist active team preference
+  await prisma.user.update({
+    where: { id: userId },
+    data: { activeTeamId: newTeamId },
+  });
+
+  const accessToken = generateAccessToken(membership.user, membership.teamId, membership.role);
 
   return {
     accessToken,
@@ -169,6 +197,8 @@ export async function getCurrentUser(userId) {
     username: user.username,
     name: user.name,
     isAdmin: user.isAdmin,
+    avatarUrl: user.avatarUrl ?? null,
+    activeTeamId: user.activeTeamId,
     teams: user.memberships.map((m) => ({
       id: m.team.id,
       name: m.team.name,
@@ -183,6 +213,81 @@ export async function getCurrentUser(userId) {
  */
 export async function logoutUser(userId) {
   await revokeAllUserTokens(userId);
+}
+
+/**
+ * Change password for authenticated user
+ * Verifies current password, hashes new one, revokes all refresh tokens
+ */
+export async function changePassword(userId, currentPassword, newPassword) {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // Future OAuth users may have no real password hash
+  if (!user.passwordHash) {
+    const err = new Error('No password set for this account');
+    err.code = 'NO_PASSWORD';
+    throw err;
+  }
+
+  const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+  if (!valid) {
+    const err = new Error('Current password is incorrect');
+    err.code = 'INVALID_PASSWORD';
+    throw err;
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    }),
+    prisma.refreshToken.deleteMany({
+      where: { userId },
+    }),
+  ]);
+
+  return { success: true };
+}
+
+/**
+ * Soft-delete user account
+ * Verifies password, sets status=deleted and deletedAt, revokes all tokens
+ */
+export async function softDeleteAccount(userId, password) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { memberships: true },
+  });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if (!valid) {
+    const err = new Error('Password is incorrect');
+    err.code = 'INVALID_PASSWORD';
+    throw err;
+  }
+
+  const deletedAt = new Date();
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { status: 'deleted', deletedAt },
+    }),
+    prisma.refreshToken.deleteMany({
+      where: { userId },
+    }),
+  ]);
+
+  return { deletedAt };
 }
 
 /**

@@ -1,4 +1,4 @@
-# RowLab Docker Compose Configuration
+# oarbit Docker Compose Configuration
 # For local development and self-hosted deployments
 
 version: '3.8'
@@ -11,7 +11,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: rowlab-app
+    container_name: oarbit-app
     restart: unless-stopped
     ports:
       - "${PORT:-3002}:3002"
@@ -31,7 +31,7 @@ services:
       redis:
         condition: service_started
     networks:
-      - rowlab-network
+      - oarbit-network
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/api/health"]
       interval: 30s
@@ -44,7 +44,7 @@ services:
   # ====================
   db:
     image: postgres:15-alpine
-    container_name: rowlab-db
+    container_name: oarbit-db
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -56,7 +56,7 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
     networks:
-      - rowlab-network
+      - oarbit-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-rowlab}"]
       interval: 10s
@@ -68,7 +68,7 @@ services:
   # ====================
   redis:
     image: redis:7-alpine
-    container_name: rowlab-redis
+    container_name: oarbit-redis
     restart: unless-stopped
     command: redis-server --appendonly yes
     volumes:
@@ -76,7 +76,7 @@ services:
     ports:
       - "${REDIS_PORT:-6379}:6379"
     networks:
-      - rowlab-network
+      - oarbit-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -90,7 +90,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: rowlab-migrate
+    container_name: oarbit-migrate
     command: npx prisma migrate deploy
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-rowlab}
@@ -98,7 +98,7 @@ services:
       db:
         condition: service_healthy
     networks:
-      - rowlab-network
+      - oarbit-network
     profiles:
       - migrate
 
@@ -106,7 +106,7 @@ services:
 # Networks
 # ====================
 networks:
-  rowlab-network:
+  oarbit-network:
     driver: bridge
 
 # ====================

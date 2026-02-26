@@ -51,6 +51,13 @@ export async function convertWorkoutToErgTest(workout, teamId) {
       return null;
     }
 
+    // Skip BikeErg workouts — BikeErg benchmark distances are 2x RowErg
+    // (e.g., a 1000m bike ≠ a 1000m row), so they shouldn't create ErgTest records
+    if (workout.machineType === 'bikerg') {
+      logger.debug('Skipping BikeErg workout for ErgTest conversion', { workoutId: workout.id });
+      return null;
+    }
+
     // Check if this is a standard test distance
     const testType = isStandardTestDistance(workout.distanceM);
     if (!testType) {

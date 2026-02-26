@@ -16,16 +16,31 @@ import { convertWorkoutToErgTest } from './workoutToErgTest.js';
  * @returns {string} - Mapped machine type
  */
 export function mapC2MachineType(c2Type) {
-  // C2 API type field mapping:
-  // 0 or "rower" → rower
-  // 1 or "skierg" → skierg
-  // 2 or "bikerg" → bikerg
-  if (c2Type === 0 || c2Type === 'rower') return 'rower';
+  // C2 API type values:
+  // Numeric: 0=rower, 1=skierg, 2=bikerg
+  // String: "rower", "slides", "dynamic", "skierg", "bike", "bikerg",
+  //         "water", "paddle", "snow", "rollerski", "multierg"
+  if (c2Type === 0 || c2Type === 'rower' || c2Type === 'slides' || c2Type === 'dynamic')
+    return 'rower';
   if (c2Type === 1 || c2Type === 'skierg') return 'skierg';
-  if (c2Type === 2 || c2Type === 'bikerg') return 'bikerg';
+  if (c2Type === 2 || c2Type === 'bikerg' || c2Type === 'bike') return 'bikerg';
+  if (c2Type === 'water' || c2Type === 'paddle') return 'water';
+  if (c2Type === 'snow' || c2Type === 'rollerski') return 'snow';
+  if (c2Type === 'multierg') return 'multierg';
 
   // Default to rower (most common)
   return 'rower';
+}
+
+/**
+ * Determine workout type from machine type.
+ * Water/snow workouts are 'on_water', everything else is 'erg'.
+ * @param {string} machineType - Mapped machine type from mapC2MachineType()
+ * @returns {string} - 'on_water' or 'erg'
+ */
+export function getWorkoutType(machineType) {
+  if (machineType === 'water' || machineType === 'snow') return 'on_water';
+  return 'erg';
 }
 
 /**
@@ -204,7 +219,9 @@ export async function syncUserWorkouts(userId, teamId) {
         data: {
           athleteId: athlete.id,
           teamId,
+          userId,
           source: 'concept2_sync',
+          type: getWorkoutType(machineType),
           c2LogbookId: String(result.id),
           date: new Date(result.date),
           distanceM: result.distance,
@@ -299,7 +316,14 @@ export async function syncSingleResult(userId, resultId) {
   const result = await fetchResultWithStrokes(accessToken, auth.c2UserId, resultId);
 
   // Use fetchAndStoreResult to upsert
-  await fetchAndStoreResult(accessToken, auth.c2UserId, resultId, athlete.id, athlete.teamId);
+  await fetchAndStoreResult(
+    accessToken,
+    auth.c2UserId,
+    resultId,
+    athlete.id,
+    athlete.teamId,
+    userId
+  );
 
   return { success: true };
 }
@@ -310,10 +334,18 @@ export async function syncSingleResult(userId, resultId) {
  * @param {string} accessToken - Valid C2 access token
  * @param {string} c2UserId - C2 user ID
  * @param {number} resultId - C2 result ID
- * @param {string} athleteId - RowLab athlete ID
+ * @param {string} athleteId - oarbit athlete ID
  * @param {string} teamId - Team ID
+ * @param {string} [userId] - User ID for user-scoped ownership
  */
-export async function fetchAndStoreResult(accessToken, c2UserId, resultId, athleteId, teamId) {
+export async function fetchAndStoreResult(
+  accessToken,
+  c2UserId,
+  resultId,
+  athleteId,
+  teamId,
+  userId
+) {
   // Fetch result from C2 API
   const result = await fetchResultWithStrokes(accessToken, c2UserId, resultId);
 
@@ -334,7 +366,9 @@ export async function fetchAndStoreResult(accessToken, c2UserId, resultId, athle
       create: {
         athleteId,
         teamId,
+        userId,
         source: 'concept2_sync',
+        type: getWorkoutType(machineType),
         c2LogbookId: String(resultId),
         date: new Date(result.date),
         distanceM: result.distance,
@@ -349,6 +383,7 @@ export async function fetchAndStoreResult(accessToken, c2UserId, resultId, athle
         rawData: result,
       },
       update: {
+        type: getWorkoutType(machineType),
         distanceM: result.distance,
         durationSeconds: result.time ? result.time / 10 : null,
         strokeRate: result.stroke_rate,
@@ -583,7 +618,7 @@ export async function historicalImport(userId, teamId, options = {}) {
 
       // Fetch and store this result
       try {
-        await fetchAndStoreResult(accessToken, profile.id, resultId, athlete.id, teamId);
+        await fetchAndStoreResult(accessToken, profile.id, resultId, athlete.id, teamId, userId);
         imported++;
       } catch (error) {
         logger.error('Failed to import result', { resultId, error: error.message });
@@ -642,7 +677,9 @@ export async function historicalImport(userId, teamId, options = {}) {
           data: {
             athleteId: athlete.id,
             teamId,
+            userId,
             source: 'concept2_sync',
+            type: getWorkoutType(machineType),
             c2LogbookId: String(result.id),
             date: new Date(result.date),
             distanceM: result.distance,
@@ -773,6 +810,7 @@ export async function syncCoachWorkouts(userId, teamId) {
     const matchedAthlete = teamAthletes.find((a) => a.concept2UserId === resultC2UserId);
 
     let athleteId = matchedAthlete?.id || null;
+    const athleteUserId = matchedAthlete?.userId || null;
 
     // Extract machine type and compute metrics
     const machineType = mapC2MachineType(result.type || result.workout_type);
@@ -789,7 +827,9 @@ export async function syncCoachWorkouts(userId, teamId) {
         data: {
           athleteId, // null if unmatched
           teamId,
+          userId: athleteUserId, // null if unmatched
           source: 'concept2_sync',
+          type: getWorkoutType(machineType),
           c2LogbookId: String(result.id),
           date: new Date(result.date),
           distanceM: result.distance,
@@ -938,6 +978,7 @@ export default {
   syncSingleResult,
   fetchAndStoreResult,
   mapC2MachineType,
+  getWorkoutType,
   extractSplits,
   browseC2Logbook,
   historicalImport,

@@ -4,6 +4,7 @@ import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
+import crypto from 'crypto';
 import cookieParser from 'cookie-parser';
 
 // Routes
@@ -60,6 +61,10 @@ import riggingRoutes from './routes/rigging.js';
 import lineupTemplateRoutes from './routes/lineupTemplates.js';
 import dashboardExceptionsRoutes from './routes/dashboardExceptions.js';
 import shareCardRoutes from './routes/shareCards.js';
+import notificationRoutes from './routes/notifications.js';
+import featureFlagRoutes from './routes/featureFlags.js';
+import ogRoutes from './routes/og.js';
+import userScopedRoutes from './routes/u/index.js';
 import { getStorageInfo } from './utils/storageMonitor.js';
 import { startBackgroundSync } from './services/backgroundSyncService.js';
 import { verifyToken, authenticateToken } from './middleware/auth.js';
@@ -91,6 +96,12 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Trust proxy for rate limiting behind reverse proxy (nginx, cloudflare, etc.)
 // Setting to 1 trusts the first proxy
 app.set('trust proxy', 1);
+
+// Generate per-request CSP nonce (must run before Helmet so nonce is available for CSP directive)
+app.use((req, res, next) => {
+  res.locals.cspNonce = crypto.randomBytes(16).toString('base64');
+  next();
+});
 
 // Security middleware
 app.use(securityHeaders);
@@ -162,6 +173,14 @@ app.use('/api/v1/equipment', apiLimiter, equipmentRoutes);
 app.use('/api/v1/rigging', apiLimiter, riggingRoutes);
 app.use('/api/v1/dashboard', apiLimiter, dashboardExceptionsRoutes);
 app.use('/api/v1/share-cards', apiLimiter, shareCardRoutes);
+app.use('/api/v1/notifications', apiLimiter, notificationRoutes);
+app.use('/api/v1/teams/:teamId/feature-flags', apiLimiter, featureFlagRoutes);
+
+// Dynamic OG image generation (no auth, public, cached)
+app.use('/api/v1/og', ogRoutes);
+
+// User-scoped API routes (no team context required)
+app.use('/api/u', userScopedRoutes);
 
 // Legacy API Routes (will be migrated to v1)
 app.use('/api/auth', authLimiter, authRoutes); // Keep for backward compatibility
@@ -366,7 +385,7 @@ initializeRaceDaySocket(io);
 
 // Start server
 httpServer.listen(PORT, async () => {
-  logger.info('RowLab Server Started', {
+  logger.info('oarbit Server Started', {
     environment: NODE_ENV,
     port: PORT,
     url: `http://localhost:${PORT}`,
@@ -399,7 +418,7 @@ httpServer.listen(PORT, async () => {
   // ASCII banner for visibility
   console.log(`
 ╔══════════════════════════════════════════════╗
-║           RowLab Server Started              ║
+║           oarbit Server Started              ║
 ╠══════════════════════════════════════════════╣
 ║  Environment: ${NODE_ENV.padEnd(30)}║
 ║  Port:        ${PORT.toString().padEnd(30)}║

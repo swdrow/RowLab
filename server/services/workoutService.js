@@ -9,6 +9,8 @@ export async function createWorkout(teamId, data) {
       teamId,
       athleteId: data.athleteId,
       source: data.source || 'manual',
+      type: data.type || 'erg',
+      machineType: data.machineType || null,
       c2LogbookId: data.c2LogbookId || null,
       date: new Date(data.date),
       distanceM: data.distanceM || null,
@@ -33,6 +35,10 @@ export async function createWorkout(teamId, data) {
  * Get all workouts for a team with filters
  */
 export async function getWorkouts(teamId, filters = {}) {
+  if (!teamId) {
+    throw new Error('Team ID required for team-scoped workout queries');
+  }
+
   const where = { teamId };
 
   if (filters.athleteId) {
@@ -67,6 +73,10 @@ export async function getWorkouts(teamId, filters = {}) {
  * Get a single workout by ID
  */
 export async function getWorkoutById(teamId, workoutId) {
+  if (!teamId) {
+    throw new Error('Team ID required for team-scoped workout queries');
+  }
+
   const workout = await prisma.workout.findFirst({
     where: { id: workoutId, teamId },
     include: {

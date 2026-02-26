@@ -6,7 +6,7 @@ Data-forward layout with warm copper accents and geometric precision
 from templates.base_template import (
     setup_canvas, draw_background, draw_text, draw_gradient_rect,
     draw_rounded_rect, draw_panel, draw_accent_stripe, draw_grain_texture,
-    draw_rowlab_branding, surface_to_png_bytes,
+    draw_oarbit_branding, surface_to_png_bytes,
     DARK_BG, COPPER, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED
 )
 
@@ -262,6 +262,6 @@ def render_erg_summary(format_key, workout_data, options):
     draw_grain_texture(ctx, width, height, opacity=0.03)
 
     # --- BRANDING ---
-    draw_rowlab_branding(ctx, width, height, format_key, options)
+    draw_oarbit_branding(ctx, width, height, format_key, options)
 
     return surface_to_png_bytes(surface)

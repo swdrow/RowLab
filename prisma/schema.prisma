@@ -1,4 +1,4 @@
-// Prisma schema for RowLab v2.0
+// Prisma schema for oarbit v2.0
 // PostgreSQL with multi-tenant team isolation
 
 generator client {
@@ -20,7 +20,12 @@ model User {
   passwordHash String
   name         String
   isAdmin      Boolean  @default(false) // Admin accounts have special privileges
-  status       String   @default("active") // active, suspended
+  bio          String?  @db.Text
+  avatarUrl    String?
+  bannerUrl    String?
+  status       String   @default("active") // active, suspended, deleted
+  deletedAt    DateTime?  // Soft delete timestamp; null = active account
+  activeTeamId String? // Persisted active team preference
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -41,17 +46,60 @@ model User {
   createdRecruitVisits   RecruitVisit[]
   draftedLineups         Lineup[]              @relation("lineupDrafts")
   shareCards             ShareCard[]
+  notifications          Notification[]
+  passwordResetTokens    PasswordResetToken[]
+  personalWorkouts       Workout[]             @relation("UserWorkouts")
+  followers              Follow[]              @relation("UserFollowing")
+  following              Follow[]              @relation("UserFollowers")
+  workoutLikes           WorkoutLike[]
 
   @@map("users")
+}
+
+// ============================================
+// SOCIAL: Follows and Likes
+// ============================================
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@map("follows")
+}
+
+model WorkoutLike {
+  id        String   @id @default(uuid())
+  userId    String
+  workoutId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workoutId])
+  @@index([workoutId])
+  @@map("workout_likes")
 }
 
 model Team {
   id                String   @id @default(uuid())
   name              String
-  slug              String   @unique
+  slug              String?  @unique // Nullable -- generatedId is the required identifier
+  generatedId       String   @unique // Adjective-animal ID (e.g., "swift-otter"), immutable after creation
   inviteCode        String?  @unique
   isPublic          Boolean  @default(false)
   visibilitySetting String   @default("coaches_only") // open, coaches_only, opt_in
+  description       String?  @db.Text // Team description
+  sport             String? // Sport type (e.g., "rowing")
+  welcomeMessage    String?  @db.Text // Shown to new members on join
   settings          Json     @default("{}")
   aiModel           String? // Preferred AI model (e.g., "phi4-mini-reasoning:3.8b")
   createdAt         DateTime @default(now())
@@ -86,6 +134,9 @@ model Team {
   riggingProfiles     RiggingProfile[]
   lineupTemplates     LineupTemplate[]
   equipmentAssignments EquipmentAssignment[]
+  inviteCodes         TeamInviteCode[]
+  activities          TeamActivity[]
+  featureFlags        TeamFeatureFlag[]
 
   @@map("teams")
 }
@@ -124,6 +175,21 @@ model RefreshToken {
   @@index([userId])
   @@index([familyId])
   @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 model Invitation {
@@ -337,7 +403,7 @@ model StravaAuth {
   refreshToken    String    @db.Text // OAuth refresh token (encrypted)
   tokenExpiresAt  DateTime
   lastSyncedAt    DateTime?
-  syncEnabled     Boolean   @default(true) // Auto-sync from Strava to RowLab
+  syncEnabled     Boolean   @default(true) // Auto-sync from Strava to oarbit
   scope           String? // OAuth scopes granted
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -384,11 +450,12 @@ model Workout {
   id               String   @id @default(uuid())
   athleteId        String? // Optional - may be synced by user without athlete record
   userId           String? // For user-level syncs (Strava, etc.)
-  teamId           String
+  teamId           String? // Nullable — personal workouts can exist without a team
   source           String // manual, concept2_sync, strava_sync, csv_import, bluetooth, fit_import
   type             String? // on_water, erg, strength, cardio, other
   c2LogbookId      String?  @unique
   stravaActivityId String?  @unique
+  garminActivityId String?  @unique  // Garmin activity ID for dedup
   date             DateTime
   distanceM        Int?
   durationSeconds  Decimal? @db.Decimal(10, 1)
@@ -406,14 +473,17 @@ model Workout {
   createdAt        DateTime @default(now())
 
   athlete     Athlete?            @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  team        Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user        User?               @relation("UserWorkouts", fields: [userId], references: [id], onDelete: SetNull)
+  team        Team?               @relation(fields: [teamId], references: [id], onDelete: SetNull)
   telemetry   WorkoutTelemetry?
   completions WorkoutCompletion[]
   splits      WorkoutSplit[]
+  likes       WorkoutLike[]
 
   @@index([teamId])
   @@index([athleteId])
   @@index([userId])
+  @@index([userId, type, machineType])
   @@map("workouts")
 }
 
@@ -1096,10 +1166,21 @@ model UserSettings {
   darkMode           Boolean  @default(true)
   compactView        Boolean  @default(false)
   autoSave           Boolean  @default(true)
+  notificationPrefs  Json?    // Granular notification preferences (email/push/inApp/digest channels per event type)
+  privacyPrefs       Json?    // Privacy visibility preferences (profileVisibility, workoutVisibility, showInLeaderboards)
   firstName          String?
   lastName           String?
   role               String?
   avatar             String?  @db.Text
+
+  // Analytics threshold settings
+  dateOfBirth               DateTime?
+  maxHeartRate              Int?            // Default: 220 - age, or 185 if no age
+  lactateThresholdHR        Int?            // Default: 0.85 * maxHR
+  functionalThresholdPower  Int?            // Default: 200W
+  tsbAlertThreshold         Int?            @default(-30)
+  acwrAlertThreshold        Decimal?        @default(1.5) @db.Decimal(3, 1)
+
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
@@ -1572,4 +1653,81 @@ model ShareCard {
   @@index([workoutId])
   @@index([expiresAt]) // For cleanup cron
   @@map("share_cards")
+}
+
+// ============================================
+// NOTIFICATIONS: User notifications
+// ============================================
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  type      String    // 'system', 'invite', 'team_activity', 'sync_status', 'announcement'
+  title     String
+  body      String?
+  metadata  Json?     // Flexible: { targetUrl?, teamId?, inviteId?, etc. }
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+// ============================================
+// TEAM EXPERIENCE: Invite codes and activity feed
+// ============================================
+
+model TeamInviteCode {
+  id        String    @id @default(uuid())
+  teamId    String
+  code      String    @unique
+  role      String    @default("ATHLETE")
+  expiresAt DateTime?
+  maxUses   Int?
+  usesCount Int       @default(0)
+  createdBy String
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@map("team_invite_codes")
+}
+
+model TeamActivity {
+  id        String   @id @default(uuid())
+  teamId    String
+  userId    String?
+  type      String
+  title     String
+  data      Json?
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, createdAt])
+  @@map("team_activities")
+}
+
+// ============================================
+// FEATURE FLAGS: Per-tool athlete visibility toggles
+// ============================================
+
+model TeamFeatureFlag {
+  id              String   @id @default(uuid())
+  teamId          String
+  tool            String   // 'lineup', 'seat_racing', 'fleet', 'training', 'attendance', 'whiteboard', 'recruiting'
+  athleteReadOnly Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, tool])
+  @@index([teamId])
+  @@map("team_feature_flags")
 }

@@ -36,7 +36,7 @@ const getSystemPrompt = (modelName) => {
 
 /**
  * Check Ollama status (read-only)
- * Ollama is controlled via systemd/Home Assistant, not RowLab
+ * Ollama is controlled via systemd/Home Assistant, not oarbit
  */
 router.get('/running', async (req, res) => {
   try {

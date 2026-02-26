@@ -1,4 +1,4 @@
-# RowLab Docker Image
+# oarbit Docker Image
 # Multi-stage build for optimized production image
 
 # ====================
@@ -30,7 +30,7 @@ WORKDIR /app
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S rowlab -u 1001
+    adduser -S oarbit -u 1001
 
 # Copy built assets and server
 COPY --from=builder /app/dist ./dist
@@ -47,10 +47,10 @@ RUN npm ci --only=production && \
     npm cache clean --force
 
 # Set ownership
-RUN chown -R rowlab:nodejs /app
+RUN chown -R oarbit:nodejs /app
 
 # Switch to non-root user
-USER rowlab
+USER oarbit
 
 # Environment
 ENV NODE_ENV=production

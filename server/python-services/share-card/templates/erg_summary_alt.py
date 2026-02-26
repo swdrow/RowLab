@@ -15,7 +15,7 @@ import math
 from datetime import datetime
 from templates.base_template import (
     setup_canvas, draw_text, draw_gradient_rect,
-    draw_rounded_rect, draw_grain_texture, draw_rowlab_branding,
+    draw_rounded_rect, draw_grain_texture, draw_oarbit_branding,
     surface_to_png_bytes, hex_to_rgb,
     DARK_BG, GOLD, ROSE, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_MUTED, SLATE, COPPER, TEAL
 )
@@ -886,6 +886,6 @@ def render_erg_summary_alt(format_key, workout_data, options):
     ctx.fill()
 
     draw_grain_texture(ctx, width, height, opacity=0.03)
-    draw_rowlab_branding(ctx, width, height, format_key, options)
+    draw_oarbit_branding(ctx, width, height, format_key, options)
 
     return surface_to_png_bytes(surface)

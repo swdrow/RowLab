@@ -11,6 +11,7 @@ import crypto from 'crypto';
 import { prisma } from '../db/connection.js';
 import { bulkCreateWorkouts } from './workoutService.js';
 import { encrypt, decrypt, isEncrypted } from '../utils/encryption.js';
+import { createSignedOAuthState } from '../utils/oauthState.js';
 
 // Configuration from environment (supports dev/prod switching)
 const getConfig = () => ({
@@ -51,11 +52,8 @@ export function generateAuthUrl(state) {
  * Generate OAuth authorization URL (with athlete context)
  */
 export function getAuthorizationUrl(athleteId, redirectUri) {
-  const state = crypto.randomBytes(16).toString('hex');
-
-  // Store state temporarily (in production, use Redis or DB)
-  // For now, encode athleteId in state
-  const stateData = Buffer.from(JSON.stringify({ athleteId, nonce: state })).toString('base64url');
+  // HMAC-signed state with athleteId for CSRF protection
+  const stateData = createSignedOAuthState({ athleteId });
 
   const config = getConfig();
   const params = new URLSearchParams({
@@ -338,9 +336,8 @@ export async function fetchResults(accessToken, userId, options = {}) {
  * Fetch workouts from Concept2 API
  */
 export async function fetchC2Workouts(accessToken, fromDate = null) {
-  const params = new URLSearchParams({
-    type: 'rower',
-  });
+  // Don't filter by type — fetch all machine types (rower, skierg, bikerg, water, etc.)
+  const params = new URLSearchParams();
 
   if (fromDate) {
     params.append('from', fromDate.toISOString().split('T')[0]);
@@ -364,9 +361,22 @@ export async function fetchC2Workouts(accessToken, fromDate = null) {
  * Convert C2 workout to our format
  */
 export function convertC2Workout(c2Workout, athleteId) {
+  // Inline machine type mapping to avoid circular import with c2SyncService
+  const c2Type = c2Workout.type || c2Workout.workout_type;
+  let machineType = 'rower';
+  if (c2Type === 0 || c2Type === 'rower' || c2Type === 'slides' || c2Type === 'dynamic')
+    machineType = 'rower';
+  else if (c2Type === 1 || c2Type === 'skierg') machineType = 'skierg';
+  else if (c2Type === 2 || c2Type === 'bikerg' || c2Type === 'bike') machineType = 'bikerg';
+  else if (c2Type === 'water' || c2Type === 'paddle') machineType = 'water';
+  else if (c2Type === 'snow' || c2Type === 'rollerski') machineType = 'snow';
+  else if (c2Type === 'multierg') machineType = 'multierg';
+  const workoutType = machineType === 'water' || machineType === 'snow' ? 'on_water' : 'erg';
   return {
     athleteId,
     source: 'concept2_sync',
+    type: workoutType,
+    machineType,
     c2LogbookId: String(c2Workout.id),
     date: c2Workout.date,
     distanceM: c2Workout.distance,
@@ -829,7 +839,7 @@ export async function handleWebhook(payload) {
 
 /**
  * Connect an athlete to Concept2
- * @param {string} athleteId - RowLab athlete ID
+ * @param {string} athleteId - oarbit athlete ID
  * @param {string} code - OAuth authorization code
  * @returns {Promise<object>} - Connection result
  */

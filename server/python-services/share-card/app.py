@@ -1,5 +1,5 @@
 """
-RowLab Share Card Rendering Service
+oarbit Share Card Rendering Service
 Flask microservice for generating share card images using Cairo+Pango
 """
 

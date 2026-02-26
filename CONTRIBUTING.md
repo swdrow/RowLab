@@ -1,6 +1,6 @@
-# Contributing to RowLab
+# Contributing to oarbit
 
-Thank you for your interest in contributing to RowLab! We welcome contributions from the community and are grateful for your support in making RowLab better for coaches and athletes worldwide.
+Thank you for your interest in contributing to oarbit! We welcome contributions from the community and are grateful for your support in making oarbit better for athletes and coaches worldwide.
 
 ## Table of Contents
 
@@ -26,20 +26,21 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 Before you begin:
 
 - Ensure you have [Node.js 18+](https://nodejs.org/) installed
-- Familiarize yourself with [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), and [Express.js](https://expressjs.com/)
+- Familiarize yourself with [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [TanStack Router](https://tanstack.com/router/latest), and [Express.js](https://expressjs.com/)
 - Read through the [README](README.md) to understand the project's purpose and architecture
 - Check the [existing issues](https://github.com/swdrow/RowLab/issues) to see if your contribution is already being discussed
+- For v4.0 work, familiarize yourself with the oarbit design system in `docs/plans/2026-02-21-oarbit-rebrand-design.md`
 
 ## How to Contribute
 
 ### Reporting Bugs
 
-If you find a bug in RowLab, please help us fix it by submitting a detailed bug report.
+If you find a bug in oarbit, please help us fix it by submitting a detailed bug report.
 
 **Before submitting a bug report:**
 
 - Check the [existing issues](https://github.com/swdrow/RowLab/issues) to ensure the bug hasn't been reported already
-- Verify you're using the latest version of RowLab
+- Verify you're using the latest version of oarbit
 - Collect information about your environment (OS, Node version, browser version)
 
 **How to submit a bug report:**
@@ -60,8 +61,8 @@ We love hearing ideas for new features and improvements!
 
 **Before suggesting a feature:**
 
-- Check [existing issues](https://github.com/swdrow/RowLab/issues) and the [roadmap](ROADMAP.md) to see if it's already planned
-- Consider whether the feature aligns with RowLab's core mission of data-driven lineup optimization
+- Check [existing issues](https://github.com/swdrow/RowLab/issues) and the [roadmap](.planning/ROADMAP.md) to see if it's already planned
+- Consider whether the feature aligns with oarbit's core mission of data-driven rowing for athletes and coaches
 
 **How to suggest a feature:**
 
@@ -95,6 +96,7 @@ We welcome code contributions! Whether it's fixing a bug, implementing a feature
 - **PostgreSQL** 14 or higher (or use Docker)
 - **Git** for version control
 - **Ollama** (optional, for AI features)
+- Familiarity with React 19, TanStack Router, and Tailwind CSS v4 for v4.0 work
 
 ### Setup Steps
 
@@ -190,7 +192,7 @@ npm start            # Run production server
 
 ## Coding Standards
 
-RowLab follows strict coding standards to maintain code quality and consistency.
+oarbit follows strict coding standards to maintain code quality and consistency.
 
 ### TypeScript
 
@@ -276,13 +278,14 @@ export function AthleteCard({ athlete, onSelect }: AthleteCardProps) {
 
 ### Design System
 
-RowLab uses a custom "Precision Instrument" design system:
+oarbit (v4.0) uses Tailwind CSS v4 with a custom "Precision Instrument" design system:
 
 - Use existing components from `src/components/ui/` where possible
-- Follow the color palette defined in `src/theme/`
-- Maintain the dark theme aesthetic (void-deep backgrounds)
-- Use blade blue (#0070F3) for primary actions
-- Follow port/starboard color semantics (red/green)
+- Follow the design tokens and CSS variables defined in `docs/plans/2026-02-21-oarbit-rebrand-design.md`
+- Use opaque void-surface panels with shadow-card — NO glass morphism
+- Use oarbit four-accent system: teal, sand, coral, ivory
+- All animations use spring physics via `src/v2/lib/animations.ts`
+- Use skeleton loaders for loading states, never spinners
 
 ### API Design
 
@@ -384,7 +387,7 @@ npm run test:ui       # Visual test UI
 
 ### Submitting the PR
 
-1. Go to the [RowLab repository](https://github.com/swdrow/RowLab) on GitHub
+1. Go to the [oarbit repository](https://github.com/swdrow/RowLab) on GitHub
 2. Click "New Pull Request"
 3. Select your fork and branch
 4. Fill out the PR template completely:
@@ -417,7 +420,7 @@ Before submitting, ensure:
 
 ## Commit Message Guidelines
 
-RowLab uses [Conventional Commits](https://www.conventionalcommits.org/) for clear, semantic commit history.
+oarbit uses [Conventional Commits](https://www.conventionalcommits.org/) for clear, semantic commit history.
 
 ### Format
 
@@ -506,12 +509,12 @@ All contributors will be:
 
 - Listed in the project's contributors list
 - Acknowledged in release notes for significant contributions
-- Welcomed as part of the RowLab community
+- Welcomed as part of the oarbit community
 
 ### License
 
-By contributing to RowLab, you agree that your contributions will be licensed under the MIT License. See [LICENSE](LICENSE) for details.
+By contributing to oarbit, you agree that your contributions will be licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-**Thank you for contributing to RowLab!** Your efforts help coaches and athletes achieve better results through data-driven decisions.
+**Thank you for contributing to oarbit!** Your efforts help coaches and athletes achieve better results through data-driven decisions.

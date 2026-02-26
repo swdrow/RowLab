@@ -8,6 +8,7 @@
 import crypto from 'crypto';
 import { prisma } from '../db/connection.js';
 import { encrypt, decrypt } from '../utils/encryption.js';
+import { createSignedOAuthState } from '../utils/oauthState.js';
 
 // Strava API endpoints
 const STRAVA_API_URL = 'https://www.strava.com/api/v3';
@@ -18,7 +19,9 @@ const STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token';
 const getConfig = () => ({
   clientId: process.env.STRAVA_CLIENT_ID,
   clientSecret: process.env.STRAVA_CLIENT_SECRET,
-  redirectUri: process.env.STRAVA_REDIRECT_URI || `${process.env.APP_URL || 'http://localhost:5173'}/app/strava/callback`,
+  redirectUri:
+    process.env.STRAVA_REDIRECT_URI ||
+    `${process.env.APP_URL || 'http://localhost:8000'}/api/v1/strava/callback`,
 });
 
 // ============================================
@@ -35,8 +38,8 @@ export function generateAuthUrl(userId) {
     throw new Error('STRAVA_CLIENT_ID not configured');
   }
 
-  // State includes user ID for callback verification
-  const state = Buffer.from(JSON.stringify({ userId, timestamp: Date.now() })).toString('base64');
+  // State is HMAC-signed to prevent CSRF via forged state parameters
+  const state = createSignedOAuthState({ userId });
 
   const params = new URLSearchParams({
     client_id: clientId,
@@ -99,7 +102,7 @@ export async function refreshAccessToken(refreshToken) {
       client_id: clientId,
       client_secret: clientSecret,
       grant_type: 'refresh_token',
-      refresh_token: decrypt(refreshToken),
+      refresh_token: decrypt(refreshToken) || refreshToken, // fallback to plaintext for legacy tokens
     }),
   });
 
@@ -189,7 +192,7 @@ export async function getValidToken(userId) {
     }
   }
 
-  return decrypt(auth.accessToken);
+  return decrypt(auth.accessToken) || auth.accessToken; // fallback to plaintext for legacy tokens
 }
 
 // ============================================
@@ -261,7 +264,7 @@ export async function fetchActivity(userId, activityId) {
 
 /**
  * Create an activity on Strava
- * @param {string} userId - RowLab user ID
+ * @param {string} userId - oarbit user ID
  * @param {object} activity - Activity data to upload
  * @returns {Promise<object>} Created Strava activity
  */
@@ -353,11 +356,12 @@ function buildActivityName(workout) {
 
   // Add workout type
   const type = workout.type?.toLowerCase() || 'rower';
-  const typeLabel = {
-    rower: 'Row',
-    bikeerg: 'BikeErg',
-    skierg: 'SkiErg',
-  }[type] || 'Erg';
+  const typeLabel =
+    {
+      rower: 'Row',
+      bikeerg: 'BikeErg',
+      skierg: 'SkiErg',
+    }[type] || 'Erg';
 
   parts.push(typeLabel);
 
@@ -368,13 +372,13 @@ function buildActivityName(workout) {
  * Build description with workout details
  */
 function buildActivityDescription(workout) {
-  const lines = ['Synced from Concept2 Logbook via RowLab'];
+  const lines = ['Synced from Concept2 Logbook via oarbit'];
   const time = workout.time ? workout.time / 10 : workout.durationSeconds;
   const distance = workout.distance || workout.distanceM;
 
   if (time && distance) {
     // Calculate pace (time per 500m)
-    const pace500m = (time / (distance / 500));
+    const pace500m = time / (distance / 500);
     const paceMin = Math.floor(pace500m / 60);
     const paceSec = (pace500m % 60).toFixed(1);
     lines.push(`\nPace: ${paceMin}:${paceSec.padStart(4, '0')}/500m`);
@@ -403,13 +407,133 @@ function buildActivityDescription(workout) {
 }
 
 // ============================================
+// Dedup & Single Activity Sync
+// ============================================
+
+/**
+ * Check if a workout is a duplicate (exact Strava ID or cross-source fuzzy match)
+ * @param {object} workout - { userId, date, distanceM, stravaActivityId }
+ * @returns {Promise<{duplicate: boolean, reason?: string, existingId?: string, existingSource?: string}>}
+ */
+export async function isDuplicateWorkout({ userId, date, distanceM, stravaActivityId }) {
+  // Primary check: exact Strava activity ID match
+  if (stravaActivityId) {
+    const exactMatch = await prisma.workout.findFirst({
+      where: {
+        stravaActivityId: String(stravaActivityId),
+      },
+    });
+
+    if (exactMatch) {
+      return { duplicate: true, reason: 'exact_strava_id', existingId: exactMatch.id };
+    }
+  }
+
+  // Secondary check: cross-source fuzzy match (same user, similar time + distance from different source)
+  if (date && distanceM && distanceM > 0) {
+    const dateObj = date instanceof Date ? date : new Date(date);
+    const windowMs = 5 * 60 * 1000; // 5-minute window
+
+    const fuzzyMatch = await prisma.workout.findFirst({
+      where: {
+        userId,
+        date: {
+          gte: new Date(dateObj.getTime() - windowMs),
+          lte: new Date(dateObj.getTime() + windowMs),
+        },
+        distanceM: {
+          gte: Math.floor(distanceM * 0.95),
+          lte: Math.ceil(distanceM * 1.05),
+        },
+        source: { not: 'strava_sync' }, // Must be from a different source
+      },
+    });
+
+    if (fuzzyMatch) {
+      return {
+        duplicate: true,
+        reason: 'fuzzy_cross_source',
+        existingId: fuzzyMatch.id,
+        existingSource: fuzzyMatch.source,
+      };
+    }
+  }
+
+  return { duplicate: false };
+}
+
+/**
+ * Sync a single Strava activity as a workout (used by webhook handler)
+ * @param {string} userId - oarbit user ID
+ * @param {number|string} activityId - Strava activity ID
+ * @returns {Promise<{synced: boolean, reason: string, workoutId?: string}>}
+ */
+export async function syncSingleActivity(userId, activityId) {
+  // Fetch full activity details from Strava
+  const activity = await fetchActivity(userId, activityId);
+
+  // Build workout data
+  const workoutData = {
+    userId,
+    teamId: null, // User-scoped, no team context for personal workouts
+    date: new Date(activity.start_date),
+    distanceM: Math.round(activity.distance || 0),
+    durationSeconds: activity.elapsed_time,
+    type: mapActivityType(activity.type),
+    source: 'strava_sync',
+    stravaActivityId: activity.id.toString(),
+    rawData: activity,
+    deviceInfo: {
+      name: activity.device_name,
+      type: activity.type,
+    },
+    calories: activity.calories || null,
+    avgHeartRate: activity.average_heartrate || null,
+  };
+
+  // Check for duplicates
+  const dupCheck = await isDuplicateWorkout({
+    userId,
+    date: workoutData.date,
+    distanceM: workoutData.distanceM,
+    stravaActivityId: workoutData.stravaActivityId,
+  });
+
+  if (dupCheck.duplicate) {
+    if (dupCheck.reason === 'exact_strava_id') {
+      console.log(
+        `Strava activity ${activityId} already synced (workout ${dupCheck.existingId}), skipping`
+      );
+    } else if (dupCheck.reason === 'fuzzy_cross_source') {
+      console.warn(
+        `Strava activity ${activityId} appears to be a duplicate of workout ${dupCheck.existingId} ` +
+          `(source: ${dupCheck.existingSource}), skipping cross-source duplicate`
+      );
+    }
+    return { synced: false, reason: dupCheck.reason };
+  }
+
+  // Create the workout
+  const workout = await prisma.workout.create({
+    data: workoutData,
+  });
+
+  console.log(`Synced Strava activity ${activityId} as workout ${workout.id}`);
+
+  return { synced: true, reason: 'created', workoutId: workout.id };
+}
+
+// ============================================
 // Sync Operations
 // ============================================
 
 /**
  * Sync activities to workouts
  */
-export async function syncActivities(userId, { after, activityTypes = ['Rowing', 'Workout', 'WeightTraining'] } = {}) {
+export async function syncActivities(
+  userId,
+  { after, activityTypes = ['Rowing', 'Workout', 'WeightTraining'] } = {}
+) {
   const auth = await prisma.stravaAuth.findUnique({
     where: { userId },
     include: { user: { include: { memberships: true } } },
@@ -441,30 +565,24 @@ export async function syncActivities(userId, { after, activityTypes = ['Rowing',
   }
 
   // Filter to rowing-related activities
-  const rowingActivities = activities.filter((a) =>
-    activityTypes.includes(a.type) || a.type.toLowerCase().includes('row')
+  const rowingActivities = activities.filter(
+    (a) => activityTypes.includes(a.type) || a.type.toLowerCase().includes('row')
   );
 
   const synced = [];
   const skipped = [];
 
   for (const activity of rowingActivities) {
-    // Check if already imported
-    const existing = await prisma.workout.findFirst({
-      where: {
-        OR: [
-          { stravaActivityId: activity.id.toString() },
-          {
-            date: new Date(activity.start_date),
-            durationSeconds: activity.elapsed_time,
-            source: 'strava_sync',
-          },
-        ],
-      },
+    // Check for duplicates using unified dedup logic
+    const dupCheck = await isDuplicateWorkout({
+      userId,
+      date: new Date(activity.start_date),
+      distanceM: Math.round(activity.distance || 0),
+      stravaActivityId: activity.id.toString(),
     });
 
-    if (existing) {
-      skipped.push({ id: activity.id, reason: 'already_imported' });
+    if (dupCheck.duplicate) {
+      skipped.push({ id: activity.id, reason: dupCheck.reason });
       continue;
     }
 
@@ -475,7 +593,7 @@ export async function syncActivities(userId, { after, activityTypes = ['Rowing',
           userId,
           teamId: auth.user.memberships[0]?.teamId, // Use first team
           date: new Date(activity.start_date),
-          distanceM: activity.distance || 0,
+          distanceM: Math.round(activity.distance || 0),
           durationSeconds: activity.elapsed_time,
           type: mapActivityType(activity.type),
           source: 'strava_sync',
@@ -578,7 +696,7 @@ export async function updateC2SyncConfig(userId, config) {
 
 /**
  * Sync Concept2 workouts to Strava
- * @param {string} userId - RowLab user ID
+ * @param {string} userId - oarbit user ID
  * @param {object} options - Sync options
  * @returns {Promise<object>} Sync results
  */
@@ -596,7 +714,9 @@ export async function syncC2ToStrava(userId, options = {}) {
   }
 
   if (!auth.scope?.includes('activity:write')) {
-    throw new Error('Strava write permission required. Please reconnect Strava to grant upload permission.');
+    throw new Error(
+      'Strava write permission required. Please reconnect Strava to grant upload permission.'
+    );
   }
 
   // Get allowed workout types
@@ -610,7 +730,8 @@ export async function syncC2ToStrava(userId, options = {}) {
   }
 
   // Find C2 workouts that haven't been synced to Strava yet
-  const { after = auth.lastC2SyncedAt || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } = options;
+  const { after = auth.lastC2SyncedAt || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } =
+    options;
 
   // Get workouts from Concept2 source that haven't been posted to Strava
   const workouts = await prisma.workout.findMany({
@@ -729,7 +850,7 @@ export async function disconnect(userId) {
 
   // Revoke access token with Strava (optional, best practice)
   try {
-    const token = decrypt(auth.accessToken);
+    const token = decrypt(auth.accessToken) || auth.accessToken; // fallback to plaintext for legacy tokens
     await fetch(`${STRAVA_AUTH_URL}/deauthorize`, {
       method: 'POST',
       headers: {
@@ -762,6 +883,8 @@ export default {
   fetchActivity,
   createActivity,
   syncActivities,
+  syncSingleActivity,
+  isDuplicateWorkout,
   getStatus,
   disconnect,
   // C2 to Strava sync
