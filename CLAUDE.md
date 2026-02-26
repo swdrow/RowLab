@@ -391,32 +391,32 @@ Forgejo is the primary development repository. It contains everything — planni
 | Compose file | `/home/swd/forgejo/docker-compose.yml` |
 | Admin user | `swd` |
 
-### GitHub Sync (Cron)
+### GitHub Sync (Forgejo Actions)
 
-A host-level script syncs Forgejo master to GitHub every minute, stripping internal paths via `git filter-repo`.
+A Forgejo Actions workflow triggers on every push to master, clones the repo, strips internal paths via `git filter-repo`, and force-pushes to GitHub.
 
-| Component | Path |
-|-----------|------|
-| Sync script | `/home/swd/forgejo/sync-to-github.sh` |
-| Log file | `/home/swd/forgejo/sync.log` |
-| Last synced SHA | `/home/swd/forgejo/.last-synced-sha` |
-| Cron schedule | `* * * * *` (every minute) |
+| Component | Location |
+|-----------|----------|
+| Workflow | `.forgejo/workflows/sync-to-github.yml` |
+| GitHub PAT secret | `GH_SYNC_TOKEN` (Forgejo repo secret) |
 | Exclusion manifest | `.github-sync-exclude` (committed to repo) |
+| Fallback script | `/home/swd/forgejo/sync-to-github.sh` (manual) |
+| Runner image | `forgejo-runner-custom` (base + docker-cli) |
 
 **How sync works:**
-1. Cron runs script every minute
-2. Script checks if Forgejo master HEAD differs from last synced SHA
-3. If changed: clone mirror → `git filter-repo` strips excluded paths → force-push to GitHub
-4. Records synced SHA to prevent redundant pushes
+1. Push to master triggers the workflow
+2. Job container clones mirror via Docker bridge gateway (`172.17.0.1:3333`)
+3. `git filter-repo` strips excluded paths
+4. Force-pushes filtered history to GitHub using `GH_SYNC_TOKEN`
 
-**Excluded from GitHub** (defined in sync script and `.github-sync-exclude`):
+**Excluded from GitHub** (defined in workflow and `.github-sync-exclude`):
 - `.planning/`, `.claude/`, `.forgejo/`
 - `docs/plans/`, `docs/design/`, `docs/features/`
 - `screenshots/`, `uploads/`, `dist-v4/`
 - `scripts/e2e-visual-audit.mjs`, `test-settings-initial-load.txt`
 - `.github-sync-exclude` itself
 
-**To keep a new file/directory Forgejo-only:** Add it to both `.github-sync-exclude` and the `--path ... --invert-paths` list in `sync-to-github.sh`.
+**To keep a new file/directory Forgejo-only:** Add it to both `.github-sync-exclude` and the `--path ... --invert-paths` list in `.forgejo/workflows/sync-to-github.yml`.
 
 ### Troubleshooting
 
@@ -424,14 +424,14 @@ A host-level script syncs Forgejo master to GitHub every minute, stripping inter
 # Check Forgejo container
 docker ps | grep forgejo
 
-# Check sync log
-tail -20 /home/swd/forgejo/sync.log
+# Check Actions runs (web UI)
+# http://100.86.4.57:3333/swd/oarbit/actions
 
-# Manual sync trigger
+# Manual sync fallback
 /home/swd/forgejo/sync-to-github.sh
 
-# Check cron job
-crontab -l | grep forgejo
+# Rebuild runner image (if Docker CLI missing after update)
+cd /home/swd/forgejo && docker build -f Dockerfile.runner -t forgejo-runner-custom .
 
 # Restart Forgejo
 cd /home/swd/forgejo && docker compose restart forgejo
