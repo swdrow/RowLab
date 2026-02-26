@@ -1,13 +1,15 @@
 /**
  * Privacy settings section -- radio groups for profile and workout visibility.
  * Synced to backend via TanStack Query with optimistic updates.
+ * Inline "Saved" feedback via SaveIndicator.
  */
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { IconShield, IconEye, IconTrophy } from '@/components/icons';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
 import { settingsQueryOptions, useUpdateSettings, type PrivacyPrefs } from '../api';
+import { SaveIndicator } from './SaveIndicator';
 
 /* ------------------------------------------------------------------ */
 /* Defaults                                                            */
@@ -128,10 +130,39 @@ export function PrivacySection() {
 
   const prefs: PrivacyPrefs = settings?.privacyPrefs ?? DEFAULT_PREFS;
 
+  // Per-card save status tracking
+  const [saveStatus, setSaveStatus] = useState<Record<string, 'idle' | 'saved' | 'error'>>({});
+
+  // Auto-clear "saved" after 2s
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    for (const [card, status] of Object.entries(saveStatus)) {
+      if (status === 'saved') {
+        timers.push(
+          setTimeout(() => {
+            setSaveStatus((prev) => ({ ...prev, [card]: 'idle' }));
+          }, 2000)
+        );
+      }
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [saveStatus]);
+
   const updatePref = useCallback(
-    <K extends keyof PrivacyPrefs>(key: K, value: PrivacyPrefs[K]) => {
+    <K extends keyof PrivacyPrefs>(card: string, key: K, value: PrivacyPrefs[K]) => {
       const updated: PrivacyPrefs = { ...prefs, [key]: value };
-      updateSettings({ privacyPrefs: updated });
+      setSaveStatus((prev) => ({ ...prev, [card]: 'idle' }));
+      updateSettings(
+        { privacyPrefs: updated },
+        {
+          onSuccess: () => {
+            setSaveStatus((prev) => ({ ...prev, [card]: 'saved' }));
+          },
+          onError: () => {
+            setSaveStatus((prev) => ({ ...prev, [card]: 'error' }));
+          },
+        }
+      );
     },
     [prefs, updateSettings]
   );
@@ -146,31 +177,34 @@ export function PrivacySection() {
 
       {/* Profile Visibility */}
       <Card>
-        <div className="flex items-center gap-2 mb-4">
-          <IconEye className="w-4 h-4 text-accent-teal" />
-          <h3 className="text-sm font-display font-semibold text-text-bright">
-            Profile Visibility
-          </h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <IconEye className="w-4 h-4 text-accent-teal" />
+            <h3 className="text-sm font-display font-semibold text-text-bright">
+              Profile Visibility
+            </h3>
+          </div>
+          <SaveIndicator status={saveStatus['profile'] || 'idle'} />
         </div>
         <div className="space-y-2" role="radiogroup" aria-label="Profile visibility">
           <RadioOption
             value="public"
             selected={prefs.profileVisibility === 'public'}
-            onChange={(v) => updatePref('profileVisibility', v)}
+            onChange={(v) => updatePref('profile', 'profileVisibility', v)}
             label="Public"
             description="Anyone can view your profile and training stats"
           />
           <RadioOption
             value="team"
             selected={prefs.profileVisibility === 'team'}
-            onChange={(v) => updatePref('profileVisibility', v)}
+            onChange={(v) => updatePref('profile', 'profileVisibility', v)}
             label="Team Only"
             description="Only members of your team can see your profile"
           />
           <RadioOption
             value="private"
             selected={prefs.profileVisibility === 'private'}
-            onChange={(v) => updatePref('profileVisibility', v)}
+            onChange={(v) => updatePref('profile', 'profileVisibility', v)}
             label="Private"
             description="Only you can see your full profile"
           />
@@ -179,31 +213,34 @@ export function PrivacySection() {
 
       {/* Workout Visibility */}
       <Card>
-        <div className="flex items-center gap-2 mb-4">
-          <IconEye className="w-4 h-4 text-accent-teal" />
-          <h3 className="text-sm font-display font-semibold text-text-bright">
-            Workout Visibility
-          </h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <IconEye className="w-4 h-4 text-accent-teal" />
+            <h3 className="text-sm font-display font-semibold text-text-bright">
+              Workout Visibility
+            </h3>
+          </div>
+          <SaveIndicator status={saveStatus['workout'] || 'idle'} />
         </div>
         <div className="space-y-2" role="radiogroup" aria-label="Workout visibility">
           <RadioOption
             value="same"
             selected={prefs.workoutVisibility === 'same'}
-            onChange={(v) => updatePref('workoutVisibility', v)}
+            onChange={(v) => updatePref('workout', 'workoutVisibility', v)}
             label="Same as Profile"
             description="Match your profile visibility setting"
           />
           <RadioOption
             value="team"
             selected={prefs.workoutVisibility === 'team'}
-            onChange={(v) => updatePref('workoutVisibility', v)}
+            onChange={(v) => updatePref('workout', 'workoutVisibility', v)}
             label="Team Only"
             description="Only team members can see your workout data"
           />
           <RadioOption
             value="private"
             selected={prefs.workoutVisibility === 'private'}
-            onChange={(v) => updatePref('workoutVisibility', v)}
+            onChange={(v) => updatePref('workout', 'workoutVisibility', v)}
             label="Private"
             description="Keep all workout data private"
           />
@@ -212,15 +249,18 @@ export function PrivacySection() {
 
       {/* Leaderboard Toggle */}
       <Card>
-        <div className="flex items-center gap-2 mb-3">
-          <IconTrophy className="w-4 h-4 text-accent-teal" />
-          <h3 className="text-sm font-display font-semibold text-text-bright">Leaderboards</h3>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <IconTrophy className="w-4 h-4 text-accent-teal" />
+            <h3 className="text-sm font-display font-semibold text-text-bright">Leaderboards</h3>
+          </div>
+          <SaveIndicator status={saveStatus['leaderboard'] || 'idle'} />
         </div>
         <ToggleSwitch
           label="Show in Team Leaderboards"
           description="Your stats will appear in team rankings and leaderboards"
           checked={prefs.showInLeaderboards}
-          onChange={(v) => updatePref('showInLeaderboards', v)}
+          onChange={(v) => updatePref('leaderboard', 'showInLeaderboards', v)}
           disabled={isPending}
         />
       </Card>
