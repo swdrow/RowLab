@@ -149,7 +149,7 @@ export const CoachDashboard: React.FC = () => {
           description="Please select or create a team to view your dashboard."
           action={{
             label: 'Go to Teams',
-            to: '/app/settings/teams',
+            to: '/app/settings?tab=team',
           }}
         />
       </div>
@@ -179,8 +179,8 @@ export const CoachDashboard: React.FC = () => {
         <ExceptionBanner summary={exceptionSummary} />
       </div>
 
-      {/* Bento Grid — only render when container width is measured */}
-      {mounted ? (
+      {/* Bento Grid — only render when container width is measured and non-zero */}
+      {mounted && containerWidth > 0 ? (
         <ResponsiveGridLayout
           className="dashboard-grid"
           layouts={gridLayouts}

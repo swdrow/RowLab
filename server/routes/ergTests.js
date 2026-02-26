@@ -68,7 +68,7 @@ router.get(
   teamIsolation,
   [
     query('testType').isIn(['500m', '1k', '2k', '5k', '6k', '30min']),
-    query('limit').optional().isInt({ min: 1, max: 100 }),
+    query('limit').optional().isInt({ min: 1, max: 200 }),
   ],
   validateRequest,
   async (req, res) => {

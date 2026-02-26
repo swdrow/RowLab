@@ -25,8 +25,8 @@ function getStatusConfig(status: string): {
   if (statusLower === 'present') {
     return {
       icon: Check,
-      colorClass: 'text-green-400',
-      bgClass: 'bg-green-400/10',
+      colorClass: 'text-data-excellent',
+      bgClass: 'bg-data-excellent/10',
       label: 'Present',
     };
   }
@@ -34,8 +34,8 @@ function getStatusConfig(status: string): {
   if (statusLower === 'late') {
     return {
       icon: Clock,
-      colorClass: 'text-yellow-400',
-      bgClass: 'bg-yellow-400/10',
+      colorClass: 'text-data-warning',
+      bgClass: 'bg-data-warning/10',
       label: 'Late',
     };
   }
@@ -43,8 +43,8 @@ function getStatusConfig(status: string): {
   if (statusLower === 'excused') {
     return {
       icon: WarningCircle,
-      colorClass: 'text-blue-400',
-      bgClass: 'bg-blue-400/10',
+      colorClass: 'text-data-good',
+      bgClass: 'bg-data-good/10',
       label: 'Excused',
     };
   }
@@ -52,8 +52,8 @@ function getStatusConfig(status: string): {
   // unexcused or absent
   return {
     icon: X,
-    colorClass: 'text-red-400',
-    bgClass: 'bg-red-400/10',
+    colorClass: 'text-data-poor',
+    bgClass: 'bg-data-poor/10',
     label: 'Unexcused',
   };
 }

@@ -17,6 +17,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../contexts/AuthContext';
 import { useAthleteDetail } from '../../features/athletes/hooks/useAthleteDetail';
 import { useShowGamification } from '../../hooks/useGamificationPreference';
 import { ProfileHero } from '../../features/athletes/components/profile/ProfileHero';
@@ -81,7 +82,7 @@ function CanvasErgTestsTable({ tests }: { tests: ErgTest[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-ink-border">
+          <tr className="border-b border-white/[0.06]">
             <th className="text-left py-2 px-2 text-[10px] font-mono font-medium text-ink-muted uppercase tracking-wider">
               Date
             </th>
@@ -100,7 +101,7 @@ function CanvasErgTestsTable({ tests }: { tests: ErgTest[] }) {
           {tests.map((test) => (
             <tr
               key={test.id}
-              className="border-b border-ink-border/50 hover:bg-ink-hover/50 transition-colors"
+              className="border-b border-white/[0.06]/50 hover:bg-ink-hover/50 transition-colors"
             >
               <td className="py-2 px-2 text-ink-secondary text-sm">
                 {new Date(test.testDate).toLocaleDateString('en-US', {
@@ -184,15 +185,16 @@ function CanvasAthleteLoading() {
 export function CanvasAthleteDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isInitialized, isAuthenticated } = useAuth();
   const { athlete, isLoading, error } = useAthleteDetail(id ?? null);
   const gamificationEnabled = useShowGamification();
 
-  // Loading state
-  if (isLoading) {
+  // Show loading while auth is initializing or query is in progress
+  if (!isInitialized || !isAuthenticated || isLoading) {
     return <CanvasAthleteLoading />;
   }
 
-  // Error / not found
+  // Error / not found (only after auth is ready and query has completed)
   if (error || !athlete) {
     return <CanvasAthleteNotFound />;
   }
@@ -347,7 +349,7 @@ export function CanvasAthleteDetailPage() {
       {/* ============================================ */}
       {/* CONSOLE READOUT */}
       {/* ============================================ */}
-      <div className="flex-shrink-0 border-t border-ink-border px-4 lg:px-6">
+      <div className="flex-shrink-0 border-t border-white/[0.06] px-4 lg:px-6">
         <CanvasConsoleReadout
           items={[
             { label: 'ERG TESTS', value: recentErgTests.length.toString() },

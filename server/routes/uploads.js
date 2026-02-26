@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import { fileTypeFromFile } from 'file-type';
 import { authenticateToken } from '../middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -45,7 +46,7 @@ const upload = multer({
  * @access Private (coaches only)
  * @returns { url: string, filename: string }
  */
-router.post('/visit-schedule', authenticateToken, upload.single('file'), (req, res) => {
+router.post('/visit-schedule', authenticateToken, upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({
       success: false,
@@ -56,16 +57,47 @@ router.post('/visit-schedule', authenticateToken, upload.single('file'), (req, r
     });
   }
 
-  // Return URL path (relative to static serving)
-  const url = `/uploads/visit-schedules/${req.file.filename}`;
+  try {
+    // Validate file type using magic bytes
+    const fileType = await fileTypeFromFile(req.file.path);
+    
+    if (!fileType || fileType.mime !== 'application/pdf') {
+      // Delete the uploaded file if it's not a valid PDF
+      fs.unlinkSync(req.file.path);
+      
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_FILE_TYPE',
+          message: 'File is not a valid PDF',
+        },
+      });
+    }
 
-  res.json({
-    success: true,
-    data: {
-      url,
-      filename: req.file.originalname,
-    },
-  });
+    // Return URL path (relative to static serving)
+    const url = `/uploads/visit-schedules/${req.file.filename}`;
+
+    res.json({
+      success: true,
+      data: {
+        url,
+        filename: req.file.originalname,
+      },
+    });
+  } catch (error) {
+    // Clean up the file on error
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'UPLOAD_ERROR',
+        message: 'Failed to validate file',
+      },
+    });
+  }
 });
 
 // Error handler for multer errors
