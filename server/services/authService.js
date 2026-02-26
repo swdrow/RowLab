@@ -73,6 +73,9 @@ export async function loginUser({ email, password }) {
     throw new Error('Invalid credentials');
   }
 
+  if (user.status === 'deleted') {
+    throw new Error('Account has been deleted');
+  }
   if (user.status !== 'active') {
     throw new Error('Account is suspended');
   }
@@ -120,6 +123,7 @@ export async function loginUser({ email, password }) {
       username: user.username,
       name: user.name,
       isAdmin: user.isAdmin,
+      avatarUrl: user.avatarUrl ?? null,
     },
     teams: user.memberships.map((m) => ({
       id: m.team.id,
@@ -193,6 +197,7 @@ export async function getCurrentUser(userId) {
     username: user.username,
     name: user.name,
     isAdmin: user.isAdmin,
+    avatarUrl: user.avatarUrl ?? null,
     activeTeamId: user.activeTeamId,
     teams: user.memberships.map((m) => ({
       id: m.team.id,
@@ -208,6 +213,81 @@ export async function getCurrentUser(userId) {
  */
 export async function logoutUser(userId) {
   await revokeAllUserTokens(userId);
+}
+
+/**
+ * Change password for authenticated user
+ * Verifies current password, hashes new one, revokes all refresh tokens
+ */
+export async function changePassword(userId, currentPassword, newPassword) {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // Future OAuth users may have no real password hash
+  if (!user.passwordHash) {
+    const err = new Error('No password set for this account');
+    err.code = 'NO_PASSWORD';
+    throw err;
+  }
+
+  const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+  if (!valid) {
+    const err = new Error('Current password is incorrect');
+    err.code = 'INVALID_PASSWORD';
+    throw err;
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    }),
+    prisma.refreshToken.deleteMany({
+      where: { userId },
+    }),
+  ]);
+
+  return { success: true };
+}
+
+/**
+ * Soft-delete user account
+ * Verifies password, sets status=deleted and deletedAt, revokes all tokens
+ */
+export async function softDeleteAccount(userId, password) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { memberships: true },
+  });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if (!valid) {
+    const err = new Error('Password is incorrect');
+    err.code = 'INVALID_PASSWORD';
+    throw err;
+  }
+
+  const deletedAt = new Date();
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { status: 'deleted', deletedAt },
+    }),
+    prisma.refreshToken.deleteMany({
+      where: { userId },
+    }),
+  ]);
+
+  return { deletedAt };
 }
 
 /**

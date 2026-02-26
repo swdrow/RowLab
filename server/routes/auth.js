@@ -9,6 +9,8 @@ import {
   switchTeam,
   getCurrentUser,
   logoutUser,
+  changePassword,
+  softDeleteAccount,
 } from '../services/authService.js';
 import { rotateRefreshToken, generateAccessToken } from '../services/tokenService.js';
 import { authenticateToken } from '../middleware/auth.js';
@@ -129,7 +131,13 @@ router.post(
       if (error.message === 'Account is suspended') {
         return res.status(403).json({
           success: false,
-          error: { code: 'ACCOUNT_SUSPENDED', message: error.message },
+          error: { code: 'ACCOUNT_SUSPENDED', message: 'Account is suspended' },
+        });
+      }
+      if (error.message === 'Account has been deleted') {
+        return res.status(403).json({
+          success: false,
+          error: { code: 'ACCOUNT_DELETED', message: 'Account has been deleted' },
         });
       }
       logger.error('Login error', { error: error.message });
@@ -539,6 +547,90 @@ router.post(
       res.status(500).json({
         success: false,
         error: { code: 'SERVER_ERROR', message: 'Password reset failed' },
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/v1/auth/change-password
+ * Change password for authenticated user
+ */
+router.post(
+  '/change-password',
+  authenticateToken,
+  [
+    body('currentPassword').notEmpty().withMessage('Current password is required'),
+    body('newPassword')
+      .isLength({ min: 8 })
+      .withMessage('New password must be at least 8 characters'),
+  ],
+  validateRequest,
+  async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      await changePassword(req.user.id, currentPassword, newPassword);
+
+      // Clear refresh cookie since all tokens were revoked
+      res.clearCookie('refreshToken');
+
+      res.json({
+        success: true,
+        data: { message: 'Password changed successfully' },
+      });
+    } catch (error) {
+      if (error.code === 'INVALID_PASSWORD' || error.code === 'NO_PASSWORD') {
+        return res.status(400).json({
+          success: false,
+          error: { code: error.code, message: error.message },
+        });
+      }
+      logger.error('Change password error', { error: error.message });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Password change failed' },
+      });
+    }
+  }
+);
+
+/**
+ * DELETE /api/v1/auth/account
+ * Soft-delete user account (30-day grace period before permanent deletion)
+ */
+router.delete(
+  '/account',
+  authenticateToken,
+  [
+    body('password').notEmpty().withMessage('Password is required'),
+    body('confirmation').equals('DELETE').withMessage('Must type DELETE to confirm'),
+  ],
+  validateRequest,
+  async (req, res) => {
+    try {
+      const { password } = req.body;
+      const { deletedAt } = await softDeleteAccount(req.user.id, password);
+
+      res.clearCookie('refreshToken');
+
+      res.json({
+        success: true,
+        data: {
+          message: 'Account scheduled for deletion',
+          deletedAt,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'INVALID_PASSWORD') {
+        return res.status(400).json({
+          success: false,
+          error: { code: 'INVALID_PASSWORD', message: error.message },
+        });
+      }
+      logger.error('Delete account error', { error: error.message });
+      res.status(500).json({
+        success: false,
+        error: { code: 'SERVER_ERROR', message: 'Account deletion failed' },
       });
     }
   }
