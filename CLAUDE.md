@@ -282,9 +282,19 @@ Spawn both agents with `session-end` trigger as a final documentation sweep.
 
 ## Git & GitHub Workflow
 
-**Repository:** `swdrow/RowLab` (GitHub, SSH)
+**Primary repo:** Forgejo `swd/oarbit` (local, SSH)
+**Public mirror:** GitHub `swdrow/RowLab` (filtered, auto-synced)
 **Main branch:** `master`
 **Auth:** `gh` CLI authenticated as `swdrow`
+
+### Git Remotes
+
+| Remote | URL | Purpose |
+|--------|-----|---------|
+| `origin` | `ssh://git@localhost:2224/swd/oarbit.git` | Forgejo (primary, all files) |
+| `github` | `git@github.com:swdrow/RowLab.git` | GitHub (public mirror, filtered) |
+
+Push to `origin` (Forgejo) by default. GitHub is synced automatically — never push directly to `github` remote.
 
 ### Branch Strategy
 
@@ -363,3 +373,66 @@ gh issue list --state open
 5. Run `/coderabbit:review` on the PR
 6. Merge to master when verified
 7. Tag milestones: `git tag v2.1.0 -m "v2.1 Feature Expansion"`
+
+---
+
+## Forgejo (Self-Hosted Git Forge)
+
+Forgejo is the primary development repository. It contains everything — planning docs, design specs, internal tooling, screenshots, etc. GitHub receives only filtered public-facing code via automatic sync.
+
+### Infrastructure
+
+| Component | Details |
+|-----------|---------|
+| Container | `forgejo` (Docker, `codeberg.org/forgejo/forgejo:9`) |
+| Web UI | `http://100.86.4.57:3333` (Tailscale only) |
+| SSH | `localhost:2224` (mapped from container port 22) |
+| Data volume | `/home/swd/forgejo-data` |
+| Compose file | `/home/swd/forgejo/docker-compose.yml` |
+| Admin user | `swd` |
+
+### GitHub Sync (Cron)
+
+A host-level script syncs Forgejo master to GitHub every minute, stripping internal paths via `git filter-repo`.
+
+| Component | Path |
+|-----------|------|
+| Sync script | `/home/swd/forgejo/sync-to-github.sh` |
+| Log file | `/home/swd/forgejo/sync.log` |
+| Last synced SHA | `/home/swd/forgejo/.last-synced-sha` |
+| Cron schedule | `* * * * *` (every minute) |
+| Exclusion manifest | `.github-sync-exclude` (committed to repo) |
+
+**How sync works:**
+1. Cron runs script every minute
+2. Script checks if Forgejo master HEAD differs from last synced SHA
+3. If changed: clone mirror → `git filter-repo` strips excluded paths → force-push to GitHub
+4. Records synced SHA to prevent redundant pushes
+
+**Excluded from GitHub** (defined in sync script and `.github-sync-exclude`):
+- `.planning/`, `.claude/`, `.forgejo/`
+- `docs/plans/`, `docs/design/`, `docs/features/`
+- `screenshots/`, `uploads/`, `dist-v4/`
+- `scripts/e2e-visual-audit.mjs`, `test-settings-initial-load.txt`
+- `.github-sync-exclude` itself
+
+**To keep a new file/directory Forgejo-only:** Add it to both `.github-sync-exclude` and the `--path ... --invert-paths` list in `sync-to-github.sh`.
+
+### Troubleshooting
+
+```bash
+# Check Forgejo container
+docker ps | grep forgejo
+
+# Check sync log
+tail -20 /home/swd/forgejo/sync.log
+
+# Manual sync trigger
+/home/swd/forgejo/sync-to-github.sh
+
+# Check cron job
+crontab -l | grep forgejo
+
+# Restart Forgejo
+cd /home/swd/forgejo && docker compose restart forgejo
+```
