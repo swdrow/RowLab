@@ -1,6 +1,6 @@
 {
   "name": "oarbit",
-  "version": "5.0.10",
+  "version": "5.0.11",
   "description": "Rowing Lineup Manager - Web application for creating and managing boat lineups",
   "private": true,
   "type": "module",

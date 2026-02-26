@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.11] - 2026-02-26
+
+### Added
+- Phase 63: Background documentation agent system (doc-keeper-planning, doc-keeper-public) for automated post-session doc updates
+- Phase 63: Session-log skill now spawns doc-keeper agents on session end
+- Phase 63: CLAUDE.md wiring with doc-keeper spawn templates for planning and public docs tiers
+
+### Changed
+- Phase 63: Deprecated doc-updater agent in favor of two-tier doc-keeper system (Haiku for planning, Sonnet for public)
+- Phase 63: Reconciled package.json version to 5.0.10 from mismatched state
+
 ## [5.0.10] - 2026-02-26
 
 ### Added
@@ -480,6 +491,6 @@ Foundation and core features.
 
 ---
 
-**Last Updated:** 2026-02-14
-**Current Version:** v4.0 (unreleased)
-**Stable Version:** v3.1.0
+**Last Updated:** 2026-02-26
+**Current Version:** v5.0.11
+**Stable Version:** v5.0.11

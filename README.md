@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.0_in_progress-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-5.0.11-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
   <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node">
   <img src="https://img.shields.io/badge/react-19-61dafb.svg" alt="React">
@@ -624,21 +624,38 @@ Concept2 Logbook sync, Strava integration, share cards, and performance analytic
 - [x] Fitness Intelligence & Training Load (Phase 41)
 - [x] Garmin Connect & On-Water Data (Phase 42)
 
-### v4.0 — Identity & Experience Restructure 🚧 In Progress
+### v4.0 — Identity & Experience Restructure ✅
 
-Clean-slate frontend (React 19 + TanStack Router + Tailwind v4) with athlete-first architecture.
+Clean-slate frontend (React 19 + TanStack Router + Tailwind v4) with athlete-first architecture. 52 of 53 phases shipped; Phase 53 shelved. Superseded by v5.0 focused remediation.
 
-**Target deliverables:**
-- **Athlete-First Identity** — Personal training log works standalone, teams optional
-- **React 19 + TanStack Router** — Modern, type-safe routing with file-based structure
-- **Tailwind v4** — CSS-first tokens, oklch color space, better design system integration
-- **Team Lifecycle** — Create, join, switch, and manage teams with full UI
-- **Personal Dashboard** — Unified workout tracking, personal records, cross-team stats
-- **Coach Tools Migration** — Lineups, seat racing, fleet, training plans ported to v4.0
-- **OAuth Integrations** — Concept2, Strava, Garmin with sync and duplicate detection
-- **Performance Analytics** — PMC chart, training load visualization, insights
+- [x] Athlete-first personal training log (standalone, team optional)
+- [x] React 19 + TanStack Router with file-based routing
+- [x] Tailwind v4 with oklch color space design tokens
+- [x] Team lifecycle — create, join, switch, and manage teams
+- [x] Personal dashboard, workout tracking, personal records
+- [x] Coach tools migration — lineups, seat racing, fleet, training plans
+- [x] OAuth integrations — Concept2 and Strava sync
 
-Current phase: 48 of 53 completed. Next: Team Experience (Phase 49).
+### v5.0 — Audit Remediation & Spec Compliance 🚧 In Progress
+
+Targeted fixes from a 24-agent audit swarm. No new features — fix, polish, and harden what exists to meet the full oarbit design spec.
+
+- [x] Phase 54: Security hardening (2 CRITICAL, 4 HIGH vulnerabilities patched)
+- [x] Phase 55: Critical bug fixes (React hooks, API shape mismatches, race conditions)
+- [x] Phase 56: Build and code quality (62 TypeScript errors fixed, ESLint configured)
+- [x] Phase 57: Design surfaces and colors (GlassCard migrated, banned CSS eliminated)
+- [x] Phase 58: Typography, icons, and assets (Space Grotesk enforced, lucide-react removed)
+- [x] Phase 59: Signature design identity (corner brackets, diamond markers, warm rules)
+- [x] Phase 60: Animation and motion compliance (banned patterns removed, reduced-motion)
+- [x] Phase 61: Error handling and resilience (ErrorBoundary, route error components)
+- [x] Phase 62: Settings and auth gaps (notification/privacy prefs wired, password change, account deletion)
+- [x] Phase 63: Navigation and search (phantom routes removed, real data Cmd+K search)
+- [ ] Phase 64: Backend API consistency
+- [ ] Phase 65: Notifications and social pipeline
+- [ ] Phase 66: Calendar unification
+- [ ] Phase 67: Concept2 data and export
+- [ ] Phase 68: Coach tools completion
+- [ ] Phase 69: Final verification sweep
 
 ### Feature Comparison
 
