@@ -5,7 +5,7 @@
  * Follows the exact pattern established in dashboard/api.ts.
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type { ProfileData, TrendData, AchievementData, PRsByMachine, StatsData } from './types';
 
@@ -17,10 +17,7 @@ export function profileQueryOptions() {
   return queryOptions<ProfileData>({
     queryKey: queryKeys.profile.data(),
     staleTime: 120_000,
-    queryFn: async () => {
-      const res = await api.get('/api/u/profile');
-      return res.data.data as ProfileData;
-    },
+    queryFn: () => apiClient.get<ProfileData>('/api/u/profile'),
   });
 }
 
@@ -30,8 +27,7 @@ export function profileStatsQueryOptions(range?: string) {
     staleTime: 120_000,
     queryFn: async () => {
       const params = range ? { range } : undefined;
-      const res = await api.get('/api/u/stats', { params });
-      return res.data.data as StatsData;
+      return apiClient.get<StatsData>('/api/u/stats', { params });
     },
   });
 }
@@ -40,10 +36,7 @@ export function profilePRsQueryOptions() {
   return queryOptions<PRsByMachine>({
     queryKey: queryKeys.profile.prs(),
     staleTime: 300_000,
-    queryFn: async () => {
-      const res = await api.get('/api/u/prs');
-      return res.data.data as PRsByMachine;
-    },
+    queryFn: () => apiClient.get<PRsByMachine>('/api/u/prs'),
   });
 }
 
@@ -51,10 +44,7 @@ export function profileTrendsQueryOptions(range: string) {
   return queryOptions<TrendData>({
     queryKey: queryKeys.profile.trends(range),
     staleTime: 300_000,
-    queryFn: async () => {
-      const res = await api.get('/api/u/profile/trends', { params: { range } });
-      return res.data.data as TrendData;
-    },
+    queryFn: () => apiClient.get<TrendData>('/api/u/profile/trends', { params: { range } }),
   });
 }
 
@@ -62,10 +52,7 @@ export function profileAchievementsQueryOptions() {
   return queryOptions<AchievementData>({
     queryKey: queryKeys.profile.achievements(),
     staleTime: 300_000,
-    queryFn: async () => {
-      const res = await api.get('/api/u/achievements');
-      return res.data.data as AchievementData;
-    },
+    queryFn: () => apiClient.get<AchievementData>('/api/u/achievements'),
   });
 }
 
@@ -78,10 +65,8 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { name?: string; bio?: string }) => {
-      const res = await api.patch('/api/u/profile', data);
-      return res.data.data as ProfileData;
-    },
+    mutationFn: (data: { name?: string; bio?: string }) =>
+      apiClient.patch<ProfileData>('/api/u/profile', data),
     onMutate: async (newData) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.profile.data() });
@@ -119,10 +104,9 @@ export function useUploadAvatar() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('avatar', file);
-      const res = await api.post('/api/u/profile/avatar', formData, {
+      return apiClient.post<ProfileData>('/api/u/profile/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      return res.data.data as ProfileData;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.profile.data() });
@@ -138,10 +122,9 @@ export function useUploadBanner() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('banner', file);
-      const res = await api.post('/api/u/profile/banner', formData, {
+      return apiClient.post<ProfileData>('/api/u/profile/banner', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      return res.data.data as ProfileData;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.profile.data() });

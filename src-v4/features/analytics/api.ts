@@ -5,7 +5,7 @@
  * Follows the exact pattern established in profile/api.ts.
  */
 import { queryOptions, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type {
   PMCResponse,
@@ -28,8 +28,7 @@ export function pmcQueryOptions(range: PMCRange = '90d', sport: string | null = 
     queryFn: async () => {
       const params = new URLSearchParams({ range });
       if (sport) params.append('sport', sport);
-      const res = await api.get(`/api/u/analytics/pmc?${params}`);
-      return res.data.data as PMCResponse;
+      return apiClient.get<PMCResponse>(`/api/u/analytics/pmc?${params}`);
     },
   });
 }
@@ -44,8 +43,7 @@ export function volumeQueryOptions(
     staleTime: 5 * 60_000,
     queryFn: async () => {
       const params = new URLSearchParams({ range, granularity, metric });
-      const res = await api.get(`/api/u/analytics/volume?${params}`);
-      return res.data.data as VolumeResponse;
+      return apiClient.get<VolumeResponse>(`/api/u/analytics/volume?${params}`);
     },
   });
 }
@@ -74,10 +72,7 @@ export function analyticsSettingsQueryOptions() {
   return queryOptions<AnalyticsSettings>({
     queryKey: [...queryKeys.analytics.all, 'settings'] as const,
     staleTime: 10 * 60_000,
-    queryFn: async () => {
-      const res = await api.get('/api/u/analytics/settings');
-      return res.data.data as AnalyticsSettings;
-    },
+    queryFn: () => apiClient.get<AnalyticsSettings>('/api/u/analytics/settings'),
   });
 }
 
@@ -88,10 +83,8 @@ export function useAnalyticsSettings() {
 export function useUpdateAnalyticsSettings() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (settings: Partial<AnalyticsSettings>) => {
-      const res = await api.patch('/api/u/analytics/settings', settings);
-      return res.data.data;
-    },
+    mutationFn: (settings: Partial<AnalyticsSettings>) =>
+      apiClient.patch<AnalyticsSettings>('/api/u/analytics/settings', settings),
     onSuccess: () => {
       // Invalidate settings + PMC (recalculates with new thresholds)
       void queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all });

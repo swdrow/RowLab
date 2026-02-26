@@ -5,7 +5,7 @@
  * Flags change rarely so staleTime is 5 minutes.
  */
 import { queryOptions } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type { FeatureFlags } from './types';
 
 // ---------------------------------------------------------------------------
@@ -27,8 +27,10 @@ export function featureFlagsOptions(teamId: string | null) {
     enabled: !!teamId,
     staleTime: 5 * 60_000,
     queryFn: async () => {
-      const res = await api.get(`/api/v1/teams/${teamId}/feature-flags`);
-      return res.data.data.flags as FeatureFlags;
+      const data = await apiClient.get<{ flags: FeatureFlags }>(
+        `/api/v1/teams/${teamId}/feature-flags`
+      );
+      return data.flags;
     },
   });
 }

@@ -19,7 +19,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { useIsMobile } from '@/hooks/useBreakpoint';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SectionHeader } from '@/components/ui/SectionHeader';
@@ -55,8 +55,8 @@ function useTeamAthletes(teamId: string) {
   return useQuery<RawAthlete[]>({
     queryKey: ['athletes', teamId, 'roster'],
     queryFn: async () => {
-      const res = await api.get('/api/v1/athletes');
-      return res.data.data.athletes as RawAthlete[];
+      const data = await apiClient.get<{ athletes: RawAthlete[] }>('/api/v1/athletes');
+      return data.athletes;
     },
     staleTime: 120_000,
     enabled: !!teamId,

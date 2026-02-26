@@ -5,7 +5,7 @@
  * All query keys are team-scoped for safe team-switch invalidation.
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type {
   Shell,
   OarSet,
@@ -30,48 +30,43 @@ export const fleetKeys = {
 // ---------------------------------------------------------------------------
 
 async function fetchShells(teamId: string): Promise<Shell[]> {
-  const res = await api.get('/api/v1/shells', { params: { teamId } });
-  const data = res.data;
-  // Backend wraps in { success, data: { shells } }
-  return (data.data?.shells ?? data.shells ?? []) as Shell[];
+  const data = await apiClient.get<{ shells: Shell[] }>('/api/v1/shells', { params: { teamId } });
+  return data.shells ?? [];
 }
 
 async function fetchOarSets(teamId: string): Promise<OarSet[]> {
-  const res = await api.get('/api/v1/oar-sets', { params: { teamId } });
-  const data = res.data;
-  return (data.data?.oarSets ?? data.oarSets ?? []) as OarSet[];
+  const data = await apiClient.get<{ oarSets: OarSet[] }>('/api/v1/oar-sets', {
+    params: { teamId },
+  });
+  return data.oarSets ?? [];
 }
 
 // ---------------------------------------------------------------------------
 // API functions -- mutations
 // ---------------------------------------------------------------------------
 
-async function createShell(input: CreateShellInput): Promise<Shell> {
-  const res = await api.post('/api/v1/shells', input);
-  return (res.data.data ?? res.data) as Shell;
+function createShell(input: CreateShellInput): Promise<Shell> {
+  return apiClient.post<Shell>('/api/v1/shells', input);
 }
 
-async function updateShell(id: string, input: UpdateShellInput): Promise<Shell> {
-  const res = await api.put(`/api/v1/shells/${id}`, input);
-  return (res.data.data ?? res.data) as Shell;
+function updateShell(id: string, input: UpdateShellInput): Promise<Shell> {
+  return apiClient.put<Shell>(`/api/v1/shells/${id}`, input);
 }
 
 async function deleteShell(id: string): Promise<void> {
-  await api.delete(`/api/v1/shells/${id}`);
+  await apiClient.delete(`/api/v1/shells/${id}`);
 }
 
-async function createOarSet(input: CreateOarSetInput): Promise<OarSet> {
-  const res = await api.post('/api/v1/oar-sets', input);
-  return (res.data.data ?? res.data) as OarSet;
+function createOarSet(input: CreateOarSetInput): Promise<OarSet> {
+  return apiClient.post<OarSet>('/api/v1/oar-sets', input);
 }
 
-async function updateOarSet(id: string, input: UpdateOarSetInput): Promise<OarSet> {
-  const res = await api.put(`/api/v1/oar-sets/${id}`, input);
-  return (res.data.data ?? res.data) as OarSet;
+function updateOarSet(id: string, input: UpdateOarSetInput): Promise<OarSet> {
+  return apiClient.put<OarSet>(`/api/v1/oar-sets/${id}`, input);
 }
 
 async function deleteOarSet(id: string): Promise<void> {
-  await api.delete(`/api/v1/oar-sets/${id}`);
+  await apiClient.delete(`/api/v1/oar-sets/${id}`);
 }
 
 // ---------------------------------------------------------------------------

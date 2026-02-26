@@ -5,7 +5,7 @@
  * Query keys scoped under ['recruitVisits', ...] for cache invalidation.
  */
 import { queryOptions } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type { RecruitVisit, CreateVisitInput, UpdateVisitInput, VisitFilters } from './types';
 
 // ---------------------------------------------------------------------------
@@ -34,13 +34,12 @@ async function fetchVisits(filters: VisitFilters = {}): Promise<VisitsListRespon
   if (filters.status) params.set('status', filters.status);
 
   const url = `/api/v1/recruit-visits${params.toString() ? `?${params}` : ''}`;
-  const res = await api.get(url);
-  return res.data.data as VisitsListResponse;
+  return apiClient.get<VisitsListResponse>(url);
 }
 
 async function fetchVisit(id: string): Promise<RecruitVisit> {
-  const res = await api.get(`/api/v1/recruit-visits/${id}`);
-  return res.data.data.visit as RecruitVisit;
+  const data = await apiClient.get<{ visit: RecruitVisit }>(`/api/v1/recruit-visits/${id}`);
+  return data.visit;
 }
 
 // ---------------------------------------------------------------------------
@@ -48,20 +47,23 @@ async function fetchVisit(id: string): Promise<RecruitVisit> {
 // ---------------------------------------------------------------------------
 
 export async function createVisit(input: CreateVisitInput): Promise<RecruitVisit> {
-  const res = await api.post('/api/v1/recruit-visits', input);
-  return res.data.data.visit as RecruitVisit;
+  const data = await apiClient.post<{ visit: RecruitVisit }>('/api/v1/recruit-visits', input);
+  return data.visit;
 }
 
-export async function updateVisit(data: {
+export async function updateVisit(args: {
   id: string;
   input: UpdateVisitInput;
 }): Promise<RecruitVisit> {
-  const res = await api.patch(`/api/v1/recruit-visits/${data.id}`, data.input);
-  return res.data.data.visit as RecruitVisit;
+  const data = await apiClient.patch<{ visit: RecruitVisit }>(
+    `/api/v1/recruit-visits/${args.id}`,
+    args.input
+  );
+  return data.visit;
 }
 
 export async function deleteVisit(id: string): Promise<void> {
-  await api.delete(`/api/v1/recruit-visits/${id}`);
+  await apiClient.delete(`/api/v1/recruit-visits/${id}`);
 }
 
 // ---------------------------------------------------------------------------

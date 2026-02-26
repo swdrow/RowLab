@@ -5,7 +5,7 @@
  * Query keys are team-scoped for cache isolation on team switch.
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type {
   AttendanceRecord,
   AttendanceSummaryRow,
@@ -31,26 +31,28 @@ export const attendanceKeys = {
 // ---------------------------------------------------------------------------
 
 async function fetchAttendanceByDate(date: string): Promise<AttendanceRecord[]> {
-  const res = await api.get(`/api/v1/attendance?date=${date}`);
-  return res.data.data.attendance as AttendanceRecord[];
+  const data = await apiClient.get<{ attendance: AttendanceRecord[] }>(
+    `/api/v1/attendance?date=${date}`
+  );
+  return data.attendance;
 }
 
 async function fetchAttendanceSummary(
   startDate: string,
   endDate: string
 ): Promise<AttendanceSummaryRow[]> {
-  const res = await api.get(`/api/v1/attendance/summary?startDate=${startDate}&endDate=${endDate}`);
-  return res.data.data.summary as AttendanceSummaryRow[];
+  const data = await apiClient.get<{ summary: AttendanceSummaryRow[] }>(
+    `/api/v1/attendance/summary?startDate=${startDate}&endDate=${endDate}`
+  );
+  return data.summary;
 }
 
-async function recordAttendance(input: RecordAttendanceInput): Promise<AttendanceRecord> {
-  const res = await api.post('/api/v1/attendance', input);
-  return res.data.data as AttendanceRecord;
+function recordAttendance(input: RecordAttendanceInput): Promise<AttendanceRecord> {
+  return apiClient.post<AttendanceRecord>('/api/v1/attendance', input);
 }
 
-async function bulkRecordAttendance(input: BulkRecordInput): Promise<{ count: number }> {
-  const res = await api.post('/api/v1/attendance/bulk', input);
-  return res.data.data as { count: number };
+function bulkRecordAttendance(input: BulkRecordInput): Promise<{ count: number }> {
+  return apiClient.post<{ count: number }>('/api/v1/attendance/bulk', input);
 }
 
 // ---------------------------------------------------------------------------

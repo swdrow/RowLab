@@ -7,7 +7,7 @@
  * Mutations return hooks directly (useMutation pattern from attendance api).
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient, ApiClientError } from '@/lib/api';
 import type {
   TrainingSession,
   SessionsResponse,
@@ -40,22 +40,25 @@ async function fetchSessions(filters: SessionFilters = {}): Promise<TrainingSess
   if (filters.endDate) params.set('endDate', filters.endDate);
 
   const url = `/api/v1/sessions${params.toString() ? `?${params.toString()}` : ''}`;
-  const res = await api.get(url);
-  return (res.data as { data: SessionsResponse }).data.sessions;
+  const data = await apiClient.get<SessionsResponse>(url);
+  return data.sessions;
 }
 
 async function fetchSession(sessionId: string): Promise<TrainingSession> {
-  const res = await api.get(`/api/v1/sessions/${sessionId}`);
-  return (res.data as { data: { session: TrainingSession } }).data.session;
+  const data = await apiClient.get<{ session: TrainingSession }>(`/api/v1/sessions/${sessionId}`);
+  return data.session;
 }
 
 async function fetchActiveSession(): Promise<TrainingSession | null> {
   try {
-    const res = await api.get('/api/v1/sessions/active');
-    return (res.data as { data: { session: TrainingSession | null } }).data.session ?? null;
-  } catch {
+    const data = await apiClient.get<{ session: TrainingSession | null }>(
+      '/api/v1/sessions/active'
+    );
+    return data.session ?? null;
+  } catch (error) {
     // 404 = no active session, which is fine
-    return null;
+    if (error instanceof ApiClientError && error.status === 404) return null;
+    throw error;
   }
 }
 
@@ -64,31 +67,40 @@ async function fetchActiveSession(): Promise<TrainingSession | null> {
 // ---------------------------------------------------------------------------
 
 async function createSession(input: CreateSessionInput): Promise<TrainingSession> {
-  const res = await api.post('/api/v1/sessions', input);
-  return (res.data as { data: { session: TrainingSession } }).data.session;
+  const data = await apiClient.post<{ session: TrainingSession }>('/api/v1/sessions', input);
+  return data.session;
 }
 
-async function updateSession(data: {
+async function updateSession(args: {
   sessionId: string;
   input: UpdateSessionInput;
 }): Promise<TrainingSession> {
-  const res = await api.patch(`/api/v1/sessions/${data.sessionId}`, data.input);
-  return (res.data as { data: { session: TrainingSession } }).data.session;
+  const data = await apiClient.patch<{ session: TrainingSession }>(
+    `/api/v1/sessions/${args.sessionId}`,
+    args.input
+  );
+  return data.session;
 }
 
 async function deleteSession(sessionId: string): Promise<void> {
-  await api.delete(`/api/v1/sessions/${sessionId}`);
+  await apiClient.delete(`/api/v1/sessions/${sessionId}`);
 }
 
 async function startSession(sessionId: string): Promise<TrainingSession> {
   // Backend handles ACTIVE transition via PATCH with status
-  const res = await api.patch(`/api/v1/sessions/${sessionId}`, { status: 'ACTIVE' });
-  return (res.data as { data: { session: TrainingSession } }).data.session;
+  const data = await apiClient.patch<{ session: TrainingSession }>(
+    `/api/v1/sessions/${sessionId}`,
+    { status: 'ACTIVE' }
+  );
+  return data.session;
 }
 
 async function endSession(sessionId: string): Promise<TrainingSession> {
-  const res = await api.patch(`/api/v1/sessions/${sessionId}`, { status: 'COMPLETED' });
-  return (res.data as { data: { session: TrainingSession } }).data.session;
+  const data = await apiClient.patch<{ session: TrainingSession }>(
+    `/api/v1/sessions/${sessionId}`,
+    { status: 'COMPLETED' }
+  );
+  return data.session;
 }
 
 // ---------------------------------------------------------------------------

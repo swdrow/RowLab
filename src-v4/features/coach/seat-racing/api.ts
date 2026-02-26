@@ -5,7 +5,7 @@
  * Query keys are team-scoped for cache isolation on team switch.
  */
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import type {
   AthleteRating,
   SeatRaceSession,
@@ -35,20 +35,20 @@ async function fetchRatings(teamId: string, side?: Side | null): Promise<Athlete
   const params: Record<string, string> = { teamId, type: 'seat_race_elo' };
   if (side) params.side = side;
 
-  const res = await api.get('/api/v1/ratings', { params });
-  return res.data.data.ratings as AthleteRating[];
+  const data = await apiClient.get<{ ratings: AthleteRating[] }>('/api/v1/ratings', { params });
+  return data.ratings;
 }
 
 async function fetchSessions(teamId: string): Promise<SeatRaceSession[]> {
-  const res = await api.get('/api/v1/seat-races', {
+  const data = await apiClient.get<{ sessions: SeatRaceSession[] }>('/api/v1/seat-races', {
     params: { teamId },
   });
-  return res.data.data.sessions as SeatRaceSession[];
+  return data.sessions;
 }
 
 async function fetchSessionDetail(_teamId: string, sessionId: string): Promise<SessionDetail> {
-  const res = await api.get(`/api/v1/seat-races/${sessionId}`);
-  return res.data.data.session as SessionDetail;
+  const data = await apiClient.get<{ session: SessionDetail }>(`/api/v1/seat-races/${sessionId}`);
+  return data.session;
 }
 
 // ---------------------------------------------------------------------------
@@ -56,17 +56,16 @@ async function fetchSessionDetail(_teamId: string, sessionId: string): Promise<S
 // ---------------------------------------------------------------------------
 
 async function createSession(input: CreateSessionInput): Promise<SeatRaceSession> {
-  const res = await api.post('/api/v1/seat-races', input);
-  return res.data.data.session as SeatRaceSession;
+  const data = await apiClient.post<{ session: SeatRaceSession }>('/api/v1/seat-races', input);
+  return data.session;
 }
 
 async function deleteSession(sessionId: string): Promise<void> {
-  await api.delete(`/api/v1/seat-races/${sessionId}`);
+  await apiClient.delete(`/api/v1/seat-races/${sessionId}`);
 }
 
-async function recalculateRatings(teamId: string): Promise<{ updated: number }> {
-  const res = await api.post('/api/v1/ratings/recalculate', { teamId });
-  return res.data.data as { updated: number };
+function recalculateRatings(teamId: string): Promise<{ updated: number }> {
+  return apiClient.post<{ updated: number }>('/api/v1/ratings/recalculate', { teamId });
 }
 
 // ---------------------------------------------------------------------------

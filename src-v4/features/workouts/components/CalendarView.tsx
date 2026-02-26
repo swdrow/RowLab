@@ -20,7 +20,7 @@ import { IconChevronLeft, IconChevronRight, IconGrid, IconBarChart } from '@/com
 
 import { TabToggle } from '@/components/ui/TabToggle';
 import { useAuth } from '@/features/auth/useAuth';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type { WorkoutFilters, WorkoutsData } from '../types';
 import type { Workout } from '../types';
@@ -86,8 +86,7 @@ export function CalendarView({ filters, calendarMode }: CalendarViewProps) {
       if (filters.type) params.type = filters.type;
       if (filters.source) params.source = filters.source;
 
-      const res = await api.get('/api/u/workouts', { params });
-      return res.data.data as WorkoutsData;
+      return apiClient.get<WorkoutsData>('/api/u/workouts', { params });
     },
     staleTime: 60_000,
     enabled: isAuthenticated,

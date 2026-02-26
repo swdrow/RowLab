@@ -7,7 +7,7 @@
  * - All responses unwrapped from { success, data } envelope
  */
 import { queryOptions } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import type { C2Status, StravaStatus, SyncResult } from './types';
 
@@ -15,46 +15,40 @@ import type { C2Status, StravaStatus, SyncResult } from './types';
 // Concept2 API functions
 // ---------------------------------------------------------------------------
 
-export async function fetchC2Status(): Promise<C2Status> {
-  const res = await api.get('/api/v1/concept2/status/me');
-  return res.data.data as C2Status;
+export function fetchC2Status(): Promise<C2Status> {
+  return apiClient.get<C2Status>('/api/v1/concept2/status/me');
 }
 
-export async function connectC2(): Promise<{ url: string }> {
-  const res = await api.post('/api/v1/concept2/connect');
-  return res.data.data as { url: string };
+export function connectC2(): Promise<{ url: string }> {
+  return apiClient.post<{ url: string }>('/api/v1/concept2/connect');
 }
 
 export async function disconnectC2(): Promise<void> {
-  await api.delete('/api/v1/concept2/disconnect/me');
+  await apiClient.delete('/api/v1/concept2/disconnect/me');
 }
 
-export async function syncC2(): Promise<SyncResult> {
-  const res = await api.post('/api/v1/concept2/sync/me');
-  return res.data.data as SyncResult;
+export function syncC2(): Promise<SyncResult> {
+  return apiClient.post<SyncResult>('/api/v1/concept2/sync/me');
 }
 
 // ---------------------------------------------------------------------------
 // Strava API functions
 // ---------------------------------------------------------------------------
 
-export async function fetchStravaStatus(): Promise<StravaStatus> {
-  const res = await api.get('/api/v1/strava/status/me');
-  return res.data.data as StravaStatus;
+export function fetchStravaStatus(): Promise<StravaStatus> {
+  return apiClient.get<StravaStatus>('/api/v1/strava/status/me');
 }
 
-export async function connectStrava(): Promise<{ authUrl: string }> {
-  const res = await api.get('/api/v1/strava/auth-url');
-  return res.data.data as { authUrl: string };
+export function connectStrava(): Promise<{ authUrl: string }> {
+  return apiClient.get<{ authUrl: string }>('/api/v1/strava/auth-url');
 }
 
 export async function disconnectStrava(): Promise<void> {
-  await api.delete('/api/v1/strava/disconnect/me');
+  await apiClient.delete('/api/v1/strava/disconnect/me');
 }
 
-export async function syncStrava(): Promise<SyncResult> {
-  const res = await api.post('/api/v1/strava/sync/me');
-  return res.data.data as SyncResult;
+export function syncStrava(): Promise<SyncResult> {
+  return apiClient.post<SyncResult>('/api/v1/strava/sync/me');
 }
 
 // ---------------------------------------------------------------------------
