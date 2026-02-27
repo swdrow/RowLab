@@ -28,7 +28,7 @@ Before you begin:
 - Ensure you have [Node.js 18+](https://nodejs.org/) installed
 - Familiarize yourself with [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [TanStack Router](https://tanstack.com/router/latest), and [Express.js](https://expressjs.com/)
 - Read through the [README](README.md) to understand the project's purpose and architecture
-- Check the [existing issues](https://github.com/swdrow/RowLab/issues) to see if your contribution is already being discussed
+- Check the [existing issues](https://github.com/samwduncan/RowLab/issues) to see if your contribution is already being discussed
 - For v4.0 work, familiarize yourself with the oarbit design system in `docs/plans/2026-02-21-oarbit-rebrand-design.md`
 
 ## How to Contribute
@@ -39,13 +39,13 @@ If you find a bug in oarbit, please help us fix it by submitting a detailed bug 
 
 **Before submitting a bug report:**
 
-- Check the [existing issues](https://github.com/swdrow/RowLab/issues) to ensure the bug hasn't been reported already
+- Check the [existing issues](https://github.com/samwduncan/RowLab/issues) to ensure the bug hasn't been reported already
 - Verify you're using the latest version of oarbit
 - Collect information about your environment (OS, Node version, browser version)
 
 **How to submit a bug report:**
 
-1. Click "New Issue" in the [GitHub Issues](https://github.com/swdrow/RowLab/issues) tab
+1. Click "New Issue" in the [GitHub Issues](https://github.com/samwduncan/RowLab/issues) tab
 2. Select the "Bug Report" template
 3. Fill out all sections of the template with as much detail as possible
 4. Include:
@@ -61,12 +61,12 @@ We love hearing ideas for new features and improvements!
 
 **Before suggesting a feature:**
 
-- Check [existing issues](https://github.com/swdrow/RowLab/issues) and the [roadmap](.planning/ROADMAP.md) to see if it's already planned
+- Check [existing issues](https://github.com/samwduncan/RowLab/issues) and the [roadmap](.planning/ROADMAP.md) to see if it's already planned
 - Consider whether the feature aligns with oarbit's core mission of data-driven rowing for athletes and coaches
 
 **How to suggest a feature:**
 
-1. Click "New Issue" in the [GitHub Issues](https://github.com/swdrow/RowLab/issues) tab
+1. Click "New Issue" in the [GitHub Issues](https://github.com/samwduncan/RowLab/issues) tab
 2. Select the "Feature Request" template
 3. Provide:
    - A clear, descriptive title
@@ -112,7 +112,7 @@ We welcome code contributions! Whether it's fixing a bug, implementing a feature
 3. **Add the upstream remote:**
 
    ```bash
-   git remote add upstream https://github.com/swdrow/RowLab.git
+   git remote add upstream https://github.com/samwduncan/RowLab.git
    ```
 
 4. **Install dependencies:**
@@ -387,7 +387,7 @@ npm run test:ui       # Visual test UI
 
 ### Submitting the PR
 
-1. Go to the [oarbit repository](https://github.com/swdrow/RowLab) on GitHub
+1. Go to the [oarbit repository](https://github.com/samwduncan/RowLab) on GitHub
 2. Click "New Pull Request"
 3. Select your fork and branch
 4. Fill out the PR template completely:
@@ -500,7 +500,7 @@ BREAKING CHANGE: lineup endpoint now returns nested boat objects instead of flat
 ### Getting Help
 
 - **Documentation:** Check [docs/](docs/) for detailed guides
-- **Issues:** Search [existing issues](https://github.com/swdrow/RowLab/issues) or open a new one
+- **Issues:** Search [existing issues](https://github.com/samwduncan/RowLab/issues) or open a new one
 - **Discussions:** Use GitHub Discussions for questions and ideas
 
 ### Recognition

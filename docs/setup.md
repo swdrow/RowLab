@@ -42,11 +42,11 @@ git --version    # Should be 2.30 or higher
 
 ```bash
 # SSH (recommended)
-git clone git@github.com:swdrow/RowLab.git
+git clone git@github.com:samwduncan/RowLab.git
 cd RowLab
 
 # HTTPS
-git clone https://github.com/swdrow/RowLab.git
+git clone https://github.com/samwduncan/RowLab.git
 cd RowLab
 ```
 
@@ -797,8 +797,8 @@ After successful setup:
    - Database: `prisma/schema.prisma`
 
 3. **Join development:**
-   - Check issues: https://github.com/swdrow/RowLab/issues
-   - Review PRs: https://github.com/swdrow/RowLab/pulls
+   - Check issues: https://github.com/samwduncan/RowLab/issues
+   - Review PRs: https://github.com/samwduncan/RowLab/pulls
    - Read CONTRIBUTING.md
 
 ---

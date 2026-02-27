@@ -143,7 +143,7 @@ Ensure you have the following installed:
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/swdrow/RowLab.git
+git clone https://github.com/samwduncan/RowLab.git
 cd RowLab
 ```
 
@@ -559,7 +559,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed gu
 3. Commit with clear messages: `git commit -m "type(scope): description"`
 4. Push and open a pull request
 
-**Good places to start:** Look for issues labeled [`good first issue`](https://github.com/swdrow/RowLab/labels/good%20first%20issue) or [`help wanted`](https://github.com/swdrow/RowLab/labels/help%20wanted).
+**Good places to start:** Look for issues labeled [`good first issue`](https://github.com/samwduncan/RowLab/labels/good%20first%20issue) or [`help wanted`](https://github.com/samwduncan/RowLab/labels/help%20wanted).
 
 ---
 
@@ -695,8 +695,8 @@ Comprehensive documentation is available in the `/docs` directory:
 ### Get Help
 
 - **Documentation** - Check [docs/](docs/) for guides and references
-- **GitHub Issues** - [Search existing issues](https://github.com/swdrow/RowLab/issues) or open a new one
-- **GitHub Discussions** - [Ask questions and share ideas](https://github.com/swdrow/RowLab/discussions)
+- **GitHub Issues** - [Search existing issues](https://github.com/samwduncan/RowLab/issues) or open a new one
+- **GitHub Discussions** - [Ask questions and share ideas](https://github.com/samwduncan/RowLab/discussions)
 
 ### Stay Updated
 
@@ -748,7 +748,7 @@ oarbit is built with excellent open source tools and inspired by great products:
 - **[Raycast](https://www.raycast.com/)** - Command palette and UI patterns
 - **[Cal.com](https://cal.com/)** - Open source SaaS reference
 
-Special thanks to all [contributors](https://github.com/swdrow/RowLab/graphs/contributors) who help make oarbit better.
+Special thanks to all [contributors](https://github.com/samwduncan/RowLab/graphs/contributors) who help make oarbit better.
 
 ---
 
@@ -780,9 +780,9 @@ oarbit is designed for competitive rowing programs:
 </p>
 
 <p align="center">
-  <a href="https://github.com/swdrow/RowLab">⭐ Star on GitHub</a> •
-  <a href="https://github.com/swdrow/RowLab/issues/new">🐛 Report Bug</a> •
-  <a href="https://github.com/swdrow/RowLab/discussions/new">💡 Request Feature</a>
+  <a href="https://github.com/samwduncan/RowLab">⭐ Star on GitHub</a> •
+  <a href="https://github.com/samwduncan/RowLab/issues/new">🐛 Report Bug</a> •
+  <a href="https://github.com/samwduncan/RowLab/discussions/new">💡 Request Feature</a>
 </p>
 
 <p align="center">

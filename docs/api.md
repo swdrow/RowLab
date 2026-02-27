@@ -714,7 +714,7 @@ socket.on('race:result', (result) => {
 ## Support
 
 **Documentation Issues:**
-- GitHub Issues: https://github.com/swdrow/RowLab/issues
+- GitHub Issues: https://github.com/samwduncan/RowLab/issues
 - Label: `documentation`
 
 **API Questions:**

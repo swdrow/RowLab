@@ -1,6 +1,6 @@
 [Unit]
 Description=Ollama Control API for Home Assistant
-Documentation=https://github.com/swdrow/RowLab
+Documentation=https://github.com/samwduncan/RowLab
 After=network.target
 
 [Service]

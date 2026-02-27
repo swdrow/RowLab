@@ -283,16 +283,16 @@ Spawn both agents with `session-end` trigger as a final documentation sweep.
 ## Git & GitHub Workflow
 
 **Primary repo:** Forgejo `swd/oarbit` (local, SSH)
-**Public mirror:** GitHub `swdrow/RowLab` (filtered, auto-synced)
+**Public mirror:** GitHub `samwduncan/RowLab` (filtered, auto-synced)
 **Main branch:** `master`
-**Auth:** `gh` CLI authenticated as `swdrow`
+**Auth:** `gh` CLI authenticated as `samwduncan`
 
 ### Git Remotes
 
 | Remote | URL | Purpose |
 |--------|-----|---------|
 | `origin` | `ssh://git@localhost:2224/swd/oarbit.git` | Forgejo (primary, all files) |
-| `github` | `git@github.com:swdrow/RowLab.git` | GitHub (public mirror, filtered) |
+| `github` | `git@github.com:samwduncan/RowLab.git` | GitHub (public mirror, filtered) |
 
 Push to `origin` (Forgejo) by default. GitHub is synced automatically — never push directly to `github` remote.
 

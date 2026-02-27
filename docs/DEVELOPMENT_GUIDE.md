@@ -170,7 +170,7 @@ Client Login Request
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/swdrow/RowLab.git
+git clone https://github.com/samwduncan/RowLab.git
 cd RowLab
 ```
 

@@ -457,7 +457,7 @@ Foundation and core features.
 ## Contributors
 
 **Core Team:**
-- swdrow - Lead Developer
+- samwduncan - Lead Developer
 
 **Special Thanks:**
 - Rowing community for feature requests and testing
@@ -484,8 +484,8 @@ Foundation and core features.
 
 ## Links
 
-- **Repository:** https://github.com/swdrow/RowLab
-- **Issues:** https://github.com/swdrow/RowLab/issues
+- **Repository:** https://github.com/samwduncan/RowLab
+- **Issues:** https://github.com/samwduncan/RowLab/issues
 - **Documentation:** /docs
 - **Roadmap:** /.planning/ROADMAP.md
 
